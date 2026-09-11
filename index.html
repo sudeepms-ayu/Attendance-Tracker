@@ -7872,39 +7872,32 @@ window.promptCoachingModal = function(opts){
   // it exactly on undo/switch. Keeps Roll Call's effect on streaks in step
   // with the same simple rule the manual Present/Absent buttons use:
   // present -> +1, absent -> reset to 0, suspended -> untouched.
-  function applyStreakOp(subj, streakOp){
-    const prevStreak = subj.streak || 0;
-    if(streakOp){
-      if(streakOp.type === 'present') subj.streak = prevStreak + 1;
-      else if(streakOp.type === 'absent') subj.streak = 0;
-      else if(streakOp.type === 'restore') subj.streak = streakOp.value || 0;
-    }
-    return prevStreak;
+ function applyStreakOp(subj, streakOp){
+  const prevStreak = subj.streak || 0;
+  if(streakOp){
+    if(streakOp.type === 'present') subj.streak = prevStreak + 1;
+    else if(streakOp.type === 'absent') subj.streak = 0;
+    else if(streakOp.type === 'restore') subj.streak = streakOp.value || 0;
   }
+  return prevStreak;
+}
 
-  async function adjustOwnAttendance(subjectFullName, deltaAttended, deltaTotal, kind, streakOp){
-    kind = kind === 'practical' ? 'practical' : 'theory';
-    const attKey = kind + 'Attended', totKey = kind + 'Total';
-    if(currentUser && viewingUserId === currentUser.id){
-      const subj = findOrCreateSubject(state.subjects, subjectFullName);
-      migrateSubjectTypeFields(subj);
-      const prev = { attended: subj.attended, total: subj.total };
-      subj[attKey] = Math.max(0, subj[attKey] + deltaAttended);
-      subj[totKey] = Math.max(0, subj[totKey] + deltaTotal);
-      subj.attended = Math.max(0, subj.attended + deltaAttended);
-      subj.total = Math.max(0, subj.total + deltaTotal);
-      const prevStreak = applyStreakOp(subj, streakOp);
-      await save(); render(); renderStreaks();
-      return { prev, prevStreak, subjects: state.subjects, student: state.student, threshold: state.threshold };
-    }
-    let ownState;
-    try{
-      const res = await window.storage.get(registerKeyFor(currentUser.id), true);
-      ownState = (res && res.value) ? JSON.parse(res.value) : { student:{name:'',roll:'',sem:''}, threshold:75, subjects: defaultSubjects() };
-    }catch(e){
-      ownState = { student:{name:'',roll:'',sem:''}, threshold:75, subjects: defaultSubjects() };
-    }
-    const subj = findOrCreateSubject(ownState.subjects, subjectFullName);
+// Mirrors applyStreakOp but for XP: present -> +5, absent -> unchanged,
+// restore -> back to an exact prior value.
+function applyXpOp(container, xpOp){
+  const prevXp = container.xp || 0;
+  if(xpOp){
+    if(xpOp.type === 'present') container.xp = prevXp + 5;
+    else if(xpOp.type === 'restore') container.xp = xpOp.value || 0;
+  }
+  return prevXp;
+}
+
+async function adjustOwnAttendance(subjectFullName, deltaAttended, deltaTotal, kind, streakOp, xpOp){
+  kind = kind === 'practical' ? 'practical' : 'theory';
+  const attKey = kind + 'Attended', totKey = kind + 'Total';
+  if(currentUser && viewingUserId === currentUser.id){
+    const subj = findOrCreateSubject(state.subjects, subjectFullName);
     migrateSubjectTypeFields(subj);
     const prev = { attended: subj.attended, total: subj.total };
     subj[attKey] = Math.max(0, subj[attKey] + deltaAttended);
@@ -7912,9 +7905,37 @@ window.promptCoachingModal = function(opts){
     subj.attended = Math.max(0, subj.attended + deltaAttended);
     subj.total = Math.max(0, subj.total + deltaTotal);
     const prevStreak = applyStreakOp(subj, streakOp);
-    try{ await window.storage.set(registerKeyFor(currentUser.id), JSON.stringify(ownState), true); }catch(e){}
-    return { prev, prevStreak, subjects: ownState.subjects, student: ownState.student, threshold: ownState.threshold };
+    const prevXp = applyXpOp(state, xpOp);
+    await save(); render(); renderStreaks();
+    if(xpOp && state.xp !== prevXp) updateXpChip(true, state.xp > prevXp ? 'gain' : 'loss');
+    return { prev, prevStreak, prevXp, subjects: state.subjects, student: state.student, threshold: state.threshold };
   }
+  let ownState;
+  try{
+    const res = await window.storage.get(registerKeyFor(currentUser.id), true);
+    ownState = (res && res.value) ? JSON.parse(res.value) : { student:{name:'',roll:'',sem:''}, threshold:75, subjects: defaultSubjects() };
+  }catch(e){
+    ownState = { student:{name:'',roll:'',sem:''}, threshold:75, subjects: defaultSubjects() };
+  }
+  const subj = findOrCreateSubject(ownState.subjects, subjectFullName);
+  migrateSubjectTypeFields(subj);
+  const prev = { attended: subj.attended, total: subj.total };
+  subj[attKey] = Math.max(0, subj[attKey] + deltaAttended);
+  subj[totKey] = Math.max(0, subj[totKey] + deltaTotal);
+  subj.attended = Math.max(0, subj.attended + deltaAttended);
+  subj.total = Math.max(0, subj.total + deltaTotal);
+  const prevStreak = applyStreakOp(subj, streakOp);
+  const prevXp = applyXpOp(ownState, xpOp);
+  try{ await window.storage.set(registerKeyFor(currentUser.id), JSON.stringify(ownState), true); }catch(e){}
+  return { prev, prevStreak, prevXp, subjects: ownState.subjects, student: ownState.student, threshold: ownState.threshold };
+}
+
+// Only "present" earns XP (mirrors the manual Present button); absent
+// earns none, and suspended is untouched.
+function rcXpOp(status){
+  if(status === 'present') return { type: 'present' };
+  return null;
+}
 
   // Keeps the current user's History section in step with live attendance
   // changes made from Roll Call. If they already have a saved record, that
@@ -7973,13 +7994,13 @@ window.promptCoachingModal = function(opts){
     }
     // If changing from a previous mark, reverse that one first — including
     // putting the streak back exactly where it was before that mark.
-    if(existing){
+if(existing){
       const revertDelta = rcMarkDelta(existing.status);
-      await adjustOwnAttendance(subjectFullName, -revertDelta.attended, -revertDelta.total, undefined, { type: 'restore', value: existing.prevStreak });
+      await adjustOwnAttendance(subjectFullName, -revertDelta.attended, -revertDelta.total, undefined, { type: 'restore', value: existing.prevStreak }, { type: 'restore', value: existing.prevXp });
     }
     const delta = rcMarkDelta(status);
-    const result = await adjustOwnAttendance(subjectFullName, delta.attended, delta.total, undefined, rcStreakOp(status));
-    rollcall.marks[dateKey][subjectFullName] = { status, prevStreak: result.prevStreak };
+    const result = await adjustOwnAttendance(subjectFullName, delta.attended, delta.total, undefined, rcStreakOp(status), rcXpOp(status));
+    rollcall.marks[dateKey][subjectFullName] = { status, prevStreak: result.prevStreak, prevXp: result.prevXp };
     await saveRollcall();
     await syncOwnHistoryRecord(result.subjects, result.student, result.threshold);
     updateRcNudge(subjectFullName, result.prev, result);
@@ -7992,7 +8013,7 @@ window.promptCoachingModal = function(opts){
     const existing = rollcall.marks[dateKey] && rollcall.marks[dateKey][subjectFullName];
     if(!existing) return;
     const delta = rcMarkDelta(existing.status);
-    const result = await adjustOwnAttendance(subjectFullName, -delta.attended, -delta.total, undefined, { type: 'restore', value: existing.prevStreak });
+    const result = await adjustOwnAttendance(subjectFullName, -delta.attended, -delta.total, undefined, { type: 'restore', value: existing.prevStreak }, { type: 'restore', value: existing.prevXp });
     delete rollcall.marks[dateKey][subjectFullName];
     await saveRollcall();
     await syncOwnHistoryRecord(result.subjects, result.student, result.threshold);
@@ -8014,13 +8035,13 @@ window.promptCoachingModal = function(opts){
       await rcUndoPracticalMark(subjectFullName);
       return;
     }
-    if(existing){
+if(existing){
       const revertDelta = rcMarkDelta(existing.status);
-      await adjustOwnAttendance(subjectFullName, -revertDelta.attended, -revertDelta.total, 'practical', { type: 'restore', value: existing.prevStreak });
+      await adjustOwnAttendance(subjectFullName, -revertDelta.attended, -revertDelta.total, 'practical', { type: 'restore', value: existing.prevStreak }, { type: 'restore', value: existing.prevXp });
     }
     const delta = rcMarkDelta(status);
-    const result = await adjustOwnAttendance(subjectFullName, delta.attended, delta.total, 'practical', rcStreakOp(status));
-    rollcall.practicalMarks[dateKey][subjectFullName] = { status, prevStreak: result.prevStreak };
+    const result = await adjustOwnAttendance(subjectFullName, delta.attended, delta.total, 'practical', rcStreakOp(status), rcXpOp(status));
+    rollcall.practicalMarks[dateKey][subjectFullName] = { status, prevStreak: result.prevStreak, prevXp: result.prevXp };
     await saveRollcall();
     await syncOwnHistoryRecord(result.subjects, result.student, result.threshold);
     renderRollcall();
@@ -8032,7 +8053,7 @@ window.promptCoachingModal = function(opts){
     const existing = rollcall.practicalMarks[dateKey] && rollcall.practicalMarks[dateKey][subjectFullName];
     if(!existing) return;
     const delta = rcMarkDelta(existing.status);
-    const result = await adjustOwnAttendance(subjectFullName, -delta.attended, -delta.total, 'practical', { type: 'restore', value: existing.prevStreak });
+    const result = await adjustOwnAttendance(subjectFullName, -delta.attended, -delta.total, 'practical', { type: 'restore', value: existing.prevStreak }, { type: 'restore', value: existing.prevXp });
     delete rollcall.practicalMarks[dateKey][subjectFullName];
     await saveRollcall();
     await syncOwnHistoryRecord(result.subjects, result.student, result.threshold);
