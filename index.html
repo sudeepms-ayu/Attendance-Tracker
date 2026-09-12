@@ -7513,17 +7513,17 @@ window.promptCoachingModal = function(opts){
       setTimeout(finish, 1050);
     }
 
-    overlay.querySelector('#hg-greet-ok').addEventListener('click', () => {
-      if(notHoliday) quietFadeClose();
-      else disintegrateAndClose();
-    });
-    // "View Holidays" navigates to the academic calendar but never
-    // dismisses the popup itself — it just steps out of the way (faded,
-    // non-interactive) and comes right back when the person returns home.
-    overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
-      overlay.classList.add('holiday-greet-paused');
-      holidaysShow();
-    });
+overlay.querySelector('#hg-greet-ok').addEventListener('click', () => {
+  if(notHoliday) quietFadeClose();
+  else disintegrateAndClose();
+});
+// "View Holidays" now fully closes the popup for the day (same as "Got it")
+// and then opens the academic calendar.
+overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
+  if(notHoliday) quietFadeClose();
+  else disintegrateAndClose();
+  holidaysShow();
+});
     setTimeout(() => { try{ overlay.querySelector('#hg-greet-ok').focus(); }catch(e){} }, 30);
   }
   // Tracks the currently open (possibly paused) holiday greeting overlay so
@@ -7533,15 +7533,22 @@ window.promptCoachingModal = function(opts){
   function resumeHolidayGreetPopupIfPending(){
     if(holidayGreetActiveOverlay) holidayGreetActiveOverlay.classList.remove('holiday-greet-paused');
   }
-  function maybeGreetHoliday(userId){
-    const todayKey = localDateKey();
-    const info = holidayInfoFor(todayKey);
-    if(!info) return;
-    const flag = todayKey + '::' + userId;
-    if(holidayGreetShown.has(flag)) return;
-    holidayGreetShown.add(flag);
-    setTimeout(() => showHolidayGreetPopup(info), 420);
-  }
+ function maybeGreetHoliday(userId){
+  const todayKey = localDateKey();
+  const info = holidayInfoFor(todayKey);
+  if(!info) return;
+  const flag = todayKey + '::' + userId;
+  if(holidayGreetShown.has(flag)) return;
+
+  const storageKey = 'holiday-greet-shown::' + flag;
+  let alreadyShownToday = false;
+  try{ alreadyShownToday = localStorage.getItem(storageKey) === '1'; }catch(e){}
+  if(alreadyShownToday) return;
+
+  holidayGreetShown.add(flag);
+  try{ localStorage.setItem(storageKey, '1'); }catch(e){}
+  setTimeout(() => showHolidayGreetPopup(info), 420);
+}
   function holidaysHide(){
     pageHide('holidays-view');
     backToAppOrAuth();
