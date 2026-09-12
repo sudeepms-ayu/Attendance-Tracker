@@ -4148,6 +4148,37 @@
       animation:none !important;
     }
   }
+  .tms-task-empty{ text-align:center; font-size:12.5px; color:var(--ink-soft); padding:18px 0; margin:0; }
+.tms-task-item{ display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid rgba(var(--ink-rgb),0.08); }
+.tms-task-item:last-child{ border-bottom:none; }
+.tms-task-item input[type=checkbox]{ width:18px; height:18px; accent-color:var(--gold); }
+.tms-task-item span{ flex:1; font-size:13.5px; color:var(--ink); }
+.tms-task-item.done span{ text-decoration:line-through; color:var(--ink-soft); }
+.tms-task-del{ border:none; background:none; color:var(--danger); cursor:pointer; font-size:16px; opacity:.7; }
+
+.tms-week-chart{ display:flex; align-items:flex-end; gap:8px; height:90px; margin-bottom:6px; }
+.tms-week-bar{ flex:1; background:linear-gradient(180deg, var(--gold), rgba(var(--gold-rgb),0.4)); border-radius:6px 6px 2px 2px; min-height:4px; transition:height .4s ease; }
+.tms-week-labels{ display:flex; gap:8px; }
+.tms-week-labels span{ flex:1; text-align:center; font-size:11px; color:var(--ink-soft); font-weight:600; }
+
+.tms-goal-row{ margin-bottom:14px; }
+.tms-goal-row:last-child{ margin-bottom:0; }
+.tms-goal-top{ display:flex; justify-content:space-between; font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+.tms-goal-bar{ height:8px; border-radius:999px; background:rgba(var(--ink-rgb),0.08); overflow:hidden; }
+.tms-goal-fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--gold), #4B7BF5); border-radius:999px; transition:width .5s ease; }
+
+.tms-mix-bar{ display:flex; height:10px; border-radius:999px; overflow:hidden; margin-bottom:12px; }
+.tms-mix-legend{ display:flex; flex-direction:column; gap:8px; }
+.tms-mix-legend-row{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink); }
+.tms-mix-legend-row .tms-dot{ width:9px; height:9px; border-radius:50%; }
+.tms-mix-legend-row span:last-child{ margin-left:auto; color:var(--ink-soft); }
+
+/* Red "session live" glow — reused on the menu row + Study tab */
+.menu-msg-dot.tms-menu-dot, .menu-msg-dot.tms-tab-dot{ animation:tmsPulseDot 1.4s ease-in-out infinite; }
+@keyframes tmsPulseDot{
+  0%,100%{ box-shadow:0 0 0 2px rgba(var(--danger-rgb),0.25); }
+  50%{ box-shadow:0 0 0 6px rgba(var(--danger-rgb),0.15); }
+}
 </style>
 </head>
 <body>
@@ -4228,6 +4259,17 @@
       <span class="menu-row-label">
         <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M9 7h7"></path><path d="M9 11h7"></path></svg>
         <span>Study Materials</span>
+      </span>
+      <span class="menu-row-arrow">&rsaquo;</span>
+    </button>
+    <div class="menu-sep"></div>
+    <button class="menu-row" id="open-trackstudies-btn" type="button">
+      <span class="menu-row-label">
+        <span class="menu-row-icon-wrap">
+          <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+          <span class="menu-msg-dot tms-menu-dot" id="tms-menu-dot" style="display:none;"></span>
+        </span>
+        <span>Track My Studies</span>
       </span>
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
@@ -4596,6 +4638,21 @@
   <p class="magic-note">Each pendulum swings at its own tempo. Watch them drift apart into a shifting wave, then click back into sync — that instant is the &ldquo;magic&rdquo;.</p>
 </div>
 
+  <!-- FORMULA FLASHCARDS -->
+  <div class="tms-panel" id="tms-panel-flashcards">
+    <div class="tms-card tms-flashcards-card">
+      <div class="tms-card-head">
+        <span class="tms-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg></span>
+        <div>
+          <p class="tms-card-title">Formula Flashcards</p>
+          <p class="tms-card-sub">Recall · Reveal · Repeat</p>
+        </div>
+      </div>
+      <p class="tms-card-sub" style="margin:14px 0 18px;">Recall the formula from its name, then flip the card to check. Lightweight &amp; lazy-loaded.</p>
+      <button class="tms-start-btn" id="tms-flashcards-start-btn" type="button">Start flashcards</button>
+    </div>
+  </div>
+</div>
 
 <div class="wrap" id="bmc-view" style="display:none;">
   <button class="tt-back" id="bmc-back-btn">&lsaquo; Back</button>
@@ -6435,6 +6492,7 @@ window.promptCoachingModal = function(opts){
     pageHide('timetable-view'); pageHide('homework-view'); pageHide('rollcall-view'); pageHide('projection-view');
     pageHide('coaching-exams-view'); pageHide('holidays-view'); pageHide('coaching-timetable-view');
     pageHide('profile-view'); pageHide('studymaterials-view'); pageHide('bmc-view'); pageHide('magic-view');
+    pageHide('track-studies-view');
     if(window.magicPageHide) window.magicPageHide();
     document.body.classList.remove('tt-mode');
     document.getElementById('menu-dropdown').classList.remove('open');
@@ -7596,6 +7654,89 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
   if(studymaterialsOpenBtn) studymaterialsOpenBtn.addEventListener('click', studymaterialsShow);
   const studymaterialsBackBtn = document.getElementById('studymaterials-back-btn');
   if(studymaterialsBackBtn) studymaterialsBackBtn.addEventListener('click', studymaterialsHide);
+
+  const k = d.toISOString().slice(0,10);
+      const dayData = days[k] || { hours:0, subjects:{} };
+      weekTotal += dayData.hours;
+      Object.keys(dayData.subjects{}).forEach(s => { mix[s] = (mix[s]0) + dayData.subjects[s]; });
+      const bar = document.createElement('div');
+      bar.className = 'tms-week-bar';
+      bar.style.height = Math.min(100, dayData.hours * 15 + (dayData.hours>0?6:0)) + '%';
+      chart.appendChild(bar);
+    }
+    document.getElementById('tms-stat-week').textContent = weekTotal.toFixed(1) + 'h';
+
+    document.getElementById('tms-goal-daily-text').textContent = today.hours.toFixed(1) + 'h / 6h';
+    document.getElementById('tms-goal-daily-fill').style.width = Math.min(100, (today.hours/6)*100) + '%';
+    document.getElementById('tms-goal-weekly-text').textContent = weekTotal.toFixed(1) + 'h / 35h';
+    document.getElementById('tms-goal-weekly-fill').style.width = Math.min(100, (weekTotal/35)*100) + '%';
+
+    const mixColors = ['#A2751F','#4B7BF5','#2E2A22','#A0442F','#726A58'];
+    const mixBar = document.getElementById('tms-mix-bar');
+    const mixLegend = document.getElementById('tms-mix-legend');
+    mixBar.innerHTML = ''; mixLegend.innerHTML = '';
+    const mixKeys = Object.keys(mix);
+    const mixTotal = mixKeys.reduce((a,k)=>a+mix[k],0) || 1;
+    mixKeys.forEach((k,i) => {
+      const seg = document.createElement('div');
+      seg.style.background = mixColors[i % mixColors.length];
+      seg.style.width = ((mix[k]/mixTotal)*100) + '%';
+      mixBar.appendChild(seg);
+      const row = document.createElement('div');
+      row.className = 'tms-mix-legend-row';
+      row.innerHTML = '<span class="tms-dot" style="background:'+mixColors[i % mixColors.length]+'"></span><span>'+k+'</span><span>'+mix[k].toFixed(1)+'h</span>';
+      mixLegend.appendChild(row);
+    });
+  }
+
+  /* ---- Tasks (Task tab) ---- */
+  function tmsLoadTasks(){
+    try { return JSON.parse(localStorage.getItem(TMS_TASKS_KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function tmsSaveTasks(list){ localStorage.setItem(TMS_TASKS_KEY, JSON.stringify(list)); }
+
+  function tmsRenderTasks(){
+    const list = tmsLoadTasks();
+    const wrap = document.getElementById('tms-task-list');
+    const empty = document.getElementById('tms-task-empty');
+    wrap.querySelectorAll('.tms-task-item').forEach(n => n.remove());
+    empty.style.display = list.length ? 'none' : 'block';
+    list.forEach((t, idx) => {
+      const row = document.createElement('div');
+      row.className = 'tms-task-item' + (t.done ? ' done' : '');
+      row.innerHTML = '<input type="checkbox" '+(t.done?'checked':'')+'><span></span><button class="tms-task-del" type="button">&times;</button>';
+      row.querySelector('span').textContent = t.text;
+      row.querySelector('input').addEventListener('change', () => {
+        list[idx].done = !list[idx].done; tmsSaveTasks(list); tmsRenderTasks();
+      });
+      row.querySelector('.tms-task-del').addEventListener('click', () => {
+        list.splice(idx,1); tmsSaveTasks(list); tmsRenderTasks();
+      });
+      wrap.appendChild(row);
+    });
+  }
+  document.getElementById('tms-task-add-btn').addEventListener('click', () => {
+    const input = document.getElementById('tms-task-input');
+    const val = input.value.trim();
+    if(!val) return;
+    const list = tmsLoadTasks();
+    list.push({ text:val, done:false });
+    tmsSaveTasks(list);
+    input.value = '';
+    tmsRenderTasks();
+  });
+  document.getElementById('tms-task-input').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') document.getElementById('tms-task-add-btn').click();
+  });
+
+  /* ---- Flashcards tab shortcut (hook into your existing flashcards feature) ---- */
+  const flashBtn = document.getElementById('tms-flashcards-start-btn');
+  if(flashBtn) flashBtn.addEventListener('click', () => {
+    // TODO: call your existing formula-flashcards open function here, e.g. openFormulaFlashcards();
+    alert('Hook this button up to your existing Formula Flashcards feature.');
+  });
+})();
 
   /* ---- Wanna See Magic!!! (pendulum wave) ---- */
   function magicHide(){
