@@ -4148,37 +4148,683 @@
       animation:none !important;
     }
   }
-  .tms-task-empty{ text-align:center; font-size:12.5px; color:var(--ink-soft); padding:18px 0; margin:0; }
-.tms-task-item{ display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid rgba(var(--ink-rgb),0.08); }
-.tms-task-item:last-child{ border-bottom:none; }
-.tms-task-item input[type=checkbox]{ width:18px; height:18px; accent-color:var(--gold); }
-.tms-task-item span{ flex:1; font-size:13.5px; color:var(--ink); }
-.tms-task-item.done span{ text-decoration:line-through; color:var(--ink-soft); }
-.tms-task-del{ border:none; background:none; color:var(--danger); cursor:pointer; font-size:16px; opacity:.7; }
 
-.tms-week-chart{ display:flex; align-items:flex-end; gap:8px; height:90px; margin-bottom:6px; }
-.tms-week-bar{ flex:1; background:linear-gradient(180deg, var(--gold), rgba(var(--gold-rgb),0.4)); border-radius:6px 6px 2px 2px; min-height:4px; transition:height .4s ease; }
-.tms-week-labels{ display:flex; gap:8px; }
-.tms-week-labels span{ flex:1; text-align:center; font-size:11px; color:var(--ink-soft); font-weight:600; }
+  /* ======================================================================
+     TRACK MY STUDIES — Study tab (premium study-session tracker)
+     ====================================================================== */
+  .st-wrap{ padding-bottom: 110px; }
+  .st-head{ margin-bottom: 6px; animation: viewFadeSlideIn 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+  .st-head .eyebrow{
+    font-family:'Lora', serif; font-size:11.5px; letter-spacing:0.18em; text-transform:uppercase;
+    color: var(--gold); margin: 0 0 4px 0; font-weight:600;
+  }
+  .st-greeting{
+    font-family:'Lora', serif; font-weight:700; font-size:26px; margin:0 0 18px 0; color: var(--ink);
+  }
+  .st-greeting em{ color: var(--gold); font-style:italic; }
 
-.tms-goal-row{ margin-bottom:14px; }
-.tms-goal-row:last-child{ margin-bottom:0; }
-.tms-goal-top{ display:flex; justify-content:space-between; font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:6px; }
-.tms-goal-bar{ height:8px; border-radius:999px; background:rgba(var(--ink-rgb),0.08); overflow:hidden; }
-.tms-goal-fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--gold), #4B7BF5); border-radius:999px; transition:width .5s ease; }
+  .st-panel{ animation: softFadeIn 0.35s ease both; }
 
-.tms-mix-bar{ display:flex; height:10px; border-radius:999px; overflow:hidden; margin-bottom:12px; }
-.tms-mix-legend{ display:flex; flex-direction:column; gap:8px; }
-.tms-mix-legend-row{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink); }
-.tms-mix-legend-row .tms-dot{ width:9px; height:9px; border-radius:50%; }
-.tms-mix-legend-row span:last-child{ margin-left:auto; color:var(--ink-soft); }
+  .st-hero-card{
+    position:relative; overflow:hidden;
+    background: linear-gradient(155deg, rgba(var(--gold-rgb),0.14) 0%, rgba(var(--paper-rgb),0.6) 55%, rgba(var(--gold-rgb),0.06) 100%);
+    border: 1px solid rgba(var(--gold-rgb),0.28);
+    border-radius: 22px;
+    padding: 28px 22px 24px 22px;
+    box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 24px 40px -26px rgba(var(--ink-rgb),0.5);
+    margin-bottom: 18px;
+    animation: viewFadeSlideIn 0.5s 0.05s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .st-hero-glow{
+    position:absolute; top:-60px; right:-60px; width:200px; height:200px; border-radius:50%;
+    background: radial-gradient(circle, rgba(var(--gold-rgb),0.35) 0%, rgba(var(--gold-rgb),0) 70%);
+    pointer-events:none;
+  }
+  .st-hero-eyebrow{
+    font-family:'Lora', serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
+    color: var(--gold); margin:0 0 8px 0; font-weight:700; position:relative;
+  }
+  .st-hero-title{
+    font-family:'Lora', serif; font-weight:700; font-size:24px; margin:0 0 8px 0; color: var(--ink); position:relative;
+  }
+  .st-hero-sub{
+    font-family:'Lora', serif; font-size:13.5px; color: var(--ink-soft); line-height:1.5; margin:0 0 20px 0; max-width: 480px; position:relative;
+  }
+  .st-mode-toggle{
+    display:inline-flex; padding:4px; border-radius:999px; background: rgba(var(--ink-rgb),0.06);
+    border: 1px solid rgba(var(--ink-rgb),0.1); margin-bottom:14px; position:relative;
+  }
+  .st-mode-btn{
+    font-family:'Lora', serif; font-size:13px; font-weight:600; border:none; background:transparent; color: var(--ink-soft);
+    padding:8px 18px; border-radius:999px; cursor:pointer; transition: all 0.22s cubic-bezier(0.22,1,0.36,1);
+  }
+  .st-mode-btn.active{ background: var(--ink); color: var(--paper); box-shadow: 0 6px 14px -6px rgba(var(--ink-rgb),0.5); }
+  .st-pomo-presets{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; animation: chipPopIn 0.28s cubic-bezier(0.22,1,0.36,1) both; }
+  .st-preset-btn{
+    font-family:'Lora', serif; font-size:12.5px; font-weight:600; color: var(--ink-soft);
+    background: rgba(var(--paper-rgb),0.7); border:1px solid rgba(var(--ink-rgb),0.14);
+    border-radius:999px; padding:8px 14px; cursor:pointer; transition: all 0.2s ease;
+  }
+  .st-preset-btn.active{
+    background: rgba(var(--gold-rgb),0.16); border-color: rgba(var(--gold-rgb),0.5); color: var(--gold);
+  }
+  .st-preset-btn:active{ transform: scale(0.96); }
+  .st-start-row{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; position:relative; }
+  .st-start-btn{
+    display:inline-flex; align-items:center; gap:8px; font-family:'Lora', serif; font-weight:700; font-size:15px;
+    color:#fff; background: linear-gradient(135deg, var(--gold) 0%, #c98f2e 100%);
+    border:none; border-radius:14px; padding:13px 22px; cursor:pointer;
+    box-shadow: 0 12px 24px -10px rgba(var(--gold-rgb),0.65);
+    transition: transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s ease;
+  }
+  .st-start-btn svg{ width:18px; height:18px; }
+  .st-start-btn:hover{ transform: translateY(-1px); box-shadow: 0 16px 30px -10px rgba(var(--gold-rgb),0.75); }
+  .st-start-btn:active{ transform: translateY(0) scale(0.98); }
+  .st-subject-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .st-subject-chip{
+    font-family:'Lora', serif; font-size:13px; font-weight:600; color: var(--ink);
+    background: rgba(var(--paper-rgb),0.75); border:1px solid rgba(var(--ink-rgb),0.14);
+    border-radius:12px; padding:11px 16px; cursor:pointer; transition: all 0.2s ease;
+  }
+  .st-subject-chip.active{
+    background: rgba(var(--gold-rgb),0.16); border-color: var(--gold); color: var(--gold);
+    box-shadow: 0 6px 14px -8px rgba(var(--gold-rgb),0.6);
+  }
+  .st-subject-chip:active{ transform: scale(0.96); }
 
-/* Red "session live" glow — reused on the menu row + Study tab */
-.menu-msg-dot.tms-menu-dot, .menu-msg-dot.tms-tab-dot{ animation:tmsPulseDot 1.4s ease-in-out infinite; }
-@keyframes tmsPulseDot{
-  0%,100%{ box-shadow:0 0 0 2px rgba(var(--danger-rgb),0.25); }
-  50%{ box-shadow:0 0 0 6px rgba(var(--danger-rgb),0.15); }
-}
+  /* ---- Live circular timer ---- */
+  .st-timer-card{
+    text-align:center; background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.13);
+    border-radius:22px; padding: 30px 20px 26px 20px; margin-bottom:18px;
+    box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.06), 0 24px 40px -26px rgba(var(--ink-rgb),0.5);
+    animation: viewFadeSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .st-timer-label{
+    font-family:'Lora', serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    color: var(--gold); font-weight:700; margin:0 0 18px 0;
+  }
+  .st-timer-circle-wrap{ position:relative; width:230px; height:230px; margin:0 auto 22px auto; }
+  .st-timer-ring{ width:100%; height:100%; transform: rotate(-90deg); }
+  .st-ring-track{ fill:none; stroke: rgba(var(--ink-rgb),0.1); stroke-width:10; }
+  .st-ring-prog{
+    fill:none; stroke: var(--gold); stroke-width:10; stroke-linecap:round;
+    stroke-dasharray: 666.03; stroke-dashoffset: 666.03;
+    transition: stroke-dashoffset 0.9s linear;
+    filter: drop-shadow(0 0 6px rgba(var(--gold-rgb),0.55));
+  }
+  .st-timer-card.st-phase-rest .st-ring-prog{ stroke: var(--success); filter: drop-shadow(0 0 6px rgba(60,107,76,0.45)); }
+  .st-timer-readout{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .st-timer-time{
+    font-family: 'Courier New', monospace; font-variant-numeric: tabular-nums; font-weight:700;
+    font-size:38px; color: var(--ink); letter-spacing:0.01em;
+  }
+  .st-timer-phase{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); margin-top:6px; }
+  .st-timer-controls{ display:flex; justify-content:center; gap:12px; }
+  .st-timer-btn{
+    display:inline-flex; align-items:center; gap:7px; font-family:'Lora', serif; font-weight:700; font-size:13.5px;
+    border-radius:12px; padding:11px 20px; cursor:pointer; border:1px solid transparent; transition: all 0.18s ease;
+  }
+  .st-timer-btn svg{ width:14px; height:14px; }
+  .st-timer-pause{ background: rgba(var(--ink-rgb),0.08); color: var(--ink); border-color: rgba(var(--ink-rgb),0.14); }
+  .st-timer-pause:hover{ background: rgba(var(--ink-rgb),0.14); }
+  .st-timer-stop{ background: rgba(var(--danger-rgb),0.12); color: var(--danger); border-color: rgba(var(--danger-rgb),0.3); }
+  .st-timer-stop:hover{ background: rgba(var(--danger-rgb),0.2); }
+  .st-timer-btn:active{ transform: scale(0.96); }
+
+  /* ---- Stat cards ---- */
+  .st-stat-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:18px; }
+  .st-stat-card{
+    background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.12); border-radius:16px; padding:16px 16px 14px 16px;
+    box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 16px 28px -20px rgba(var(--ink-rgb),0.4);
+    animation: viewFadeSlideIn 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .st-stat-label{
+    display:flex; align-items:center; gap:6px; font-family:'Lora', serif; font-size:10.5px; letter-spacing:0.1em;
+    text-transform:uppercase; color: var(--ink-soft); font-weight:700; margin:0 0 10px 0;
+  }
+  .st-stat-label svg{ width:14px; height:14px; flex:none; }
+  .st-stat-value{ font-family:'Lora', serif; font-weight:700; font-size:24px; color: var(--ink); margin:0; }
+  .st-stat-sub{ font-family:'Lora', serif; font-size:11.5px; color: var(--ink-soft); margin:3px 0 0 0; }
+
+  /* ---- Generic card ---- */
+  .st-card{
+    background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.12); border-radius:18px;
+    padding:18px 18px 16px 18px; margin-bottom:16px;
+    box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 18px 32px -22px rgba(var(--ink-rgb),0.42);
+    animation: viewFadeSlideIn 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .st-card-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .st-card-title{
+    display:flex; align-items:center; gap:8px; font-family:'Lora', serif; font-weight:700; font-size:13px;
+    letter-spacing:0.04em; text-transform:uppercase; color: var(--ink); margin:0;
+  }
+  .st-card-title svg{ width:15px; height:15px; color: var(--gold); flex:none; }
+  .st-card-title-plain{
+    font-family:'Lora', serif; font-weight:700; font-size:13px; letter-spacing:0.04em; text-transform:uppercase;
+    color: var(--ink); margin:0 0 14px 0;
+  }
+  .st-edit-btn{
+    display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:9px;
+    background: rgba(var(--ink-rgb),0.06); border:1px solid rgba(var(--ink-rgb),0.12); color: var(--ink-soft); cursor:pointer;
+    transition: all 0.18s ease;
+  }
+  .st-edit-btn svg{ width:14px; height:14px; }
+  .st-edit-btn:hover{ background: rgba(var(--gold-rgb),0.14); color: var(--gold); border-color: rgba(var(--gold-rgb),0.4); }
+
+  /* ---- Last 7 days bars ---- */
+  .st-bars{ display:flex; align-items:flex-end; justify-content:space-between; gap:8px; height:96px; padding:0 2px; }
+  .st-bar-col{ flex:1; display:flex; align-items:flex-end; height:100%; }
+  .st-bar{
+    width:100%; min-height:4px; border-radius:6px 6px 3px 3px;
+    background: linear-gradient(180deg, var(--gold) 0%, rgba(var(--gold-rgb),0.55) 100%);
+    transition: height 0.6s cubic-bezier(0.22,1,0.36,1);
+  }
+  .st-bar-col.st-bar-today .st-bar{ background: linear-gradient(180deg, var(--success) 0%, rgba(60,107,76,0.55) 100%); }
+  .st-bars-labels{ display:flex; justify-content:space-between; gap:8px; margin-top:8px; }
+  .st-bars-labels span{
+    flex:1; text-align:center; font-family:'Lora', serif; font-size:11px; color: var(--ink-soft);
+  }
+  .st-bars-labels span.st-bar-today{ color: var(--gold); font-weight:700; }
+
+  /* ---- Goals ---- */
+  .st-goal-row{ margin-bottom:14px; }
+  .st-goal-row:last-child{ margin-bottom:0; }
+  .st-goal-top{
+    display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .st-goal-top span:first-child{ color: var(--ink); font-weight:600; }
+  .st-goal-track{ height:8px; border-radius:999px; background: rgba(var(--ink-rgb),0.08); overflow:hidden; }
+  .st-goal-fill{
+    height:100%; width:0%; border-radius:999px;
+    background: linear-gradient(90deg, var(--gold) 0%, #c98f2e 100%);
+    transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  /* ---- Subject mix ---- */
+  .st-mix-bar{
+    display:flex; width:100%; height:10px; border-radius:999px; overflow:hidden; margin-bottom:14px;
+    background: rgba(var(--ink-rgb),0.08);
+  }
+  .st-mix-seg{ height:100%; transition: width 0.6s cubic-bezier(0.22,1,0.36,1); }
+  .st-mix-legend{ display:flex; flex-direction:column; gap:9px; }
+  .st-mix-legend-row{ display:flex; align-items:center; font-family:'Lora', serif; font-size:13px; color: var(--ink); }
+  .st-mix-dot{ width:9px; height:9px; border-radius:50%; margin-right:9px; flex:none; }
+  .st-mix-legend-row span.st-mix-name{ flex:1; }
+  .st-mix-legend-row span.st-mix-hours{ color: var(--ink-soft); font-size:12.5px; }
+
+  /* ================= Stats panel (Study Analytics) ================= */
+  .st-an-hero{
+    position:relative; overflow:hidden; background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.12);
+    border-radius:20px; padding:20px 20px 18px 20px; margin-bottom:14px;
+    box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 20px 34px -24px rgba(var(--ink-rgb),0.45);
+    animation: viewFadeSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .st-an-hero-glow{
+    position:absolute; top:-60px; right:-60px; width:180px; height:180px; border-radius:50%;
+    background: radial-gradient(circle, rgba(var(--gold-rgb),0.28) 0%, rgba(var(--gold-rgb),0) 70%);
+    pointer-events:none;
+  }
+  .st-an-hero-eyebrow{
+    font-family:'Lora', serif; font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase;
+    color: var(--gold); font-weight:700; margin:0 0 8px 0; position:relative;
+  }
+  .st-an-hero-big{ font-family:'Lora', serif; font-weight:700; font-size:34px; color: var(--ink); margin:0; position:relative; }
+  .st-an-hero-big span{ font-size:17px; font-weight:600; color: var(--ink-soft); }
+  .st-an-hero-sub{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); margin:6px 0 0 0; position:relative; }
+
+  .st-an-insight{
+    display:flex; align-items:center; gap:13px; background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.12);
+    border-radius:16px; padding:14px 16px; margin-bottom:12px;
+    box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 14px 24px -20px rgba(var(--ink-rgb),0.4);
+    animation: viewFadeSlideIn 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .st-an-insight-icon{
+    width:38px; height:38px; border-radius:11px; background: rgba(var(--gold-rgb),0.14); color: var(--gold);
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .st-an-insight-icon svg{ width:18px; height:18px; }
+  .st-an-insight-text{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .st-an-insight-label{
+    font-family:'Lora', serif; font-size:10.5px; letter-spacing:0.09em; text-transform:uppercase;
+    color: var(--ink-soft); font-weight:700;
+  }
+  .st-an-insight-value{ font-family:'Lora', serif; font-weight:700; font-size:15.5px; color: var(--ink); }
+
+  .st-an-weekly-row{ display:flex; gap:10px; }
+  .st-an-yaxis{ display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end; height:140px; padding:2px 0; flex:none; }
+  .st-an-yaxis span{ font-family:'Lora', serif; font-size:10px; color: var(--ink-soft); line-height:1; }
+  .st-an-chart-col{ flex:1; position:relative; min-width:0; }
+  .st-an-gridlines{ position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-between; pointer-events:none; }
+  .st-an-gridlines span{ display:block; height:1px; background: rgba(var(--ink-rgb),0.08); }
+  .st-an-chart-col .st-bars{ height:140px; position:relative; z-index:1; }
+
+  .st-an-donut-wrap{ display:flex; justify-content:center; margin-bottom:16px; }
+  .st-an-donut-svg{ width:168px; height:168px; }
+  .st-an-donut-seg{ transition: stroke-dasharray 0.7s cubic-bezier(0.22,1,0.36,1), stroke-dashoffset 0.7s cubic-bezier(0.22,1,0.36,1); }
+  .st-an-donut-center-val{ font-family:'Lora', serif; font-weight:700; font-size:20px; fill: var(--ink); }
+  .st-an-donut-center-lab{ font-family:'Lora', serif; font-size:9px; letter-spacing:0.06em; text-transform:uppercase; fill: var(--ink-soft); }
+  .st-an-donut-legend{ display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; }
+  .st-an-donut-legend-row{ display:flex; align-items:center; gap:8px; font-family:'Lora', serif; font-size:12.5px; color: var(--ink); min-width:0; }
+  .st-an-donut-dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+  .st-an-donut-legend-row span.st-an-dn-name{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .st-an-donut-legend-row span.st-an-dn-hrs{ color: var(--ink-soft); font-size:11.5px; font-weight:600; flex:none; }
+
+  .st-an-heat-grid{ display:grid; grid-template-columns:repeat(12, 1fr); gap:6px; margin-bottom:8px; }
+  .st-an-heat-cell{
+    aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:8px;
+    font-family:'Lora', serif; font-size:10px; color: var(--ink-soft); background: rgba(var(--ink-rgb),0.06);
+    border:1px solid rgba(var(--ink-rgb),0.08); transition: background 0.5s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  .st-an-heat-cell.st-an-heat-now{ border-color: var(--gold); color: var(--gold); font-weight:700; box-shadow: 0 0 0 2px rgba(var(--gold-rgb),0.22) inset; }
+  .st-an-heat-caption{ font-family:'Lora', serif; font-size:11px; color: var(--ink-soft); margin:0; }
+
+  .st-an-cal-title{ font-family:'Lora', serif; font-weight:700; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; color: var(--ink); margin:0 0 14px 0; }
+  .st-an-cal-head{ display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; margin-bottom:6px; }
+  .st-an-cal-head span{ text-align:center; font-family:'Lora', serif; font-size:9.5px; letter-spacing:0.07em; text-transform:uppercase; color: var(--ink-soft); font-weight:700; }
+  .st-an-cal-grid{ display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; }
+  .st-an-cal-cell{
+    aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+    border-radius:10px; font-family:'Lora', serif; transition: all 0.25s ease;
+  }
+  .st-an-cal-cell.st-an-cal-empty{ visibility:hidden; }
+  .st-an-cal-num{ font-size:12.5px; color: var(--ink); font-weight:600; line-height:1; }
+  .st-an-cal-hrs{ font-size:8px; color: var(--ink-soft); line-height:1; }
+  .st-an-cal-cell.st-an-cal-future{ opacity:0.42; }
+  .st-an-cal-cell.st-an-cal-has-data{ background: rgba(var(--gold-rgb),0.1); }
+  .st-an-cal-cell.st-an-cal-today{ background: rgba(var(--gold-rgb),0.2); box-shadow: 0 0 0 2px var(--gold) inset; }
+  .st-an-cal-cell.st-an-cal-today .st-an-cal-num{ color: var(--gold); font-weight:700; }
+
+  /* ================= Tasks panel ================= */
+  .menu-msg-dot-task{ top:auto; bottom:-2px; right:-2px; left:auto; }
+  .st-task-summary-card{ margin-bottom:16px; }
+  .st-task-summary-row{ display:flex; align-items:center; gap:13px; }
+  .st-task-summary-icon{
+    width:44px; height:44px; border-radius:13px; background: rgba(var(--gold-rgb),0.14); color: var(--gold);
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .st-task-summary-icon svg{ width:22px; height:22px; }
+  .st-task-summary-text{ flex:1; min-width:0; }
+  .st-task-summary-sub{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); margin:0; transition: color 0.2s ease; }
+  .st-task-summary-pct{ font-family:'Lora', serif; font-weight:700; font-size:21px; color: var(--gold); margin:0; flex:none; }
+  .st-task-progress-track{ margin-top:14px; }
+
+  .st-task-create-btn{ width:100%; justify-content:center; margin-bottom:14px; }
+
+  .st-task-inline-form{ flex-direction:column; margin-top:0; margin-bottom:16px; }
+  .st-task-inline-form.show{ margin-bottom:16px; }
+  .st-task-title-input{ width:100%; }
+  #st-task-subject-chips{ margin:2px 0 2px 0; }
+
+  .st-task-item{
+    display:flex; align-items:center; gap:12px; background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.12);
+    border-radius:16px; padding:13px 14px; margin-bottom:10px;
+    box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 14px 24px -20px rgba(var(--ink-rgb),0.4);
+    animation: viewFadeSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    transition: opacity 0.25s cubic-bezier(0.22,1,0.36,1), transform 0.25s cubic-bezier(0.22,1,0.36,1);
+  }
+  .st-task-item.st-task-removing{ opacity:0; transform: translateX(26px) scale(0.96); margin-bottom:0; }
+  .st-task-check{
+    width:26px; height:26px; border-radius:50%; border:2px solid var(--gold); background:transparent; flex:none;
+    cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center;
+    transition: background 0.2s cubic-bezier(0.22,1,0.36,1), border-color 0.2s ease, transform 0.15s ease;
+  }
+  .st-task-check svg{ width:14px; height:14px; color:#fff; opacity:0; transform: scale(0.4); transition: all 0.2s cubic-bezier(0.22,1,0.36,1); }
+  .st-task-check:active{ transform: scale(0.86); }
+  .st-task-item-done .st-task-check{ background: var(--gold); border-color: var(--gold); }
+  .st-task-item-done .st-task-check svg{ opacity:1; transform: scale(1); }
+  .st-task-item-main{ flex:1; min-width:0; }
+  .st-task-item-title{
+    font-family:'Lora', serif; font-weight:600; font-size:14.5px; color: var(--ink); margin:0 0 7px 0;
+    word-break:break-word; transition: color 0.25s ease;
+  }
+  .st-task-item-done .st-task-item-title{ color: var(--ink-soft); text-decoration: line-through; }
+  .st-task-chip{
+    display:inline-block; font-family:'Lora', serif; font-size:10.5px; font-weight:700; padding:4px 10px;
+    border-radius:999px; background: rgba(var(--gold-rgb),0.14); color: var(--gold); border:1px solid rgba(var(--gold-rgb),0.32);
+  }
+  .st-task-item-actions{ display:flex; align-items:center; gap:6px; flex:none; }
+  .st-task-act{
+    width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    background: rgba(var(--ink-rgb),0.06); border:1px solid rgba(var(--ink-rgb),0.1); color: var(--ink-soft);
+    cursor:pointer; transition: all 0.18s ease;
+  }
+  .st-task-act svg{ width:15px; height:15px; }
+  .st-task-act:hover{ background: rgba(var(--gold-rgb),0.14); color: var(--gold); border-color: rgba(var(--gold-rgb),0.35); }
+  .st-task-act.st-task-play:hover{ color: var(--success); background: rgba(60,107,76,0.12); border-color: rgba(60,107,76,0.35); }
+  .st-task-act.st-task-del:hover{ color: var(--danger); background: rgba(var(--danger-rgb),0.12); border-color: rgba(var(--danger-rgb),0.35); }
+  .st-task-act:active{ transform: scale(0.88); }
+  .st-task-item.st-task-editing{ flex-direction:column; align-items:stretch; gap:10px; }
+  .st-task-edit-actions{ display:flex; justify-content:flex-end; gap:8px; }
+
+  /* ---- Shortcuts row (replaces Rooms/Stats/Board) ---- */
+  .st-shortcuts{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:8px; }
+  .st-shortcut{
+    display:flex; flex-direction:column; align-items:center; gap:7px; font-family:'Lora', serif; font-size:11.5px;
+    font-weight:600; color: var(--ink-soft); background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.12);
+    border-radius:14px; padding:14px 6px; cursor:pointer; transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+  }
+  .st-shortcut svg{ width:19px; height:19px; }
+  .st-shortcut:hover{ border-color: rgba(var(--gold-rgb),0.45); color: var(--gold); transform: translateY(-2px); box-shadow: 0 10px 20px -14px rgba(var(--ink-rgb),0.5); }
+  .st-shortcut:active{ transform: translateY(0) scale(0.97); }
+
+  /* ---- Placeholder panels for Task / Track / Flashcards ---- */
+  .st-soon-card{
+    text-align:center; background: var(--tt-card); border:1px dashed rgba(var(--ink-rgb),0.22); border-radius:20px;
+    padding: 54px 24px; color: var(--ink-soft); animation: viewFadeSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .st-soon-card svg{ width:34px; height:34px; color: var(--gold); margin-bottom:14px; }
+  .st-soon-title{ font-family:'Lora', serif; font-weight:700; font-size:18px; color: var(--ink); margin:0 0 6px 0; }
+  .st-soon-sub{ font-family:'Lora', serif; font-size:13px; margin:0; }
+
+  /* ================= Formula Flashcards ================= */
+  .fc-select-card{
+    position:relative; overflow:hidden; text-align:center;
+    background: linear-gradient(155deg, rgba(var(--gold-rgb),0.14) 0%, rgba(var(--paper-rgb),0.6) 55%, rgba(var(--gold-rgb),0.06) 100%);
+    border: 1px solid rgba(var(--gold-rgb),0.28); border-radius: 22px; padding: 30px 22px 26px 22px;
+    box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 24px 40px -26px rgba(var(--ink-rgb),0.5);
+    animation: viewFadeSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .fc-select-eyebrow{
+    font-family:'Lora', serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
+    color: var(--gold); margin:0 0 8px 0; font-weight:700;
+  }
+  .fc-select-title{ font-family:'Lora', serif; font-weight:700; font-size:22px; margin:0 0 22px 0; color: var(--ink); }
+  .fc-back-mini{
+    display:inline-flex; align-items:center; gap:4px; font-family:'Lora', serif; font-size:12.5px; font-weight:600;
+    color: var(--ink-soft); background:none; border:none; cursor:pointer; padding:0; margin-bottom:14px; transition: color 0.18s ease;
+  }
+  .fc-back-mini:hover{ color: var(--gold); }
+  .fc-class-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .fc-class-btn{
+    font-family:'Lora', serif; font-weight:700; font-size:17px; color: var(--ink);
+    background: rgba(var(--paper-rgb),0.8); border:1.5px solid rgba(var(--ink-rgb),0.16);
+    border-radius:16px; padding:26px 14px; cursor:pointer; transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+  }
+  .fc-class-btn:hover{ border-color: var(--gold); color: var(--gold); transform: translateY(-2px); box-shadow: 0 14px 24px -16px rgba(var(--gold-rgb),0.5); }
+  .fc-class-btn:active{ transform: translateY(0) scale(0.97); }
+  .fc-subject-grid{ display:flex; flex-direction:column; gap:12px; }
+  .fc-subject-btn{
+    display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+    font-family:'Lora', serif; font-weight:600; font-size:15.5px; color: var(--ink);
+    background: rgba(var(--paper-rgb),0.8); border:1.5px solid rgba(var(--ink-rgb),0.16);
+    border-radius:14px; padding:16px 16px; cursor:pointer; transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+  }
+  .fc-subject-btn:hover{ border-color: var(--gold); background: rgba(var(--gold-rgb),0.08); transform: translateX(2px); }
+  .fc-subject-btn:active{ transform: scale(0.98); }
+  .fc-subject-icon{ font-size:22px; flex:none; line-height:1; }
+  .fc-subject-btn span:nth-child(2){ flex:1; }
+  .fc-subject-count{
+    font-family:'Lora', serif; font-size:11.5px; font-weight:700; color: var(--gold);
+    background: rgba(var(--gold-rgb),0.14); border-radius:999px; padding:4px 10px; flex:none;
+  }
+  .fc-chapter-grid{ display:flex; flex-direction:column; gap:10px; max-height:56vh; overflow-y:auto; padding-right:2px; text-align:left; }
+  .fc-chapter-btn{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; text-align:left;
+    font-family:'Lora', serif; font-weight:600; font-size:14.5px; color: var(--ink);
+    background: rgba(var(--paper-rgb),0.8); border:1.5px solid rgba(var(--ink-rgb),0.16);
+    border-radius:12px; padding:13px 15px; cursor:pointer; transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+  }
+  .fc-chapter-btn:hover{ border-color: var(--gold); background: rgba(var(--gold-rgb),0.08); transform: translateX(2px); }
+  .fc-chapter-btn:active{ transform: scale(0.98); }
+  .fc-chapter-btn.fc-chapter-btn-all{ border-color: rgba(var(--gold-rgb),0.5); font-weight:700; }
+  .fc-chapter-count{
+    font-family:'Lora', serif; font-size:11px; font-weight:700; color: var(--gold);
+    background: rgba(var(--gold-rgb),0.14); border-radius:999px; padding:3px 9px; flex:none;
+  }
+  .fc-footnotes{ margin-top:18px; padding-top:14px; border-top:1px dashed rgba(var(--ink-rgb),0.14); }
+  .fc-footnote{
+    font-family:'Lora', serif; font-size:12px; line-height:1.5; color: var(--ink-soft);
+    margin:0 0 8px 0; text-align:center;
+  }
+  .fc-footnote:last-child{ margin-bottom:0; }
+  .fc-footnote a{ color: var(--gold); font-weight:600; text-decoration:underline; }
+  .fc-footnote-bug{ color: rgba(var(--ink-rgb),0.55); font-style:italic; }
+  .fc-deck-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .fc-deck-progress{
+    font-family:'Lora', serif; font-size:12.5px; font-weight:700; color: var(--ink-soft);
+    background: rgba(var(--ink-rgb),0.06); border-radius:999px; padding:5px 12px;
+  }
+  .fc-card{
+    position:relative; perspective: 1400px; min-height: 260px; margin-bottom:20px; cursor:pointer;
+    animation: viewFadeSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .fc-card.fc-anim-next .fc-flip-inner{ animation: fcCardSwap 0.36s cubic-bezier(0.22,1,0.36,1) both; }
+  @keyframes fcCardSwap{
+    0%{ opacity:1; transform: translateX(0) scale(1); }
+    45%{ opacity:0; transform: translateX(-16px) scale(0.97); }
+    46%{ opacity:0; transform: translateX(16px) scale(0.97); }
+    100%{ opacity:1; transform: translateX(0) scale(1); }
+  }
+  .fc-flip-inner{
+    position:relative; width:100%; min-height:260px; transition: transform 0.55s cubic-bezier(0.22,1,0.36,1);
+    transform-style: preserve-3d;
+  }
+  .fc-card.fc-flipped .fc-flip-inner{ transform: rotateY(180deg); }
+  .fc-face{
+    position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    background: var(--tt-card); border:1px solid rgba(var(--gold-rgb),0.3); border-radius:22px;
+    padding: 30px 22px; box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 24px 40px -26px rgba(var(--ink-rgb),0.5);
+  }
+  .fc-face-back{ transform: rotateY(180deg); }
+  .fc-card-tag{
+    display:inline-block; font-family:'Lora', serif; font-size:11.5px; font-weight:700; letter-spacing:0.03em;
+    color: var(--gold); background: rgba(var(--gold-rgb),0.14); border-radius:999px; padding:6px 14px; margin-bottom:20px;
+  }
+  .fc-card-title{ font-family:'Lora', serif; font-weight:700; font-size:22px; color: var(--ink); margin:0 0 22px 0; line-height:1.35; }
+  .fc-card-formula{
+    font-family: 'Lora', serif; font-style:italic; font-size:19px; color: var(--ink); margin:0 0 20px 0;
+    line-height:1.6; letter-spacing:0.01em;
+  }
+  .fc-card-hint{
+    display:flex; align-items:center; gap:7px; font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); margin:0;
+  }
+  .fc-card-hint svg{ width:16px; height:16px; }
+  .fc-controls{ display:flex; gap:12px; margin-bottom:12px; }
+  .fc-btn{
+    flex:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:'Lora', serif; font-weight:700; font-size:14.5px; border:none; border-radius:14px;
+    padding:14px 16px; cursor:pointer; transition: all 0.18s cubic-bezier(0.22,1,0.36,1);
+  }
+  .fc-btn svg{ width:17px; height:17px; }
+  .fc-btn:active{ transform: scale(0.96); }
+  .fc-btn-reveal{ background: rgba(var(--ink-rgb),0.08); color: var(--ink); border:1px solid rgba(var(--ink-rgb),0.16); }
+  .fc-btn-reveal:hover{ background: rgba(var(--ink-rgb),0.14); }
+  .fc-btn-next{
+    color:#fff; background: linear-gradient(135deg, var(--gold) 0%, #c98f2e 100%);
+    box-shadow: 0 12px 22px -10px rgba(var(--gold-rgb),0.65);
+  }
+  .fc-btn-next:hover{ transform: translateY(-1px); }
+  .fc-shuffle-btn{
+    display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    font-family:'Lora', serif; font-weight:600; font-size:13px; color: var(--ink-soft);
+    background:none; border:1px dashed rgba(var(--ink-rgb),0.2); border-radius:12px; padding:11px; cursor:pointer;
+    transition: all 0.18s ease;
+  }
+  .fc-shuffle-btn svg{ width:15px; height:15px; }
+  .fc-shuffle-btn:hover{ border-color: var(--gold); color: var(--gold); }
+  .fc-shuffle-btn:active{ transform: scale(0.97); }
+
+  /* ---- Bottom tab bar ---- */
+  .st-tabbar{
+    position:fixed; left:0; right:0; bottom:0; z-index:60;
+    display:flex; justify-content:space-around; align-items:center;
+    background: rgba(var(--paper-rgb),0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-top:1px solid rgba(var(--ink-rgb),0.1);
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom,0px)) 6px;
+    box-shadow: 0 -10px 26px -18px rgba(var(--ink-rgb),0.55);
+  }
+  .st-tab{
+    display:flex; flex-direction:column; align-items:center; gap:3px; flex:1;
+    background:transparent; border:none; cursor:pointer; padding:6px 2px; border-radius:12px;
+    font-family:'Lora', serif; font-size:10.5px; font-weight:600; color: var(--ink-soft);
+    transition: color 0.2s ease, transform 0.18s cubic-bezier(0.22,1,0.36,1);
+  }
+  .st-tab svg{ width:20px; height:20px; transition: transform 0.2s cubic-bezier(0.22,1,0.36,1); }
+  .st-tab.active{ color: var(--gold); }
+  .st-tab.active svg{ transform: translateY(-2px) scale(1.08); }
+  .st-tab:active{ transform: scale(0.94); }
+  .st-tab-icon-wrap{ position:relative; display:inline-flex; }
+
+  /* ---- Live-timer glow dot (menu row + Study tab) ---- */
+  .menu-msg-dot-live{
+    animation: stDotPulse 1.4s ease-in-out infinite;
+    box-shadow: 0 0 0 2px rgba(var(--paper-rgb),1), 0 0 10px 2px rgba(var(--danger-rgb),0.85);
+  }
+  .st-tab-dot{ top:-2px; right:-6px; }
+  @keyframes stDotPulse{
+    0%, 100%{ opacity:1; transform: scale(1); }
+    50%{ opacity:0.55; transform: scale(1.25); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .menu-msg-dot-live{ animation:none !important; }
+  }
+
+  /* ================= SYLLABUS TRACKER (Track tab) ================= */
+  .syl-top-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:16px; animation: viewFadeSlideIn 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+  .syl-eyebrow{ display:flex; align-items:center; gap:6px; font-family:'Lora', serif; font-weight:700; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color: var(--gold); margin:0 0 4px 0; }
+  .syl-eyebrow svg{ width:13px; height:13px; }
+  .syl-heading{ font-family:'Playfair Display', serif; font-weight:800; font-size:21px; color: var(--ink); margin:0; }
+  .syl-reset-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:12px; margin-top:2px;
+    background: rgba(var(--ink-rgb),0.06); border:1px solid rgba(var(--ink-rgb),0.12); color: var(--ink-soft);
+    font-family:'Lora', serif; font-size:12.5px; font-weight:600; cursor:pointer; transition: all 0.18s ease; flex:none;
+  }
+  .syl-reset-btn svg{ width:14px; height:14px; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); }
+  .syl-reset-btn:hover{ background: rgba(var(--gold-rgb),0.14); color: var(--gold); border-color: rgba(var(--gold-rgb),0.4); }
+  .syl-reset-btn:active svg{ transform: rotate(-180deg); }
+
+  .syl-overall-card{
+    background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.12); border-radius:20px;
+    padding:22px 20px 20px 20px; margin-bottom:18px; text-align:center;
+    box-shadow: var(--card-shadow);
+    animation: viewFadeSlideIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .syl-big-pct{ font-family:'Playfair Display', serif; font-weight:800; font-size:44px; color: var(--ink); line-height:1; transition: opacity 0.15s ease; }
+  .syl-big-sub{ font-family:'Lora', serif; font-size:13px; color: var(--ink-soft); margin:2px 0 16px 0; }
+  .syl-legend{ display:flex; flex-direction:column; gap:7px; align-items:flex-start; max-width:280px; margin:0 auto; }
+  .syl-legend-row{ display:flex; align-items:center; gap:10px; font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); }
+  .syl-legend-stars{ color: var(--gold); font-size:14px; letter-spacing:1px; width:44px; flex:none; text-align:left; }
+
+  .syl-subject{
+    background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.12); border-radius:18px;
+    margin-bottom:14px; overflow:hidden;
+    box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 14px 26px -20px rgba(var(--ink-rgb),0.4);
+    animation: viewFadeSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    transition: box-shadow 0.25s ease;
+  }
+  .syl-subject.expanded{ box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 20px 36px -20px rgba(var(--ink-rgb),0.48); }
+  .syl-subject-head{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 18px; cursor:pointer;
+    -webkit-tap-highlight-color: transparent; user-select:none;
+  }
+  .syl-subject-head:active{ background: rgba(var(--ink-rgb),0.04); }
+  .syl-subject-name{ font-family:'Lora', serif; font-weight:700; font-size:16px; color: var(--ink); display:flex; align-items:baseline; gap:8px; }
+  .syl-subject-pct{ font-family:'Lora', serif; font-weight:600; font-size:12.5px; color: var(--gold); transition: opacity 0.15s ease; }
+  .syl-subject-toggle{
+    font-family:'Lora', serif; font-size:12.5px; font-weight:600; color: var(--ink-soft); flex:none;
+    transition: color 0.18s ease;
+  }
+  .syl-subject-head:hover .syl-subject-toggle{ color: var(--gold); }
+
+  .syl-body{ max-height:0; opacity:0; overflow:hidden; transition: max-height 0.42s cubic-bezier(0.22,1,0.36,1), opacity 0.32s ease; }
+  .syl-body-inner{ padding:0 18px 18px 18px; }
+
+  .syl-weak-banner{
+    background: rgba(var(--gold-rgb),0.1); border:1px solid rgba(var(--gold-rgb),0.3); border-radius:12px;
+    padding:10px 12px; margin-bottom:14px; animation: chipPopIn 0.3s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .syl-weak-title{ font-family:'Lora', serif; font-weight:700; font-size:11.5px; letter-spacing:0.04em; text-transform:uppercase; color: var(--gold); margin:0 0 4px 0; }
+  .syl-weak-list{ font-family:'Lora', serif; font-size:12px; color: var(--ink-soft); margin:0; line-height:1.5; }
+
+  .syl-empty-hint{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); font-style:italic; padding:4px 0 12px 0; margin:0; }
+
+  .syl-group{ margin-bottom:6px; }
+  .syl-group-label{
+    font-family:'Lora', serif; font-weight:700; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;
+    color: var(--ink-soft); margin:14px 0 4px 0; opacity:0.75;
+  }
+  .syl-group:first-child .syl-group-label{ margin-top:0; }
+
+  .syl-chapter-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:9px 0; border-bottom:1px solid rgba(var(--ink-rgb),0.08);
+  }
+  .syl-chapter-row:last-child{ border-bottom:none; }
+  .syl-chapter-name{ font-family:'Lora', serif; font-size:13.5px; color: var(--ink); flex:1; }
+
+  .syl-stars{ display:flex; gap:3px; flex:none; }
+  .syl-star{
+    background:none; border:none; padding:0; width:22px; height:22px; font-size:19px; line-height:22px;
+    color: rgba(var(--ink-rgb),0.22); cursor:pointer; transition: color 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .syl-star.filled{ color: var(--gold); }
+  .syl-star:active{ transform: scale(0.85); }
+  .syl-star-pop{ animation: sylStarPop 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes sylStarPop{ 0%{ transform: scale(1); } 45%{ transform: scale(1.35); } 100%{ transform: scale(1); } }
+
+  .syl-del-btn{
+    background:none; border:none; color: var(--ink-soft); font-size:16px; line-height:1; cursor:pointer; padding:2px 4px;
+    flex:none; opacity:0.55; transition: all 0.18s ease;
+  }
+  .syl-del-btn:hover{ color: var(--danger); opacity:1; }
+  .syl-del-subject{
+    display:block; width:100%; text-align:center; font-family:'Lora', serif; font-size:12px; font-weight:600;
+    color: var(--danger); background: rgba(var(--danger-rgb),0.08); border:1px solid rgba(var(--danger-rgb),0.25);
+    border-radius:10px; padding:9px; margin-top:14px; opacity:0.85; transition: all 0.18s ease; cursor:pointer;
+  }
+  .syl-del-subject:hover{ opacity:1; background: rgba(var(--danger-rgb),0.14); }
+
+  .syl-add-chapter-wrap{ margin-top:10px; }
+  .syl-add-chapter-btn{
+    display:inline-flex; align-items:center; gap:5px; background:none; border:1px dashed rgba(var(--gold-rgb),0.5);
+    color: var(--gold); font-family:'Lora', serif; font-size:12.5px; font-weight:600; padding:8px 14px; border-radius:10px;
+    cursor:pointer; transition: all 0.18s ease;
+  }
+  .syl-add-chapter-btn:hover{ background: rgba(var(--gold-rgb),0.1); }
+
+  .syl-add-subject-btn{
+    display:flex; align-items:center; justify-content:center; gap:6px; width:100%;
+    background: none; border:1.5px dashed rgba(var(--gold-rgb),0.55); color: var(--gold);
+    font-family:'Lora', serif; font-size:13.5px; font-weight:700; padding:14px; border-radius:16px;
+    cursor:pointer; transition: all 0.2s ease; margin-top:4px;
+  }
+  .syl-add-subject-btn svg{ width:16px; height:16px; }
+  .syl-add-subject-btn:hover{ background: rgba(var(--gold-rgb),0.1); transform: translateY(-1px); }
+  .syl-add-subject-btn:active{ transform: translateY(0) scale(0.98); }
+
+  .syl-inline-form{
+    display:flex; gap:8px; margin-top:10px; opacity:0; transform: translateY(-6px);
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.22,1,0.36,1); flex-wrap:wrap;
+  }
+  .syl-inline-form.show{ opacity:1; transform: translateY(0); }
+  .syl-input{
+    flex:1; min-width:140px; background: rgba(var(--ink-rgb),0.05); border:1px solid rgba(var(--ink-rgb),0.18);
+    border-radius:10px; padding:9px 12px; font-family:'Lora', serif; font-size:13.5px; color: var(--ink);
+    transition: border-color 0.18s ease;
+  }
+  .syl-input:focus{ outline:none; border-color: var(--gold); background: rgba(var(--gold-rgb),0.06); }
+  .syl-form-actions{ display:flex; gap:8px; flex:none; }
+  .syl-form-cancel, .syl-form-confirm{
+    font-family:'Lora', serif; font-size:12.5px; font-weight:600; padding:9px 14px; border-radius:10px; cursor:pointer;
+    border:1px solid rgba(var(--ink-rgb),0.14); transition: all 0.18s ease;
+  }
+  .syl-form-cancel{ background: rgba(var(--ink-rgb),0.05); color: var(--ink-soft); }
+  .syl-form-cancel:hover{ background: rgba(var(--ink-rgb),0.1); }
+  .syl-form-confirm{ background: var(--gold); color: var(--paper); border-color: var(--gold); }
+  .syl-form-confirm:hover{ filter: brightness(1.08); }
+  .syl-form-confirm:active, .syl-form-cancel:active{ transform: scale(0.96); }
+
+  @media (prefers-reduced-motion: reduce){
+    .syl-body, .syl-star, .syl-star-pop, .syl-reset-btn svg{ transition:none !important; animation:none !important; }
+  }
+
+  @media (min-width: 640px){
+    .st-stat-grid{ grid-template-columns: repeat(4, 1fr); }
+  }
 </style>
 </head>
 <body>
@@ -4263,11 +4909,12 @@
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
     <div class="menu-sep"></div>
-    <button class="menu-row" id="open-trackstudies-btn" type="button">
+    <button class="menu-row" id="open-studytracker-btn" type="button">
       <span class="menu-row-label">
         <span class="menu-row-icon-wrap">
-          <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
-          <span class="menu-msg-dot tms-menu-dot" id="tms-menu-dot" style="display:none;"></span>
+          <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.3 2"></path></svg>
+          <span class="menu-msg-dot menu-msg-dot-live" id="menu-studytracker-dot" style="display:none;"></span>
+          <span class="menu-msg-dot menu-msg-dot-task" id="menu-studytracker-task-dot" style="display:none;"></span>
         </span>
         <span>Track My Studies</span>
       </span>
@@ -4638,21 +5285,6 @@
   <p class="magic-note">Each pendulum swings at its own tempo. Watch them drift apart into a shifting wave, then click back into sync — that instant is the &ldquo;magic&rdquo;.</p>
 </div>
 
-  <!-- FORMULA FLASHCARDS -->
-  <div class="tms-panel" id="tms-panel-flashcards">
-    <div class="tms-card tms-flashcards-card">
-      <div class="tms-card-head">
-        <span class="tms-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg></span>
-        <div>
-          <p class="tms-card-title">Formula Flashcards</p>
-          <p class="tms-card-sub">Recall · Reveal · Repeat</p>
-        </div>
-      </div>
-      <p class="tms-card-sub" style="margin:14px 0 18px;">Recall the formula from its name, then flip the card to check. Lightweight &amp; lazy-loaded.</p>
-      <button class="tms-start-btn" id="tms-flashcards-start-btn" type="button">Start flashcards</button>
-    </div>
-  </div>
-</div>
 
 <div class="wrap" id="bmc-view" style="display:none;">
   <button class="tt-back" id="bmc-back-btn">&lsaquo; Back</button>
@@ -5026,6 +5658,464 @@
     </a>
   </div>
 </div>
+
+<div class="wrap st-wrap" id="study-tracker-view" style="display:none;">
+  <button class="tt-back" id="st-back-btn">&lsaquo; Back</button>
+
+  <header class="st-head">
+    <p class="eyebrow">Track My Studies</p>
+    <h1 class="st-greeting" id="st-greeting">Good afternoon, <em id="st-greeting-name">there</em></h1>
+  </header>
+
+  <!-- ===================== STUDY ===================== -->
+  <section class="st-panel" id="st-panel-study">
+
+    <div class="st-hero-card" id="st-hero-card">
+      <span class="st-hero-glow" aria-hidden="true"></span>
+      <p class="st-hero-eyebrow">Ready when you are</p>
+      <h2 class="st-hero-title">Start a study session</h2>
+      <p class="st-hero-sub">Pick a subject. Lock in. Your time, streaks, and focus all start with one tap.</p>
+
+      <div class="st-mode-toggle" id="st-mode-toggle">
+        <button type="button" class="st-mode-btn active" data-mode="stopwatch">Stopwatch</button>
+        <button type="button" class="st-mode-btn" data-mode="pomodoro">Pomodoro</button>
+      </div>
+
+      <div class="st-pomo-presets" id="st-pomo-presets" style="display:none;">
+        <button type="button" class="st-preset-btn active" data-work="1500" data-rest="300" data-label="Classic · 25/5">Classic · 25/5</button>
+        <button type="button" class="st-preset-btn" data-work="3000" data-rest="600" data-label="Deep · 50/10">Deep · 50/10</button>
+        <button type="button" class="st-preset-btn" data-work="5400" data-rest="900" data-label="Marathon · 90/15">Marathon · 90/15</button>
+      </div>
+
+      <div class="st-start-row">
+        <button type="button" class="st-start-btn" id="st-start-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+          <span>Start studying</span>
+        </button>
+        <div class="st-subject-chips" id="st-subject-chips">
+          <button type="button" class="st-subject-chip" data-subject="Physics">Physics</button>
+          <button type="button" class="st-subject-chip" data-subject="Chemistry">Chemistry</button>
+          <button type="button" class="st-subject-chip" data-subject="Mathematics">Mathematics</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="st-timer-card" id="st-timer-card" style="display:none;">
+      <p class="st-timer-label" id="st-timer-label">Studying · Self Study</p>
+      <div class="st-timer-circle-wrap">
+        <svg class="st-timer-ring" viewBox="0 0 240 240" aria-hidden="true">
+          <circle class="st-ring-track" cx="120" cy="120" r="106"></circle>
+          <circle class="st-ring-prog" id="st-ring-prog" cx="120" cy="120" r="106"></circle>
+        </svg>
+        <div class="st-timer-readout">
+          <span class="st-timer-time" id="st-timer-time">00:00:00</span>
+          <span class="st-timer-phase" id="st-timer-phase">Focus time</span>
+        </div>
+      </div>
+      <div class="st-timer-controls">
+        <button type="button" class="st-timer-btn st-timer-pause" id="st-timer-pause">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
+          Pause
+        </button>
+        <button type="button" class="st-timer-btn st-timer-stop" id="st-timer-stop">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg>
+          Finish
+        </button>
+      </div>
+    </div>
+
+    <div class="st-stat-grid">
+      <div class="st-stat-card">
+        <p class="st-stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.2 2"></path></svg>Today</p>
+        <p class="st-stat-value" id="st-stat-today">0.0h</p>
+        <p class="st-stat-sub" id="st-stat-today-sub">of 6h goal</p>
+      </div>
+      <div class="st-stat-card">
+        <p class="st-stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-9"></path><path d="M15 7h5v5"></path></svg>This week</p>
+        <p class="st-stat-value" id="st-stat-week">0.0h</p>
+        <p class="st-stat-sub" id="st-stat-week-sub">of 35h goal</p>
+      </div>
+      <div class="st-stat-card">
+        <p class="st-stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2 4-3 5-3 9a3 3 0 0 0 6 0c0-1.2-.5-2-1-2.8.8.3 3 1.8 3 5a5 5 0 0 1-10 0c0-4.5 3-6.5 5-11.2z"></path></svg>Streak</p>
+        <p class="st-stat-value" id="st-stat-streak">0d</p>
+        <p class="st-stat-sub" id="st-stat-streak-sub">Start today</p>
+      </div>
+      <div class="st-stat-card">
+        <p class="st-stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg>Sessions</p>
+        <p class="st-stat-value" id="st-stat-sessions">0</p>
+        <p class="st-stat-sub">completed today</p>
+      </div>
+    </div>
+
+    <div class="st-card">
+      <div class="st-card-head">
+        <p class="st-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V9"></path></svg>Last 7 days</p>
+      </div>
+      <div class="st-bars" id="st-bars"></div>
+      <div class="st-bars-labels" id="st-bars-labels"></div>
+    </div>
+
+    <div class="st-card">
+      <div class="st-card-head">
+        <p class="st-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg>Goals</p>
+        <button type="button" class="st-edit-btn" id="st-goals-edit" aria-label="Edit goals">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        </button>
+      </div>
+      <div class="st-goal-row">
+        <div class="st-goal-top"><span>Daily</span><span id="st-goal-daily-text">0.0h / 6h</span></div>
+        <div class="st-goal-track"><div class="st-goal-fill" id="st-goal-daily-fill"></div></div>
+      </div>
+      <div class="st-goal-row">
+        <div class="st-goal-top"><span>Weekly</span><span id="st-goal-weekly-text">0.0h / 35h</span></div>
+        <div class="st-goal-track"><div class="st-goal-fill" id="st-goal-weekly-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="st-card">
+      <p class="st-card-title-plain">Subject Mix · 7D</p>
+      <div class="st-mix-bar" id="st-mix-bar"></div>
+      <div class="st-mix-legend" id="st-mix-legend"></div>
+    </div>
+
+    <div class="st-shortcuts" id="st-shortcuts">
+      <button type="button" class="st-shortcut" data-goto="study">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.2 2"></path></svg>
+        <span>Study</span>
+      </button>
+      <button type="button" class="st-shortcut" data-goto="task">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span>Task</span>
+      </button>
+      <button type="button" class="st-shortcut" data-goto="track">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V9"></path></svg>
+        <span>Track</span>
+      </button>
+      <button type="button" class="st-shortcut" data-goto="flash">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg>
+        <span>Flashcards</span>
+      </button>
+    </div>
+
+  </section>
+
+  <!-- ===================== TASK (placeholder) ===================== -->
+  <!-- ===================== STATS (Study Analytics) ===================== -->
+  <section class="st-panel" id="st-panel-stats" style="display:none;">
+
+    <div class="st-an-hero" id="st-an-hero">
+      <span class="st-an-hero-glow" aria-hidden="true"></span>
+      <p class="st-an-hero-eyebrow">Your Study Analytics</p>
+      <p class="st-an-hero-big"><span id="st-an-today-big">0.0h</span> <span>today</span></p>
+      <p class="st-an-hero-sub" id="st-an-hero-sub">0.0h this week · 0.0h this month</p>
+    </div>
+
+    <div class="st-stat-grid">
+      <div class="st-stat-card">
+        <p class="st-stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.2 2"></path></svg>Today</p>
+        <p class="st-stat-value" id="st-an-stat-today">0.0h</p>
+      </div>
+      <div class="st-stat-card">
+        <p class="st-stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-9"></path><path d="M15 7h5v5"></path></svg>This Week</p>
+        <p class="st-stat-value" id="st-an-stat-week">0.0h</p>
+      </div>
+      <div class="st-stat-card">
+        <p class="st-stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2 4-3 5-3 9a3 3 0 0 0 6 0c0-1.2-.5-2-1-2.8.8.3 3 1.8 3 5a5 5 0 0 1-10 0c0-4.5 3-6.5 5-11.2z"></path></svg>Streak</p>
+        <p class="st-stat-value" id="st-an-stat-streak">0 🔥</p>
+      </div>
+      <div class="st-stat-card">
+        <p class="st-stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>This Month</p>
+        <p class="st-stat-value" id="st-an-stat-month">0.0h</p>
+      </div>
+    </div>
+
+    <div class="st-card">
+      <div class="st-card-head">
+        <p class="st-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V9"></path></svg>Weekly Overview</p>
+      </div>
+      <div class="st-an-weekly-row">
+        <div class="st-an-yaxis" id="st-an-yaxis"></div>
+        <div class="st-an-chart-col">
+          <div class="st-an-gridlines" id="st-an-gridlines"></div>
+          <div class="st-bars" id="st-an-bars"></div>
+        </div>
+      </div>
+      <div class="st-bars-labels" id="st-an-bars-labels" style="margin-left:34px;"></div>
+    </div>
+
+    <div class="st-an-insight">
+      <span class="st-an-insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2 4-3 5-3 9a3 3 0 0 0 6 0c0-1.2-.5-2-1-2.8.8.3 3 1.8 3 5a5 5 0 0 1-10 0c0-4.5 3-6.5 5-11.2z"></path></svg></span>
+      <span class="st-an-insight-text">
+        <span class="st-an-insight-label">Best Day</span>
+        <span class="st-an-insight-value" id="st-an-best-day">Saturday (0.0h)</span>
+      </span>
+    </div>
+    <div class="st-an-insight">
+      <span class="st-an-insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A5.5 5.5 0 0 0 4 7.5c0 1 .3 1.9.8 2.7A4 4 0 0 0 4 13.5 3.5 3.5 0 0 0 7.5 17H8a1 1 0 0 1 1 1v2a2 2 0 0 0 4 0v-2a1 1 0 0 1 1-1h.5A3.5 3.5 0 0 0 18 13.5a4 4 0 0 0-.8-3.3c.5-.8.8-1.7.8-2.7A5.5 5.5 0 0 0 12.5 2"></path></svg></span>
+      <span class="st-an-insight-text">
+        <span class="st-an-insight-label">Peak Hour</span>
+        <span class="st-an-insight-value" id="st-an-peak-hour">13:00 – 14:00</span>
+      </span>
+    </div>
+    <div class="st-an-insight">
+      <span class="st-an-insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-9"></path><path d="M15 7h5v5"></path></svg></span>
+      <span class="st-an-insight-text">
+        <span class="st-an-insight-label">Avg Daily</span>
+        <span class="st-an-insight-value" id="st-an-avg-daily">0.0h</span>
+      </span>
+    </div>
+
+    <div class="st-card">
+      <p class="st-card-title-plain">Subject Distribution</p>
+      <div class="st-an-donut-wrap">
+        <svg class="st-an-donut-svg" id="st-an-donut" viewBox="0 0 140 140"></svg>
+      </div>
+      <div class="st-an-donut-legend" id="st-an-donut-legend"></div>
+    </div>
+
+    <div class="st-card">
+      <p class="st-card-title-plain">Peak Study Hours</p>
+      <div class="st-an-heat-grid" id="st-an-heat-grid"></div>
+      <p class="st-an-heat-caption">Hours 0–23 IST · Darker = more study time</p>
+    </div>
+
+    <div class="st-card">
+      <p class="st-an-cal-title" id="st-an-cal-title">September 2026</p>
+      <div class="st-an-cal-head">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div class="st-an-cal-grid" id="st-an-cal-grid"></div>
+    </div>
+
+  </section>
+
+  <section class="st-panel" id="st-panel-task" style="display:none;">
+
+    <div class="st-card st-task-summary-card">
+      <div class="st-task-summary-row">
+        <span class="st-task-summary-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"></circle></svg>
+        </span>
+        <div class="st-task-summary-text">
+          <p class="st-card-title-plain" style="margin:0 0 2px 0;">Today's Tasks</p>
+          <p class="st-task-summary-sub" id="st-task-summary-sub">No tasks yet</p>
+        </div>
+        <p class="st-task-summary-pct" id="st-task-summary-pct" style="display:none;">0%</p>
+      </div>
+      <div class="st-goal-track st-task-progress-track" id="st-task-progress-track" style="display:none;">
+        <div class="st-goal-fill" id="st-task-progress-fill"></div>
+      </div>
+    </div>
+
+    <button type="button" class="st-start-btn st-task-create-btn" id="st-task-create-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+      <span>Create New Task</span>
+    </button>
+
+    <div class="syl-inline-form st-task-inline-form" id="st-task-inline-form" style="display:none;">
+      <input type="text" id="st-task-title-input" class="syl-input st-task-title-input" placeholder="Task title (e.g. Revise Thermodynamics)" maxlength="80">
+      <div class="st-subject-chips" id="st-task-subject-chips">
+        <button type="button" class="st-subject-chip active" data-subject="Self Study">Self Study</button>
+        <button type="button" class="st-subject-chip" data-subject="Physics">Physics</button>
+        <button type="button" class="st-subject-chip" data-subject="Chemistry">Chemistry</button>
+        <button type="button" class="st-subject-chip" data-subject="Mathematics">Mathematics</button>
+      </div>
+      <div class="syl-form-actions">
+        <button type="button" class="syl-form-cancel" id="st-task-cancel-btn">Cancel</button>
+        <button type="button" class="syl-form-confirm" id="st-task-confirm-btn">Add Task</button>
+      </div>
+    </div>
+
+    <div id="st-task-list"></div>
+
+    <div class="st-soon-card" id="st-task-empty" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+      <p class="st-soon-title">No tasks for today</p>
+      <p class="st-soon-sub">Tap the button above to start</p>
+    </div>
+
+  </section>
+
+  <!-- ===================== TRACK (Syllabus Tracker) ===================== -->
+  <section class="st-panel" id="st-panel-track" style="display:none;">
+    <div class="syl-top-row">
+      <div>
+        <p class="syl-eyebrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"></circle></svg>
+          Syllabus Tracker
+        </p>
+        <h2 class="syl-heading">Overall Preparation</h2>
+      </div>
+      <button type="button" class="syl-reset-btn" id="syl-reset-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg>
+        Reset
+      </button>
+    </div>
+
+    <div class="syl-overall-card">
+      <div class="syl-big-pct"><span id="syl-overall-pct">0</span>%</div>
+      <p class="syl-big-sub">complete</p>
+      <div class="syl-legend">
+        <div class="syl-legend-row"><span class="syl-legend-stars">★★★</span> Fully done</div>
+        <div class="syl-legend-row"><span class="syl-legend-stars">★★☆</span> Revision pending</div>
+        <div class="syl-legend-row"><span class="syl-legend-stars">★☆☆</span> Weak / just started</div>
+      </div>
+    </div>
+
+    <div id="syl-subjects"></div>
+
+    <button type="button" class="syl-add-subject-btn" id="syl-add-subject-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+      Add Subject
+    </button>
+    <div class="syl-inline-form" id="syl-add-subject-form" style="display:none;">
+      <input type="text" id="syl-new-subject-input" class="syl-input" placeholder="Subject name (e.g. Biology)" maxlength="40">
+      <div class="syl-form-actions">
+        <button type="button" class="syl-form-cancel" id="syl-cancel-subject-btn">Cancel</button>
+        <button type="button" class="syl-form-confirm" id="syl-confirm-subject-btn">Add</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FLASHCARDS ===================== -->
+  <section class="st-panel" id="st-panel-flash" style="display:none;">
+
+    <!-- Step 1: choose class -->
+    <div class="fc-select-card" id="fc-class-select">
+      <p class="fc-select-eyebrow">
+        <svg style="width:12px;height:12px;vertical-align:-1px;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg>
+        Formula Flashcards
+      </p>
+      <h2 class="fc-select-title">Choose your class</h2>
+      <div class="fc-class-grid">
+        <button type="button" class="fc-class-btn" data-class="11">Class 11</button>
+        <button type="button" class="fc-class-btn" data-class="12">Class 12</button>
+      </div>
+    </div>
+
+    <!-- Step 2: choose subject -->
+    <div class="fc-select-card" id="fc-subject-select" style="display:none;">
+      <button type="button" class="fc-back-mini" id="fc-back-to-class">&lsaquo; Change class</button>
+      <p class="fc-select-eyebrow">Class <span id="fc-subject-class-label">11</span> &middot; Formula Flashcards</p>
+      <h2 class="fc-select-title">Choose a subject</h2>
+      <div class="fc-subject-grid" id="fc-subject-grid">
+        <button type="button" class="fc-subject-btn" data-subject="Physics">
+          <span class="fc-subject-icon">&#9883;</span><span>Physics</span><span class="fc-subject-count" id="fc-count-Physics"></span>
+        </button>
+        <button type="button" class="fc-subject-btn" data-subject="Chemistry">
+          <span class="fc-subject-icon">&#129514;</span><span>Chemistry</span><span class="fc-subject-count" id="fc-count-Chemistry"></span>
+        </button>
+        <button type="button" class="fc-subject-btn" data-subject="Mathematics">
+          <span class="fc-subject-icon">&#128208;</span><span>Mathematics</span><span class="fc-subject-count" id="fc-count-Mathematics"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: choose chapter -->
+    <div class="fc-select-card" id="fc-chapter-select" style="display:none;">
+      <button type="button" class="fc-back-mini" id="fc-back-to-subject-from-chapter">&lsaquo; Change subject</button>
+      <p class="fc-select-eyebrow">Class <span id="fc-chapter-class-label">11</span> &middot; <span id="fc-chapter-subject-label">Physics</span></p>
+      <h2 class="fc-select-title">Choose a chapter</h2>
+      <div class="fc-chapter-grid" id="fc-chapter-grid">
+        <!-- Chapter buttons are generated dynamically for the selected class/subject -->
+      </div>
+    </div>
+
+    <!-- Step 4: card deck -->
+    <div id="fc-deck-view" style="display:none;">
+      <div class="fc-deck-top">
+        <button type="button" class="fc-back-mini" id="fc-back-to-chapter">&lsaquo; Change chapter</button>
+        <span class="fc-deck-progress" id="fc-deck-progress">1 / 20</span>
+      </div>
+
+      <div class="fc-card" id="fc-card">
+        <div class="fc-flip-inner" id="fc-flip-inner">
+          <div class="fc-face fc-face-front">
+            <span class="fc-card-tag" id="fc-card-tag-front">Chemistry &middot; Biomolecules</span>
+            <h3 class="fc-card-title" id="fc-card-title">DNA base pairs</h3>
+            <p class="fc-card-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              Tap to reveal
+            </p>
+          </div>
+          <div class="fc-face fc-face-back">
+            <span class="fc-card-tag" id="fc-card-tag-back">Chemistry &middot; Biomolecules</span>
+            <p class="fc-card-formula" id="fc-card-formula"></p>
+            <p class="fc-card-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2 2 20 20"></path><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"></path><path d="M9.4 4.2A11 11 0 0 1 12 4c7 0 11 7 11 7a13.2 13.2 0 0 1-2.1 2.9M6.1 6.1A13.5 13.5 0 0 0 1 11s4 7 11 7a10.8 10.8 0 0 0 4.2-.8"></path></svg>
+              Tap to hide
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="fc-controls">
+        <button type="button" class="fc-btn fc-btn-reveal" id="fc-reveal-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg>
+          <span id="fc-reveal-label">Reveal</span>
+        </button>
+        <button type="button" class="fc-btn fc-btn-next" id="fc-next-btn">
+          <span>Next</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 5 7 7-7 7"></path></svg>
+        </button>
+      </div>
+
+      <button type="button" class="fc-shuffle-btn" id="fc-shuffle-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 4 3 3-3 3"></path><path d="M2 7h6.5a4 4 0 0 1 3.5 2"></path><path d="m18 20 3-3-3-3"></path><path d="M2 17h6.5a4 4 0 0 0 3.5-2M14 7h4.5"></path><path d="M14 17h4.5"></path></svg>
+        Shuffle deck
+      </button>
+    </div>
+
+    <!-- Always-visible notes, shown under every step of Formula Flashcards -->
+    <div class="fc-footnotes">
+      <p class="fc-footnote">
+        Need more formulas added? <a href="mailto:sudeepsahoo9078@gmail.com?subject=Formula%20Flashcards%20-%20Request">Contact us via email</a> and we'll work on adding them.
+      </p>
+      <p class="fc-footnote fc-footnote-bug">
+        We know there are still a few bugs in Formula Flashcards right now &mdash; we're working on it, and we'll make sure it's fixed soon with fully accurate formulas.
+      </p>
+    </div>
+  </section>
+</div>
+
+<!-- Kept OUTSIDE #study-tracker-view on purpose: that view carries the
+     .wrap entrance animation, whose transform (even translateY(0) at rest,
+     held by animation-fill-mode:both) makes it a CSS containing block —
+     any position:fixed child of a transformed ancestor stops tracking the
+     real viewport and starts "fixed" to that ancestor instead, which is
+     why the bar would drift with the page instead of sitting glued to the
+     bottom of the screen. Living as a sibling of the view keeps it truly
+     fixed to the viewport, and its own show/hide is driven alongside the
+     view's (see stShow/stHide/hideAllPages). -->
+<nav class="st-tabbar" id="st-tabbar" style="display:none;">
+  <button type="button" class="st-tab active" data-tab="study">
+    <span class="st-tab-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.2 2"></path></svg>
+      <span class="menu-msg-dot menu-msg-dot-live st-tab-dot" id="st-tab-study-dot" style="display:none;"></span>
+    </span>
+    <span>Study</span>
+  </button>
+  <button type="button" class="st-tab" data-tab="stats">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 15l4-6 3 3 5-7"></path></svg>
+    <span>Stats</span>
+  </button>
+  <button type="button" class="st-tab" data-tab="task">
+    <span class="st-tab-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+      <span class="menu-msg-dot st-tab-dot" id="st-tab-task-dot" style="display:none;"></span>
+    </span>
+    <span>Task</span>
+  </button>
+  <button type="button" class="st-tab" data-tab="track">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V9"></path></svg>
+    <span>Track</span>
+  </button>
+  <button type="button" class="st-tab" data-tab="flash">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg>
+    <span>Flashcards</span>
+  </button>
+</nav>
+
 
 <div class="wrap" id="auth-view">
   <div class="auth-card">
@@ -6492,7 +7582,7 @@ window.promptCoachingModal = function(opts){
     pageHide('timetable-view'); pageHide('homework-view'); pageHide('rollcall-view'); pageHide('projection-view');
     pageHide('coaching-exams-view'); pageHide('holidays-view'); pageHide('coaching-timetable-view');
     pageHide('profile-view'); pageHide('studymaterials-view'); pageHide('bmc-view'); pageHide('magic-view');
-    pageHide('track-studies-view');
+    pageHide('study-tracker-view'); pageHide('st-tabbar');
     if(window.magicPageHide) window.magicPageHide();
     document.body.classList.remove('tt-mode');
     document.getElementById('menu-dropdown').classList.remove('open');
@@ -7654,89 +8744,6 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
   if(studymaterialsOpenBtn) studymaterialsOpenBtn.addEventListener('click', studymaterialsShow);
   const studymaterialsBackBtn = document.getElementById('studymaterials-back-btn');
   if(studymaterialsBackBtn) studymaterialsBackBtn.addEventListener('click', studymaterialsHide);
-
-  const k = d.toISOString().slice(0,10);
-      const dayData = days[k] || { hours:0, subjects:{} };
-      weekTotal += dayData.hours;
-      Object.keys(dayData.subjects  {}).forEach(s => { mix[s] = (mix[s]  0) + dayData.subjects[s]; });
-      const bar = document.createElement('div');
-      bar.className = 'tms-week-bar';
-      bar.style.height = Math.min(100, dayData.hours * 15 + (dayData.hours>0?6:0)) + '%';
-      chart.appendChild(bar);
-    }
-    document.getElementById('tms-stat-week').textContent = weekTotal.toFixed(1) + 'h';
-
-    document.getElementById('tms-goal-daily-text').textContent = today.hours.toFixed(1) + 'h / 6h';
-    document.getElementById('tms-goal-daily-fill').style.width = Math.min(100, (today.hours/6)*100) + '%';
-    document.getElementById('tms-goal-weekly-text').textContent = weekTotal.toFixed(1) + 'h / 35h';
-    document.getElementById('tms-goal-weekly-fill').style.width = Math.min(100, (weekTotal/35)*100) + '%';
-
-    const mixColors = ['#A2751F','#4B7BF5','#2E2A22','#A0442F','#726A58'];
-    const mixBar = document.getElementById('tms-mix-bar');
-    const mixLegend = document.getElementById('tms-mix-legend');
-    mixBar.innerHTML = ''; mixLegend.innerHTML = '';
-    const mixKeys = Object.keys(mix);
-    const mixTotal = mixKeys.reduce((a,k)=>a+mix[k],0) || 1;
-    mixKeys.forEach((k,i) => {
-      const seg = document.createElement('div');
-      seg.style.background = mixColors[i % mixColors.length];
-      seg.style.width = ((mix[k]/mixTotal)*100) + '%';
-      mixBar.appendChild(seg);
-      const row = document.createElement('div');
-      row.className = 'tms-mix-legend-row';
-      row.innerHTML = '<span class="tms-dot" style="background:'+mixColors[i % mixColors.length]+'"></span><span>'+k+'</span><span>'+mix[k].toFixed(1)+'h</span>';
-      mixLegend.appendChild(row);
-    });
-  }
-
-  /* ---- Tasks (Task tab) ---- */
-  function tmsLoadTasks(){
-    try { return JSON.parse(localStorage.getItem(TMS_TASKS_KEY)) || []; }
-    catch(e){ return []; }
-  }
-  function tmsSaveTasks(list){ localStorage.setItem(TMS_TASKS_KEY, JSON.stringify(list)); }
-
-  function tmsRenderTasks(){
-    const list = tmsLoadTasks();
-    const wrap = document.getElementById('tms-task-list');
-    const empty = document.getElementById('tms-task-empty');
-    wrap.querySelectorAll('.tms-task-item').forEach(n => n.remove());
-    empty.style.display = list.length ? 'none' : 'block';
-    list.forEach((t, idx) => {
-      const row = document.createElement('div');
-      row.className = 'tms-task-item' + (t.done ? ' done' : '');
-      row.innerHTML = '<input type="checkbox" '+(t.done?'checked':'')+'><span></span><button class="tms-task-del" type="button">&times;</button>';
-      row.querySelector('span').textContent = t.text;
-      row.querySelector('input').addEventListener('change', () => {
-        list[idx].done = !list[idx].done; tmsSaveTasks(list); tmsRenderTasks();
-      });
-      row.querySelector('.tms-task-del').addEventListener('click', () => {
-        list.splice(idx,1); tmsSaveTasks(list); tmsRenderTasks();
-      });
-      wrap.appendChild(row);
-    });
-  }
-  document.getElementById('tms-task-add-btn').addEventListener('click', () => {
-    const input = document.getElementById('tms-task-input');
-    const val = input.value.trim();
-    if(!val) return;
-    const list = tmsLoadTasks();
-    list.push({ text:val, done:false });
-    tmsSaveTasks(list);
-    input.value = '';
-    tmsRenderTasks();
-  });
-  document.getElementById('tms-task-input').addEventListener('keydown', (e) => {
-    if(e.key === 'Enter') document.getElementById('tms-task-add-btn').click();
-  });
-
-  /* ---- Flashcards tab shortcut (hook into your existing flashcards feature) ---- */
-  const flashBtn = document.getElementById('tms-flashcards-start-btn');
-  if(flashBtn) flashBtn.addEventListener('click', () => {
-    // TODO: call your existing formula-flashcards open function here, e.g. openFormulaFlashcards();
-    alert('Hook this button up to your existing Formula Flashcards feature.');
-  });
-})();
 
   /* ---- Wanna See Magic!!! (pendulum wave) ---- */
   function magicHide(){
@@ -10090,8 +11097,1941 @@ if(existing){
   // since the splash shows its end state instantly for them anyway.
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const BOOT_ANIM_MIN_MS = reduceMotion ? 0 : 1100;
-  const bootAnimHold = new Promise(resolve => setTimeout(resolve, BOOT_ANIM_MIN_MS));
+  // ======================================================================
+  // TRACK MY STUDIES — Study tab (premium study-session tracker)
+  // ======================================================================
+  (function initStudyTracker(){
+    const STUDY_KEY = 'study-tracker-v1';
+    function studyKeyFor(id){ return STUDY_KEY + '::' + id; }
+    function defaultStudyState(){ return { sessions: [], dailyGoalHours: 6, weeklyGoalHours: 35 }; }
 
+    let studyState = null;
+    let studyStateUserId = null;
+
+    async function loadStudyState(){
+      if(!currentUser) return defaultStudyState();
+      if(studyState && studyStateUserId === currentUser.id) return studyState;
+      let st = defaultStudyState();
+      try{
+        const res = await window.storage.get(studyKeyFor(currentUser.id), true);
+        if(res && res.value){
+          const parsed = JSON.parse(res.value);
+          st = Object.assign(defaultStudyState(), parsed);
+          if(!Array.isArray(st.sessions)) st.sessions = [];
+        }
+      }catch(e){}
+      studyState = st;
+      studyStateUserId = currentUser.id;
+      return st;
+    }
+    async function saveStudyState(){
+      if(!currentUser || !studyState) return;
+      try{ await window.storage.set(studyKeyFor(currentUser.id), JSON.stringify(studyState), true); }catch(e){}
+    }
+
+    // ---- Active-session checkpoint (lets a running timer survive a
+    // reload / the app being closed and reopened, instead of silently
+    // losing the in-progress session) ----
+    const ACTIVE_KEY = 'study-tracker-active-v1';
+    function activeKeyFor(id){ return ACTIVE_KEY + '::' + id; }
+    async function saveActiveSession(){
+      if(!currentUser || !stTimer.running) return;
+      const payload = {
+        mode: stTimer.mode, subject: stTimer.subject,
+        presetWork: stTimer.presetWork, presetRest: stTimer.presetRest, presetLabel: stTimer.presetLabel,
+        phase: stTimer.phase, phaseRemaining: stTimer.phaseRemaining,
+        elapsed: stTimer.elapsed, paused: stTimer.paused, savedAt: Date.now(), startHour: stTimer.startHour
+      };
+      try{ await window.storage.set(activeKeyFor(currentUser.id), JSON.stringify(payload), true); }catch(e){}
+    }
+    async function clearActiveSession(){
+      if(!currentUser) return;
+      try{ await window.storage.delete(activeKeyFor(currentUser.id), true); }catch(e){}
+    }
+
+    function stPad(n){ return String(n).padStart(2,'0'); }
+    function stDateKey(d){ return d.getFullYear() + '-' + stPad(d.getMonth()+1) + '-' + stPad(d.getDate()); }
+    function stStartOfWeek(d){ const dt = new Date(d); dt.setHours(0,0,0,0); dt.setDate(dt.getDate() - dt.getDay()); return dt; }
+    function stTodayKey(){ return stDateKey(new Date()); }
+    function stFormatHMS(total){
+      total = Math.max(0, Math.floor(total));
+      const h = Math.floor(total/3600), m = Math.floor((total%3600)/60), s = Math.floor(total%60);
+      return stPad(h) + ':' + stPad(m) + ':' + stPad(s);
+    }
+    function stSecondsForDate(dateKey){
+      return studyState.sessions.filter(s => s.date === dateKey).reduce((a,s) => a + s.seconds, 0);
+    }
+    function stWeekSeconds(){
+      const start = stStartOfWeek(new Date());
+      let total = 0;
+      for(const s of studyState.sessions){
+        const sd = new Date(s.date + 'T00:00:00');
+        if(sd >= start) total += s.seconds;
+      }
+      return total;
+    }
+    function stSessionsTodayCount(){ return studyState.sessions.filter(s => s.date === stTodayKey()).length; }
+    function stComputeStreak(){
+      let streak = 0;
+      let d = new Date();
+      const hasToday = stSecondsForDate(stDateKey(d)) > 0;
+      if(!hasToday) d.setDate(d.getDate() - 1);
+      while(stSecondsForDate(stDateKey(d)) > 0){
+        streak++;
+        d.setDate(d.getDate() - 1);
+      }
+      return { streak, hasToday };
+    }
+    function stGreetingWord(){
+      const h = new Date().getHours();
+      if(h < 12) return 'Good morning';
+      if(h < 17) return 'Good afternoon';
+      return 'Good evening';
+    }
+    function stUpdateGreeting(){
+      const head = document.getElementById('st-greeting');
+      const nameEl = document.getElementById('st-greeting-name');
+      if(!head || !nameEl) return;
+      let name = 'there';
+      const fName = document.getElementById('f-name');
+      if(fName && fName.value && fName.value.trim()) name = fName.value.trim().split(' ')[0];
+      nameEl.textContent = name;
+      if(head.firstChild) head.firstChild.textContent = stGreetingWord() + ', ';
+    }
+
+    const ST_MIX_COLORS = { 'Self Study':'#9C8E6D', 'Chemistry':'#3C6B4C', 'Physics':'#4A4030', 'Mathematics':'#A2751F' };
+    const ST_MIX_FALLBACK = ['#A2751F','#3C6B4C','#726A58','#A0442F','#4A4030'];
+
+    async function stRender(){
+      await loadStudyState();
+      const todaySec = stSecondsForDate(stTodayKey());
+      const weekSec = stWeekSeconds();
+      const todayH = todaySec/3600, weekH = weekSec/3600;
+
+      const setText = (id, text) => { const el = document.getElementById(id); if(el) el.textContent = text; };
+      setText('st-stat-today', todayH.toFixed(1) + 'h');
+      setText('st-stat-today-sub', 'of ' + studyState.dailyGoalHours + 'h goal');
+      setText('st-stat-week', weekH.toFixed(1) + 'h');
+      setText('st-stat-week-sub', 'of ' + studyState.weeklyGoalHours + 'h goal');
+
+      const { streak, hasToday } = stComputeStreak();
+      setText('st-stat-streak', streak + 'd');
+      setText('st-stat-streak-sub', hasToday ? 'Keep it going' : (streak > 0 ? 'Study today to continue' : 'Start today'));
+      setText('st-stat-sessions', String(stSessionsTodayCount()));
+
+      const dPct = Math.min(100, (todayH / studyState.dailyGoalHours) * 100 || 0);
+      const wPct = Math.min(100, (weekH / studyState.weeklyGoalHours) * 100 || 0);
+      const dFill = document.getElementById('st-goal-daily-fill');
+      const wFill = document.getElementById('st-goal-weekly-fill');
+      if(dFill) dFill.style.width = dPct + '%';
+      if(wFill) wFill.style.width = wPct + '%';
+      setText('st-goal-daily-text', todayH.toFixed(1) + 'h / ' + studyState.dailyGoalHours + 'h');
+      setText('st-goal-weekly-text', weekH.toFixed(1) + 'h / ' + studyState.weeklyGoalHours + 'h');
+
+      const barsEl = document.getElementById('st-bars');
+      const labelsEl = document.getElementById('st-bars-labels');
+      if(barsEl && labelsEl){
+        barsEl.innerHTML = ''; labelsEl.innerHTML = '';
+        const dayLetters = ['S','M','T','W','T','F','S'];
+        const start = stStartOfWeek(new Date());
+        const daySecs = [];
+        let maxSec = 1;
+        for(let i=0;i<7;i++){
+          const d = new Date(start); d.setDate(d.getDate() + i);
+          const sec = stSecondsForDate(stDateKey(d));
+          daySecs.push(sec);
+          if(sec > maxSec) maxSec = sec;
+        }
+        const todayIdx = new Date().getDay();
+        for(let i=0;i<7;i++){
+          const isToday = i === todayIdx;
+          const col = document.createElement('div');
+          col.className = 'st-bar-col' + (isToday ? ' st-bar-today' : '');
+          const bar = document.createElement('div');
+          bar.className = 'st-bar';
+          const pct = daySecs[i] > 0 ? Math.max(4, Math.round((daySecs[i]/maxSec) * 100)) : 0;
+          bar.style.height = pct + '%';
+          col.appendChild(bar);
+          barsEl.appendChild(col);
+          const lab = document.createElement('span');
+          lab.textContent = dayLetters[i];
+          if(isToday) lab.className = 'st-bar-today';
+          labelsEl.appendChild(lab);
+        }
+      }
+
+      const mixBar = document.getElementById('st-mix-bar');
+      const mixLegend = document.getElementById('st-mix-legend');
+      if(mixBar && mixLegend){
+        mixBar.innerHTML = ''; mixLegend.innerHTML = '';
+        const start = stStartOfWeek(new Date());
+        const mixTotals = {};
+        for(let i=0;i<7;i++){
+          const d = new Date(start); d.setDate(d.getDate() + i);
+          const dk = stDateKey(d);
+          for(const s of studyState.sessions){ if(s.date === dk) mixTotals[s.subject] = (mixTotals[s.subject]||0) + s.seconds; }
+        }
+        const subjectsOrder = ['Self Study','Chemistry','Physics','Mathematics'];
+        const allSubs = subjectsOrder.concat(Object.keys(mixTotals).filter(s => subjectsOrder.indexOf(s) === -1));
+        const totalMix = Object.values(mixTotals).reduce((a,b) => a+b, 0) || 1;
+        allSubs.forEach((subj, idx) => {
+          const sec = mixTotals[subj] || 0;
+          const color = ST_MIX_COLORS[subj] || ST_MIX_FALLBACK[idx % ST_MIX_FALLBACK.length];
+          const seg = document.createElement('div');
+          seg.className = 'st-mix-seg';
+          seg.style.width = ((sec/totalMix) * 100) + '%';
+          seg.style.background = color;
+          mixBar.appendChild(seg);
+          const row = document.createElement('div');
+          row.className = 'st-mix-legend-row';
+          const dot = document.createElement('span');
+          dot.className = 'st-mix-dot';
+          dot.style.background = color;
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'st-mix-name';
+          nameSpan.textContent = subj;
+          const hoursSpan = document.createElement('span');
+          hoursSpan.className = 'st-mix-hours';
+          hoursSpan.textContent = (sec/3600).toFixed(1) + 'h';
+          row.appendChild(dot); row.appendChild(nameSpan); row.appendChild(hoursSpan);
+          mixLegend.appendChild(row);
+        });
+      }
+
+      stUpdateGreeting();
+      stStatsRender();
+    }
+
+    // ---- Stats tab (Study Analytics) — reads the exact same studyState.sessions
+    // as the Study tab above, so the two are always in sync: nothing here has
+    // its own copy of the numbers, it's all derived fresh from the same source.
+    function stMonthKeyOf(d){ return d.getFullYear() + '-' + stPad(d.getMonth()+1); }
+    function stSecondsForMonth(monthKey){
+      return studyState.sessions.filter(s => s.date.slice(0,7) === monthKey).reduce((a,s) => a + s.seconds, 0);
+    }
+    function stAllTimeSubjectTotals(){
+      const totals = {};
+      for(const s of studyState.sessions) totals[s.subject] = (totals[s.subject] || 0) + s.seconds;
+      return totals;
+    }
+    function stAllTimeHourTotals(){
+      const totals = new Array(24).fill(0);
+      for(const s of studyState.sessions){ if(typeof s.hour === 'number' && s.hour >= 0 && s.hour < 24) totals[s.hour] += s.seconds; }
+      return totals;
+    }
+    function stStatsRender(){
+      if(!studyState) return;
+      const now = new Date();
+      const todaySec = stSecondsForDate(stTodayKey());
+      const weekSec = stWeekSeconds();
+      const monthSec = stSecondsForMonth(stMonthKeyOf(now));
+      const todayH = todaySec/3600, weekH = weekSec/3600, monthH = monthSec/3600;
+
+      const setText = (id, text) => { const el = document.getElementById(id); if(el) el.textContent = text; };
+      setText('st-an-today-big', todayH.toFixed(1) + 'h');
+      setText('st-an-hero-sub', weekH.toFixed(1) + 'h this week · ' + monthH.toFixed(1) + 'h this month');
+      setText('st-an-stat-today', todayH.toFixed(1) + 'h');
+      setText('st-an-stat-week', weekH.toFixed(1) + 'h');
+      setText('st-an-stat-month', monthH.toFixed(1) + 'h');
+      const { streak } = stComputeStreak();
+      setText('st-an-stat-streak', streak + ' 🔥');
+
+      // Weekly overview: same Sun→Sat window as the Study tab's bars, with
+      // an axis so absolute hours (not just relative bar height) are readable.
+      const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const start = stStartOfWeek(now);
+      const daySecs = [];
+      for(let i=0;i<7;i++){ const d = new Date(start); d.setDate(d.getDate() + i); daySecs.push(stSecondsForDate(stDateKey(d))); }
+      const maxDayH = Math.max(...daySecs.map(s => s/3600));
+      const axisMax = Math.max(4, Math.ceil(maxDayH));
+
+      const yaxis = document.getElementById('st-an-yaxis');
+      const gridlines = document.getElementById('st-an-gridlines');
+      if(yaxis && gridlines){
+        yaxis.innerHTML = ''; gridlines.innerHTML = '';
+        for(let i=4;i>=0;i--){
+          const val = Math.round((axisMax * i / 4) * 10) / 10;
+          const lab = document.createElement('span'); lab.textContent = (val % 1 === 0 ? val : val.toFixed(1)) + 'h';
+          yaxis.appendChild(lab);
+          const line = document.createElement('span');
+          gridlines.appendChild(line);
+        }
+      }
+      const barsEl = document.getElementById('st-an-bars');
+      const labelsEl = document.getElementById('st-an-bars-labels');
+      if(barsEl && labelsEl){
+        barsEl.innerHTML = ''; labelsEl.innerHTML = '';
+        const dayLetters = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        const todayIdx = now.getDay();
+        for(let i=0;i<7;i++){
+          const isToday = i === todayIdx;
+          const col = document.createElement('div');
+          col.className = 'st-bar-col' + (isToday ? ' st-bar-today' : '');
+          const bar = document.createElement('div');
+          bar.className = 'st-bar';
+          const h = daySecs[i]/3600;
+          const pct = h > 0 ? Math.max(3, Math.round((h/axisMax) * 100)) : 0;
+          bar.style.height = pct + '%';
+          col.appendChild(bar);
+          barsEl.appendChild(col);
+          const lab = document.createElement('span');
+          lab.textContent = dayLetters[i];
+          if(isToday) lab.className = 'st-bar-today';
+          labelsEl.appendChild(lab);
+        }
+      }
+
+      // Best day — the weekday with the most time this week; ties (including
+      // an all-zero week) fall back to today, which is what a person expects
+      // to see before any data exists.
+      let bestIdx = now.getDay(), bestSec = -1;
+      for(let i=0;i<7;i++){ if(daySecs[i] > bestSec){ bestSec = daySecs[i]; bestIdx = i; } }
+      setText('st-an-best-day', dayNames[bestIdx] + ' (' + (daySecs[bestIdx]/3600).toFixed(1) + 'h)');
+
+      // Peak hour — the hour-of-day with the most logged time across every
+      // session ever recorded. With no data yet, default to a sensible
+      // early-afternoon focus window rather than showing an empty state.
+      const hourTotals = stAllTimeHourTotals();
+      const maxHourSec = Math.max(...hourTotals);
+      let peakHour = 13;
+      if(maxHourSec > 0) peakHour = hourTotals.indexOf(maxHourSec);
+      setText('st-an-peak-hour', stPad(peakHour) + ':00 – ' + stPad((peakHour+1)%24) + ':00');
+
+      // Avg daily — this week's total spread evenly across 7 days.
+      setText('st-an-avg-daily', (weekH/7).toFixed(1) + 'h');
+
+      // Subject distribution donut — all-time totals per subject, drawn as
+      // stacked ring segments in the same colors as the Study tab's mix bar.
+      const subjTotals = stAllTimeSubjectTotals();
+      const subjectsOrder = ['Self Study','Physics','Mathematics','Chemistry'];
+      const allSubs = subjectsOrder.concat(Object.keys(subjTotals).filter(s => subjectsOrder.indexOf(s) === -1));
+      const totalAll = Object.values(subjTotals).reduce((a,b) => a+b, 0);
+      const donut = document.getElementById('st-an-donut');
+      const legend = document.getElementById('st-an-donut-legend');
+      if(donut && legend){
+        const R = 54, CX = 70, CY = 70, CIRC = 2 * Math.PI * R;
+        let svg = '<circle cx="' + CX + '" cy="' + CY + '" r="' + R + '" fill="none" stroke="rgba(var(--ink-rgb),0.09)" stroke-width="16"></circle>';
+        let offset = 0;
+        allSubs.forEach((subj, idx) => {
+          const sec = subjTotals[subj] || 0;
+          if(sec <= 0 || totalAll <= 0) return;
+          const frac = sec / totalAll;
+          const color = ST_MIX_COLORS[subj] || ST_MIX_FALLBACK[idx % ST_MIX_FALLBACK.length];
+          const dash = Math.max(0, frac * CIRC - 2);
+          svg += '<circle class="st-an-donut-seg" cx="' + CX + '" cy="' + CY + '" r="' + R + '" fill="none" stroke="' + color + '" ' +
+            'stroke-width="16" stroke-linecap="round" stroke-dasharray="' + dash + ' ' + CIRC + '" ' +
+            'stroke-dashoffset="' + (-offset) + '" transform="rotate(-90 ' + CX + ' ' + CY + ')"></circle>';
+          offset += frac * CIRC;
+        });
+        svg += '<text x="' + CX + '" y="' + (CY - 4) + '" text-anchor="middle" class="st-an-donut-center-val">' + (totalAll/3600).toFixed(1) + 'h</text>';
+        svg += '<text x="' + CX + '" y="' + (CY + 13) + '" text-anchor="middle" class="st-an-donut-center-lab">logged</text>';
+        donut.innerHTML = svg;
+
+        legend.innerHTML = '';
+        allSubs.forEach((subj, idx) => {
+          const sec = subjTotals[subj] || 0;
+          const color = ST_MIX_COLORS[subj] || ST_MIX_FALLBACK[idx % ST_MIX_FALLBACK.length];
+          const row = document.createElement('div');
+          row.className = 'st-an-donut-legend-row';
+          row.innerHTML = '<span class="st-an-donut-dot" style="background:' + color + '"></span>' +
+            '<span class="st-an-dn-name">' + subj + '</span>' +
+            '<span class="st-an-dn-hrs">' + (sec/3600).toFixed(1) + 'h</span>';
+          legend.appendChild(row);
+        });
+      }
+
+      // Peak study hours heat grid — relative intensity per hour, all-time.
+      const heatGrid = document.getElementById('st-an-heat-grid');
+      if(heatGrid){
+        heatGrid.innerHTML = '';
+        const nowHour = now.getHours();
+        for(let h=0; h<24; h++){
+          const cell = document.createElement('div');
+          cell.className = 'st-an-heat-cell' + (h === nowHour ? ' st-an-heat-now' : '');
+          const ratio = maxHourSec > 0 ? hourTotals[h] / maxHourSec : 0;
+          if(ratio > 0) cell.style.background = 'rgba(var(--gold-rgb),' + (0.1 + ratio * 0.65).toFixed(2) + ')';
+          cell.textContent = h;
+          heatGrid.appendChild(cell);
+        }
+      }
+
+      // Month calendar — every day this month with logged time shows its
+      // hours beneath the date; today is ringed, future days are dimmed.
+      const calTitle = document.getElementById('st-an-cal-title');
+      const calGrid = document.getElementById('st-an-cal-grid');
+      if(calTitle && calGrid){
+        const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        const y = now.getFullYear(), m = now.getMonth();
+        calTitle.textContent = monthNames[m] + ' ' + y;
+        const firstDow = new Date(y, m, 1).getDay();
+        const daysInMonth = new Date(y, m + 1, 0).getDate();
+        const todayDate = now.getDate();
+        calGrid.innerHTML = '';
+        for(let i=0;i<firstDow;i++){
+          const empty = document.createElement('div');
+          empty.className = 'st-an-cal-cell st-an-cal-empty';
+          calGrid.appendChild(empty);
+        }
+        for(let day=1; day<=daysInMonth; day++){
+          const dateKey = y + '-' + stPad(m+1) + '-' + stPad(day);
+          const sec = stSecondsForDate(dateKey);
+          const isToday = day === todayDate;
+          const isFuture = day > todayDate;
+          const cell = document.createElement('div');
+          cell.className = 'st-an-cal-cell' + (isToday ? ' st-an-cal-today' : '') + (isFuture ? ' st-an-cal-future' : '') + (sec > 0 ? ' st-an-cal-has-data' : '');
+          const num = document.createElement('span');
+          num.className = 'st-an-cal-num';
+          num.textContent = String(day);
+          cell.appendChild(num);
+          if(sec > 0 || isToday){
+            const hrs = document.createElement('span');
+            hrs.className = 'st-an-cal-hrs';
+            hrs.textContent = (sec/3600).toFixed(1) + 'h';
+            cell.appendChild(hrs);
+          }
+          calGrid.appendChild(cell);
+        }
+      }
+    }
+
+    // ---- Live timer ----
+    const ST_RING_CIRC = 666.03;
+    let stTimer = { running:false, paused:false, mode:'stopwatch', subject:'Self Study', elapsed:0, intervalId:null,
+      presetWork:1500, presetRest:300, presetLabel:'Classic · 25/5', phase:'work', phaseRemaining:0, startHour:null };
+    let stTimerRunningFlag = false;
+    let stTickCount = 0;
+    let stActiveTab = 'study';
+    const ST_TABS = ['study','stats','task','track','flash'];
+
+    function stUpdateTimerVisual(){
+      const timeEl = document.getElementById('st-timer-time');
+      const phaseEl = document.getElementById('st-timer-phase');
+      const ring = document.getElementById('st-ring-prog');
+      const card = document.getElementById('st-timer-card');
+      const labelEl = document.getElementById('st-timer-label');
+      if(!timeEl || !ring || !card) return;
+      if(stTimer.mode === 'pomodoro'){
+        timeEl.textContent = stFormatHMS(stTimer.phaseRemaining);
+        const dur = stTimer.phase === 'work' ? stTimer.presetWork : stTimer.presetRest;
+        if(phaseEl) phaseEl.textContent = (stTimer.phase === 'work' ? 'Focus time' : 'Break time') + ' · ' + stTimer.presetLabel;
+        const frac = dur > 0 ? (1 - stTimer.phaseRemaining/dur) : 0;
+        ring.style.strokeDashoffset = String(ST_RING_CIRC * (1 - Math.max(0, Math.min(1, frac))));
+        card.classList.toggle('st-phase-rest', stTimer.phase === 'rest');
+      } else {
+        timeEl.textContent = stFormatHMS(stTimer.elapsed);
+        if(phaseEl) phaseEl.textContent = 'Stopwatch · counting up';
+        const frac = (stTimer.elapsed % 3600) / 3600;
+        ring.style.strokeDashoffset = String(ST_RING_CIRC * (1 - frac));
+        card.classList.remove('st-phase-rest');
+      }
+      if(labelEl) labelEl.textContent = 'Studying · ' + stTimer.subject;
+    }
+
+    function stTick(){
+      if(!stTimer.running || stTimer.paused) return;
+      if(stTimer.mode === 'pomodoro'){
+        stTimer.phaseRemaining -= 1;
+        if(stTimer.phase === 'work') stTimer.elapsed += 1;
+        if(stTimer.phaseRemaining <= 0){
+          stTimer.phase = stTimer.phase === 'work' ? 'rest' : 'work';
+          stTimer.phaseRemaining = stTimer.phase === 'work' ? stTimer.presetWork : stTimer.presetRest;
+        }
+      } else {
+        stTimer.elapsed += 1;
+      }
+      stUpdateTimerVisual();
+      // Checkpoint roughly every 5s (not every tick) so a reload can pick
+      // the session back up without hammering storage every second.
+      stTickCount++;
+      if(stTickCount % 5 === 0) saveActiveSession();
+    }
+
+    function stRefreshTabDot(){
+      const dot = document.getElementById('st-tab-study-dot');
+      if(dot) dot.style.display = (stTimerRunningFlag && stActiveTab !== 'study') ? 'block' : 'none';
+    }
+    function stSetLiveDots(running){
+      stTimerRunningFlag = running;
+      const menuDot = document.getElementById('menu-studytracker-dot');
+      if(menuDot) menuDot.style.display = running ? 'block' : 'none';
+      stRefreshTabDot();
+    }
+
+    function stSwitchTab(tab){
+      if(ST_TABS.indexOf(tab) === -1) tab = 'study';
+      stActiveTab = tab;
+      ST_TABS.forEach(t => {
+        const panel = document.getElementById('st-panel-' + t);
+        if(panel) panel.style.display = (t === tab) ? 'block' : 'none';
+      });
+      document.querySelectorAll('.st-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+      stRefreshTabDot();
+      if(tab === 'stats' && typeof stStatsRender === 'function') stStatsRender();
+      if(tab === 'task' && typeof stTaskRender === 'function') stTaskRender();
+      if(tab === 'track' && typeof sylRender === 'function') sylRender();
+      if(tab === 'flash' && typeof fcInit === 'function') fcInit();
+      const view = document.getElementById('study-tracker-view');
+      if(view) view.scrollTo ? view.scrollTo({top:0,behavior:'smooth'}) : window.scrollTo(0,0);
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function stStartSession(){
+      const activeSubjBtn = document.querySelector('.st-subject-chip.active');
+      const subject = activeSubjBtn ? activeSubjBtn.dataset.subject : 'Self Study';
+      const activeModeBtn = document.querySelector('.st-mode-btn.active');
+      const mode = activeModeBtn ? activeModeBtn.dataset.mode : 'stopwatch';
+      let presetWork = 1500, presetRest = 300, presetLabel = 'Classic · 25/5';
+      if(mode === 'pomodoro'){
+        const activePreset = document.querySelector('.st-preset-btn.active') || document.querySelector('.st-preset-btn');
+        if(activePreset){
+          presetWork = parseInt(activePreset.dataset.work, 10) || presetWork;
+          presetRest = parseInt(activePreset.dataset.rest, 10) || presetRest;
+          presetLabel = activePreset.dataset.label || presetLabel;
+        }
+      }
+      if(stTimer.intervalId) clearInterval(stTimer.intervalId);
+      stTimer = { running:true, paused:false, mode, subject, elapsed:0, intervalId:null,
+        presetWork, presetRest, presetLabel, phase:'work', phaseRemaining: mode === 'pomodoro' ? presetWork : 0,
+        startHour: new Date().getHours() };
+      stTickCount = 0;
+
+      const hero = document.getElementById('st-hero-card');
+      const timerCard = document.getElementById('st-timer-card');
+      if(hero) hero.style.display = 'none';
+      if(timerCard){ timerCard.style.display = 'block'; timerCard.classList.remove('st-phase-rest'); }
+      const pauseBtn = document.getElementById('st-timer-pause');
+      if(pauseBtn) pauseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>Pause';
+
+      stUpdateTimerVisual();
+      stTimer.intervalId = setInterval(stTick, 1000);
+      stSetLiveDots(true);
+      saveActiveSession();
+    }
+
+    function stTogglePause(){
+      if(!stTimer.running) return;
+      stTimer.paused = !stTimer.paused;
+      const btn = document.getElementById('st-timer-pause');
+      if(btn){
+        btn.innerHTML = stTimer.paused
+          ? '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>Resume'
+          : '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>Pause';
+      }
+      saveActiveSession();
+    }
+
+    async function stFinishSession(){
+      if(!stTimer.running) return;
+      clearInterval(stTimer.intervalId);
+      const seconds = Math.round(stTimer.elapsed);
+      const subject = stTimer.subject, mode = stTimer.mode;
+      const hour = typeof stTimer.startHour === 'number' ? stTimer.startHour : new Date().getHours();
+      stTimer.running = false;
+      stSetLiveDots(false);
+      await clearActiveSession();
+      const hero = document.getElementById('st-hero-card');
+      const timerCard = document.getElementById('st-timer-card');
+      if(timerCard) timerCard.style.display = 'none';
+      if(hero) hero.style.display = 'block';
+      if(seconds >= 5 && currentUser){
+        await loadStudyState();
+        studyState.sessions.push({ id: cryptoId(), date: stTodayKey(), subject, seconds, mode, hour });
+        await saveStudyState();
+      }
+      await stRender();
+    }
+
+    // Rebuilds an in-progress session from its last checkpoint — used when
+    // the page has been reloaded (or the app relaunched) while a timer was
+    // still running, so the person doesn't come back to find their study
+    // time quietly reset to zero.
+    async function stTryResumeActiveSession(){
+      if(!currentUser || stTimer.running) return;
+      let raw;
+      try{ raw = await window.storage.get(activeKeyFor(currentUser.id), true); }catch(e){ return; }
+      if(!raw || !raw.value) return;
+      let saved;
+      try{ saved = JSON.parse(raw.value); }catch(e){ return; }
+      if(!saved || !saved.mode) return;
+
+      const gapSec = saved.paused ? 0 : Math.max(0, (Date.now() - (saved.savedAt || Date.now())) / 1000);
+      let elapsed = saved.elapsed || 0;
+      let phase = saved.phase || 'work';
+      let phaseRemaining = saved.phaseRemaining != null ? saved.phaseRemaining : 0;
+
+      if(saved.mode === 'pomodoro'){
+        let remainGap = gapSec, guard = 0;
+        while(remainGap > 0 && guard < 2000){
+          guard++;
+          if(remainGap < phaseRemaining){
+            if(phase === 'work') elapsed += remainGap;
+            phaseRemaining -= remainGap;
+            remainGap = 0;
+          } else {
+            if(phase === 'work') elapsed += phaseRemaining;
+            remainGap -= phaseRemaining;
+            phase = phase === 'work' ? 'rest' : 'work';
+            phaseRemaining = phase === 'work' ? saved.presetWork : saved.presetRest;
+          }
+        }
+      } else {
+        elapsed += gapSec;
+      }
+
+      if(stTimer.intervalId) clearInterval(stTimer.intervalId);
+      stTimer = {
+        running:true, paused: !!saved.paused, mode: saved.mode, subject: saved.subject, elapsed,
+        intervalId:null, presetWork: saved.presetWork, presetRest: saved.presetRest, presetLabel: saved.presetLabel,
+        phase, phaseRemaining, startHour: typeof saved.startHour === 'number' ? saved.startHour : new Date().getHours()
+      };
+      stTickCount = 0;
+
+      const hero = document.getElementById('st-hero-card');
+      const timerCard = document.getElementById('st-timer-card');
+      if(hero) hero.style.display = 'none';
+      if(timerCard){ timerCard.style.display = 'block'; timerCard.classList.remove('st-phase-rest'); }
+      const pauseBtn = document.getElementById('st-timer-pause');
+      if(pauseBtn){
+        pauseBtn.innerHTML = stTimer.paused
+          ? '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>Resume'
+          : '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>Pause';
+      }
+      stUpdateTimerVisual();
+      stTimer.intervalId = setInterval(stTick, 1000);
+      stSetLiveDots(true);
+      saveActiveSession();
+    }
+
+    async function stShow(){
+      hideAllPages();
+      const view = document.getElementById('study-tracker-view');
+      if(view) view.style.display = 'block';
+      const tabbar = document.getElementById('st-tabbar');
+      if(tabbar) tabbar.style.display = 'flex';
+      await stTryResumeActiveSession();
+      stSwitchTab(stActiveTab);
+      await stRender();
+      window.scrollTo(0,0);
+    }
+    function stHide(){
+      pageHide('study-tracker-view');
+      pageHide('st-tabbar');
+      backToAppOrAuth();
+    }
+
+    const stOpenBtn = document.getElementById('open-studytracker-btn');
+    if(stOpenBtn) stOpenBtn.addEventListener('click', stShow);
+    const stBackBtn = document.getElementById('st-back-btn');
+    if(stBackBtn) stBackBtn.addEventListener('click', stHide);
+
+    document.querySelectorAll('.st-mode-btn').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.st-mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const presets = document.getElementById('st-pomo-presets');
+      if(presets) presets.style.display = btn.dataset.mode === 'pomodoro' ? 'flex' : 'none';
+    }));
+    document.querySelectorAll('.st-preset-btn').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.st-preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }));
+    document.querySelectorAll('.st-subject-chip').forEach(btn => btn.addEventListener('click', () => {
+      const wasActive = btn.classList.contains('active');
+      document.querySelectorAll('.st-subject-chip').forEach(b => b.classList.remove('active'));
+      if(!wasActive) btn.classList.add('active');
+    }));
+    const stStartBtn = document.getElementById('st-start-btn');
+    if(stStartBtn) stStartBtn.addEventListener('click', stStartSession);
+    const stPauseBtn = document.getElementById('st-timer-pause');
+    if(stPauseBtn) stPauseBtn.addEventListener('click', stTogglePause);
+    const stStopBtn = document.getElementById('st-timer-stop');
+    if(stStopBtn) stStopBtn.addEventListener('click', async () => {
+      if(stTimer.elapsed < 5){ await stFinishSession(); return; }
+      let ok = true;
+      if(typeof window.confirmModal === 'function'){
+        ok = await window.confirmModal({
+          title: 'Finish this session?',
+          message: 'You will log ' + stFormatHMS(stTimer.elapsed) + ' of ' + stTimer.subject + ' study time.',
+          confirmText: 'Finish', cancelText: 'Keep going'
+        });
+      }
+      if(ok) await stFinishSession();
+    });
+
+    document.querySelectorAll('.st-tab').forEach(btn => btn.addEventListener('click', () => stSwitchTab(btn.dataset.tab)));
+    document.querySelectorAll('.st-shortcut').forEach(btn => btn.addEventListener('click', () => stSwitchTab(btn.dataset.goto)));
+
+    const stGoalsEditBtn = document.getElementById('st-goals-edit');
+    if(stGoalsEditBtn) stGoalsEditBtn.addEventListener('click', async () => {
+      await loadStudyState();
+      const d = prompt('Daily goal (hours):', studyState.dailyGoalHours);
+      if(d !== null && !isNaN(parseFloat(d)) && parseFloat(d) > 0) studyState.dailyGoalHours = parseFloat(d);
+      const w = prompt('Weekly goal (hours):', studyState.weeklyGoalHours);
+      if(w !== null && !isNaN(parseFloat(w)) && parseFloat(w) > 0) studyState.weeklyGoalHours = parseFloat(w);
+      await saveStudyState();
+      await stRender();
+    });
+
+    // The moment a session is signed in (which can happen asynchronously,
+    // well after this file has finished loading), quietly check for a
+    // timer that was still running when the app was last closed and pick
+    // it back up — so the red "still studying" dot is accurate right away,
+    // even before the person has opened Track My Studies this time round.
+    let stResumePollTries = 0;
+    const stResumePoll = setInterval(() => {
+      stResumePollTries++;
+      if(currentUser){
+        clearInterval(stResumePoll);
+        stTryResumeActiveSession();
+        stTaskRefreshDots();
+      } else if(stResumePollTries > 60){
+        clearInterval(stResumePoll);
+      }
+    }, 400);
+
+    // ====================================================================
+    // TRACK MY STUDIES — Track tab (Syllabus Tracker)
+    // ====================================================================
+    const SYL_KEY = 'syllabus-tracker-v1';
+    function sylKeyFor(id){ return SYL_KEY + '::' + id; }
+
+    function sylChapters(names){ return names.map(n => ({ id: cryptoId(), name: n, stars: 0, builtin: true })); }
+    function sylGroup(id, name, names){ return { id, name, builtin: true, chapters: sylChapters(names) }; }
+
+    function sylDefaultSubjects(){
+      return [
+        { id:'physics', name:'Physics', builtin:true, groups:[
+          sylGroup('phy-c11','Class 11', ["Units and Dimensions","Errors in Measurement","Motion in One Dimension","Motion in Two Dimensions","Relative Motion","Laws of Motion","Friction","Work, Energy and Power","Circular Motion","Centre of Mass","Collision","Rotational Motion","Gravitation","Properties of Solids","Properties of Fluids","Thermal Expansion","Calorimetry","Heat Transfer","Thermodynamics","Kinetic Theory of Gases","Simple Harmonic Motion","Waves","Sound Waves","Doppler Effect"]),
+          sylGroup('phy-c12','Class 12', ["Electrostatics","Capacitance","Current Electricity","Magnetism","Magnetic Effects of Current","Electromagnetic Induction","Alternating Current","Electromagnetic Waves","Ray Optics","Wave Optics","Dual Nature of Matter","Atoms","Nuclei","Semiconductors","Communication Systems","Experimental Physics"])
+        ]},
+        { id:'chemistry', name:'Chemistry', builtin:true, groups:[
+          sylGroup('chem-phy-c11','Physical · Class 11', ["Mole Concept","Atomic Structure","States of Matter","Thermodynamics","Thermochemistry","Chemical Equilibrium","Ionic Equilibrium","Redox Reactions","Hydrogen"]),
+          sylGroup('chem-phy-c12','Physical · Class 12', ["Solid State","Solutions","Electrochemistry","Chemical Kinetics","Surface Chemistry"]),
+          sylGroup('chem-inorg-c11','Inorganic · Class 11', ["Periodic Table and Periodicity","Chemical Bonding","s-Block Elements","p-Block Elements (11th Part)"]),
+          sylGroup('chem-inorg-c12','Inorganic · Class 12', ["General Principles of Metallurgy","p-Block Elements (12th Part)","d-Block Elements","f-Block Elements","Coordination Compounds","Qualitative Analysis","Environmental Chemistry"]),
+          sylGroup('chem-org-c11','Organic · Class 11', ["General Organic Chemistry (GOC)","Isomerism","Purification and Characterisation of Organic Compounds","Hydrocarbons"]),
+          sylGroup('chem-org-c12','Organic · Class 12', ["Haloalkanes and Haloarenes","Alcohols, Phenols and Ethers","Aldehydes, Ketones and Carboxylic Acids","Amines","Biomolecules","Polymers","Chemistry in Everyday Life","Practical Organic Chemistry"])
+        ]},
+        { id:'maths', name:'Mathematics', builtin:true, groups:[
+          sylGroup('math-c11','Class 11', ["Basic Mathematics","Sets","Relations and Functions","Trigonometric Functions","Inverse Trigonometric Functions","Complex Numbers","Quadratic Equations","Sequences and Series","Permutations and Combinations","Binomial Theorem","Straight Lines","Pair of Straight Lines","Circle","Parabola","Ellipse","Hyperbola","Limits","Continuity","Differentiability","Statistics","Mathematical Reasoning","Probability"]),
+          sylGroup('math-c12','Class 12', ["Matrices","Determinants","Functions","Continuity and Differentiability","Differentiation","Application of Derivatives","Indefinite Integration","Definite Integration","Area Under Curves","Differential Equations","Vector Algebra","Three Dimensional Geometry","Linear Programming","Probability"])
+        ]}
+      ];
+    }
+    function sylDefaultState(){ return { subjects: sylDefaultSubjects() }; }
+
+    let sylState = null;
+    let sylStateUserId = null;
+    let sylExpanded = new Set();
+    let sylExpandedSeeded = false;
+
+    async function loadSylState(){
+      if(!currentUser) return sylDefaultState();
+      if(sylState && sylStateUserId === currentUser.id) return sylState;
+      let st = sylDefaultState();
+      try{
+        const res = await window.storage.get(sylKeyFor(currentUser.id), true);
+        if(res && res.value){
+          const parsed = JSON.parse(res.value);
+          if(parsed && Array.isArray(parsed.subjects)) st = parsed;
+        }
+      }catch(e){}
+      sylState = st;
+      sylStateUserId = currentUser.id;
+      if(!sylExpandedSeeded){
+        if(st.subjects[0]) sylExpanded.add(st.subjects[0].id);
+        sylExpandedSeeded = true;
+      }
+      return st;
+    }
+    async function saveSylState(){
+      if(!currentUser || !sylState) return;
+      try{ await window.storage.set(sylKeyFor(currentUser.id), JSON.stringify(sylState), true); }catch(e){}
+    }
+
+    function sylAllChapters(subject){
+      const out = [];
+      subject.groups.forEach(g => g.chapters.forEach(c => out.push(c)));
+      return out;
+    }
+    function sylSubjectStats(subject){
+      const chs = sylAllChapters(subject);
+      const total = chs.length;
+      const starSum = chs.reduce((a,c) => a + c.stars, 0);
+      const pct = total ? Math.round((starSum / (total * 3)) * 100) : 0;
+      const weak = chs.filter(c => c.stars <= 1);
+      return { total, pct, weak };
+    }
+    function sylOverallPct(){
+      let total = 0, starSum = 0;
+      sylState.subjects.forEach(s => sylAllChapters(s).forEach(c => { total++; starSum += c.stars; }));
+      return total ? Math.round((starSum / (total * 3)) * 100) : 0;
+    }
+    function sylFindChapter(chapterId){
+      for(const subject of sylState.subjects){
+        for(const group of subject.groups){
+          const chapter = group.chapters.find(c => c.id === chapterId);
+          if(chapter) return { subject, group, chapter };
+        }
+      }
+      return null;
+    }
+
+    function sylEsc(s){
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function sylStarsHtml(chapterId, stars){
+      let html = '<span class="syl-stars" data-chapter="' + chapterId + '">';
+      for(let i = 1; i <= 3; i++){
+        html += '<button type="button" class="syl-star' + (i <= stars ? ' filled' : '') + '" data-star="' + i + '" aria-label="' + i + ' star">' + (i <= stars ? '★' : '☆') + '</button>';
+      }
+      html += '</span>';
+      return html;
+    }
+    function sylChapterRowHtml(group, ch){
+      return '<div class="syl-chapter-row">'
+        + '<span class="syl-chapter-name">' + sylEsc(ch.name) + '</span>'
+        + sylStarsHtml(ch.id, ch.stars)
+        + (ch.builtin ? '' : '<button type="button" class="syl-del-btn" data-action="del-chapter" data-group="' + group.id + '" data-chapter="' + ch.id + '" aria-label="Remove chapter">&times;</button>')
+        + '</div>';
+    }
+    function sylGroupHtml(group){
+      const label = group.name ? '<p class="syl-group-label">' + sylEsc(group.name) + '</p>' : '';
+      const rows = group.chapters.map(c => sylChapterRowHtml(group, c)).join('');
+      return '<div class="syl-group">' + label + rows + '</div>';
+    }
+    function sylWeakBannerHtml(weak){
+      if(!weak.length) return '';
+      const names = weak.slice(0, 5).map(c => sylEsc(c.name)).join(' · ');
+      const more = weak.length > 5 ? ' …' : '';
+      return '<div class="syl-weak-banner">'
+        + '<p class="syl-weak-title">⚠ Weak chapters (' + weak.length + ')</p>'
+        + '<p class="syl-weak-list">' + names + more + '</p>'
+        + '</div>';
+    }
+    function sylSubjectHtml(subject){
+      const stats = sylSubjectStats(subject);
+      const expanded = sylExpanded.has(subject.id);
+      const groupsHtml = subject.groups.map(g => sylGroupHtml(g)).join('');
+      const emptyHint = stats.total === 0 ? '<p class="syl-empty-hint">No chapters yet — add your first one below.</p>' : '';
+      return '<div class="syl-subject' + (expanded ? ' expanded' : '') + '" data-subject-id="' + subject.id + '">'
+        + '<div class="syl-subject-head" data-action="toggle-subject" data-subject="' + subject.id + '">'
+        + '<span class="syl-subject-name">' + sylEsc(subject.name) + ' <span class="syl-subject-pct">' + stats.pct + '%</span></span>'
+        + '<span class="syl-subject-toggle">' + (expanded ? 'Hide' : 'Open') + '</span>'
+        + '</div>'
+        + '<div class="syl-body" data-body="' + subject.id + '"><div class="syl-body-inner">'
+        + sylWeakBannerHtml(stats.weak)
+        + emptyHint
+        + groupsHtml
+        + '<div class="syl-add-chapter-wrap">'
+        + '<button type="button" class="syl-add-chapter-btn" data-action="add-chapter">+ Add Chapter</button>'
+        + '<div class="syl-inline-form" style="display:none;">'
+        + '<input type="text" class="syl-input syl-new-chapter-input" placeholder="Chapter name" maxlength="60">'
+        + '<div class="syl-form-actions">'
+        + '<button type="button" class="syl-form-cancel" data-action="cancel-chapter">Cancel</button>'
+        + '<button type="button" class="syl-form-confirm" data-action="confirm-chapter" data-subject="' + subject.id + '">Add</button>'
+        + '</div></div></div>'
+        + (subject.builtin ? '' : '<button type="button" class="syl-del-subject" data-action="del-subject" data-subject="' + subject.id + '">Remove subject</button>')
+        + '</div></div></div>';
+    }
+
+    async function sylRender(){
+      await loadSylState();
+      const container = document.getElementById('syl-subjects');
+      if(!container) return;
+      container.innerHTML = sylState.subjects.map(s => sylSubjectHtml(s)).join('');
+      const pctEl = document.getElementById('syl-overall-pct');
+      if(pctEl) pctEl.textContent = sylOverallPct();
+      sylState.subjects.forEach(s => {
+        const body = container.querySelector('[data-body="' + s.id + '"]');
+        if(!body) return;
+        if(sylExpanded.has(s.id)){
+          body.style.maxHeight = body.scrollHeight + 'px';
+          body.style.opacity = '1';
+        } else {
+          body.style.maxHeight = '0px';
+          body.style.opacity = '0';
+        }
+      });
+    }
+
+    function sylApplyStarsToDom(wrapEl, stars){
+      wrapEl.querySelectorAll('.syl-star').forEach(btn => {
+        const i = parseInt(btn.getAttribute('data-star'), 10);
+        const filled = i <= stars;
+        btn.classList.toggle('filled', filled);
+        btn.textContent = filled ? '★' : '☆';
+      });
+    }
+    function sylRefreshSubjectUI(subjectId){
+      const subject = sylState.subjects.find(s => s.id === subjectId);
+      if(!subject) return;
+      const stats = sylSubjectStats(subject);
+      const subjEl = document.querySelector('.syl-subject[data-subject-id="' + subjectId + '"]');
+      if(subjEl){
+        const pctEl = subjEl.querySelector('.syl-subject-pct');
+        if(pctEl) pctEl.textContent = stats.pct + '%';
+        const body = subjEl.querySelector('.syl-body');
+        const inner = subjEl.querySelector('.syl-body-inner');
+        if(inner){
+          const existingBanner = inner.querySelector('.syl-weak-banner');
+          const bannerHtml = sylWeakBannerHtml(stats.weak);
+          if(existingBanner){
+            if(bannerHtml) existingBanner.outerHTML = bannerHtml; else existingBanner.remove();
+          } else if(bannerHtml){
+            inner.insertAdjacentHTML('afterbegin', bannerHtml);
+          }
+        }
+        if(body && sylExpanded.has(subjectId)) body.style.maxHeight = body.scrollHeight + 'px';
+      }
+      const overallEl = document.getElementById('syl-overall-pct');
+      if(overallEl) overallEl.textContent = sylOverallPct();
+    }
+
+    function sylToggleSubject(subjectId){
+      const subjEl = document.querySelector('.syl-subject[data-subject-id="' + subjectId + '"]');
+      if(!subjEl) return;
+      const body = subjEl.querySelector('.syl-body');
+      const toggleLabel = subjEl.querySelector('.syl-subject-toggle');
+      const isExpanded = sylExpanded.has(subjectId);
+      if(isExpanded){
+        sylExpanded.delete(subjectId);
+        body.style.maxHeight = body.scrollHeight + 'px';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            body.style.maxHeight = '0px';
+            body.style.opacity = '0';
+          });
+        });
+        subjEl.classList.remove('expanded');
+        if(toggleLabel) toggleLabel.textContent = 'Open';
+      } else {
+        sylExpanded.add(subjectId);
+        subjEl.classList.add('expanded');
+        body.style.opacity = '1';
+        body.style.maxHeight = body.scrollHeight + 'px';
+        if(toggleLabel) toggleLabel.textContent = 'Hide';
+        const onEnd = (ev) => {
+          if(ev.propertyName !== 'max-height') return;
+          if(sylExpanded.has(subjectId)) body.style.maxHeight = 'none';
+          body.removeEventListener('transitionend', onEnd);
+        };
+        body.addEventListener('transitionend', onEnd);
+      }
+    }
+
+    async function sylConfirm(title, message){
+      if(typeof window.confirmModal === 'function'){
+        return await window.confirmModal({ title, message, confirmText:'Remove', cancelText:'Cancel' });
+      }
+      return window.confirm(message);
+    }
+
+    async function sylDeleteChapter(groupId, chapterId){
+      let target = null;
+      for(const subject of sylState.subjects){
+        const group = subject.groups.find(g => g.id === groupId);
+        if(group){ target = { subject, group }; break; }
+      }
+      if(!target) return;
+      const chapter = target.group.chapters.find(c => c.id === chapterId);
+      if(!chapter) return;
+      const ok = await sylConfirm('Remove chapter?', 'Remove "' + chapter.name + '" from your syllabus tracker?');
+      if(!ok) return;
+      target.group.chapters = target.group.chapters.filter(c => c.id !== chapterId);
+      await saveSylState();
+      await sylRender();
+    }
+    async function sylDeleteSubject(subjectId){
+      const subject = sylState.subjects.find(s => s.id === subjectId);
+      if(!subject) return;
+      const ok = await sylConfirm('Remove subject?', 'Remove "' + subject.name + '" and all its chapters from your tracker?');
+      if(!ok) return;
+      sylState.subjects = sylState.subjects.filter(s => s.id !== subjectId);
+      sylExpanded.delete(subjectId);
+      await saveSylState();
+      await sylRender();
+    }
+    async function sylResetAll(){
+      await loadSylState();
+      const ok = await sylConfirm('Reset all progress?', 'This clears every star rating across all subjects. Subjects and chapters you added will stay.');
+      if(!ok) return;
+      sylState.subjects.forEach(s => s.groups.forEach(g => g.chapters.forEach(c => { c.stars = 0; })));
+      await saveSylState();
+      await sylRender();
+    }
+
+    const sylSubjectsContainer = document.getElementById('syl-subjects');
+    if(sylSubjectsContainer){
+      sylSubjectsContainer.addEventListener('click', async (e) => {
+        const starBtn = e.target.closest('.syl-star');
+        if(starBtn){
+          const wrap = starBtn.closest('.syl-stars');
+          const chapterId = wrap.getAttribute('data-chapter');
+          const starVal = parseInt(starBtn.getAttribute('data-star'), 10);
+          const found = sylFindChapter(chapterId);
+          if(found){
+            found.chapter.stars = (found.chapter.stars === starVal) ? 0 : starVal;
+            sylApplyStarsToDom(wrap, found.chapter.stars);
+            starBtn.classList.add('syl-star-pop');
+            setTimeout(() => starBtn.classList.remove('syl-star-pop'), 220);
+            sylRefreshSubjectUI(found.subject.id);
+            await saveSylState();
+          }
+          return;
+        }
+        const actionEl = e.target.closest('[data-action]');
+        if(!actionEl) return;
+        const action = actionEl.getAttribute('data-action');
+        if(action === 'toggle-subject'){
+          sylToggleSubject(actionEl.getAttribute('data-subject'));
+        } else if(action === 'add-chapter'){
+          const wrap = actionEl.closest('.syl-add-chapter-wrap');
+          const form = wrap.querySelector('.syl-inline-form');
+          actionEl.style.display = 'none';
+          form.style.display = 'flex';
+          requestAnimationFrame(() => form.classList.add('show'));
+          const inp = form.querySelector('.syl-new-chapter-input');
+          if(inp){ inp.value = ''; inp.focus(); }
+          const subjEl = actionEl.closest('.syl-subject');
+          const body = subjEl ? subjEl.querySelector('.syl-body') : null;
+          if(body && sylExpanded.has(subjEl.getAttribute('data-subject-id'))){
+            setTimeout(() => { body.style.maxHeight = body.scrollHeight + 'px'; }, 30);
+          }
+        } else if(action === 'cancel-chapter'){
+          const wrap = actionEl.closest('.syl-add-chapter-wrap');
+          const form = wrap.querySelector('.syl-inline-form');
+          const btn = wrap.querySelector('.syl-add-chapter-btn');
+          form.classList.remove('show');
+          setTimeout(() => { form.style.display = 'none'; }, 200);
+          if(btn) btn.style.display = 'inline-flex';
+        } else if(action === 'confirm-chapter'){
+          const subjectId = actionEl.getAttribute('data-subject');
+          const wrap = actionEl.closest('.syl-add-chapter-wrap');
+          const inp = wrap.querySelector('.syl-new-chapter-input');
+          const name = (inp.value || '').trim();
+          if(!name) return;
+          const subject = sylState.subjects.find(s => s.id === subjectId);
+          if(!subject) return;
+          let group = subject.groups.find(g => g.id === 'custom');
+          if(!group){ group = { id:'custom', name: subject.groups.length ? 'Added by you' : null, builtin:false, chapters:[] }; subject.groups.push(group); }
+          group.chapters.push({ id: cryptoId(), name, stars:0, builtin:false });
+          sylExpanded.add(subjectId);
+          await saveSylState();
+          await sylRender();
+        } else if(action === 'del-chapter'){
+          sylDeleteChapter(actionEl.getAttribute('data-group'), actionEl.getAttribute('data-chapter'));
+        } else if(action === 'del-subject'){
+          sylDeleteSubject(actionEl.getAttribute('data-subject'));
+        }
+      });
+      sylSubjectsContainer.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' && e.target.classList.contains('syl-new-chapter-input')){
+          e.preventDefault();
+          const wrap = e.target.closest('.syl-add-chapter-wrap');
+          const confirmBtn = wrap.querySelector('[data-action="confirm-chapter"]');
+          if(confirmBtn) confirmBtn.click();
+        }
+      });
+    }
+
+    const sylResetBtn = document.getElementById('syl-reset-btn');
+    if(sylResetBtn) sylResetBtn.addEventListener('click', sylResetAll);
+
+    const sylAddSubjectBtn = document.getElementById('syl-add-subject-btn');
+    const sylAddSubjectForm = document.getElementById('syl-add-subject-form');
+    const sylNewSubjectInput = document.getElementById('syl-new-subject-input');
+    function sylCloseAddSubjectForm(){
+      if(!sylAddSubjectForm) return;
+      sylAddSubjectForm.classList.remove('show');
+      setTimeout(() => { sylAddSubjectForm.style.display = 'none'; }, 200);
+      if(sylAddSubjectBtn) sylAddSubjectBtn.style.display = 'flex';
+    }
+    async function sylConfirmAddSubject(){
+      const name = (sylNewSubjectInput.value || '').trim();
+      if(!name) return;
+      await loadSylState();
+      const newSubject = { id: cryptoId(), name, builtin:false, groups:[] };
+      sylState.subjects.push(newSubject);
+      sylExpanded.add(newSubject.id);
+      await saveSylState();
+      sylCloseAddSubjectForm();
+      await sylRender();
+    }
+    if(sylAddSubjectBtn) sylAddSubjectBtn.addEventListener('click', () => {
+      sylAddSubjectForm.style.display = 'flex';
+      requestAnimationFrame(() => sylAddSubjectForm.classList.add('show'));
+      sylAddSubjectBtn.style.display = 'none';
+      sylNewSubjectInput.value = '';
+      sylNewSubjectInput.focus();
+    });
+    if(sylNewSubjectInput) sylNewSubjectInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') sylConfirmAddSubject(); });
+    if(document.getElementById('syl-cancel-subject-btn')) document.getElementById('syl-cancel-subject-btn').addEventListener('click', sylCloseAddSubjectForm);
+    if(document.getElementById('syl-confirm-subject-btn')) document.getElementById('syl-confirm-subject-btn').addEventListener('click', sylConfirmAddSubject);
+
+    // ====================================================================
+    // TRACK MY STUDIES — Flashcards tab (Formula Flashcards)
+    // ====================================================================
+    // Data: [topic, title, formula-html] per subject per class. Formula
+    // strings are plain HTML (sup/sub + unicode symbols) so they render in
+    // an italic serif face without needing a math-typesetting library.
+    const FC_DATA = {
+  11: {
+    Physics: [
+      ['Units and Dimensions', 'Dimensional formula of a quantity', '[X] = M<sup>a</sup>L<sup>b</sup>T<sup>c</sup>'],
+      ['Units and Dimensions', 'Principle of homogeneity', 'Every term on both sides of a valid equation must have the same dimensions'],
+      ['Units and Dimensions', 'Conversion between unit systems', 'n&#8321;u&#8321; = n&#8322;u&#8322;'],
+      ['Errors in Measurement', 'Absolute error', '&Delta;a = |a<sub>mean</sub> &minus; a<sub>i</sub>|'],
+      ['Errors in Measurement', 'Mean absolute error', '&Delta;a<sub>mean</sub> = (&Sigma;|&Delta;a<sub>i</sub>|)/n'],
+      ['Errors in Measurement', 'Percentage error', '(&Delta;a<sub>mean</sub>/a<sub>mean</sub>) &times; 100%'],
+      ['Errors in Measurement', 'Error in a product/quotient', '&Delta;z/z = &Delta;a/a + &Delta;b/b'],
+      ['Motion in One Dimension', 'First equation of motion', 'v = u + at'],
+      ['Motion in One Dimension', 'Second equation of motion', 's = ut + &frac12;at&sup2;'],
+      ['Motion in One Dimension', 'Third equation of motion', 'v&sup2; = u&sup2; + 2as'],
+      ['Motion in One Dimension', 'Distance covered in nth second', 's<sub>n</sub> = u + (a/2)(2n&minus;1)'],
+      ['Motion in Two Dimensions', 'Projectile &mdash; time of flight', 'T = 2u sin&theta; / g'],
+      ['Motion in Two Dimensions', 'Projectile &mdash; maximum height', 'H = u&sup2; sin&sup2;&theta; / 2g'],
+      ['Motion in Two Dimensions', 'Projectile &mdash; horizontal range', 'R = u&sup2; sin2&theta; / g'],
+      ['Motion in Two Dimensions', 'Equation of trajectory', 'y = x tan&theta; &minus; gx&sup2;/(2u&sup2;cos&sup2;&theta;)'],
+      ['Relative Motion', 'Relative velocity', 'v<sub>AB</sub> = v<sub>A</sub> &minus; v<sub>B</sub>'],
+      ['Relative Motion', 'Relative acceleration', 'a<sub>AB</sub> = a<sub>A</sub> &minus; a<sub>B</sub>'],
+      ['Laws of Motion', "Newton's second law", 'F = ma'],
+      ['Laws of Motion', 'Linear momentum', 'p = mv'],
+      ['Laws of Motion', 'Impulse', 'J = F&Delta;t = &Delta;p'],
+      ['Laws of Motion', 'Conservation of momentum', 'm&#8321;u&#8321; + m&#8322;u&#8322; = m&#8321;v&#8321; + m&#8322;v&#8322;'],
+      ['Friction', 'Kinetic friction', 'f = &mu;<sub>k</sub>N'],
+      ['Friction', 'Maximum static friction', 'f<sub>s(max)</sub> = &mu;<sub>s</sub>N'],
+      ['Friction', 'Angle of friction', 'tan&theta; = &mu;'],
+      ['Work, Energy and Power', 'Work done by a force', 'W = Fs cos&theta;'],
+      ['Work, Energy and Power', 'Kinetic energy', 'KE = &frac12;mv&sup2;'],
+      ['Work, Energy and Power', 'Gravitational potential energy', 'U = mgh'],
+      ['Work, Energy and Power', 'Power', 'P = W/t = Fv'],
+      ['Work, Energy and Power', 'Work&ndash;energy theorem', 'W<sub>net</sub> = &Delta;KE'],
+      ['Circular Motion', 'Centripetal acceleration', 'a = v&sup2;/r'],
+      ['Circular Motion', 'Centripetal force', 'F = mv&sup2;/r'],
+      ['Circular Motion', 'Angular velocity', '&omega; = v/r'],
+      ['Circular Motion', 'Banking of roads', 'tan&theta; = v&sup2;/(rg)'],
+      ['Centre of Mass', 'Centre of mass (position)', 'x<sub>cm</sub> = (&Sigma;m<sub>i</sub>x<sub>i</sub>) / &Sigma;m<sub>i</sub>'],
+      ['Centre of Mass', 'Centre of mass (velocity)', 'v<sub>cm</sub> = (&Sigma;m<sub>i</sub>v<sub>i</sub>) / &Sigma;m<sub>i</sub>'],
+      ['Centre of Mass', 'Two-body centre of mass', 'x<sub>cm</sub> = (m&#8321;x&#8321; + m&#8322;x&#8322;) / (m&#8321; + m&#8322;)'],
+      ['Collision', 'Coefficient of restitution', 'e = (v&#8322;&prime; &minus; v&#8321;&prime;) / (u&#8321; &minus; u&#8322;)'],
+      ['Collision', 'Perfectly inelastic collision (common velocity)', 'v = (m&#8321;u&#8321; + m&#8322;u&#8322;) / (m&#8321; + m&#8322;)'],
+      ['Collision', 'Elastic collision &mdash; velocity of body 1', 'v&#8321;&prime; = [(m&#8321;&minus;m&#8322;)u&#8321; + 2m&#8322;u&#8322;] / (m&#8321;+m&#8322;)'],
+      ['Rotational Motion', 'Torque', '&tau; = r &times; F = rF sin&theta;'],
+      ['Rotational Motion', 'Moment of inertia (uniform disc)', 'I = &frac12;MR&sup2;'],
+      ['Rotational Motion', 'Angular momentum', 'L = I&omega;'],
+      ['Rotational Motion', 'Rotational kinetic energy', 'KE = &frac12;I&omega;&sup2;'],
+      ['Rotational Motion', "Newton's second law (rotational)", '&tau; = I&alpha;'],
+      ['Gravitation', "Newton's law of gravitation", 'F = Gm&#8321;m&#8322;/r&sup2;'],
+      ['Gravitation', 'Acceleration due to gravity', 'g = GM/R&sup2;'],
+      ['Gravitation', 'Escape velocity', 'v<sub>e</sub> = &radic;(2GM/R)'],
+      ['Gravitation', 'Orbital velocity', 'v<sub>o</sub> = &radic;(GM/r)'],
+      ['Gravitation', "Kepler's third law", 'T&sup2; &prop; r&sup3;'],
+      ['Properties of Solids', "Young's modulus", 'Y = (F/A) &divide; (&Delta;L/L)'],
+      ['Properties of Solids', 'Bulk modulus', 'K = &minus;V(&Delta;P/&Delta;V)'],
+      ['Properties of Solids', 'Modulus of rigidity', '&eta; = (F/A) / &theta;'],
+      ['Properties of Fluids', 'Pressure', 'P = F/A'],
+      ['Properties of Fluids', 'Pressure at depth h', 'P = P&#8320; + &rho;gh'],
+      ['Properties of Fluids', 'Excess pressure in a liquid drop', '&Delta;P = 2T/r'],
+      ['Properties of Fluids', 'Excess pressure in a soap bubble', '&Delta;P = 4T/r'],
+      ['Properties of Fluids', "Bernoulli's equation", 'P + &frac12;&rho;v&sup2; + &rho;gh = constant'],
+      ['Properties of Fluids', 'Equation of continuity', 'A&#8321;v&#8321; = A&#8322;v&#8322;'],
+      ['Properties of Fluids', "Stokes' law (terminal velocity)", 'F = 6&pi;&eta;rv'],
+      ['Thermal Expansion', 'Linear expansion', 'L = L&#8320;(1 + &alpha;&Delta;T)'],
+      ['Thermal Expansion', 'Superficial (area) expansion', 'A = A&#8320;(1 + &beta;&Delta;T), &nbsp;&beta; = 2&alpha;'],
+      ['Thermal Expansion', 'Cubical (volume) expansion', 'V = V&#8320;(1 + &gamma;&Delta;T), &nbsp;&gamma; = 3&alpha;'],
+      ['Calorimetry', 'Heat required to change temperature', 'Q = mc&Delta;T'],
+      ['Calorimetry', 'Latent heat', 'Q = mL'],
+      ['Calorimetry', 'Principle of calorimetry', 'Heat lost by hot body = heat gained by cold body'],
+      ['Heat Transfer', 'Conduction (rate of heat flow)', 'Q/t = kA&Delta;T/d'],
+      ['Heat Transfer', 'Stefan&ndash;Boltzmann law', 'E = &sigma;T&#8308;'],
+      ['Heat Transfer', "Newton's law of cooling", 'dT/dt &prop; (T &minus; T&#8320;)'],
+      ['Heat Transfer', "Wien's displacement law", '&lambda;<sub>m</sub>T = b'],
+      ['Thermodynamics', 'First law of thermodynamics', '&Delta;U = Q &minus; W'],
+      ['Thermodynamics', 'Work done in isothermal process', 'W = nRT ln(V&#8322;/V&#8321;)'],
+      ['Thermodynamics', 'Work done in adiabatic process', 'W = (P&#8321;V&#8321; &minus; P&#8322;V&#8322;) / (&gamma;&minus;1)'],
+      ['Thermodynamics', 'Efficiency of a Carnot engine', '&eta; = 1 &minus; T&#8322;/T&#8321;'],
+      ['Kinetic Theory of Gases', 'Ideal gas equation', 'PV = nRT'],
+      ['Kinetic Theory of Gases', 'Pressure of a gas (kinetic theory)', 'P = &frac13; &rho; c&#772;&sup2;'],
+      ['Kinetic Theory of Gases', 'RMS speed', 'v<sub>rms</sub> = &radic;(3RT/M)'],
+      ['Kinetic Theory of Gases', 'Average kinetic energy per molecule', 'KE<sub>avg</sub> = &frac32;kT'],
+      ['Kinetic Theory of Gases', 'Relation between Cp and Cv', 'C<sub>p</sub> &minus; C<sub>v</sub> = R'],
+      ['Simple Harmonic Motion', 'Displacement in SHM', 'x = A sin(&omega;t + &phi;)'],
+      ['Simple Harmonic Motion', 'Time period (spring&ndash;mass system)', 'T = 2&pi;&radic;(m/k)'],
+      ['Simple Harmonic Motion', 'Time period (simple pendulum)', 'T = 2&pi;&radic;(L/g)'],
+      ['Simple Harmonic Motion', 'Maximum velocity and acceleration', 'v<sub>max</sub> = A&omega;, &nbsp;a = &minus;&omega;&sup2;x'],
+      ['Waves', 'Wave speed', 'v = &nu;&lambda;'],
+      ['Waves', 'Speed of a transverse wave on a string', 'v = &radic;(T/&mu;)'],
+      ['Waves', 'Beat frequency', 'f<sub>beat</sub> = |&nu;&#8321; &minus; &nu;&#8322;|'],
+      ['Sound Waves', 'Speed of sound in a gas', 'v = &radic;(&gamma;P/&rho;)'],
+      ['Sound Waves', 'Intensity level', '&beta; = 10 log(I/I&#8320;) dB'],
+      ['Sound Waves', 'Closed organ pipe frequency', 'f<sub>n</sub> = nv/4L &nbsp;(n = 1, 3, 5&hellip;)'],
+      ['Sound Waves', 'Open organ pipe frequency', 'f<sub>n</sub> = nv/2L &nbsp;(n = 1, 2, 3&hellip;)'],
+      ['Doppler Effect', 'Apparent frequency (general)', "f&prime; = f (v &plusmn; v<sub>o</sub>) / (v &#8723; v<sub>s</sub>)"]
+    ],
+    Chemistry: [
+      ['Mole Concept', 'Number of moles', 'n = given mass / molar mass'],
+      ['Mole Concept', 'Molarity', 'M = moles of solute / volume of solution (L)'],
+      ['Mole Concept', 'Molality', 'm = moles of solute / mass of solvent (kg)'],
+      ['Mole Concept', 'Mole fraction', 'x<sub>A</sub> = n<sub>A</sub> / (n<sub>A</sub> + n<sub>B</sub>)'],
+      ['Mole Concept', 'Normality', 'N = Molarity &times; n-factor'],
+      ['Atomic Structure', "Bohr's radius", 'r<sub>n</sub> = 0.529 n&sup2;/Z &#8491;'],
+      ['Atomic Structure', 'Energy of electron in nth orbit', 'E<sub>n</sub> = &minus;13.6 Z&sup2;/n&sup2; eV'],
+      ['Atomic Structure', 'de Broglie wavelength', '&lambda; = h/mv'],
+      ['Atomic Structure', 'Heisenberg uncertainty principle', '&Delta;x &middot; &Delta;p &ge; h/4&pi;'],
+      ['Atomic Structure', 'Rydberg equation', '1/&lambda; = R(1/n&#8321;&sup2; &minus; 1/n&#8322;&sup2;)'],
+      ['States of Matter', 'Ideal gas equation', 'PV = nRT'],
+      ['States of Matter', "Graham's law of diffusion", 'r&#8321;/r&#8322; = &radic;(M&#8322;/M&#8321;)'],
+      ['States of Matter', 'van der Waals equation', '(P + an&sup2;/V&sup2;)(V &minus; nb) = nRT'],
+      ['States of Matter', "Dalton's law of partial pressures", 'P<sub>total</sub> = P&#8321; + P&#8322; + P&#8323; + &hellip;'],
+      ['Thermodynamics', 'First law of thermodynamics', '&Delta;U = q + w'],
+      ['Thermodynamics', 'Enthalpy', 'H = U + PV'],
+      ['Thermodynamics', 'Gibbs free energy', '&Delta;G = &Delta;H &minus; T&Delta;S'],
+      ['Thermodynamics', 'Entropy change (reversible)', '&Delta;S = q<sub>rev</sub>/T'],
+      ['Thermochemistry', "Hess's law", '&Delta;H<sub>reaction</sub> = &Sigma;&Delta;H<sub>f</sub>(products) &minus; &Sigma;&Delta;H<sub>f</sub>(reactants)'],
+      ['Thermochemistry', 'Enthalpy from bond energies', '&Delta;H = &Sigma;BE(reactants) &minus; &Sigma;BE(products)'],
+      ['Thermochemistry', "Kirchhoff's equation", '&Delta;H&#8322; &minus; &Delta;H&#8321; = &Delta;C<sub>p</sub>&Delta;T'],
+      ['Chemical Equilibrium', 'Equilibrium constant (law of mass action)', 'K<sub>c</sub> = [C]<sup>c</sup>[D]<sup>d</sup> / [A]<sup>a</sup>[B]<sup>b</sup>'],
+      ['Chemical Equilibrium', 'Relation between Kp and Kc', 'K<sub>p</sub> = K<sub>c</sub>(RT)<sup>&Delta;n</sup>'],
+      ['Chemical Equilibrium', "Le Chatelier's principle", 'A system at equilibrium shifts to oppose any imposed change'],
+      ['Ionic Equilibrium', 'pH of a solution', 'pH = &minus;log[H&#8314;]'],
+      ['Ionic Equilibrium', 'pH &ndash; pOH relation', 'pH + pOH = 14'],
+      ['Ionic Equilibrium', 'Relation between Ka, Kb and Kw', 'K<sub>a</sub> &times; K<sub>b</sub> = K<sub>w</sub>'],
+      ['Ionic Equilibrium', 'Henderson&ndash;Hasselbalch equation', 'pH = pK<sub>a</sub> + log([salt]/[acid])'],
+      ['Ionic Equilibrium', "Ostwald's dilution law", 'K<sub>a</sub> = C&alpha;&sup2;'],
+      ['Ionic Equilibrium', 'Solubility product', 'K<sub>sp</sub> = [M<sup>+</sup>]<sup>x</sup>[A<sup>&minus;</sup>]<sup>y</sup>'],
+      ['Redox Reactions', 'Nernst equation', 'E = E&deg; &minus; (0.059/n) log Q'],
+      ['Redox Reactions', 'Number of equivalents', 'Equivalents = moles &times; n-factor'],
+      ['Hydrogen', 'Formation of water', '2H&#8322; + O&#8322; &rarr; 2H&#8322;O'],
+      ['Hydrogen', 'Hardness of water', 'Expressed as ppm of CaCO&#8323; equivalent'],
+      ['Hydrogen', 'Ortho- to para-hydrogen ratio (room temp.)', '&#8776; 3 : 1'],
+      ['Periodic Table and Periodicity', 'Effective nuclear charge', 'Z<sub>eff</sub> = Z &minus; &sigma;'],
+      ['Periodic Table and Periodicity', 'Mulliken electronegativity', '&chi; = (IE + EA) / 2'],
+      ['Chemical Bonding', 'Formal charge', 'FC = V &minus; N &minus; B/2'],
+      ['Chemical Bonding', 'Bond order', 'BO = &frac12;(N<sub>b</sub> &minus; N<sub>a</sub>)'],
+      ['Chemical Bonding', 'Dipole moment', '&mu; = q &times; d'],
+      ['s-Block Elements', 'Reaction of alkali metals with oxygen', '4M + O&#8322; &rarr; 2M&#8322;O'],
+      ['s-Block Elements', 'General formula of an alkali metal hydroxide', 'MOH &nbsp;(strongly basic, water soluble)'],
+      ['p-Block Elements (11th Part)', 'General formula of alums', 'M&#8322;SO&#8323;&middot;Al&#8322;(SO&#8323;)&#8323;&middot;24H&#8322;O'],
+      ['p-Block Elements (11th Part)', 'Diborane', 'B&#8322;H&#8326; &nbsp;(held together by two 3-centre&ndash;2-electron banana bonds)'],
+      ['General Organic Chemistry (GOC)', 'Degree of unsaturation (IHD)', 'IHD = (2C + 2 + N &minus; H &minus; X) / 2'],
+      ['General Organic Chemistry (GOC)', 'Hybridisation and bond angle', 'sp&sup3; = 109.5&deg;, &nbsp;sp&sup2; = 120&deg;, &nbsp;sp = 180&deg;'],
+      ['Isomerism', 'Number of optical isomers', '2<sup>n</sup> &nbsp;(n = number of chiral centres)'],
+      ['Purification and Characterisation of Organic Compounds', 'Percentage of carbon (combustion analysis)', '%C = (12/44) &times; (mass of CO&#8322;/mass of compound) &times; 100'],
+      ['Purification and Characterisation of Organic Compounds', 'Percentage of hydrogen (combustion analysis)', '%H = (2/18) &times; (mass of H&#8322;O/mass of compound) &times; 100'],
+      ['Purification and Characterisation of Organic Compounds', "Kjeldahl's method (% nitrogen)", '%N = (1.4 &times; normality &times; volume of acid) / mass of compound'],
+      ['Hydrocarbons', 'General formula &mdash; alkanes', 'C<sub>n</sub>H<sub>2n+2</sub>'],
+      ['Hydrocarbons', 'General formula &mdash; alkenes', 'C<sub>n</sub>H<sub>2n</sub>'],
+      ['Hydrocarbons', 'General formula &mdash; alkynes', 'C<sub>n</sub>H<sub>2n&minus;2</sub>'],
+      ['Hydrocarbons', "Markovnikov's rule", 'In HX addition to an unsymmetrical alkene, H adds to the carbon with more hydrogens already attached']
+    ],
+    Mathematics: [
+      ['Basic Mathematics', 'Quadratic formula', 'x = (&minus;b &plusmn; &radic;(b&sup2; &minus; 4ac)) / 2a'],
+      ['Basic Mathematics', 'Logarithm rules', 'log(mn) = log m + log n &nbsp;&middot;&nbsp; log(m/n) = log m &minus; log n'],
+      ['Basic Mathematics', 'Laws of indices', 'a<sup>m</sup> &middot; a<sup>n</sup> = a<sup>m+n</sup>'],
+      ['Sets', 'Union&ndash;intersection formula', '|A&cup;B| = |A| + |B| &minus; |A&cap;B|'],
+      ['Sets', 'Number of subsets', 'Number of subsets of a set with n elements = 2<sup>n</sup>'],
+      ['Sets', "De Morgan's laws", "(A&cup;B)&prime; = A&prime;&cap;B&prime; &nbsp;&middot;&nbsp; (A&cap;B)&prime; = A&prime;&cup;B&prime;"],
+      ['Relations and Functions', 'Number of relations from A to B', '2<sup>|A||B|</sup>'],
+      ['Relations and Functions', 'Composite function', '(f&#8728;g)(x) = f(g(x))'],
+      ['Trigonometric Functions', 'Basic identity', 'sin&sup2;&theta; + cos&sup2;&theta; = 1'],
+      ['Trigonometric Functions', 'Sum formula (sine)', 'sin(A&plusmn;B) = sinA cosB &plusmn; cosA sinB'],
+      ['Trigonometric Functions', 'Sum formula (cosine)', 'cos(A&plusmn;B) = cosA cosB &#8723; sinA sinB'],
+      ['Trigonometric Functions', 'Double angle (sine)', 'sin2&theta; = 2 sin&theta; cos&theta;'],
+      ['Trigonometric Functions', 'Double angle (cosine)', 'cos2&theta; = 1 &minus; 2sin&sup2;&theta; = 2cos&sup2;&theta; &minus; 1'],
+      ['Inverse Trigonometric Functions', 'Principal value range of sin&#8315;&sup1;x', '[&minus;&pi;/2, &pi;/2]'],
+      ['Inverse Trigonometric Functions', 'Complementary relation', 'sin&#8315;&sup1;x + cos&#8315;&sup1;x = &pi;/2'],
+      ['Inverse Trigonometric Functions', 'Sum formula', 'tan&#8315;&sup1;x + tan&#8315;&sup1;y = tan&#8315;&sup1;((x+y)/(1&minus;xy))'],
+      ['Complex Numbers', 'Modulus of a complex number', '|z| = &radic;(a&sup2; + b&sup2;)'],
+      ['Complex Numbers', 'Argument of a complex number', '&theta; = tan&#8315;&sup1;(b/a)'],
+      ['Complex Numbers', 'Iota squared', 'i&sup2; = &minus;1'],
+      ['Complex Numbers', 'Polar form', 'z = r(cos&theta; + i sin&theta;)'],
+      ['Quadratic Equations', 'Quadratic formula', 'x = (&minus;b &plusmn; &radic;(b&sup2; &minus; 4ac)) / 2a'],
+      ['Quadratic Equations', 'Sum & product of roots', '&alpha;+&beta; = &minus;b/a &nbsp;&middot;&nbsp; &alpha;&beta; = c/a'],
+      ['Quadratic Equations', 'Discriminant', 'D = b&sup2; &minus; 4ac'],
+      ['Sequences and Series', 'nth term of an A.P.', 'a<sub>n</sub> = a + (n&minus;1)d'],
+      ['Sequences and Series', 'Sum of n terms of an A.P.', 'S<sub>n</sub> = n/2 &middot; [2a + (n&minus;1)d]'],
+      ['Sequences and Series', 'nth term of a G.P.', 'a<sub>n</sub> = a &middot; r<sup>n&minus;1</sup>'],
+      ['Sequences and Series', 'Sum of n terms of a G.P.', 'S<sub>n</sub> = a(r<sup>n</sup>&minus;1)/(r&minus;1)'],
+      ['Sequences and Series', 'Sum to infinity of a G.P.', 'S<sub>&infin;</sub> = a/(1&minus;r), |r| &lt; 1'],
+      ['Permutations and Combinations', 'Permutations', '<sup>n</sup>P<sub>r</sub> = n! / (n&minus;r)!'],
+      ['Permutations and Combinations', 'Combinations', '<sup>n</sup>C<sub>r</sub> = n! / (r!(n&minus;r)!)'],
+      ['Permutations and Combinations', 'Circular permutations', '(n&minus;1)!'],
+      ['Binomial Theorem', 'General term', 'T<sub>r+1</sub> = <sup>n</sup>C<sub>r</sub> a<sup>n&minus;r</sup> b<sup>r</sup>'],
+      ['Binomial Theorem', 'Sum of binomial coefficients', '<sup>n</sup>C<sub>0</sub> + <sup>n</sup>C<sub>1</sub> + &hellip; + <sup>n</sup>C<sub>n</sub> = 2<sup>n</sup>'],
+      ['Straight Lines', 'Slope of a line', 'm = (y&#8322;&minus;y&#8321;)/(x&#8322;&minus;x&#8321;)'],
+      ['Straight Lines', 'Distance between two points', 'd = &radic;((x&#8322;&minus;x&#8321;)&sup2; + (y&#8322;&minus;y&#8321;)&sup2;)'],
+      ['Straight Lines', 'Point&ndash;slope form', 'y &minus; y&#8321; = m(x &minus; x&#8321;)'],
+      ['Straight Lines', 'Distance of a point from a line', 'd = |Ax&#8321;+By&#8321;+C| / &radic;(A&sup2;+B&sup2;)'],
+      ['Straight Lines', 'Angle between two lines', 'tan&theta; = |(m&#8321;&minus;m&#8322;)/(1+m&#8321;m&#8322;)|'],
+      ['Pair of Straight Lines', 'Combined equation through origin', 'ax&sup2; + 2hxy + by&sup2; = 0'],
+      ['Pair of Straight Lines', 'Angle between the lines', 'tan&theta; = 2&radic;(h&sup2;&minus;ab) / (a+b)'],
+      ['Pair of Straight Lines', 'Condition for perpendicular lines', 'a + b = 0'],
+      ['Circle', 'Circle centred at origin', 'x&sup2; + y&sup2; = r&sup2;'],
+      ['Circle', 'General equation of a circle', 'x&sup2; + y&sup2; + 2gx + 2fy + c = 0'],
+      ['Circle', 'Radius from general equation', 'r = &radic;(g&sup2;+f&sup2;&minus;c)'],
+      ['Parabola', 'Standard equation', 'y&sup2; = 4ax'],
+      ['Parabola', 'Length of latus rectum', '4a'],
+      ['Ellipse', 'Standard equation', 'x&sup2;/a&sup2; + y&sup2;/b&sup2; = 1'],
+      ['Ellipse', 'Eccentricity', 'e = &radic;(1 &minus; b&sup2;/a&sup2;)'],
+      ['Hyperbola', 'Standard equation', 'x&sup2;/a&sup2; &minus; y&sup2;/b&sup2; = 1'],
+      ['Hyperbola', 'Eccentricity', 'e = &radic;(1 + b&sup2;/a&sup2;)'],
+      ['Limits', 'Standard trigonometric limit', 'lim<sub>x&rarr;0</sub> (sinx / x) = 1'],
+      ['Limits', 'Exponential limit', 'lim<sub>x&rarr;0</sub> (1+x)<sup>1/x</sup> = e'],
+      ['Limits', 'Standard algebraic limit', 'lim<sub>x&rarr;a</sub> (x<sup>n</sup>&minus;a<sup>n</sup>)/(x&minus;a) = na<sup>n&minus;1</sup>'],
+      ['Continuity', 'Condition for continuity at x = a', 'lim<sub>x&rarr;a</sub> f(x) = f(a)'],
+      ['Differentiability', 'Derivative from first principles', "f&prime;(a) = lim<sub>h&rarr;0</sub> [f(a+h) &minus; f(a)]/h"],
+      ['Statistics', 'Mean', 'x&#772; = &Sigma;x<sub>i</sub> / n'],
+      ['Statistics', 'Variance', '&sigma;&sup2; = &Sigma;(x<sub>i</sub>&minus;x&#772;)&sup2; / n'],
+      ['Statistics', 'Standard deviation', '&sigma; = &radic;(variance)'],
+      ['Mathematical Reasoning', "Implication p&rarr;q", 'Equivalent to &not;p &or; q'],
+      ['Mathematical Reasoning', 'Contrapositive', 'Contrapositive of p&rarr;q is &not;q&rarr;&not;p'],
+      ['Probability', 'Probability of an event', 'P(E) = favourable outcomes / total outcomes'],
+      ['Probability', 'Addition theorem', 'P(A&cup;B) = P(A) + P(B) &minus; P(A&cap;B)'],
+      ['Probability', 'Complement rule', "P(A&prime;) = 1 &minus; P(A)"]
+    ]
+  },
+  12: {
+    Physics: [
+      ['Electrostatics', "Coulomb's law", 'F = (1/4&pi;&epsilon;&#8320;)(q&#8321;q&#8322;/r&sup2;)'],
+      ['Electrostatics', 'Electric field due to a point charge', 'E = F/q = (1/4&pi;&epsilon;&#8320;)(Q/r&sup2;)'],
+      ['Electrostatics', 'Electric potential', 'V = (1/4&pi;&epsilon;&#8320;)(Q/r)'],
+      ['Electrostatics', 'Potential energy of two charges', 'U = (1/4&pi;&epsilon;&#8320;)(q&#8321;q&#8322;/r)'],
+      ['Electrostatics', 'Electric dipole moment', 'p = q &times; 2a'],
+      ['Electrostatics', "Gauss's law", '&Phi;<sub>E</sub> = q<sub>enclosed</sub> / &epsilon;&#8320;'],
+      ['Capacitance', 'Capacitance', 'C = Q/V'],
+      ['Capacitance', 'Parallel plate capacitor', 'C = &epsilon;&#8320;A/d'],
+      ['Capacitance', 'Energy stored in a capacitor', 'U = &frac12;CV&sup2;'],
+      ['Capacitance', 'Capacitors in series', '1/C = 1/C&#8321; + 1/C&#8322; + 1/C&#8323;'],
+      ['Capacitance', 'Capacitors in parallel', 'C = C&#8321; + C&#8322; + C&#8323;'],
+      ['Current Electricity', "Ohm's law", 'V = IR'],
+      ['Current Electricity', 'Resistivity', 'R = &rho;l/A'],
+      ['Current Electricity', 'Electrical power', 'P = VI = I&sup2;R = V&sup2;/R'],
+      ['Current Electricity', 'Resistors in series', 'R = R&#8321; + R&#8322; + R&#8323;'],
+      ['Current Electricity', 'Resistors in parallel', '1/R = 1/R&#8321; + 1/R&#8322; + 1/R&#8323;'],
+      ['Current Electricity', 'Drift velocity', 'I = nAev<sub>d</sub>'],
+      ['Current Electricity', "Kirchhoff's junction rule", '&Sigma;I<sub>in</sub> = &Sigma;I<sub>out</sub>'],
+      ['Magnetism', 'Magnetic dipole moment of a bar magnet', 'M = m &times; 2l'],
+      ['Magnetism', 'Field on the axial line of a bar magnet', 'B = (&mu;&#8320;/4&pi;)(2M/r&sup3;)'],
+      ['Magnetism', 'Torque on a magnetic dipole', '&tau; = M &times; B = MB sin&theta;'],
+      ['Magnetism', 'Time period of a compass needle', 'T = 2&pi;&radic;(I/MB)'],
+      ['Magnetic Effects of Current', 'Force on a moving charge', 'F = qvB sin&theta;'],
+      ['Magnetic Effects of Current', 'Force on a current-carrying wire', 'F = BIL sin&theta;'],
+      ['Magnetic Effects of Current', "Biot&ndash;Savart law", 'dB = (&mu;&#8320;/4&pi;)(I dl sin&theta;/r&sup2;)'],
+      ['Magnetic Effects of Current', 'Field due to a long straight wire', 'B = &mu;&#8320;I/2&pi;r'],
+      ['Magnetic Effects of Current', 'Field at the centre of a circular loop', 'B = &mu;&#8320;I/2R'],
+      ['Magnetic Effects of Current', 'Field inside a solenoid', 'B = &mu;&#8320;nI'],
+      ['Electromagnetic Induction', "Faraday's law of induction", '&epsilon; = &minus;d&Phi;/dt'],
+      ['Electromagnetic Induction', 'Motional EMF', '&epsilon; = Bvl'],
+      ['Electromagnetic Induction', 'Self induction', '&epsilon; = &minus;L(dI/dt)'],
+      ['Electromagnetic Induction', 'Energy stored in an inductor', 'U = &frac12;LI&sup2;'],
+      ['Alternating Current', 'RMS value of alternating current', 'I<sub>rms</sub> = I&#8320;/&radic;2'],
+      ['Alternating Current', 'Impedance of an LCR circuit', 'Z = &radic;(R&sup2; + (X<sub>L</sub>&minus;X<sub>C</sub>)&sup2;)'],
+      ['Alternating Current', 'Resonant frequency', 'f&#8320; = 1/(2&pi;&radic;(LC))'],
+      ['Alternating Current', 'Inductive and capacitive reactance', 'X<sub>L</sub> = &omega;L, &nbsp;X<sub>C</sub> = 1/&omega;C'],
+      ['Alternating Current', 'Power factor', 'cos&phi; = R/Z'],
+      ['Electromagnetic Waves', 'Speed of an electromagnetic wave', 'c = 1/&radic;(&mu;&#8320;&epsilon;&#8320;)'],
+      ['Electromagnetic Waves', 'Wave speed relation', 'c = &nu;&lambda;'],
+      ['Electromagnetic Waves', 'Ratio of field amplitudes', 'E&#8320;/B&#8320; = c'],
+      ['Ray Optics', 'Mirror formula', '1/v + 1/u = 1/f'],
+      ['Ray Optics', 'Lens formula', '1/v &minus; 1/u = 1/f'],
+      ['Ray Optics', "Lens maker's formula", '1/f = (n&minus;1)(1/R&#8321; &minus; 1/R&#8322;)'],
+      ['Ray Optics', "Snell's law", 'n&#8321; sin&theta;&#8321; = n&#8322; sin&theta;&#8322;'],
+      ['Ray Optics', 'Power of a lens', 'P = 1/f &nbsp;(f in metres)'],
+      ['Ray Optics', 'Critical angle', 'sinC = 1/n'],
+      ['Wave Optics', "Young's double slit fringe width", '&beta; = &lambda;D/d'],
+      ['Wave Optics', 'Condition for bright fringe', 'Path difference = n&lambda;'],
+      ['Wave Optics', "Malus's law", 'I = I&#8320; cos&sup2;&theta;'],
+      ['Wave Optics', 'Diffraction first minimum (single slit)', 'sin&theta; = &lambda;/a'],
+      ['Dual Nature of Matter', 'Photoelectric equation', 'h&nu; = &phi; + KE<sub>max</sub>'],
+      ['Dual Nature of Matter', 'de Broglie wavelength', '&lambda; = h/p = h/mv'],
+      ['Dual Nature of Matter', 'Stopping potential', 'eV&#8320; = KE<sub>max</sub>'],
+      ['Atoms', "Bohr's radius", 'r<sub>n</sub> = 0.529 n&sup2;/Z &#8491;'],
+      ['Atoms', 'Energy of electron in nth orbit', 'E<sub>n</sub> = &minus;13.6 Z&sup2;/n&sup2; eV'],
+      ['Atoms', 'Rydberg formula', '1/&lambda; = R(1/n&#8321;&sup2; &minus; 1/n&#8322;&sup2;)'],
+      ['Nuclei', 'Radioactive decay law', 'N = N&#8320;e<sup>&minus;&lambda;t</sup>'],
+      ['Nuclei', 'Half life', 't<sub>&frac12;</sub> = 0.693/&lambda;'],
+      ['Nuclei', 'Mass&ndash;energy equivalence', 'E = mc&sup2;'],
+      ['Nuclei', 'Nuclear radius', 'R = R&#8320;A<sup>1/3</sup>'],
+      ['Semiconductors', 'Transistor current relation', 'I<sub>E</sub> = I<sub>B</sub> + I<sub>C</sub>'],
+      ['Semiconductors', 'Common emitter current gain', '&beta; = I<sub>C</sub>/I<sub>B</sub>'],
+      ['Semiconductors', 'Common base current gain', '&alpha; = I<sub>C</sub>/I<sub>E</sub>'],
+      ['Semiconductors', 'Relation between &alpha; and &beta;', '&beta; = &alpha;/(1&minus;&alpha;)'],
+      ['Communication Systems', 'Modulation index (AM)', 'm<sub>a</sub> = A<sub>m</sub>/A<sub>c</sub>'],
+      ['Communication Systems', 'Range of line-of-sight transmission', 'd = &radic;(2Rh)'],
+      ['Communication Systems', 'Bandwidth of an AM signal', 'BW = 2f<sub>m</sub>'],
+      ['Experimental Physics', 'Least count of a vernier caliper', 'LC = 1 MSD &minus; 1 VSD'],
+      ['Experimental Physics', 'Least count of a screw gauge', 'LC = pitch / number of circular divisions'],
+      ['Experimental Physics', 'Wheatstone bridge balance condition', 'P/Q = R/S']
+    ],
+    Chemistry: [
+      ['Solid State', 'Packing efficiency (FCC)', '74%'],
+      ['Solid State', 'Packing efficiency (BCC)', '68%'],
+      ['Solid State', 'Edge length &ndash; radius relation (FCC)', 'a = 2&radic;2 &middot; r'],
+      ['Solid State', 'Density of a unit cell', '&rho; = ZM / (a&sup3;N<sub>A</sub>)'],
+      ['Solid State', "Bragg's equation", 'n&lambda; = 2d sin&theta;'],
+      ['Solutions', "Raoult's law", 'P = P&deg; &middot; x<sub>solvent</sub>'],
+      ['Solutions', 'Relative lowering of vapour pressure', '(P&deg;&minus;P)/P&deg; = x<sub>solute</sub>'],
+      ['Solutions', 'Elevation in boiling point', '&Delta;T<sub>b</sub> = K<sub>b</sub>m'],
+      ['Solutions', 'Depression in freezing point', '&Delta;T<sub>f</sub> = K<sub>f</sub>m'],
+      ['Solutions', "van't Hoff factor", 'i = observed value / normal value'],
+      ['Solutions', 'Osmotic pressure', '&pi; = CRT'],
+      ['Electrochemistry', 'Nernst equation', 'E<sub>cell</sub> = E&deg;<sub>cell</sub> &minus; (0.059/n) log Q'],
+      ['Electrochemistry', "Faraday's first law of electrolysis", 'm = ZIt'],
+      ['Electrochemistry', 'Molar conductivity', '&Lambda;<sub>m</sub> = &kappa; &times; 1000/C'],
+      ['Electrochemistry', "Kohlrausch's law", '&Lambda;&deg;<sub>m</sub> = &lambda;&deg;<sub>+</sub> + &lambda;&deg;<sub>&minus;</sub>'],
+      ['Electrochemistry', 'Relation between &Delta;G&deg; and E&deg;', '&Delta;G&deg; = &minus;nFE&deg;<sub>cell</sub>'],
+      ['Chemical Kinetics', 'Rate law', 'Rate = k[A]<sup>m</sup>[B]<sup>n</sup>'],
+      ['Chemical Kinetics', 'Integrated rate law (1st order)', 'k = (2.303/t) log([A]&#8320;/[A])'],
+      ['Chemical Kinetics', 'Half-life (1st order reaction)', 't<sub>&frac12;</sub> = 0.693/k'],
+      ['Chemical Kinetics', 'Half-life (zero order reaction)', 't<sub>&frac12;</sub> = [A]&#8320;/2k'],
+      ['Chemical Kinetics', 'Arrhenius equation', 'k = Ae<sup>&minus;E<sub>a</sub>/RT</sup>'],
+      ['Surface Chemistry', 'Freundlich adsorption isotherm', 'x/m = kP<sup>1/n</sup>'],
+      ['Surface Chemistry', 'Adsorption at saturation (Langmuir)', 'x/m = k P / (1 + k P)'],
+      ['General Principles of Metallurgy', 'Roasting of zinc blende', '2ZnS + 3O&#8322; &rarr; 2ZnO + 2SO&#8322;'],
+      ['General Principles of Metallurgy', 'Feasibility of reduction (Ellingham)', '&Delta;G&deg; = &Delta;H&deg; &minus; T&Delta;S&deg;'],
+      ['p-Block Elements (12th Part)', "Ostwald's process", '4NH&#8323; + 5O&#8322; &rarr; 4NO + 6H&#8322;O'],
+      ['p-Block Elements (12th Part)', 'Contact process', '2SO&#8322; + O&#8322; &#8652; 2SO&#8323;'],
+      ['p-Block Elements (12th Part)', 'General formula of interhalogens', 'XX&prime;<sub>n</sub> &nbsp;(n = 1, 3, 5, 7)'],
+      ['d-Block Elements', 'Magnetic moment (spin only)', '&mu; = &radic;(n(n+2)) BM'],
+      ['d-Block Elements', 'General electronic configuration', '(n&minus;1)d<sup>1&ndash;10</sup> ns<sup>0&ndash;2</sup>'],
+      ['f-Block Elements', 'General configuration (lanthanides)', '4f<sup>1&ndash;14</sup> 5d<sup>0&ndash;1</sup> 6s&sup2;'],
+      ['f-Block Elements', 'Lanthanide contraction', 'Steady decrease in atomic/ionic radii across the lanthanide series'],
+      ['Coordination Compounds', 'Crystal field splitting energy (O<sub>h</sub>)', '&Delta;&#8320; = 10 Dq'],
+      ['Coordination Compounds', "Werner's EAN rule", 'EAN = Z &minus; oxidation state + 2&times;CN'],
+      ['Qualitative Analysis', 'Precipitation criterion', 'Precipitate forms when Q<sub>sp</sub> &gt; K<sub>sp</sub>'],
+      ['Environmental Chemistry', 'Biochemical oxygen demand (BOD)', 'O&#8322; consumed by microbes per litre of water over 5 days at 20&deg;C'],
+      ['Environmental Chemistry', 'Formation of photochemical smog', 'NO&#8322; + sunlight &rarr; NO + O &nbsp;&middot;&nbsp; O + O&#8322; &rarr; O&#8323;'],
+      ['Haloalkanes and Haloarenes', 'S<sub>N</sub>1 vs S<sub>N</sub>2 rate law', 'Rate(S<sub>N</sub>1) = k[RX] &nbsp;&middot;&nbsp; Rate(S<sub>N</sub>2) = k[RX][Nu&#8315;]'],
+      ['Haloalkanes and Haloarenes', 'S<sub>N</sub>1 reactivity order', '3&deg; &gt; 2&deg; &gt; 1&deg;'],
+      ['Alcohols, Phenols and Ethers', 'Lucas test reactivity order', '3&deg; &gt; 2&deg; &gt; 1&deg; with HCl/ZnCl&#8322;'],
+      ['Alcohols, Phenols and Ethers', 'Williamson ether synthesis', 'R&ndash;X + R&prime;&ndash;ONa &rarr; R&ndash;O&ndash;R&prime; + NaX'],
+      ['Aldehydes, Ketones and Carboxylic Acids', 'Aldol condensation (general)', '2 CH&#8323;CHO &rarr; CH&#8323;CH(OH)CH&#8322;CHO'],
+      ['Aldehydes, Ketones and Carboxylic Acids', 'Acid strength factor', 'Electron-withdrawing groups increase K<sub>a</sub>'],
+      ['Amines', 'Basicity order (aqueous, simple alkyl amines)', '2&deg; &gt; 1&deg; &gt; 3&deg; &gt; NH&#8323;'],
+      ['Amines', 'Hofmann bromamide degradation', 'RCONH&#8322; + Br&#8322; + 4NaOH &rarr; RNH&#8322; + Na&#8322;CO&#8323; + 2NaBr + 2H&#8322;O'],
+      ['Biomolecules', 'DNA base pairing', 'A&ndash;T (2 H-bonds) &nbsp;&middot;&nbsp; G&ndash;C (3 H-bonds)'],
+      ['Biomolecules', 'Peptide bond formation', '&ndash;COOH + H&#8322;N&ndash; &rarr; &ndash;CO&ndash;NH&ndash; + H&#8322;O'],
+      ['Polymers', 'Degree of polymerization', 'n = M<sub>polymer</sub> / M<sub>monomer</sub>'],
+      ['Chemistry in Everyday Life', 'Structure of a soap', 'RCOO&#8315;Na&#8314; &nbsp;(sodium salt of a long-chain fatty acid)'],
+      ['Practical Organic Chemistry', "Lassaigne's test", 'Detects nitrogen, sulfur and halogens by fusing the compound with sodium metal'],
+      ['Practical Organic Chemistry', "Tollens' test", 'An aldehyde reduces Tollens\' reagent to form a silver mirror; ketones do not react']
+    ],
+    Mathematics: [
+      ['Matrices', 'Matrix multiplication condition', '(m&times;n) &middot; (n&times;p) = (m&times;p)'],
+      ['Matrices', 'Inverse of a matrix', 'A<sup>&minus;1</sup> = adj(A)/|A|'],
+      ['Matrices', 'Condition for invertibility', '|A| &ne; 0'],
+      ['Determinants', '2&times;2 determinant', '|A| = ad &minus; bc'],
+      ['Determinants', 'Area of a triangle', 'Area = &frac12;|x&#8321;(y&#8322;&minus;y&#8323;)+x&#8322;(y&#8323;&minus;y&#8321;)+x&#8323;(y&#8321;&minus;y&#8322;)|'],
+      ['Determinants', "Cramer's rule", 'x = D<sub>x</sub>/D, &nbsp;y = D<sub>y</sub>/D'],
+      ['Functions', 'Composite function', '(f&#8728;g)(x) = f(g(x))'],
+      ['Functions', 'Inverse function property', '(f<sup>&minus;1</sup>&#8728;f)(x) = x'],
+      ['Continuity and Differentiability', 'Chain rule', 'dy/dx = (dy/du)(du/dx)'],
+      ['Continuity and Differentiability', 'Derivative of e<sup>x</sup>', 'd/dx(e<sup>x</sup>) = e<sup>x</sup>'],
+      ['Continuity and Differentiability', 'Derivative of ln x', 'd/dx(ln x) = 1/x'],
+      ['Continuity and Differentiability', 'Mean value theorem', "f&prime;(c) = [f(b)&minus;f(a)] / (b&minus;a)"],
+      ['Differentiation', 'Power rule', 'd/dx(x<sup>n</sup>) = nx<sup>n&minus;1</sup>'],
+      ['Differentiation', 'Product rule', "d/dx(uv) = u&prime;v + uv&prime;"],
+      ['Differentiation', 'Quotient rule', "d/dx(u/v) = (u&prime;v &minus; uv&prime;)/v&sup2;"],
+      ['Differentiation', 'Derivative of sinx and cosx', 'd/dx(sinx) = cosx, &nbsp;d/dx(cosx) = &minus;sinx'],
+      ['Application of Derivatives', 'Maxima / minima test', "f&prime;(x) = 0 &nbsp;&amp;&nbsp; f&Prime;(x) &lt; 0 (max) or &gt; 0 (min)"],
+      ['Application of Derivatives', 'Equation of a tangent', "y &minus; y&#8321; = f&prime;(x&#8321;)(x &minus; x&#8321;)"],
+      ['Application of Derivatives', 'Linear approximation', "&Delta;y &asymp; f&prime;(x)&Delta;x"],
+      ['Indefinite Integration', 'Power rule (integration)', '&int;x<sup>n</sup> dx = x<sup>n+1</sup>/(n+1) + C'],
+      ['Indefinite Integration', 'Integral of 1/x', '&int;(1/x) dx = ln|x| + C'],
+      ['Indefinite Integration', 'Integration by parts', '&int;uv dx = u&int;v dx &minus; &int;(u&prime;&int;v dx) dx'],
+      ['Definite Integration', 'Fundamental theorem of calculus', '&int;<sub>a</sub><sup>b</sup> f(x) dx = F(b) &minus; F(a)'],
+      ['Definite Integration', 'Property of definite integrals', '&int;<sub>a</sub><sup>b</sup> f(x)dx = &int;<sub>a</sub><sup>b</sup> f(a+b&minus;x)dx'],
+      ['Area Under Curves', 'Area under a curve', 'A = &int;<sub>a</sub><sup>b</sup> y dx'],
+      ['Area Under Curves', 'Area between two curves', 'A = &int;<sub>a</sub><sup>b</sup> [f(x) &minus; g(x)] dx'],
+      ['Differential Equations', 'General linear form', 'dy/dx + Py = Q'],
+      ['Differential Equations', 'Integrating factor', 'IF = e<sup>&int;P dx</sup>'],
+      ['Differential Equations', 'Variable separable solution', '&int;dy/g(y) = &int;f(x) dx'],
+      ['Vector Algebra', 'Dot product', 'a&middot;b = |a||b| cos&theta;'],
+      ['Vector Algebra', 'Cross product (magnitude)', '|a&times;b| = |a||b| sin&theta;'],
+      ['Vector Algebra', 'Scalar triple product', '[a b c] = a &middot; (b&times;c)'],
+      ['Vector Algebra', 'Unit vector', 'a&#770; = a / |a|'],
+      ['Three Dimensional Geometry', 'Distance between two points', 'd = &radic;((x&#8322;&minus;x&#8321;)&sup2;+(y&#8322;&minus;y&#8321;)&sup2;+(z&#8322;&minus;z&#8321;)&sup2;)'],
+      ['Three Dimensional Geometry', 'Direction cosines relation', 'l&sup2; + m&sup2; + n&sup2; = 1'],
+      ['Three Dimensional Geometry', 'Equation of a plane', 'lx + my + nz = d'],
+      ['Linear Programming', 'Objective function', 'Z = ax + by'],
+      ['Linear Programming', 'Optimal solution', 'The optimal value occurs at a corner point of the feasible region'],
+      ['Probability', "Bayes' theorem", 'P(A|B) = P(B|A)P(A) / P(B)'],
+      ['Probability', 'Conditional probability', 'P(A|B) = P(A&cap;B) / P(B)'],
+      ['Probability', 'Binomial distribution', 'P(X=r) = <sup>n</sup>C<sub>r</sub> p<sup>r</sup>q<sup>n&minus;r</sup>'],
+      ['Probability', 'Multiplication theorem', 'P(A&cap;B) = P(A) &middot; P(B|A)']
+    ]
+  }
+};
+
+
+    const FC_STATE_KEY = 'flashcards-last-v1';
+    function fcKeyFor(id){ return FC_STATE_KEY + '::' + id; }
+    const FC_ALL_CHAPTERS = '__ALL__';
+
+    let fcClass = null;
+    let fcSubject = null;
+    let fcChapter = null;
+    let fcDeck = [];
+    let fcIndex = 0;
+    let fcRevealed = false;
+
+    // Ordered, de-duplicated list of chapter names for a class/subject,
+    // in the order they first appear in FC_DATA (which mirrors the
+    // syllabus order used in the Track My Studies tab).
+    function fcChaptersFor(cls, subject){
+      const list = (FC_DATA[cls] && FC_DATA[cls][subject]) || [];
+      const seen = [];
+      list.forEach(card => { if(!seen.includes(card[0])) seen.push(card[0]); });
+      return seen;
+    }
+
+    async function fcLoadLast(){
+      if(typeof currentUser === 'undefined' || !currentUser) return null;
+      try{
+        const res = await window.storage.get(fcKeyFor(currentUser.id), true);
+        return JSON.parse(res.value);
+      }catch(e){ return null; }
+    }
+    async function fcSaveLast(){
+      if(typeof currentUser === 'undefined' || !currentUser) return;
+      try{ await window.storage.set(fcKeyFor(currentUser.id), JSON.stringify({ cls: fcClass, subject: fcSubject, chapter: fcChapter }), true); }catch(e){}
+    }
+
+    function fcShuffleArr(arr){
+      const a = arr.slice();
+      for(let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+      }
+      return a;
+    }
+
+    function fcHideAllSteps(){
+      ['fc-class-select', 'fc-subject-select', 'fc-chapter-select', 'fc-deck-view'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.style.display = 'none';
+      });
+    }
+    function fcShowClassStep(){
+      fcHideAllSteps();
+      const a = document.getElementById('fc-class-select');
+      if(a) a.style.display = 'block';
+    }
+    function fcShowSubjectStep(){
+      fcHideAllSteps();
+      const b = document.getElementById('fc-subject-select');
+      if(b) b.style.display = 'block';
+      const label = document.getElementById('fc-subject-class-label');
+      if(label) label.textContent = fcClass;
+      ['Physics', 'Chemistry', 'Mathematics'].forEach(sub => {
+        const el = document.getElementById('fc-count-' + sub);
+        if(el){
+          const list = (FC_DATA[fcClass] && FC_DATA[fcClass][sub]) || [];
+          el.textContent = list.length + ' cards';
+        }
+      });
+    }
+    function fcShowChapterStep(){
+      fcHideAllSteps();
+      const c = document.getElementById('fc-chapter-select');
+      if(c) c.style.display = 'block';
+      const classLabel = document.getElementById('fc-chapter-class-label');
+      if(classLabel) classLabel.textContent = fcClass;
+      const subjectLabel = document.getElementById('fc-chapter-subject-label');
+      if(subjectLabel) subjectLabel.textContent = fcSubject;
+
+      const grid = document.getElementById('fc-chapter-grid');
+      if(!grid) return;
+      const allCards = (FC_DATA[fcClass] && FC_DATA[fcClass][fcSubject]) || [];
+      const chapters = fcChaptersFor(fcClass, fcSubject);
+      grid.innerHTML = '';
+
+      const allBtn = document.createElement('button');
+      allBtn.type = 'button';
+      allBtn.className = 'fc-chapter-btn fc-chapter-btn-all';
+      allBtn.dataset.chapter = FC_ALL_CHAPTERS;
+      allBtn.innerHTML = '<span>All chapters</span><span class="fc-chapter-count">' + allCards.length + ' cards</span>';
+      allBtn.addEventListener('click', () => fcSelectChapter(FC_ALL_CHAPTERS));
+      grid.appendChild(allBtn);
+
+      chapters.forEach(chapterName => {
+        const count = allCards.filter(card => card[0] === chapterName).length;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'fc-chapter-btn';
+        btn.dataset.chapter = chapterName;
+        btn.innerHTML = '<span>' + chapterName + '</span><span class="fc-chapter-count">' + count + ' cards</span>';
+        btn.addEventListener('click', () => fcSelectChapter(chapterName));
+        grid.appendChild(btn);
+      });
+    }
+    function fcShowDeckStep(){
+      fcHideAllSteps();
+      const d = document.getElementById('fc-deck-view');
+      if(d) d.style.display = 'block';
+    }
+
+    function fcSelectClass(cls){
+      fcClass = cls;
+      fcSubject = null;
+      fcChapter = null;
+      fcSaveLast();
+      fcShowSubjectStep();
+    }
+    function fcSelectSubject(subject){
+      fcSubject = subject;
+      fcChapter = null;
+      fcSaveLast();
+      fcShowChapterStep();
+    }
+    function fcSelectChapter(chapter){
+      fcChapter = chapter;
+      const allCards = (FC_DATA[fcClass] && FC_DATA[fcClass][fcSubject]) || [];
+      fcDeck = (chapter === FC_ALL_CHAPTERS ? allCards : allCards.filter(card => card[0] === chapter)).slice();
+      fcIndex = 0;
+      fcRevealed = false;
+      fcSaveLast();
+      fcShowDeckStep();
+      fcRenderCard();
+    }
+
+    function fcRenderCard(){
+      if(!fcDeck.length) return;
+      const card = fcDeck[fcIndex];
+      const tag = fcSubject + ' \u00b7 ' + card[0];
+      const tagFront = document.getElementById('fc-card-tag-front');
+      const tagBack = document.getElementById('fc-card-tag-back');
+      const title = document.getElementById('fc-card-title');
+      const formula = document.getElementById('fc-card-formula');
+      if(tagFront) tagFront.textContent = tag;
+      if(tagBack) tagBack.textContent = tag;
+      if(title) title.textContent = card[1];
+      if(formula) formula.innerHTML = card[2];
+      const progress = document.getElementById('fc-deck-progress');
+      if(progress) progress.textContent = (fcIndex + 1) + ' / ' + fcDeck.length;
+      const cardEl = document.getElementById('fc-card');
+      const revealLabel = document.getElementById('fc-reveal-label');
+      fcRevealed = false;
+      if(cardEl) cardEl.classList.remove('fc-flipped');
+      if(revealLabel) revealLabel.textContent = 'Reveal';
+    }
+
+    function fcToggleReveal(){
+      if(!fcDeck.length) return;
+      fcRevealed = !fcRevealed;
+      const cardEl = document.getElementById('fc-card');
+      const revealLabel = document.getElementById('fc-reveal-label');
+      if(cardEl) cardEl.classList.toggle('fc-flipped', fcRevealed);
+      if(revealLabel) revealLabel.textContent = fcRevealed ? 'Hide' : 'Reveal';
+    }
+
+    function fcNextCard(){
+      if(!fcDeck.length) return;
+      fcIndex = (fcIndex + 1) % fcDeck.length;
+      const cardEl = document.getElementById('fc-card');
+      if(cardEl){
+        cardEl.classList.add('fc-anim-next');
+        setTimeout(() => cardEl.classList.remove('fc-anim-next'), 380);
+      }
+      fcRenderCard();
+    }
+
+    function fcShuffleDeck(){
+      if(!fcDeck.length) return;
+      fcDeck = fcShuffleArr(fcDeck);
+      fcIndex = 0;
+      fcRenderCard();
+    }
+
+    async function fcInit(){
+      const saved = await fcLoadLast();
+      if(saved && saved.cls && FC_DATA[saved.cls]){
+        fcClass = saved.cls;
+        if(saved.subject && FC_DATA[saved.cls][saved.subject]){
+          fcSubject = saved.subject;
+          const allCards = FC_DATA[fcClass][fcSubject];
+          const savedChapter = saved.chapter;
+          const chapterIsValid = savedChapter === FC_ALL_CHAPTERS || (savedChapter && allCards.some(card => card[0] === savedChapter));
+          if(chapterIsValid){
+            fcChapter = savedChapter;
+            fcDeck = (fcChapter === FC_ALL_CHAPTERS ? allCards : allCards.filter(card => card[0] === fcChapter)).slice();
+            fcIndex = 0;
+            fcShowDeckStep();
+            fcRenderCard();
+            return;
+          }
+          fcShowChapterStep();
+          return;
+        }
+        fcShowSubjectStep();
+        return;
+      }
+      fcShowClassStep();
+    }
+
+    document.querySelectorAll('.fc-class-btn').forEach(btn => btn.addEventListener('click', () => fcSelectClass(btn.dataset.class)));
+    document.querySelectorAll('.fc-subject-btn').forEach(btn => btn.addEventListener('click', () => fcSelectSubject(btn.dataset.subject)));
+    const fcBackToClassBtn = document.getElementById('fc-back-to-class');
+    if(fcBackToClassBtn) fcBackToClassBtn.addEventListener('click', fcShowClassStep);
+    const fcBackToSubjectFromChapterBtn = document.getElementById('fc-back-to-subject-from-chapter');
+    if(fcBackToSubjectFromChapterBtn) fcBackToSubjectFromChapterBtn.addEventListener('click', fcShowSubjectStep);
+    const fcBackToChapterBtn = document.getElementById('fc-back-to-chapter');
+    if(fcBackToChapterBtn) fcBackToChapterBtn.addEventListener('click', fcShowChapterStep);
+    const fcCardEl = document.getElementById('fc-card');
+    if(fcCardEl) fcCardEl.addEventListener('click', fcToggleReveal);
+    const fcRevealBtn = document.getElementById('fc-reveal-btn');
+    if(fcRevealBtn) fcRevealBtn.addEventListener('click', (e) => { e.stopPropagation(); fcToggleReveal(); });
+    const fcNextBtn = document.getElementById('fc-next-btn');
+    if(fcNextBtn) fcNextBtn.addEventListener('click', (e) => { e.stopPropagation(); fcNextCard(); });
+    const fcShuffleBtn = document.getElementById('fc-shuffle-btn');
+    if(fcShuffleBtn) fcShuffleBtn.addEventListener('click', (e) => { e.stopPropagation(); fcShuffleDeck(); });
+
+    // ====================================================================
+    // TRACK MY STUDIES — Task tab (Today's Tasks)
+    // ====================================================================
+    const TASK_KEY = 'study-tasks-v1';
+    function taskKeyFor(id){ return TASK_KEY + '::' + id; }
+    function defaultTaskState(){ return { tasks: [] }; }
+    let taskState = null;
+    let taskStateUserId = null;
+
+    async function loadTaskState(){
+      if(!currentUser) return defaultTaskState();
+      if(taskState && taskStateUserId === currentUser.id) return taskState;
+      let st = defaultTaskState();
+      try{
+        const res = await window.storage.get(taskKeyFor(currentUser.id), true);
+        if(res && res.value){
+          const parsed = JSON.parse(res.value);
+          st = Object.assign(defaultTaskState(), parsed);
+          if(!Array.isArray(st.tasks)) st.tasks = [];
+        }
+      }catch(e){}
+      taskState = st;
+      taskStateUserId = currentUser.id;
+      return st;
+    }
+    async function saveTaskState(){
+      if(!currentUser || !taskState) return;
+      try{ await window.storage.set(taskKeyFor(currentUser.id), JSON.stringify(taskState), true); }catch(e){}
+    }
+    function stEscapeHtml(str){
+      return String(str == null ? '' : str).replace(/[&<>"']/g, ch => (
+        { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]
+      ));
+    }
+    function stTodayTasks(){
+      if(!taskState) return [];
+      return taskState.tasks.filter(t => t.date === stTodayKey());
+    }
+
+    // Keeps the red dots on the Task tab and the "Track My Studies" menu
+    // row in sync with whether any of today's tasks are still unfinished —
+    // callable on its own (e.g. right after login, before this view has
+    // ever been opened) as well as after every render.
+    async function stTaskRefreshDots(){
+      await loadTaskState();
+      const hasIncomplete = stTodayTasks().some(t => !t.done);
+      const tabDot = document.getElementById('st-tab-task-dot');
+      if(tabDot) tabDot.style.display = hasIncomplete ? 'block' : 'none';
+      const menuDot = document.getElementById('menu-studytracker-task-dot');
+      if(menuDot) menuDot.style.display = hasIncomplete ? 'block' : 'none';
+    }
+
+    let stTaskEditingId = null;
+
+    function stBuildTaskRow(task){
+      const row = document.createElement('div');
+      row.className = 'st-task-item' + (task.done ? ' st-task-item-done' : '') + (stTaskEditingId === task.id ? ' st-task-editing' : '');
+      row.dataset.id = task.id;
+
+      if(stTaskEditingId === task.id){
+        row.innerHTML =
+          '<input type="text" class="syl-input st-task-edit-input" maxlength="80" value="' + stEscapeHtml(task.title) + '">' +
+          '<div class="st-subject-chips st-task-edit-chips">' +
+            ['Self Study','Physics','Chemistry','Mathematics'].map(s =>
+              '<button type="button" class="st-subject-chip' + (task.subject === s ? ' active' : '') + '" data-subject="' + s + '">' + s + '</button>'
+            ).join('') +
+          '</div>' +
+          '<div class="st-task-edit-actions">' +
+            '<button type="button" class="syl-form-cancel" data-action="cancel-edit">Cancel</button>' +
+            '<button type="button" class="syl-form-confirm" data-action="save-edit">Save</button>' +
+          '</div>';
+        return row;
+      }
+
+      row.innerHTML =
+        '<button type="button" class="st-task-check" data-action="toggle" aria-label="Mark complete">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"></polyline></svg>' +
+        '</button>' +
+        '<div class="st-task-item-main">' +
+          '<p class="st-task-item-title">' + stEscapeHtml(task.title) + '</p>' +
+          '<span class="st-task-chip">' + stEscapeHtml(task.subject) + '</span>' +
+        '</div>' +
+        '<div class="st-task-item-actions">' +
+          '<button type="button" class="st-task-act st-task-play" data-action="play" aria-label="Study this now"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></button>' +
+          '<button type="button" class="st-task-act st-task-edit" data-action="edit" aria-label="Edit task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg></button>' +
+          '<button type="button" class="st-task-act st-task-del" data-action="delete" aria-label="Delete task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg></button>' +
+        '</div>';
+      return row;
+    }
+
+    async function stTaskRender(){
+      await loadTaskState();
+      const tasks = stTodayTasks();
+      const total = tasks.length;
+      const doneCount = tasks.filter(t => t.done).length;
+      const pct = total > 0 ? Math.round((doneCount/total) * 100) : 0;
+
+      const subEl = document.getElementById('st-task-summary-sub');
+      const pctEl = document.getElementById('st-task-summary-pct');
+      const trackEl = document.getElementById('st-task-progress-track');
+      const fillEl = document.getElementById('st-task-progress-fill');
+      if(subEl) subEl.textContent = total > 0 ? (doneCount + ' of ' + total + ' completed') : 'No tasks yet';
+      if(pctEl){ pctEl.style.display = total > 0 ? 'block' : 'none'; pctEl.textContent = pct + '%'; }
+      if(trackEl) trackEl.style.display = total > 0 ? 'block' : 'none';
+      if(fillEl) fillEl.style.width = pct + '%';
+
+      const listEl = document.getElementById('st-task-list');
+      const emptyEl = document.getElementById('st-task-empty');
+      if(listEl){
+        listEl.innerHTML = '';
+        if(total === 0){
+          if(emptyEl) emptyEl.style.display = 'block';
+        } else {
+          if(emptyEl) emptyEl.style.display = 'none';
+          // Unfinished tasks first (each in the order they were added), completed ones after.
+          const sorted = tasks.slice().sort((a,b) => {
+            if(a.done !== b.done) return a.done ? 1 : -1;
+            return a.createdAt - b.createdAt;
+          });
+          sorted.forEach(task => listEl.appendChild(stBuildTaskRow(task)));
+        }
+      }
+      await stTaskRefreshDots();
+    }
+
+    function stActivateHeroSubjectChip(subject){
+      document.querySelectorAll('#st-subject-chips .st-subject-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.subject === subject);
+      });
+    }
+    async function stPlayTask(task){
+      if(stTimer.running){ stSwitchTab('study'); return; }
+      stActivateHeroSubjectChip(task.subject);
+      stSwitchTab('study');
+      stStartSession();
+    }
+
+    async function stToggleTask(id){
+      await loadTaskState();
+      const t = taskState.tasks.find(x => x.id === id);
+      if(!t) return;
+      t.done = !t.done;
+      await saveTaskState();
+      await stTaskRender();
+    }
+    function stStartEditTask(id){ stTaskEditingId = id; stTaskRender(); }
+    function stCancelEditTask(){ stTaskEditingId = null; stTaskRender(); }
+    async function stSaveEditTask(id, row){
+      const input = row.querySelector('.st-task-edit-input');
+      const activeChip = row.querySelector('.st-task-edit-chips .st-subject-chip.active');
+      const title = (input && input.value || '').trim();
+      if(!title) return;
+      const subject = activeChip ? activeChip.dataset.subject : 'Self Study';
+      await loadTaskState();
+      const t = taskState.tasks.find(x => x.id === id);
+      if(!t) return;
+      t.title = title; t.subject = subject;
+      await saveTaskState();
+      stTaskEditingId = null;
+      await stTaskRender();
+    }
+    async function stDeleteTask(id, row){
+      let ok = true;
+      if(typeof window.confirmModal === 'function'){
+        ok = await window.confirmModal({
+          title: 'Delete this task?', message: "This can't be undone.",
+          confirmText: 'Delete', cancelText: 'Keep it'
+        });
+      }
+      if(!ok) return;
+      if(row) row.classList.add('st-task-removing');
+      await loadTaskState();
+      taskState.tasks = taskState.tasks.filter(x => x.id !== id);
+      await saveTaskState();
+      setTimeout(() => { stTaskRender(); }, row ? 220 : 0);
+    }
+
+    const stTaskListEl = document.getElementById('st-task-list');
+    if(stTaskListEl){
+      stTaskListEl.addEventListener('click', async (e) => {
+        const chip = e.target.closest('.st-task-edit-chips .st-subject-chip');
+        if(chip){
+          chip.parentElement.querySelectorAll('.st-subject-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          return;
+        }
+        const actionBtn = e.target.closest('[data-action]');
+        if(!actionBtn) return;
+        const row = actionBtn.closest('.st-task-item');
+        const id = row ? row.dataset.id : null;
+        const action = actionBtn.dataset.action;
+        if(action === 'toggle' && id) await stToggleTask(id);
+        else if(action === 'delete' && id) await stDeleteTask(id, row);
+        else if(action === 'edit' && id) stStartEditTask(id);
+        else if(action === 'cancel-edit') stCancelEditTask();
+        else if(action === 'save-edit' && id) await stSaveEditTask(id, row);
+        else if(action === 'play' && id){
+          await loadTaskState();
+          const t = taskState.tasks.find(x => x.id === id);
+          if(t) await stPlayTask(t);
+        }
+      });
+    }
+
+    const stTaskCreateBtn = document.getElementById('st-task-create-btn');
+    const stTaskForm = document.getElementById('st-task-inline-form');
+    const stTaskTitleInput = document.getElementById('st-task-title-input');
+    const stTaskSubjectChips = document.getElementById('st-task-subject-chips');
+    function stCloseTaskForm(){
+      if(!stTaskForm) return;
+      stTaskForm.classList.remove('show');
+      setTimeout(() => { stTaskForm.style.display = 'none'; }, 200);
+      if(stTaskCreateBtn) stTaskCreateBtn.style.display = 'flex';
+    }
+    async function stConfirmAddTask(){
+      const title = (stTaskTitleInput && stTaskTitleInput.value || '').trim();
+      if(!title) return;
+      const activeChip = stTaskSubjectChips ? stTaskSubjectChips.querySelector('.st-subject-chip.active') : null;
+      const subject = activeChip ? activeChip.dataset.subject : 'Self Study';
+      await loadTaskState();
+      taskState.tasks.push({ id: cryptoId(), title, subject, date: stTodayKey(), done:false, createdAt: Date.now() });
+      await saveTaskState();
+      stCloseTaskForm();
+      await stTaskRender();
+    }
+    if(stTaskCreateBtn) stTaskCreateBtn.addEventListener('click', () => {
+      stTaskForm.style.display = 'flex';
+      requestAnimationFrame(() => stTaskForm.classList.add('show'));
+      stTaskCreateBtn.style.display = 'none';
+      stTaskTitleInput.value = '';
+      stTaskSubjectChips.querySelectorAll('.st-subject-chip').forEach((c, i) => c.classList.toggle('active', i === 0));
+      stTaskTitleInput.focus();
+    });
+    if(stTaskTitleInput) stTaskTitleInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') stConfirmAddTask(); });
+    if(document.getElementById('st-task-cancel-btn')) document.getElementById('st-task-cancel-btn').addEventListener('click', stCloseTaskForm);
+    if(document.getElementById('st-task-confirm-btn')) document.getElementById('st-task-confirm-btn').addEventListener('click', stConfirmAddTask);
+    if(stTaskSubjectChips) stTaskSubjectChips.addEventListener('click', (e) => {
+      const chip = e.target.closest('.st-subject-chip');
+      if(!chip) return;
+      stTaskSubjectChips.querySelectorAll('.st-subject-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  })();
+
+
+  const bootAnimHold = new Promise(resolve => setTimeout(resolve, BOOT_ANIM_MIN_MS));
   Promise.allSettled([init(), bootAnimHold]).then(hideBootSplash);
 })();
 </script>
