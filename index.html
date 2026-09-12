@@ -7658,7 +7658,7 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
   const k = d.toISOString().slice(0,10);
       const dayData = days[k] || { hours:0, subjects:{} };
       weekTotal += dayData.hours;
-      Object.keys(dayData.subjects{}).forEach(s => { mix[s] = (mix[s]0) + dayData.subjects[s]; });
+      Object.keys(dayData.subjects  {}).forEach(s => { mix[s] = (mix[s]  0) + dayData.subjects[s]; });
       const bar = document.createElement('div');
       bar.className = 'tms-week-bar';
       bar.style.height = Math.min(100, dayData.hours * 15 + (dayData.hours>0?6:0)) + '%';
