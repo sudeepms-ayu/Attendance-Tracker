@@ -4825,6 +4825,255 @@
   @media (min-width: 640px){
     .st-stat-grid{ grid-template-columns: repeat(4, 1fr); }
   }
+
+  /* ================================================================
+     Floating "still studying" timer — appears bottom-right whenever
+     a study session is running and the person has navigated away
+     from Track My Studies.
+  ================================================================ */
+  #st-float-timer{
+    position: fixed;
+    right: 18px;
+    bottom: 22px;
+    z-index: 70;
+    display:none;
+    align-items:center;
+    gap:10px;
+    font: inherit;
+    outline:none;
+    -webkit-appearance:none;
+    appearance:none;
+    padding: 10px 16px 10px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(var(--gold-rgb),0.97) 0%, rgba(201,143,46,0.97) 100%);
+    color:#fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 14px 30px -10px rgba(var(--gold-rgb),0.65), 0 4px 10px -4px rgba(var(--ink-rgb),0.35);
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+    opacity:0;
+    transform: translateY(18px) scale(0.85);
+    transition: transform 0.46s cubic-bezier(0.34,1.56,0.64,1), opacity 0.32s ease, box-shadow 0.2s ease;
+  }
+  #st-float-timer.show{ opacity:1; transform: translateY(0) scale(1); }
+  #st-float-timer:hover{ box-shadow: 0 18px 36px -10px rgba(var(--gold-rgb),0.78), 0 6px 14px -4px rgba(var(--ink-rgb),0.4); transform: translateY(-2px) scale(1.02); }
+  #st-float-timer.show:active{ transform: translateY(0) scale(0.96); }
+  .st-float-icon-wrap{
+    position:relative; width:30px; height:30px; flex:none; display:flex; align-items:center; justify-content:center;
+    border-radius:50%; background: rgba(255,255,255,0.2);
+  }
+  .st-float-icon-wrap svg{ width:15px; height:15px; color:#fff; position:relative; z-index:1; }
+  .st-float-live-dot{
+    position:absolute; top:-2px; right:-2px; width:9px; height:9px; border-radius:50%;
+    background:#5CD97A; border:2px solid rgba(201,143,46,1);
+    box-shadow: 0 0 0 0 rgba(92,217,122,0.7);
+    animation: stFloatPulse 1.8s ease-out infinite;
+  }
+  #st-float-timer.st-float-paused .st-float-live-dot{ background:#E6C25C; animation:none; }
+  @keyframes stFloatPulse{
+    0%{ box-shadow: 0 0 0 0 rgba(92,217,122,0.55); }
+    70%{ box-shadow: 0 0 0 8px rgba(92,217,122,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(92,217,122,0); }
+  }
+  .st-float-text{ display:flex; flex-direction:column; line-height:1.2; }
+  .st-float-subject{ font-family:'Lora', serif; font-size:10.5px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; opacity:0.88; }
+  .st-float-time{ font-family:'Courier New', monospace; font-variant-numeric: tabular-nums; font-size:15px; font-weight:700; }
+  .st-float-chevron{ flex:none; width:14px; height:14px; opacity:0.75; transition: transform 0.2s ease; }
+  #st-float-timer:hover .st-float-chevron{ transform: translateX(2px); }
+  @media (max-width:640px){
+    #st-float-timer{ right:14px; bottom:16px; padding:9px 14px 9px 10px; }
+    .st-float-time{ font-size:14px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #st-float-timer, .st-float-live-dot, .st-float-chevron{ transition:none !important; animation:none !important; }
+  }
+
+  /* ================================================================
+     HOME — landing-style page reachable from the three-line menu.
+  ================================================================ */
+  #home-view{ position:relative; max-width:760px; overflow:visible; }
+  .hm-bg{
+    position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none;
+  }
+  .hm-orb{
+    position:absolute; border-radius:50%; filter: blur(10px); opacity:0.55;
+    will-change: transform;
+  }
+  .hm-orb-a{
+    width:420px; height:420px; top:-140px; right:-120px;
+    background: radial-gradient(circle, rgba(var(--gold-rgb),0.38) 0%, rgba(var(--gold-rgb),0) 72%);
+    animation: hmDriftA 16s ease-in-out infinite;
+  }
+  .hm-orb-b{
+    width:360px; height:360px; bottom:8%; left:-140px;
+    background: radial-gradient(circle, rgba(var(--ink-rgb),0.16) 0%, rgba(var(--ink-rgb),0) 72%);
+    animation: hmDriftB 20s ease-in-out infinite;
+  }
+  .hm-orb-c{
+    width:300px; height:300px; top:42%; right:8%;
+    background: radial-gradient(circle, rgba(var(--gold-rgb),0.22) 0%, rgba(var(--gold-rgb),0) 72%);
+    animation: hmDriftC 24s ease-in-out infinite;
+  }
+  @keyframes hmDriftA{
+    0%,100%{ transform: translate(0,0) scale(1); }
+    33%{ transform: translate(-40px,50px) scale(1.12); }
+    66%{ transform: translate(20px,20px) scale(0.94); }
+  }
+  @keyframes hmDriftB{
+    0%,100%{ transform: translate(0,0) scale(1); }
+    50%{ transform: translate(60px,-40px) scale(1.15); }
+  }
+  @keyframes hmDriftC{
+    0%,100%{ transform: translate(0,0) scale(1); }
+    40%{ transform: translate(-30px,-35px) scale(1.08); }
+    75%{ transform: translate(25px,15px) scale(0.92); }
+  }
+
+  .hm-reveal{ opacity:0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+  .hm-reveal.hm-in{ opacity:1; transform: translateY(0); }
+
+  .hm-badge{
+    display:inline-flex; align-items:center; gap:8px; padding:7px 16px; border-radius:999px;
+    background: rgba(var(--gold-rgb),0.12); border:1px solid rgba(var(--gold-rgb),0.35);
+    color: var(--gold); font-family:'Lora', serif; font-size:11.5px; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase; margin-bottom:20px;
+  }
+  .hm-badge-dot{ width:6px; height:6px; border-radius:50%; background: var(--gold); }
+  .hm-title{
+    font-family:'Lora', serif; font-weight:800; font-size:44px; line-height:1.05; letter-spacing:-0.01em;
+    color: var(--ink); margin:0 0 16px 0;
+  }
+  .hm-title .hm-title-mark{ color: var(--gold); }
+  .hm-sub{
+    font-family:'Lora', serif; font-size:16px; line-height:1.6; color: var(--ink-soft); max-width:520px; margin:0 0 32px 0;
+  }
+  .hm-sub b, .hm-sub strong{ color: var(--ink); font-weight:600; }
+  .hm-cta-col{ display:flex; flex-direction:column; gap:12px; margin-bottom:56px; max-width:360px; }
+  .hm-cta-primary{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    font-family:'Lora', serif; font-weight:700; font-size:15.5px; color:#fff;
+    background: linear-gradient(135deg, var(--gold) 0%, #c98f2e 100%);
+    border:none; border-radius:14px; padding:16px 22px; cursor:pointer; text-decoration:none;
+    box-shadow: 0 14px 28px -10px rgba(var(--gold-rgb),0.65);
+    transition: transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s ease;
+  }
+  .hm-cta-primary:hover{ transform: translateY(-2px); box-shadow: 0 18px 34px -10px rgba(var(--gold-rgb),0.78); }
+  .hm-cta-primary:active{ transform: translateY(0) scale(0.98); }
+  .hm-cta-secondary{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    font-family:'Lora', serif; font-weight:700; font-size:15px; color: var(--ink);
+    background: rgba(var(--paper-rgb),0.7); border:1px solid rgba(var(--ink-rgb),0.18);
+    border-radius:14px; padding:15px 22px; cursor:pointer; text-decoration:none;
+    transition: all 0.2s ease;
+  }
+  .hm-cta-secondary:hover{ border-color: var(--gold); background: rgba(var(--gold-rgb),0.08); }
+  .hm-cta-secondary:active{ transform: scale(0.98); }
+  .hm-cta-tertiary{
+    display:inline-flex; align-items:center; gap:8px; align-self:center;
+    font-family:'Lora', serif; font-weight:600; font-size:13.5px; color: var(--ink-soft);
+    text-decoration:none; padding:6px 4px; border-bottom:1px solid rgba(var(--ink-rgb),0.25);
+    transition: color 0.18s ease, border-color 0.18s ease;
+  }
+  .hm-cta-tertiary:hover{ color: var(--gold); border-color: var(--gold); }
+  .hm-btn-icon{ width:17px; height:17px; flex:none; }
+
+  .hm-section-head{ text-align:center; max-width:480px; margin:0 auto 34px auto; }
+  .hm-eyebrow{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    font-family:'Lora', serif; font-size:11.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+    color: var(--gold); margin:0 0 10px 0;
+  }
+  .hm-eyebrow svg{ width:13px; height:13px; }
+  .hm-h2{ font-family:'Lora', serif; font-weight:700; font-size:27px; color: var(--ink); margin:0 0 10px 0; }
+  .hm-h2-sub{ font-family:'Lora', serif; font-size:14.5px; color: var(--ink-soft); line-height:1.55; margin:0; }
+
+  .hm-feature-grid{ display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:52px; }
+  @media (min-width:640px){ .hm-feature-grid{ grid-template-columns: repeat(3,1fr); } }
+  .hm-feature-card{
+    text-align:center; background: var(--tt-card); border:1px solid rgba(var(--ink-rgb),0.12); border-radius:20px;
+    padding:26px 20px 22px 20px; box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 18px 32px -22px rgba(var(--ink-rgb),0.42);
+    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease;
+  }
+  .hm-feature-card:hover{ transform: translateY(-4px); box-shadow: 0 24px 40px -20px rgba(var(--ink-rgb),0.5); }
+  .hm-feature-num{ font-family:'Lora', serif; font-size:11px; font-weight:700; letter-spacing:0.14em; color: rgba(var(--gold-rgb),0.75); margin:0 0 12px 0; }
+  .hm-feature-icon{
+    width:52px; height:52px; border-radius:16px; margin:0 auto 16px auto; display:flex; align-items:center; justify-content:center;
+    background: rgba(var(--gold-rgb),0.14); color: var(--gold);
+  }
+  .hm-feature-icon svg{ width:24px; height:24px; }
+  .hm-feature-title{ font-family:'Lora', serif; font-weight:700; font-size:17px; color: var(--ink); margin:0 0 8px 0; }
+  .hm-feature-text{ font-family:'Lora', serif; font-size:13.5px; color: var(--ink-soft); line-height:1.55; margin:0; }
+
+  .hm-strip{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px 22px;
+    padding:20px 18px; border-radius:18px; margin-bottom:56px;
+    background: linear-gradient(135deg, rgba(var(--gold-rgb),0.1) 0%, rgba(var(--ink-rgb),0.04) 100%);
+    border:1px solid rgba(var(--gold-rgb),0.22);
+  }
+  .hm-strip-brand{ font-family:'Lora', serif; font-weight:800; font-size:15px; color: var(--ink); }
+  .hm-strip-brand span{ font-weight:400; font-style:italic; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color: var(--ink-soft); margin-left:8px; }
+  .hm-strip-check{ display:inline-flex; align-items:center; gap:6px; font-family:'Lora', serif; font-size:12px; font-weight:600; color: var(--ink-soft); }
+  .hm-strip-check svg{ width:13px; height:13px; color: var(--success); }
+
+  .hm-telegram{
+    position:relative; overflow:hidden; text-align:center; border-radius:24px; padding:40px 26px 36px 26px; margin-bottom:56px;
+    background: linear-gradient(155deg, rgba(var(--ink-rgb),0.94) 0%, rgba(var(--ink-rgb),0.82) 100%);
+  }
+  body.dark .hm-telegram{ background: linear-gradient(155deg, rgba(var(--paper-rgb),0.12) 0%, rgba(var(--paper-rgb),0.05) 100%); border:1px solid rgba(var(--gold-rgb),0.25); }
+  .hm-telegram-glow{
+    position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:280px; height:280px; border-radius:50%;
+    background: radial-gradient(circle, rgba(var(--gold-rgb),0.5) 0%, rgba(var(--gold-rgb),0) 70%); pointer-events:none;
+  }
+  .hm-telegram-eyebrow{
+    position:relative; display:inline-flex; align-items:center; gap:6px; font-family:'Lora', serif; font-size:11px; font-weight:700;
+    letter-spacing:0.16em; text-transform:uppercase; color: var(--gold); margin:0 0 14px 0;
+  }
+  .hm-telegram h2{ position:relative; font-family:'Lora', serif; font-weight:700; font-size:26px; color: var(--paper); margin:0 0 12px 0; line-height:1.25; }
+  body.dark .hm-telegram h2{ color: var(--ink); }
+  .hm-telegram p{ position:relative; font-family:'Lora', serif; font-size:14px; color: rgba(var(--paper-rgb),0.72); max-width:420px; margin:0 auto 26px auto; line-height:1.55; }
+  body.dark .hm-telegram p{ color: var(--ink-soft); }
+  .hm-telegram-btn{
+    position:relative; display:inline-flex; align-items:center; gap:9px; font-family:'Lora', serif; font-weight:700; font-size:14.5px;
+    color: var(--ink); background: var(--gold); border-radius:13px; padding:14px 24px; text-decoration:none;
+    box-shadow: 0 14px 26px -10px rgba(var(--gold-rgb),0.7); transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .hm-telegram-btn:hover{ transform: translateY(-2px); box-shadow: 0 18px 32px -10px rgba(var(--gold-rgb),0.82); }
+  .hm-telegram-btn svg{ width:17px; height:17px; }
+
+  .hm-explore{ margin-bottom:34px; }
+  .hm-explore-head{ font-family:'Lora', serif; font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color: var(--gold); margin:0 0 14px 0; }
+  .hm-explore-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (min-width:560px){ .hm-explore-grid{ grid-template-columns: repeat(3,1fr); } }
+  .hm-explore-link{
+    display:flex; align-items:center; gap:10px; font-family:'Lora', serif; font-size:13.5px; font-weight:600; color: var(--ink);
+    background: rgba(var(--paper-rgb),0.6); border:1px solid rgba(var(--ink-rgb),0.12); border-radius:12px; padding:12px 13px;
+    text-decoration:none; cursor:pointer; transition: all 0.2s ease;
+  }
+  .hm-explore-link:hover{ border-color: var(--gold); background: rgba(var(--gold-rgb),0.08); color: var(--gold); transform: translateY(-1px); }
+  .hm-explore-link svg{ width:16px; height:16px; flex:none; color: var(--gold); }
+
+  .hm-footer{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px;
+    padding:22px 0 0 0; border-top:1px solid rgba(var(--ink-rgb),0.14);
+  }
+  .hm-footer-brand{ font-family:'Lora', serif; font-size:13px; color: var(--ink-soft); }
+  .hm-footer-brand b{ color: var(--ink); font-weight:700; }
+  .hm-footer-support{
+    display:inline-flex; align-items:center; gap:7px; font-family:'Lora', serif; font-size:12.5px; font-weight:600;
+    color: var(--ink-soft); text-decoration:none; padding:8px 14px; border-radius:999px; border:1px solid rgba(var(--ink-rgb),0.16);
+    transition: all 0.2s ease;
+  }
+  .hm-footer-support:hover{ color: var(--gold); border-color: var(--gold); background: rgba(var(--gold-rgb),0.08); }
+  .hm-footer-support svg{ width:14px; height:14px; }
+
+  @media (max-width:640px){
+    .hm-title{ font-size:34px; }
+    .hm-orb{ opacity:0.4; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hm-orb{ animation:none !important; }
+    .hm-reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+  }
 </style>
 </head>
 <body>
@@ -4840,6 +5089,17 @@
   </div>
 </div>
 
+<button type="button" id="st-float-timer" aria-label="Return to Track My Studies">
+  <span class="st-float-icon-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.2 2"></path></svg>
+    <span class="st-float-live-dot" aria-hidden="true"></span>
+  </span>
+  <span class="st-float-text">
+    <span class="st-float-subject" id="st-float-subject">Self Study</span>
+    <span class="st-float-time" id="st-float-time">00:00:00</span>
+  </span>
+  <svg class="st-float-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+</button>
 <div class="stage-grain" aria-hidden="true"></div>
 <div class="stage-glow stage-glow-a" aria-hidden="true"></div>
 <div class="stage-glow stage-glow-b" aria-hidden="true"></div>
@@ -4853,6 +5113,14 @@
     </svg>
   </button>
   <div class="menu-dropdown" id="menu-dropdown">
+    <button class="menu-row" id="open-home-btn" type="button">
+      <span class="menu-row-label">
+        <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"></path><path d="M6 10v9.5a1 1 0 0 0 1 1h3.5v-6h3v6H17a1 1 0 0 0 1-1V10"></path></svg>
+        <span>Home</span>
+      </span>
+      <span class="menu-row-arrow">&rsaquo;</span>
+    </button>
+    <div class="menu-sep"></div>
     <button class="menu-row" id="menu-profile-btn" type="button" style="display:none;">
       <span class="menu-row-label">
         <svg class="menu-row-icon menu-profile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"></path></svg>
@@ -4990,6 +5258,113 @@
       </span>
     </button>
   </div>
+</div>
+
+<div class="wrap" id="home-view" style="display:none;">
+  <div class="hm-bg" aria-hidden="true">
+    <span class="hm-orb hm-orb-a"></span>
+    <span class="hm-orb hm-orb-b"></span>
+    <span class="hm-orb hm-orb-c"></span>
+  </div>
+
+  <button class="tt-back" id="hm-back-btn">&lsaquo; Back</button>
+
+  <section class="hm-hero">
+    <span class="hm-badge"><span class="hm-badge-dot"></span> Welcome back</span>
+    <h1 class="hm-title">Attendance<br><span class="hm-title-mark">Tracker</span></h1>
+    <p class="hm-sub">Your school life, <b>finally organized</b> — attendance, timetables, homework, exam countdowns and study tracking, all in one calm, ad-free space built by a student, for students.</p>
+
+    <div class="hm-cta-col">
+      <button type="button" class="hm-cta-primary" id="hm-cta-study">
+        <svg class="hm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.2 2"></path></svg>
+        Track My Studies
+        <svg class="hm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+      </button>
+      <button type="button" class="hm-cta-secondary" id="hm-cta-attendance">
+        <svg class="hm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        Attendance Register
+      </button>
+      <a href="mailto:sudeepsahoo9078@gmail.com?subject=Attendance%20Tracker%20-%20Support" class="hm-cta-tertiary" id="hm-cta-contact">
+        <svg class="hm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13z"></path><path d="m4.5 5.5 7.5 6.5 7.5-6.5"></path></svg>
+        Contact us via mail
+      </a>
+    </div>
+  </section>
+
+  <section class="hm-reveal">
+    <div class="hm-section-head">
+      <p class="hm-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8 12l2.5 2.5L16 9"></path></svg> Our Promise</p>
+      <h2 class="hm-h2">Why Attendance Tracker?</h2>
+      <p class="hm-h2-sub">Built with intention, not just features — for students who value clarity over clutter.</p>
+    </div>
+    <div class="hm-feature-grid">
+      <div class="hm-feature-card">
+        <p class="hm-feature-num">01</p>
+        <div class="hm-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3.2"></circle></svg></div>
+        <p class="hm-feature-title">Everything In One Place</p>
+        <p class="hm-feature-text">Attendance, timetables, homework and exams — no more juggling five different apps.</p>
+      </div>
+      <div class="hm-feature-card">
+        <p class="hm-feature-num">02</p>
+        <div class="hm-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg></div>
+        <p class="hm-feature-title">Clean, Calm Interface</p>
+        <p class="hm-feature-text">No clutter, no noise. Find what you need, fast — and get back to studying.</p>
+      </div>
+      <div class="hm-feature-card">
+        <p class="hm-feature-num">03</p>
+        <div class="hm-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"></path></svg></div>
+        <p class="hm-feature-title">Private &amp; Ad-Free</p>
+        <p class="hm-feature-text">No data sold, no ads, no noise. Just a calm space that stays entirely on your device.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="hm-reveal">
+    <div class="hm-strip">
+      <span class="hm-strip-brand">Attendance Tracker <span>Made For Students</span></span>
+      <span class="hm-strip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Private</span>
+      <span class="hm-strip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Ad-Free</span>
+      <span class="hm-strip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Free Forever</span>
+    </div>
+  </section>
+
+  <section class="hm-reveal">
+    <div class="hm-telegram">
+      <span class="hm-telegram-glow" aria-hidden="true"></span>
+      <p class="hm-telegram-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;vertical-align:-1px;"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg> Stay In The Loop</p>
+      <h2>New updates.<br>Straight to your phone.</h2>
+      <p>Be the first to know when we ship new features, fix bugs, or add something fresh to the tracker — no spam, just signal.</p>
+      <a href="https://t.me/attendancetracker" target="_blank" rel="noopener noreferrer" class="hm-telegram-btn" id="hm-telegram-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 4.5 2.7 11.9c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.7.4 1 .9 1 .4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.8.5 1.4.2 1.6-.8l3-14.1c.3-1.3-.5-1.9-1.8-1.9z"></path></svg>
+        Join Telegram Channel
+      </a>
+    </div>
+  </section>
+
+  <section class="hm-reveal hm-explore">
+    <p class="hm-explore-head">Explore</p>
+    <div class="hm-explore-grid" id="hm-explore-grid">
+      <button type="button" class="hm-explore-link" data-open="attendance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Attendance Register</button>
+      <button type="button" class="hm-explore-link" data-open="study"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.2 2"></path></svg>Track My Studies</button>
+      <button type="button" class="hm-explore-link" data-open="materials"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>Study Materials</button>
+      <button type="button" class="hm-explore-link" data-open="timetable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"></rect><line x1="3" y1="9.5" x2="21" y2="9.5"></line></svg>School Timetable</button>
+      <button type="button" class="hm-explore-link" data-open="coaching-timetable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9.5 12 4 2 9.5l10 5.5 10-5.5z"></path><path d="M6 12.2v4.3c0 1.66 2.69 3 6 3s6-1.34 6-3v-4.3"></path></svg>Coaching Timetable</button>
+      <button type="button" class="hm-explore-link" data-open="rollcall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Today's Roll Call</button>
+      <button type="button" class="hm-explore-link" data-open="holidays"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"></rect><path d="M8 14l2 2 4-4"></path></svg>Academic Calendar</button>
+      <button type="button" class="hm-explore-link" data-open="homework"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>Homework</button>
+      <button type="button" class="hm-explore-link" data-open="projection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"></path><path d="M4 4h13l-3 4 3 4H4"></path></svg>Projection to Exam</button>
+      <button type="button" class="hm-explore-link" data-open="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg>Coaching Exams</button>
+      <button type="button" class="hm-explore-link" data-open="magic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg>Wanna See Magic!!!</button>
+    </div>
+  </section>
+
+  <footer class="hm-footer">
+    <span class="hm-footer-brand"><b>Attendance Tracker</b> · crafted for students, made with discipline</span>
+    <a href="#" class="hm-footer-support" id="hm-support-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h13.5a2.5 2.5 0 0 1 0 5H17"></path><path d="M4 9.5v6a4 4 0 0 0 4 4h5a4 4 0 0 0 4-4v-1"></path></svg>
+      Buy me a chai
+    </a>
+  </footer>
 </div>
 
 <div class="wrap" id="timetable-view" style="display:none;">
@@ -7576,17 +7951,92 @@ window.promptCoachingModal = function(opts){
     // If the holiday greeting popup was paused to let the person browse
     // View Holidays, bring it back now that they're home again.
     if(typeof resumeHolidayGreetPopupIfPending === 'function') resumeHolidayGreetPopupIfPending();
+    if(typeof stUpdateFloatingWidget === 'function') stUpdateFloatingWidget();
   }
   function hideAllPages(){
     pageHide('auth-view'); pageHide('app-view'); pageHide('app-footer');
     pageHide('timetable-view'); pageHide('homework-view'); pageHide('rollcall-view'); pageHide('projection-view');
     pageHide('coaching-exams-view'); pageHide('holidays-view'); pageHide('coaching-timetable-view');
     pageHide('profile-view'); pageHide('studymaterials-view'); pageHide('bmc-view'); pageHide('magic-view');
-    pageHide('study-tracker-view'); pageHide('st-tabbar');
+    pageHide('study-tracker-view'); pageHide('st-tabbar'); pageHide('home-view');
     if(window.magicPageHide) window.magicPageHide();
     document.body.classList.remove('tt-mode');
     document.getElementById('menu-dropdown').classList.remove('open');
     { const mt = document.getElementById('menu-toggle'); if(mt) mt.classList.remove('menu-open'); }
+    if(typeof stUpdateFloatingWidget === 'function') stUpdateFloatingWidget();
+  }
+
+  // ---- Home (landing-style overview reachable from the three-line menu) ----
+  function homeShow(){
+    hideAllPages();
+    const view = document.getElementById('home-view');
+    if(view) view.style.display = 'block';
+    window.scrollTo(0,0);
+    if(typeof hmInitReveal === 'function') hmInitReveal();
+  }
+  function homeHide(){
+    pageHide('home-view');
+    backToAppOrAuth();
+  }
+  const homeOpenBtn = document.getElementById('open-home-btn');
+  if(homeOpenBtn) homeOpenBtn.addEventListener('click', homeShow);
+  const homeBackBtn = document.getElementById('hm-back-btn');
+  if(homeBackBtn) homeBackBtn.addEventListener('click', homeHide);
+
+  const hmCtaStudyBtn = document.getElementById('hm-cta-study');
+  if(hmCtaStudyBtn) hmCtaStudyBtn.addEventListener('click', () => { if(typeof stShow === 'function') stShow(); });
+  const hmCtaAttendanceBtn = document.getElementById('hm-cta-attendance');
+  if(hmCtaAttendanceBtn) hmCtaAttendanceBtn.addEventListener('click', homeHide);
+
+  const hmSupportLink = document.getElementById('hm-support-link');
+  if(hmSupportLink) hmSupportLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    if(typeof bmcShow === 'function') bmcShow();
+  });
+
+  const HM_EXPLORE_MAP = {
+    attendance: () => homeHide(),
+    study: () => { if(typeof stShow === 'function') stShow(); },
+    materials: () => { if(typeof studymaterialsShow === 'function') studymaterialsShow(); },
+    timetable: () => { if(typeof ttShow === 'function') ttShow(); },
+    'coaching-timetable': () => { if(typeof ctShow === 'function') ctShow(); },
+    rollcall: () => { if(typeof rcShow === 'function') rcShow(); },
+    holidays: () => { if(typeof holidaysShow === 'function') holidaysShow(); },
+    homework: () => { if(typeof hwShow === 'function') hwShow(); },
+    projection: () => { if(typeof projShow === 'function') projShow(); },
+    exams: () => { if(typeof examsShow === 'function') examsShow(); },
+    magic: () => { if(typeof magicShow === 'function') magicShow(); }
+  };
+  const hmExploreGrid = document.getElementById('hm-explore-grid');
+  if(hmExploreGrid) hmExploreGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.hm-explore-link');
+    if(!btn) return;
+    const action = HM_EXPLORE_MAP[btn.dataset.open];
+    if(action) action();
+  });
+
+  // Gentle scroll-reveal for the long-form Home page — sections drift up
+  // and fade in the first time they enter the viewport, instead of the
+  // whole page landing on the person's screen at once.
+  let hmRevealObserver = null;
+  function hmInitReveal(){
+    const els = document.querySelectorAll('#home-view .hm-reveal');
+    if(!els.length) return;
+    if(!('IntersectionObserver' in window)){
+      els.forEach(el => el.classList.add('hm-in'));
+      return;
+    }
+    if(!hmRevealObserver){
+      hmRevealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            entry.target.classList.add('hm-in');
+            hmRevealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.18, rootMargin: '0px 0px -40px 0px' });
+    }
+    els.forEach(el => { if(!el.classList.contains('hm-in')) hmRevealObserver.observe(el); });
   }
 
   // ---- Homework ----
@@ -11525,7 +11975,41 @@ if(existing){
         card.classList.remove('st-phase-rest');
       }
       if(labelEl) labelEl.textContent = 'Studying · ' + stTimer.subject;
+      stUpdateFloatingWidget();
     }
+
+    // ---- Floating "still studying" pill ----
+    // Shown bottom-right whenever a session is running and the person has
+    // navigated away from the Track My Studies screen; tapping it jumps
+    // straight back. Visibility is derived fresh each call from the timer
+    // state + whether the tracker view is actually on screen, so it stays
+    // correct no matter which flow (start / pause / navigate / reload) led
+    // here — no need to fire it from every possible call site perfectly.
+    function stUpdateFloatingWidget(){
+      const widget = document.getElementById('st-float-timer');
+      if(!widget) return;
+      const view = document.getElementById('study-tracker-view');
+      const onTrackerPage = !!(view && view.style.display === 'block');
+      const shouldShow = !!(stTimer.running && !onTrackerPage);
+      if(shouldShow){
+        const timeEl = document.getElementById('st-float-time');
+        const subjEl = document.getElementById('st-float-subject');
+        if(timeEl) timeEl.textContent = stTimer.mode === 'pomodoro' ? stFormatHMS(stTimer.phaseRemaining) : stFormatHMS(stTimer.elapsed);
+        if(subjEl) subjEl.textContent = stTimer.subject;
+        widget.classList.toggle('st-float-paused', !!stTimer.paused);
+        if(widget.style.display !== 'flex'){
+          widget.style.display = 'flex';
+          requestAnimationFrame(() => requestAnimationFrame(() => widget.classList.add('show')));
+        }
+      } else if(widget.classList.contains('show')){
+        widget.classList.remove('show');
+        setTimeout(() => { if(!widget.classList.contains('show')) widget.style.display = 'none'; }, 460);
+      } else {
+        widget.style.display = 'none';
+      }
+    }
+    const stFloatTimerBtn = document.getElementById('st-float-timer');
+    if(stFloatTimerBtn) stFloatTimerBtn.addEventListener('click', () => { if(typeof stShow === 'function') stShow(); });
 
     function stTick(){
       if(!stTimer.running || stTimer.paused) return;
@@ -11628,6 +12112,7 @@ if(existing){
       const hour = typeof stTimer.startHour === 'number' ? stTimer.startHour : new Date().getHours();
       stTimer.running = false;
       stSetLiveDots(false);
+      stUpdateFloatingWidget();
       await clearActiveSession();
       const hero = document.getElementById('st-hero-card');
       const timerCard = document.getElementById('st-timer-card');
@@ -11712,6 +12197,7 @@ if(existing){
       stSwitchTab(stActiveTab);
       await stRender();
       window.scrollTo(0,0);
+      stUpdateFloatingWidget();
     }
     function stHide(){
       pageHide('study-tracker-view');
