@@ -1654,7 +1654,43 @@
   .menu-row-label{ display:flex; align-items:center; gap:10px; }
   .menu-row-icon{ width:17px; height:17px; flex-shrink:0; color: var(--ink-soft); }
   .menu-row-arrow{ color: var(--ink-soft); font-size:17px; line-height:1; }
-  .menu-sep{ height:1px; background: rgba(var(--ink-rgb),0.14); margin:4px 4px; }
+  .menu-sep{ height:1px; background: rgba(var(--ink-rgb),0.14); margin:4px 4px; transition: opacity 0.15s ease; }
+
+  /* ---- Long-press reorder mode: hold a row to move it and set your own priority ---- */
+  .menu-dropdown.reorder-armed .menu-row{ transition: transform 0.22s cubic-bezier(0.22,1,0.36,1), background 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease; }
+  .menu-dropdown.reorder-armed .menu-row:not(.menu-row-lifted){ opacity:0.55; }
+  .menu-dropdown.reorder-armed .menu-sep{ opacity:0.25; }
+  .menu-row-lifted{
+    position:relative; z-index:5; opacity:1 !important;
+    background: rgba(var(--gold-rgb),0.13) !important;
+    box-shadow: 0 14px 26px -10px rgba(var(--ink-rgb),0.4), 0 0 0 1.5px rgba(var(--gold-rgb),0.55);
+    border-radius:10px; cursor: grabbing;
+    transition: box-shadow 0.18s ease, background 0.18s ease !important;
+  }
+  .menu-row-lifted > .menu-row-arrow, .menu-row-lifted > .menu-switch{ display:none; }
+  .menu-row-move-controls{ display:flex; align-items:center; gap:6px; flex:none; }
+  .menu-row-move-btn{
+    width:27px; height:27px; border-radius:50%; border:1px solid rgba(var(--gold-rgb),0.4);
+    background: rgba(var(--gold-rgb),0.16); color: var(--gold); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; flex-shrink:0; padding:0; transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .menu-row-move-btn:active{ transform: scale(0.86); background: rgba(var(--gold-rgb),0.32); }
+  .menu-row-move-btn svg{ width:14px; height:14px; }
+  .menu-row-move-btn[disabled]{ opacity:0.3; pointer-events:none; }
+  .menu-row-settling{ transition: transform 0.28s cubic-bezier(0.22,1,0.36,1) !important; }
+  @keyframes menuRowPulse{ 0%,100%{ box-shadow: 0 0 0 0 rgba(var(--gold-rgb),0.45);} 50%{ box-shadow: 0 0 0 5px rgba(var(--gold-rgb),0);} }
+  .menu-row-priming{ animation: menuRowPulse 0.55s ease-out; border-radius:10px; }
+  .menu-reorder-toast{
+    position:fixed; left:50%; bottom:28px; transform: translate(-50%, 8px);
+    font-family:'Lora', serif; font-size:12px; font-weight:700; letter-spacing:0.02em; color: var(--ink);
+    background: var(--gold); padding:9px 16px; border-radius:999px; white-space:nowrap; pointer-events:none;
+    box-shadow: 0 14px 28px -10px rgba(var(--ink-rgb),0.5); opacity:0; transition: opacity 0.22s ease, transform 0.22s ease;
+    z-index:200;
+  }
+  .menu-reorder-toast.show{ opacity:1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce){
+    .menu-dropdown.reorder-armed .menu-row, .menu-row-lifted, .menu-row-settling, .menu-row-priming{ transition:none !important; animation:none !important; }
+  }
 
   .menu-switch{
     width:36px;
@@ -4995,7 +5031,12 @@
     transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease;
   }
   .hm-feature-card:hover{ transform: translateY(-4px); box-shadow: 0 24px 40px -20px rgba(var(--ink-rgb),0.5); }
-  .hm-feature-num{ font-family:'Lora', serif; font-size:11px; font-weight:700; letter-spacing:0.14em; color: rgba(var(--gold-rgb),0.75); margin:0 0 12px 0; }
+  .hm-feature-num{ font-family:'Lora', serif; font-size:11px; font-weight:700; letter-spacing:0.14em; color: rgba(var(--gold-rgb),0.75); margin:0 0 12px 0; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .hm-feature-badge{
+    font-family:'Lora', serif; font-size:9.5px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;
+    color: var(--ink); background: var(--gold); padding:2px 7px; border-radius:999px;
+  }
+  .hm-feature-card-new{ border-color: rgba(var(--gold-rgb),0.4) !important; }
   .hm-feature-icon{
     width:52px; height:52px; border-radius:16px; margin:0 auto 16px auto; display:flex; align-items:center; justify-content:center;
     background: rgba(var(--gold-rgb),0.14); color: var(--gold);
@@ -5015,30 +5056,56 @@
   .hm-strip-check{ display:inline-flex; align-items:center; gap:6px; font-family:'Lora', serif; font-size:12px; font-weight:600; color: var(--ink-soft); }
   .hm-strip-check svg{ width:13px; height:13px; color: var(--success); }
 
+  /* Fixed, theme-independent palette so this card reads exactly the same
+     (and stays fully legible) whether the app is in day or night theme —
+     it never inherits the swapping --ink/--paper/--gold tokens. */
   .hm-telegram{
-    position:relative; overflow:hidden; text-align:center; border-radius:24px; padding:40px 26px 36px 26px; margin-bottom:56px;
-    background: linear-gradient(155deg, rgba(var(--ink-rgb),0.94) 0%, rgba(var(--ink-rgb),0.82) 100%);
+    --tg-deep-1: #1c160d; --tg-deep-2: #100c07; --tg-gold: #E9C271; --tg-gold-soft: rgba(233,194,113,0.85);
+    --tg-text: #F8F2E4; --tg-text-soft: rgba(248,242,228,0.76);
+    position:relative; overflow:hidden; text-align:center; border-radius:24px; padding:42px 26px 38px 26px; margin-bottom:56px;
+    background: linear-gradient(155deg, var(--tg-deep-1) 0%, var(--tg-deep-2) 100%);
+    border:1px solid rgba(233,194,113,0.22);
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04);
+    perspective: 900px; transform-style: preserve-3d;
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
   }
-  body.dark .hm-telegram{ background: linear-gradient(155deg, rgba(var(--paper-rgb),0.12) 0%, rgba(var(--paper-rgb),0.05) 100%); border:1px solid rgba(var(--gold-rgb),0.25); }
   .hm-telegram-glow{
-    position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:280px; height:280px; border-radius:50%;
-    background: radial-gradient(circle, rgba(var(--gold-rgb),0.5) 0%, rgba(var(--gold-rgb),0) 70%); pointer-events:none;
+    position:absolute; top:-90px; left:35%; width:300px; height:300px; border-radius:50%;
+    background: radial-gradient(circle, rgba(233,194,113,0.55) 0%, rgba(233,194,113,0) 70%); pointer-events:none;
+    animation: tgGlowDrift 9s ease-in-out infinite; will-change: transform;
+  }
+  .hm-telegram-glow-b{
+    position:absolute; bottom:-70px; right:8%; width:220px; height:220px; border-radius:50%;
+    background: radial-gradient(circle, rgba(233,194,113,0.28) 0%, rgba(233,194,113,0) 72%); pointer-events:none;
+    animation: tgGlowDrift 11s ease-in-out infinite reverse; will-change: transform;
+  }
+  @keyframes tgGlowDrift{
+    0%{ transform: translate3d(-16px,-10px,0) scale(1); }
+    50%{ transform: translate3d(22px,14px,0) scale(1.12); }
+    100%{ transform: translate3d(-16px,-10px,0) scale(1); }
   }
   .hm-telegram-eyebrow{
     position:relative; display:inline-flex; align-items:center; gap:6px; font-family:'Lora', serif; font-size:11px; font-weight:700;
-    letter-spacing:0.16em; text-transform:uppercase; color: var(--gold); margin:0 0 14px 0;
+    letter-spacing:0.16em; text-transform:uppercase; color: var(--tg-gold); margin:0 0 14px 0;
   }
-  .hm-telegram h2{ position:relative; font-family:'Lora', serif; font-weight:700; font-size:26px; color: var(--paper); margin:0 0 12px 0; line-height:1.25; }
-  body.dark .hm-telegram h2{ color: var(--ink); }
-  .hm-telegram p{ position:relative; font-family:'Lora', serif; font-size:14px; color: rgba(var(--paper-rgb),0.72); max-width:420px; margin:0 auto 26px auto; line-height:1.55; }
-  body.dark .hm-telegram p{ color: var(--ink-soft); }
+  .hm-telegram h2{ position:relative; font-family:'Playfair Display', serif; font-weight:800; font-size:27px; color: var(--tg-text); margin:0 0 12px 0; line-height:1.25; letter-spacing:0.005em; }
+  .hm-telegram p{ position:relative; font-family:'Lora', serif; font-size:14px; color: var(--tg-text-soft); max-width:420px; margin:0 auto 26px auto; line-height:1.6; }
   .hm-telegram-btn{
     position:relative; display:inline-flex; align-items:center; gap:9px; font-family:'Lora', serif; font-weight:700; font-size:14.5px;
-    color: var(--ink); background: var(--gold); border-radius:13px; padding:14px 24px; text-decoration:none;
-    box-shadow: 0 14px 26px -10px rgba(var(--gold-rgb),0.7); transition: transform 0.18s ease, box-shadow 0.18s ease;
+    color: #241a08; background: linear-gradient(135deg, #F6DA9C 0%, var(--tg-gold) 100%); border-radius:13px; padding:14px 26px; text-decoration:none;
+    box-shadow: 0 14px 26px -10px rgba(233,194,113,0.75); transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease;
   }
-  .hm-telegram-btn:hover{ transform: translateY(-2px); box-shadow: 0 18px 32px -10px rgba(var(--gold-rgb),0.82); }
+  .hm-telegram-btn:hover{ transform: translateY(-2px) scale(1.015); box-shadow: 0 20px 36px -12px rgba(233,194,113,0.9); }
+  .hm-telegram-btn:active{ transform: translateY(0) scale(0.98); }
   .hm-telegram-btn svg{ width:17px; height:17px; }
+  @media (prefers-reduced-motion: reduce){
+    .hm-telegram-glow, .hm-telegram-glow-b{ animation:none !important; }
+    .hm-telegram{ transition:none !important; }
+  }
+  .hm-telegram-compact{ padding:30px 20px 26px 20px; border-radius:20px; margin-bottom:0; }
+  .hm-telegram-compact h2{ font-size:20px; }
+  .hm-telegram-compact p{ font-size:13px; margin-bottom:20px; }
+  .hm-telegram-compact .hm-telegram-btn{ padding:12px 22px; font-size:13.5px; }
 
   .hm-explore{ margin-bottom:34px; }
   .hm-explore-head{ font-family:'Lora', serif; font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color: var(--gold); margin:0 0 14px 0; }
@@ -5113,6 +5180,14 @@
     </svg>
   </button>
   <div class="menu-dropdown" id="menu-dropdown">
+    <button class="menu-row" id="dark-mode-row" type="button" role="switch" aria-checked="false">
+      <span class="menu-row-label">
+        <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="1.5" x2="12" y2="3.5"></line><line x1="12" y1="20.5" x2="12" y2="22.5"></line><line x1="4" y1="4" x2="5.4" y2="5.4"></line><line x1="18.6" y1="18.6" x2="20" y2="20"></line><line x1="1.5" y1="12" x2="3.5" y2="12"></line><line x1="20.5" y1="12" x2="22.5" y2="12"></line><line x1="4" y1="20" x2="5.4" y2="18.6"></line><line x1="18.6" y1="5.4" x2="20" y2="4"></line></svg>
+        <span id="theme-row-text">Dark mode</span>
+      </span>
+      <span class="menu-switch" id="menu-switch"><span class="menu-switch-knob"></span></span>
+    </button>
+    <div class="menu-sep"></div>
     <button class="menu-row" id="open-home-btn" type="button">
       <span class="menu-row-label">
         <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"></path><path d="M6 10v9.5a1 1 0 0 0 1 1h3.5v-6h3v6H17a1 1 0 0 0 1-1V10"></path></svg>
@@ -5129,14 +5204,6 @@
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
     <div class="menu-sep" id="menu-profile-sep" style="display:none;"></div>
-    <button class="menu-row" id="dark-mode-row" type="button" role="switch" aria-checked="false">
-      <span class="menu-row-label">
-        <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="1.5" x2="12" y2="3.5"></line><line x1="12" y1="20.5" x2="12" y2="22.5"></line><line x1="4" y1="4" x2="5.4" y2="5.4"></line><line x1="18.6" y1="18.6" x2="20" y2="20"></line><line x1="1.5" y1="12" x2="3.5" y2="12"></line><line x1="20.5" y1="12" x2="22.5" y2="12"></line><line x1="4" y1="20" x2="5.4" y2="18.6"></line><line x1="18.6" y1="5.4" x2="20" y2="4"></line></svg>
-        <span id="theme-row-text">Dark mode</span>
-      </span>
-      <span class="menu-switch" id="menu-switch"><span class="menu-switch-knob"></span></span>
-    </button>
-    <div class="menu-sep"></div>
     <button class="menu-row" id="open-timetable-btn" type="button">
       <span class="menu-row-label">
         <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"></rect><line x1="3" y1="9.5" x2="21" y2="9.5"></line><line x1="8" y1="4.5" x2="8" y2="2.2"></line><line x1="16" y1="4.5" x2="16" y2="2.2"></line></svg>
@@ -5316,6 +5383,12 @@
         <p class="hm-feature-title">Private &amp; Ad-Free</p>
         <p class="hm-feature-text">No data sold, no ads, no noise. Just a calm space that stays entirely on your device.</p>
       </div>
+      <div class="hm-feature-card hm-feature-card-new">
+        <p class="hm-feature-num">04 <span class="hm-feature-badge">New</span></p>
+        <div class="hm-feature-icon"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></div>
+        <p class="hm-feature-title">A Menu That Bends To You</p>
+        <p class="hm-feature-text">Open the three-line menu, press and hold any option, then use the arrows to move it to the spot that matters most to you. Your layout, remembered on this device.</p>
+      </div>
     </div>
   </section>
 
@@ -5329,8 +5402,9 @@
   </section>
 
   <section class="hm-reveal">
-    <div class="hm-telegram">
+    <div class="hm-telegram" data-tilt-card>
       <span class="hm-telegram-glow" aria-hidden="true"></span>
+      <span class="hm-telegram-glow-b" aria-hidden="true"></span>
       <p class="hm-telegram-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;vertical-align:-1px;"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg> Stay In The Loop</p>
       <h2>New updates.<br>Straight to your phone.</h2>
       <p>Be the first to know when we ship new features, fix bugs, or add something fresh to the tracker — no spam, just signal.</p>
@@ -5823,6 +5897,20 @@
       <div class="bmc-benefits-footer-text">No pressure — but if this app saves you time or stress, a small coffee goes a long way.</div>
     </div>
   </section>
+
+  <section class="bmc-section">
+    <div class="hm-telegram hm-telegram-compact" data-tilt-card>
+      <span class="hm-telegram-glow" aria-hidden="true"></span>
+      <span class="hm-telegram-glow-b" aria-hidden="true"></span>
+      <p class="hm-telegram-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;vertical-align:-1px;"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg> Stay In The Loop</p>
+      <h2>Prefer to just follow along?</h2>
+      <p>Join the Telegram channel for free — updates, fixes and new features, straight from the developer.</p>
+      <a href="https://t.me/attendancetracker" target="_blank" rel="noopener noreferrer" class="hm-telegram-btn" id="bmc-telegram-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 4.5 2.7 11.9c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.7.4 1 .9 1 .4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.8.5 1.4.2 1.6-.8l3-14.1c.3-1.3-.5-1.9-1.8-1.9z"></path></svg>
+        Join Telegram Channel
+      </a>
+    </div>
+  </section>
 </div>
 
 <div id="bmc-toast" class="bmc-toast"></div>
@@ -6017,6 +6105,21 @@
       <span class="profile-contact-arrow">&rsaquo;</span>
     </button>
     <p class="profile-install-tip" id="profile-install-tip">Tap the <strong>Share</strong> icon in your browser's toolbar, then choose <strong>"Add to Home Screen"</strong>.</p>
+  </div>
+
+  <div class="profile-field-group">
+    <div class="section-label"><span>Community</span></div>
+    <div class="hm-telegram hm-telegram-compact" data-tilt-card>
+      <span class="hm-telegram-glow" aria-hidden="true"></span>
+      <span class="hm-telegram-glow-b" aria-hidden="true"></span>
+      <p class="hm-telegram-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline-block;vertical-align:-1px;"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg> Stay In The Loop</p>
+      <h2>Join the Telegram channel</h2>
+      <p>Updates, bug fixes and new features — straight from the developer, no spam.</p>
+      <a href="https://t.me/attendancetracker" target="_blank" rel="noopener noreferrer" class="hm-telegram-btn" id="profile-telegram-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 4.5 2.7 11.9c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.7.4 1 .9 1 .4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.8.5 1.4.2 1.6-.8l3-14.1c.3-1.3-.5-1.9-1.8-1.9z"></path></svg>
+        Join Telegram Channel
+      </a>
+    </div>
   </div>
 
   <div class="profile-field-group" style="margin-bottom:10px;">
@@ -7091,6 +7194,257 @@ window.promptCoachingModal = function(opts){
         menuToggle.setAttribute('aria-expanded', 'false');
       }
     });
+  })();
+
+  // ---- Menu reorder: hold any option to give it your own priority ----
+  (function initMenuReorder(){
+    const menuDropdown = document.getElementById('menu-dropdown');
+    if(!menuDropdown) return;
+    const STORE_KEY = 'menuRowOrderV1';
+    const HOLD_MS = 430;
+    const MOVE_CANCEL = 9;
+
+    function visibleRows(){
+      return Array.prototype.slice.call(menuDropdown.querySelectorAll('.menu-row'))
+        .filter(row => row.style.display !== 'none' && getComputedStyle(row).display !== 'none');
+    }
+    function allRows(){
+      return Array.prototype.slice.call(menuDropdown.querySelectorAll('.menu-row'));
+    }
+
+    // Rebuilds the dropdown so rows follow `ids`, each keeping whichever
+    // separator (if any) already sat directly in front of it.
+    function applyOrder(ids){
+      const rows = allRows();
+      if(!rows.length) return;
+      const byId = {}; rows.forEach(r => { if(r.id) byId[r.id] = r; });
+      const sepBefore = {};
+      rows.forEach(r => {
+        const p = r.previousElementSibling;
+        sepBefore[r.id] = (p && p.classList && p.classList.contains('menu-sep')) ? p : null;
+      });
+      const validIds = ids.filter(id => byId[id]);
+      rows.forEach(r => { if(r.id && validIds.indexOf(r.id) === -1) validIds.push(r.id); });
+      const frag = document.createDocumentFragment();
+      validIds.forEach((id, i) => {
+        if(i > 0){
+          let sep = sepBefore[id];
+          if(!sep){ sep = document.createElement('div'); sep.className = 'menu-sep'; }
+          frag.appendChild(sep);
+        }
+        frag.appendChild(byId[id]);
+      });
+      menuDropdown.appendChild(frag);
+    }
+
+    function loadSavedOrder(){
+      try{
+        const raw = localStorage.getItem(STORE_KEY);
+        if(!raw) return;
+        const ids = JSON.parse(raw);
+        if(Array.isArray(ids) && ids.length) applyOrder(ids);
+      }catch(e){}
+    }
+    function saveOrder(){
+      try{
+        const ids = allRows().map(r => r.id).filter(Boolean);
+        localStorage.setItem(STORE_KEY, JSON.stringify(ids));
+      }catch(e){}
+    }
+    loadSavedOrder();
+
+    let liftedRow = null;
+    let controlsEl = null;
+
+    // Swaps two rows' positions in the underlying order (reusing applyOrder,
+    // which safely keeps every row's original leading separator attached),
+    // then FLIP-animates both rows from their old screen position to the new one.
+    function swapRows(rowA, rowB){
+      const ids = allRows().map(r => r.id);
+      const iA = ids.indexOf(rowA.id), iB = ids.indexOf(rowB.id);
+      if(iA === -1 || iB === -1) return;
+      const beforeRects = {};
+      beforeRects[rowA.id] = rowA.getBoundingClientRect();
+      beforeRects[rowB.id] = rowB.getBoundingClientRect();
+      ids[iA] = rowB.id; ids[iB] = rowA.id;
+      applyOrder(ids);
+      [rowA, rowB].forEach((row) => {
+        const oldRect = beforeRects[row.id];
+        const newRect = row.getBoundingClientRect();
+        const dy = oldRect.top - newRect.top;
+        const lifted = (row === liftedRow);
+        row.style.transition = 'none';
+        row.style.transform = 'translateY(' + dy + 'px)' + (lifted ? ' scale(1.02)' : '');
+        row.getBoundingClientRect(); // force reflow so the jump above applies before we animate off it
+        requestAnimationFrame(() => {
+          row.style.transition = '';
+          row.classList.add('menu-row-settling');
+          row.style.transform = lifted ? 'scale(1.02)' : '';
+          setTimeout(() => row.classList.remove('menu-row-settling'), 260);
+        });
+      });
+    }
+
+    function showToast(msg){
+      let t = document.querySelector('.menu-reorder-toast');
+      if(!t){
+        t = document.createElement('div');
+        t.className = 'menu-reorder-toast';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => t.classList.remove('show'), 1400);
+    }
+
+    function exitReorderMode(commit){
+      if(!liftedRow) return;
+      if(controlsEl && controlsEl.parentNode) controlsEl.parentNode.removeChild(controlsEl);
+      liftedRow.classList.remove('menu-row-lifted');
+      liftedRow.style.transform = '';
+      menuDropdown.classList.remove('reorder-armed');
+      liftedRow = null;
+      controlsEl = null;
+      if(commit){ saveOrder(); showToast('Menu order saved'); }
+    }
+
+    function moveArrowSvg(dir){
+      const d = dir === 'up' ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6';
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="' + d + '"></path></svg>';
+    }
+
+    function refreshControlsState(){
+      if(!controlsEl || !liftedRow) return;
+      const vis = visibleRows();
+      const idx = vis.indexOf(liftedRow);
+      const upBtn = controlsEl.querySelector('[data-dir="up"]');
+      const downBtn = controlsEl.querySelector('[data-dir="down"]');
+      if(upBtn) upBtn.disabled = (idx <= 0);
+      if(downBtn) downBtn.disabled = (idx === -1 || idx >= vis.length - 1);
+    }
+
+    function enterReorderMode(row){
+      if(liftedRow === row) return;
+      if(liftedRow) exitReorderMode(true);
+      liftedRow = row;
+      menuDropdown.classList.add('reorder-armed');
+      row.classList.add('menu-row-lifted');
+      if(navigator.vibrate) { try{ navigator.vibrate(12); }catch(e){} }
+
+      controlsEl = document.createElement('span');
+      controlsEl.className = 'menu-row-move-controls';
+      controlsEl.innerHTML =
+        '<button type="button" class="menu-row-move-btn" data-dir="up" aria-label="Move up">' + moveArrowSvg('up') + '</button>' +
+        '<button type="button" class="menu-row-move-btn" data-dir="down" aria-label="Move down">' + moveArrowSvg('down') + '</button>';
+      const label = row.querySelector('.menu-row-label');
+      if(label && label.parentNode === row){ row.insertBefore(controlsEl, label.nextSibling); }
+      else { row.appendChild(controlsEl); }
+
+      controlsEl.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const btn = e.target.closest('.menu-row-move-btn');
+        if(!btn || btn.disabled) return;
+        const dir = btn.getAttribute('data-dir');
+        const vis = visibleRows();
+        const idx = vis.indexOf(liftedRow);
+        if(dir === 'up' && idx > 0){ swapRows(vis[idx], vis[idx - 1]); }
+        if(dir === 'down' && idx < vis.length - 1){ swapRows(vis[idx], vis[idx + 1]); }
+        refreshControlsState();
+      });
+      refreshControlsState();
+      showToast('Use the arrows to set its place');
+    }
+
+    let pressTimer = null;
+    let pressRow = null;
+    let startX = 0, startY = 0;
+    let suppressNextClick = false;
+
+    function clearPressTimer(){ clearTimeout(pressTimer); pressTimer = null; }
+
+    menuDropdown.addEventListener('pointerdown', (e) => {
+      const row = e.target.closest('.menu-row');
+      if(!row || row.classList.contains('menu-row-lifted')) return;
+      if(e.target.closest('.menu-row-move-controls')) return;
+      pressRow = row;
+      startX = e.clientX; startY = e.clientY;
+      row.classList.add('menu-row-priming');
+      clearPressTimer();
+      pressTimer = setTimeout(() => {
+        if(pressRow === row){
+          suppressNextClick = true;
+          row.classList.remove('menu-row-priming');
+          enterReorderMode(row);
+        }
+      }, HOLD_MS);
+    });
+    menuDropdown.addEventListener('pointermove', (e) => {
+      if(!pressRow) return;
+      if(Math.abs(e.clientX - startX) > MOVE_CANCEL || Math.abs(e.clientY - startY) > MOVE_CANCEL){
+        pressRow.classList.remove('menu-row-priming');
+        clearPressTimer();
+        pressRow = null;
+      }
+    });
+    function releasePress(){
+      if(pressRow) pressRow.classList.remove('menu-row-priming');
+      clearPressTimer();
+      pressRow = null;
+    }
+    menuDropdown.addEventListener('pointerup', releasePress);
+    menuDropdown.addEventListener('pointercancel', releasePress);
+    menuDropdown.addEventListener('pointerleave', releasePress);
+
+    menuDropdown.addEventListener('click', (e) => {
+      if(suppressNextClick){ suppressNextClick = false; e.preventDefault(); e.stopPropagation(); return; }
+      if(liftedRow){
+        const row = e.target.closest('.menu-row');
+        if(e.target.closest('.menu-row-move-controls')) return;
+        e.preventDefault(); e.stopPropagation();
+        exitReorderMode(true);
+        return;
+      }
+    }, true);
+
+    document.addEventListener('click', (e) => {
+      if(liftedRow && !menuDropdown.contains(e.target)) exitReorderMode(true);
+    });
+  })();
+
+  // ---- Premium 3D tilt for the telegram cards (Home / Profile / Buy Me a Coffee) ----
+  (function initTiltCards(){
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduceMotion) return;
+    const MAX_TILT = 7;
+    function wire(card){
+      if(!card || card.dataset.tiltWired) return;
+      card.dataset.tiltWired = '1';
+      let raf = null;
+      function apply(px, py){
+        const rect = card.getBoundingClientRect();
+        const x = (px - rect.left) / rect.width;   // 0..1
+        const y = (py - rect.top) / rect.height;   // 0..1
+        const rotY = (x - 0.5) * MAX_TILT * 2;
+        const rotX = (0.5 - y) * MAX_TILT * 2;
+        card.style.transform = 'perspective(900px) rotateX(' + rotX.toFixed(2) + 'deg) rotateY(' + rotY.toFixed(2) + 'deg) translateZ(0)';
+      }
+      function onMove(e){
+        const px = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+        const py = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+        if(raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => apply(px, py));
+      }
+      function reset(){
+        if(raf) cancelAnimationFrame(raf);
+        card.style.transform = '';
+      }
+      card.addEventListener('pointermove', onMove);
+      card.addEventListener('pointerleave', reset);
+      card.addEventListener('pointerdown', onMove);
+      card.addEventListener('pointerup', reset);
+    }
+    document.querySelectorAll('[data-tilt-card]').forEach(wire);
   })();
 
   // ---- Show/hide password (login, register, and profile change-password) ----
