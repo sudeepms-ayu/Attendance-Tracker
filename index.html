@@ -3541,6 +3541,61 @@
     font-style:normal; font-weight:600; cursor:pointer; text-decoration:underline;
     padding:0;
   }
+  .rc-holiday-undo-btn{
+    border-color: var(--danger); color: var(--danger);
+  }
+  .rc-holiday-undo-btn:hover{ background: var(--danger); color: var(--paper); }
+
+  /* ---- "Mark today as a holiday" bar — a small, tactile 3D control the
+     person can tap on an ordinary day to declare it a holiday (with an
+     optional reason), instead of marking every subject one by one. ---- */
+  .rc-mark-holiday-bar{ margin-bottom:16px; }
+  .rc-mark-holiday-toggle{
+    display:flex; align-items:center; gap:9px; width:100%;
+    appearance:none; cursor:pointer; text-align:left;
+    font-family:'Lora', serif; font-size:13px; font-weight:600; color: var(--gold);
+    background: linear-gradient(180deg, rgba(var(--gold-rgb),0.14), rgba(var(--gold-rgb),0.07));
+    border: 1px solid rgba(var(--gold-rgb),0.4);
+    border-radius:12px; padding:12px 16px;
+    box-shadow:
+      0 1px 0 rgba(var(--paper-rgb),0.35) inset,
+      0 3px 0 rgba(var(--gold-rgb),0.28),
+      0 10px 18px -10px rgba(var(--ink-rgb),0.45);
+    transform: translateY(0);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .rc-mark-holiday-toggle:hover{ background: linear-gradient(180deg, rgba(var(--gold-rgb),0.2), rgba(var(--gold-rgb),0.1)); }
+  .rc-mark-holiday-toggle:active{
+    transform: translateY(2px);
+    box-shadow:
+      0 1px 0 rgba(var(--paper-rgb),0.35) inset,
+      0 1px 0 rgba(var(--gold-rgb),0.28),
+      0 4px 10px -6px rgba(var(--ink-rgb),0.4);
+  }
+  .rc-mark-holiday-icon{ font-family:'Playfair Display', serif; font-size:15px; line-height:1; }
+  .rc-mark-holiday-form{
+    display:flex; flex-direction:column; gap:10px; margin-top:10px;
+    padding:14px; border-radius:12px;
+    background: rgba(var(--gold-rgb),0.06); border:1px solid rgba(var(--gold-rgb),0.25);
+    animation: viewFadeSlideIn 0.28s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .rc-mark-holiday-input{
+    width:100%; box-sizing:border-box; font-family:'Lora', serif; font-size:13px; color: var(--ink);
+    background: var(--paper); border:1px solid rgba(var(--ink-rgb),0.16); border-radius:8px;
+    padding:10px 12px;
+  }
+  .rc-mark-holiday-input:focus{ outline:none; border-color: var(--gold); }
+  .rc-mark-holiday-actions{ display:flex; justify-content:flex-end; gap:10px; }
+  .rc-mark-holiday-cancel{
+    appearance:none; border:1px solid rgba(var(--ink-rgb),0.18); background:transparent; color: var(--ink-soft);
+    font-family:'Lora', serif; font-size:12.5px; font-weight:600; padding:8px 14px; border-radius:8px; cursor:pointer;
+  }
+  .rc-mark-holiday-confirm{
+    appearance:none; border:1px solid var(--gold); background: var(--gold); color: var(--paper);
+    font-family:'Lora', serif; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer;
+    transition: transform 0.15s ease;
+  }
+  .rc-mark-holiday-confirm:active{ transform: scale(0.96); }
 
   /* ================= Profile ================= */
 
@@ -4309,6 +4364,48 @@
   .st-timer-stop:hover{ background: rgba(var(--danger-rgb),0.2); }
   .st-timer-btn:active{ transform: scale(0.96); }
 
+  /* ---- Fullscreen focus mode — tapping "Full Screen" blows the timer up to
+     fill the screen, for a distraction-free, premium "focus mode" feel. ---- */
+  .st-timer-card.st-fullscreen{
+    position:fixed; inset:0; z-index:2000;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    width:100%; height:100%; height:100dvh; margin:0; border-radius:0; border:none;
+    padding: 0 24px; box-sizing:border-box;
+    background: radial-gradient(circle at 50% 38%, rgba(var(--gold-rgb),0.08), transparent 62%), var(--paper);
+    box-shadow:none;
+    animation: stFullscreenIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .st-timer-card.st-fullscreen .st-timer-label{ font-size:14px; margin-bottom:34px; }
+  .st-timer-card.st-fullscreen .st-timer-circle-wrap{
+    width:min(78vw, 380px); height:min(78vw, 380px); margin-bottom:36px;
+  }
+  .st-timer-card.st-fullscreen .st-timer-time{ font-size:min(12vw, 52px); }
+  .st-timer-card.st-fullscreen .st-timer-phase{ font-size:14px; margin-top:10px; }
+  .st-timer-card.st-fullscreen .st-timer-controls{
+    width:100%; max-width:420px; flex-wrap:wrap; gap:12px; padding:0 4px; box-sizing:border-box;
+  }
+  .st-timer-card.st-fullscreen .st-timer-btn{
+    flex:1 1 auto; min-width:0; padding:14px 16px; font-size:14px;
+    box-shadow: 0 10px 22px -12px rgba(var(--ink-rgb),0.4);
+  }
+  .st-fullscreen-hint{
+    display:none;
+    font-family:'Lora', serif; font-size:11.5px; letter-spacing:0.06em; text-transform:uppercase;
+    color: var(--ink-soft); opacity:0.75; pointer-events:none;
+    margin:0 0 22px 0; padding-top: calc(env(safe-area-inset-top, 0px) + 32px);
+  }
+  .st-timer-card.st-fullscreen .st-fullscreen-hint{ display:block; }
+  .st-timer-fullscreen-btn{ background: rgba(var(--gold-rgb),0.12); color: var(--gold); border-color: rgba(var(--gold-rgb),0.35); }
+  .st-timer-fullscreen-btn:hover{ background: rgba(var(--gold-rgb),0.2); }
+  body.st-scroll-lock{ overflow:hidden; position:fixed; left:0; right:0; }
+  @keyframes stFullscreenIn{
+    from{ opacity:0; transform: scale(0.94); }
+    to{ opacity:1; transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .st-timer-card.st-fullscreen{ animation:none; }
+  }
+
   /* ---- Stat cards ---- */
   .st-stat-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:18px; }
   .st-stat-card{
@@ -4965,8 +5062,19 @@
     75%{ transform: translate(25px,15px) scale(0.92); }
   }
 
-  .hm-reveal{ opacity:0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
-  .hm-reveal.hm-in{ opacity:1; transform: translateY(0); }
+  /* Sections drift up out of a slight 3D tilt and settle flat as they enter
+     view — a subtler, more premium feel than a plain fade/slide. Needs a
+     perspective on the scrolling container itself (below) for the rotateX
+     to actually read as depth rather than a flat squash. */
+  #home-view{ perspective: 1400px; }
+  .hm-reveal{
+    opacity:0;
+    transform: translateY(34px) scale(0.97) rotateX(7deg);
+    transform-origin: 50% 100%;
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    will-change: transform, opacity;
+  }
+  .hm-reveal.hm-in{ opacity:1; transform: translateY(0) scale(1) rotateX(0deg); }
 
   .hm-badge{
     display:inline-flex; align-items:center; gap:8px; padding:7px 16px; border-radius:999px;
@@ -5433,10 +5541,10 @@
   </section>
 
   <footer class="hm-footer">
-    <span class="hm-footer-brand"><b>Attendance Tracker</b> · crafted for students, made with discipline</span>
+    <span class="hm-footer-brand"><b>Attendance Tracker.</b> Crafted For Students, Made With Discipline.</span>
     <a href="#" class="hm-footer-support" id="hm-support-link">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h13.5a2.5 2.5 0 0 1 0 5H17"></path><path d="M4 9.5v6a4 4 0 0 0 4 4h5a4 4 0 0 0 4-4v-1"></path></svg>
-      Buy me a chai
+      Buy Me A Coffee
     </a>
   </footer>
 </div>
@@ -5609,6 +5717,19 @@
       <button class="rc-change-btn" id="rc-change-section-btn">change section</button>
     </div>
     <p class="rc-nudge" id="rc-nudge" style="display:none;"></p>
+    <div class="rc-mark-holiday-bar" id="rc-mark-holiday-bar" style="display:none;">
+      <button type="button" class="rc-mark-holiday-toggle" id="rc-mark-holiday-toggle">
+        <span class="rc-mark-holiday-icon">&#10024;</span>
+        <span>Mark Today As A Holiday</span>
+      </button>
+      <div class="rc-mark-holiday-form" id="rc-mark-holiday-form" style="display:none;">
+        <input type="text" id="rc-mark-holiday-reason" class="rc-mark-holiday-input" placeholder="Reason (optional) — e.g. Teacher's Day, local event" maxlength="80">
+        <div class="rc-mark-holiday-actions">
+          <button type="button" class="rc-mark-holiday-cancel" id="rc-mark-holiday-cancel">Cancel</button>
+          <button type="button" class="rc-mark-holiday-confirm" id="rc-mark-holiday-confirm">Confirm Holiday</button>
+        </div>
+      </div>
+    </div>
     <div class="rc-holiday-banner" id="rc-holiday-banner" style="display:none;">
       <div class="rc-holiday-banner-icon">&#10024;</div>
       <div class="rc-holiday-banner-text">
@@ -5616,6 +5737,7 @@
         <p class="rc-holiday-banner-reason" id="rc-holiday-reason"></p>
       </div>
       <button class="rc-holiday-override-btn" id="rc-holiday-override-btn" type="button">Classes were held today</button>
+      <button class="rc-holiday-override-btn rc-holiday-undo-btn" id="rc-custom-holiday-undo-btn" type="button" style="display:none;">Undo</button>
     </div>
     <div class="rc-holiday-note" id="rc-holiday-note" style="display:none;">
       <span id="rc-holiday-note-text"></span>
@@ -6179,8 +6301,9 @@
     </div>
 
     <div class="st-timer-card" id="st-timer-card" style="display:none;">
+      <span class="st-fullscreen-hint">Focus mode · tap Back to exit fullscreen</span>
       <p class="st-timer-label" id="st-timer-label">Studying · Self Study</p>
-      <div class="st-timer-circle-wrap">
+      <div class="st-timer-circle-wrap" id="st-timer-circle-wrap">
         <svg class="st-timer-ring" viewBox="0 0 240 240" aria-hidden="true">
           <circle class="st-ring-track" cx="120" cy="120" r="106"></circle>
           <circle class="st-ring-prog" id="st-ring-prog" cx="120" cy="120" r="106"></circle>
@@ -6198,6 +6321,10 @@
         <button type="button" class="st-timer-btn st-timer-stop" id="st-timer-stop">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg>
           Finish
+        </button>
+        <button type="button" class="st-timer-btn st-timer-fullscreen-btn" id="st-timer-fullscreen-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
+          <span id="st-timer-fullscreen-btn-label">Full Screen</span>
         </button>
       </div>
     </div>
@@ -9059,6 +9186,27 @@ window.promptCoachingModal = function(opts){
     const d = new Date(parts[0], parts[1]-1, parts[2]);
     return d.toLocaleDateString(undefined, { day:'numeric', month:'short' });
   }
+
+  // Single source of truth for "does this date count as a holiday", used by
+  // Today's Roll Call, the Academic Calendar lookup, and every streak
+  // calculation (study streak, attendance streaks). A date counts as a
+  // holiday if it's on the official academic calendar (and the person
+  // hasn't tapped "Classes were held today" for it), OR the person has
+  // personally marked it as a holiday from Roll Call. Keeping this in one
+  // place is what keeps streaks, Roll Call, and the calendar in sync.
+  function isHolidayDateKey(dateKey){
+    if(typeof rollcall !== 'undefined' && rollcall.customHolidays && rollcall.customHolidays[dateKey]) return true;
+    const info = holidayInfoFor(dateKey);
+    if(info && !(typeof rollcall !== 'undefined' && rollcall.holidayOverrides && rollcall.holidayOverrides[dateKey])) return true;
+    return false;
+  }
+  function holidayReasonFor(dateKey){
+    if(typeof rollcall !== 'undefined' && rollcall.customHolidays && rollcall.customHolidays[dateKey]){
+      return rollcall.customHolidays[dateKey].reason || 'Marked as a holiday';
+    }
+    const info = holidayInfoFor(dateKey);
+    return info ? info.reason : null;
+  }
   function buildHolidayMonthCard(monthIdx){
     const year = HOLIDAYS_YEAR;
     const card = document.createElement('div');
@@ -9177,9 +9325,14 @@ window.promptCoachingModal = function(opts){
     const info = holidayInfoFor(dateKey);
     const optional = HOLIDAYS_OPTIONAL.find(h => h.date === dateKey);
     const conditional = HOLIDAYS_CONDITIONAL.find(h => h.date === dateKey);
+    const customHoliday = (typeof rollcall !== 'undefined' && rollcall.customHolidays && rollcall.customHolidays[dateKey]) || null;
 
     let statusLabel, statusClass, reasonHtml = '';
-    if(info){
+    if(customHoliday){
+      statusLabel = 'Holiday';
+      statusClass = 'is-off';
+      reasonHtml = '<p class="holiday-lookup-reason">Marked by you' + (customHoliday.reason ? (' — ' + customHoliday.reason) : '') + '.</p>';
+    } else if(info){
       statusLabel = 'Holiday';
       statusClass = 'is-off';
       reasonHtml = '<p class="holiday-lookup-reason">On account of ' + info.reason + '.</p>';
@@ -9784,7 +9937,7 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
 
   const ROLLCALL_KEY = 'attendance-rollcall-v1';
   function rollcallKeyFor(id){ return ROLLCALL_KEY + '::' + id; }
-  let rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {} };
+  let rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {} };
   // Which target (theory or practical) the single Present/Absent/Suspended
   // bar on each roll-call card currently writes to. Purely a UI selector —
   // not persisted — defaults to whichever already has today's mark.
@@ -9793,7 +9946,7 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
   const RC_SUBJECT_NAMES = { PH:'Physics', CH:'Chemistry', MA:'Mathematics', EN:'English', OD:'Odia', BO:'Botany', ZO:'Zoology', IT:'IT' };
 
   async function loadRollcallFor(id){
-    rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {} };
+    rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {} };
     try{
       const res = await window.storage.get(rollcallKeyFor(id), true);
       if(res && res.value){
@@ -9803,6 +9956,7 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
           rollcall.marks = parsed.marks || {};
           rollcall.practicalMarks = parsed.practicalMarks || {};
           rollcall.holidayOverrides = parsed.holidayOverrides || {};
+          rollcall.customHolidays = parsed.customHolidays || {};
         }
       }
     }catch(e){ /* nothing saved yet */ }
@@ -10122,14 +10276,25 @@ if(existing){
     const dateKey = localDateKey();
     const holidayInfo = holidayInfoFor(dateKey);
     const overridden = !!rollcall.holidayOverrides[dateKey];
+    const customHoliday = (rollcall.customHolidays && rollcall.customHolidays[dateKey]) || null;
+    const markHolidayBar = document.getElementById('rc-mark-holiday-bar');
+    const rcHolidayOverrideBtnEl = document.getElementById('rc-holiday-override-btn');
+    const rcCustomHolidayUndoBtnEl = document.getElementById('rc-custom-holiday-undo-btn');
 
-    if(holidayInfo && !overridden){
-      // Genuine holiday, no override on file: skip roll call entirely and
-      // offer the one-tap override for the rare day classes still ran.
+    if((holidayInfo && !overridden) || customHoliday){
+      // Genuine holiday — either the official academic calendar (with no
+      // override on file), or a day the person marked as a holiday
+      // themselves from Roll Call: skip roll call entirely and offer the
+      // matching one-tap action for undoing it.
       if(holidayNote) holidayNote.style.display = 'none';
+      if(markHolidayBar) markHolidayBar.style.display = 'none';
       if(holidayBanner){
         holidayBanner.style.display = 'flex';
-        document.getElementById('rc-holiday-reason').textContent = holidayInfo.reason;
+        document.getElementById('rc-holiday-reason').textContent = customHoliday
+          ? (customHoliday.reason || 'Marked as a holiday by you')
+          : holidayInfo.reason;
+        if(rcHolidayOverrideBtnEl) rcHolidayOverrideBtnEl.style.display = customHoliday ? 'none' : '';
+        if(rcCustomHolidayUndoBtnEl) rcCustomHolidayUndoBtnEl.style.display = customHoliday ? '' : 'none';
       }
       listEl.style.display = 'none';
       emptyEl.style.display = 'none';
@@ -10137,6 +10302,7 @@ if(existing){
       return;
     }
     if(holidayBanner) holidayBanner.style.display = 'none';
+    if(markHolidayBar) markHolidayBar.style.display = 'flex';
     listEl.style.display = '';
 
     if(holidayInfo && overridden){
@@ -10297,6 +10463,53 @@ if(existing){
     rcHolidayRevertBtn.addEventListener('click', () => {
       delete rollcall.holidayOverrides[localDateKey()];
       saveRollcall();
+      renderRollcall();
+    });
+  }
+
+  // "Mark today as a holiday" — lets the person declare an ordinary day a
+  // holiday (with an optional reason) straight from Roll Call, without
+  // marking every subject one by one. Undo removes it just as easily.
+  // Because isHolidayDateKey()/holidayReasonFor() both read from the same
+  // rollcall.customHolidays map, this automatically stays in sync with the
+  // study streak, attendance streaks, and the Academic Calendar lookup.
+  const rcMarkHolidayToggle = document.getElementById('rc-mark-holiday-toggle');
+  const rcMarkHolidayForm = document.getElementById('rc-mark-holiday-form');
+  const rcMarkHolidayReasonInput = document.getElementById('rc-mark-holiday-reason');
+  if(rcMarkHolidayToggle){
+    rcMarkHolidayToggle.addEventListener('click', () => {
+      if(!rcMarkHolidayForm) return;
+      const open = rcMarkHolidayForm.style.display === 'flex';
+      rcMarkHolidayForm.style.display = open ? 'none' : 'flex';
+      if(!open && rcMarkHolidayReasonInput){
+        rcMarkHolidayReasonInput.value = '';
+        rcMarkHolidayReasonInput.focus();
+      }
+    });
+  }
+  const rcMarkHolidayCancel = document.getElementById('rc-mark-holiday-cancel');
+  if(rcMarkHolidayCancel){
+    rcMarkHolidayCancel.addEventListener('click', () => {
+      if(rcMarkHolidayForm) rcMarkHolidayForm.style.display = 'none';
+    });
+  }
+  const rcMarkHolidayConfirm = document.getElementById('rc-mark-holiday-confirm');
+  if(rcMarkHolidayConfirm){
+    rcMarkHolidayConfirm.addEventListener('click', async () => {
+      const reason = rcMarkHolidayReasonInput ? rcMarkHolidayReasonInput.value.trim() : '';
+      rollcall.customHolidays = rollcall.customHolidays || {};
+      rollcall.customHolidays[localDateKey()] = { reason, markedAt: new Date().toISOString() };
+      if(rcMarkHolidayForm) rcMarkHolidayForm.style.display = 'none';
+      await saveRollcall();
+      renderRollcall();
+      if(typeof stUpdateFloatingWidget === 'function') stUpdateFloatingWidget();
+    });
+  }
+  const rcCustomHolidayUndoBtn = document.getElementById('rc-custom-holiday-undo-btn');
+  if(rcCustomHolidayUndoBtn){
+    rcCustomHolidayUndoBtn.addEventListener('click', async () => {
+      if(rollcall.customHolidays) delete rollcall.customHolidays[localDateKey()];
+      await saveRollcall();
       renderRollcall();
     });
   }
@@ -11824,7 +12037,7 @@ if(existing){
     preEditLiveState = null;
     historyUndoSnapshot = null;
     homeworkItems = [];
-    rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {} };
+    rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {} };
     projection = { section: null, examDates: {} };
     coachingExams = [];
     examsSection = { section: null };
@@ -11980,9 +12193,27 @@ if(existing){
       let d = new Date();
       const hasToday = stSecondsForDate(stDateKey(d)) > 0;
       if(!hasToday) d.setDate(d.getDate() - 1);
-      while(stSecondsForDate(stDateKey(d)) > 0){
-        streak++;
-        d.setDate(d.getDate() - 1);
+      // Walk backward one day at a time. A day with study time logged
+      // extends the streak as before. A day with nothing logged only
+      // breaks the streak if it was an actual working day — a holiday
+      // (official calendar, or one the person marked themselves) is
+      // skipped over silently so the streak keeps counting from the last
+      // working day before it, exactly like a subject roll call that
+      // simply has no periods scheduled that day.
+      let guard = 0;
+      while(guard < 3650){ // ~10 years, just a sane upper bound
+        guard++;
+        const key = stDateKey(d);
+        if(stSecondsForDate(key) > 0){
+          streak++;
+          d.setDate(d.getDate() - 1);
+          continue;
+        }
+        if(typeof isHolidayDateKey === 'function' && isHolidayDateKey(key)){
+          d.setDate(d.getDate() - 1);
+          continue;
+        }
+        break;
       }
       return { streak, hasToday };
     }
@@ -12465,6 +12696,7 @@ if(existing){
       const subject = stTimer.subject, mode = stTimer.mode;
       const hour = typeof stTimer.startHour === 'number' ? stTimer.startHour : new Date().getHours();
       stTimer.running = false;
+      if(typeof stExitFullscreen === 'function') stExitFullscreen();
       stSetLiveDots(false);
       stUpdateFloatingWidget();
       await clearActiveSession();
@@ -12554,6 +12786,7 @@ if(existing){
       stUpdateFloatingWidget();
     }
     function stHide(){
+      if(typeof stExitFullscreen === 'function') stExitFullscreen();
       pageHide('study-tracker-view');
       pageHide('st-tabbar');
       backToAppOrAuth();
@@ -12596,6 +12829,72 @@ if(existing){
       }
       if(ok) await stFinishSession();
     });
+
+    // Tap the "Full Screen" button to enter a calm, distraction-free focus
+    // mode; tap "Back" to return. The ring itself no longer toggles this.
+    //
+    // The timer card normally lives inside a page wrapper that plays a
+    // translateY() entrance animation. Because that animation leaves a
+    // (harmless-looking) `transform` on the wrapper even once finished, it
+    // quietly becomes the containing block for anything `position:fixed`
+    // inside it — which stopped the fullscreen card from ever actually
+    // covering the full screen. Moving the card up to <body> for the
+    // duration of fullscreen mode sidesteps that entirely, so the timer
+    // reliably lands dead-centre, edge-to-edge, every time.
+    let stScrollY = 0;
+    let stTimerCardPlaceholder = null;
+    function stLockBodyScroll(lock){
+      if(lock){
+        stScrollY = window.scrollY || window.pageYOffset || 0;
+        document.body.style.top = '-' + stScrollY + 'px';
+        document.body.classList.add('st-scroll-lock');
+      } else {
+        document.body.classList.remove('st-scroll-lock');
+        document.body.style.top = '';
+        window.scrollTo(0, stScrollY);
+      }
+    }
+    function stUpdateFullscreenBtn(isFullscreen){
+      const label = document.getElementById('st-timer-fullscreen-btn-label');
+      if(label) label.textContent = isFullscreen ? 'Back' : 'Full Screen';
+    }
+    function stMoveCardToBody(card){
+      if(!card || card.parentNode === document.body) return;
+      stTimerCardPlaceholder = document.createComment('st-timer-card-slot');
+      card.parentNode.insertBefore(stTimerCardPlaceholder, card);
+      document.body.appendChild(card);
+    }
+    function stMoveCardBack(card){
+      if(!card || !stTimerCardPlaceholder || !stTimerCardPlaceholder.parentNode) return;
+      stTimerCardPlaceholder.parentNode.insertBefore(card, stTimerCardPlaceholder);
+      stTimerCardPlaceholder.parentNode.removeChild(stTimerCardPlaceholder);
+      stTimerCardPlaceholder = null;
+    }
+    function stToggleFullscreen(){
+      const card = document.getElementById('st-timer-card');
+      if(!card) return;
+      const enteringFullscreen = !card.classList.contains('st-fullscreen');
+      if(enteringFullscreen) stMoveCardToBody(card);
+      card.classList.toggle('st-fullscreen', enteringFullscreen);
+      if(!enteringFullscreen) stMoveCardBack(card);
+      stUpdateFullscreenBtn(enteringFullscreen);
+      stLockBodyScroll(enteringFullscreen);
+    }
+    const stTimerFullscreenBtn = document.getElementById('st-timer-fullscreen-btn');
+    if(stTimerFullscreenBtn) stTimerFullscreenBtn.addEventListener('click', function(e){ e.stopPropagation(); stToggleFullscreen(); });
+    const stTimerCardEl = document.getElementById('st-timer-card');
+    if(stTimerCardEl) stTimerCardEl.addEventListener('touchmove', function(e){
+      if(stTimerCardEl.classList.contains('st-fullscreen')) e.preventDefault();
+    }, { passive: false });
+    function stExitFullscreen(){
+      const card = document.getElementById('st-timer-card');
+      if(card && card.classList.contains('st-fullscreen')){
+        card.classList.remove('st-fullscreen');
+        stMoveCardBack(card);
+        stUpdateFullscreenBtn(false);
+        stLockBodyScroll(false);
+      }
+    }
 
     document.querySelectorAll('.st-tab').forEach(btn => btn.addEventListener('click', () => stSwitchTab(btn.dataset.tab)));
     document.querySelectorAll('.st-shortcut').forEach(btn => btn.addEventListener('click', () => stSwitchTab(btn.dataset.goto)));
@@ -13868,6 +14167,17 @@ if(existing){
       stTaskSubjectChips.querySelectorAll('.st-subject-chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
     });
+
+    // Study Tracker functions are declared inside this IIFE's own scope, so
+    // code outside it (the Home page's "Track My Studies" tile, the
+    // floating mini-timer widget, etc.) can't see them by name even though
+    // it checks `typeof stShow === 'function'` first — that check silently
+    // resolves to false and the tap does nothing. Exposing the handful of
+    // entry points other parts of the page actually call fixes that without
+    // turning the whole tracker into global state.
+    window.stShow = stShow;
+    window.stHide = stHide;
+    window.stUpdateFloatingWidget = stUpdateFloatingWidget;
   })();
 
 
