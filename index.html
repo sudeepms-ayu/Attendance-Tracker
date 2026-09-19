@@ -2513,6 +2513,181 @@
     color: var(--gold);
   }
   .btn-suspended:hover{ background: var(--gold); color: var(--paper); }
+  .btn-notheld{
+    background: transparent;
+    border: 1px solid rgba(var(--ink-rgb),0.35);
+    color: var(--ink-soft);
+  }
+  .btn-notheld:hover{ background: var(--ink-soft); color: var(--paper); }
+  .rc-status.not_held{ color: var(--ink-soft); font-style:normal; font-weight:600; }
+
+  /* ============================================================
+     RECENT ATTENDANCE — premium "Last Week" / "Last Month" recap
+     ============================================================ */
+  section.recap{ margin-top:34px; }
+  .recap-crest{
+    font-family:'Lora', serif;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(var(--gold-rgb),0.55);
+    background: rgba(var(--gold-rgb),0.08);
+    padding:3px 8px;
+    border-radius:20px;
+  }
+  .recap-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .recap-tab{
+    position:relative;
+    overflow:hidden;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding:15px 16px 14px;
+    border-radius:10px;
+    border:1px solid rgba(var(--gold-rgb),0.5);
+    background: linear-gradient(150deg, rgba(var(--gold-rgb),0.14) 0%, rgba(var(--paper-rgb),0.55) 70%);
+    color: var(--ink);
+    font-family:'Lora', serif;
+    cursor:pointer;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.12s ease, background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .recap-tab::before{
+    content:"";
+    position:absolute;
+    top:0; left:14px; right:14px;
+    height:1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb),0.9), transparent);
+  }
+  .recap-tab:hover{ border-color: var(--gold); }
+  .recap-tab:active{ transform: scale(0.98); }
+  .recap-tab svg{ width:18px; height:18px; color: var(--gold); margin-bottom:4px; transition: color 0.2s ease; }
+  .recap-tab-title{ font-weight:700; font-size:16px; letter-spacing:0.01em; }
+  .recap-tab-sub{
+    font-size:10.5px;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color: var(--ink-soft);
+    transition: color 0.2s ease;
+  }
+  .recap-tab.active{
+    background: linear-gradient(180deg, var(--gold) 0%, rgba(var(--gold-rgb),0.86) 100%);
+    border-color: var(--gold);
+    color: var(--paper);
+    box-shadow: 0 10px 24px -12px rgba(var(--gold-rgb),0.85);
+  }
+  .recap-tab.active::before{ background: linear-gradient(90deg, transparent, rgba(255,255,255,0.75), transparent); }
+  .recap-tab.active svg, .recap-tab.active .recap-tab-sub{ color: var(--paper); }
+
+  .recap-panel{ margin-top:16px; }
+  .recap-panel.recap-enter{ animation: viewFadeSlideIn 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+  .recap-meta{
+    font-family:'Lora', serif;
+    font-size:13px;
+    color: var(--ink-soft);
+    line-height:1.5;
+    margin-bottom:14px;
+  }
+  .recap-meta b{ color: var(--ink); }
+  .recap-note{
+    font-family:'Lora', serif;
+    font-size:12.5px;
+    font-style:italic;
+    color: var(--ink-soft);
+    padding:10px 12px;
+    border:1px dashed rgba(var(--gold-rgb),0.5);
+    border-radius:6px;
+    margin-bottom:14px;
+    line-height:1.45;
+  }
+  .recap-row{
+    background: rgba(var(--paper-rgb),0.5);
+    border: 1px solid rgba(var(--ink-rgb),0.13);
+    border-radius:6px;
+    box-shadow: var(--card-shadow);
+    padding:14px 16px;
+    margin-bottom:12px;
+  }
+  .recap-row-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:8px; }
+  .recap-subj{ font-family:'Lora', serif; font-weight:700; font-size:16px; color: var(--ink); }
+  .recap-pct{ font-family:'Lora', serif; font-weight:700; font-size:15px; }
+  .recap-pct.ok{ color: var(--success); }
+  .recap-pct.low{ color: var(--danger); }
+  .recap-pct.none{ color: var(--ink-soft); font-weight:500; }
+  .recap-bar{ height:5px; border-radius:5px; background: rgba(var(--ink-rgb),0.12); overflow:hidden; margin-bottom:10px; }
+  .recap-bar-fill{ height:100%; border-radius:5px; background: var(--success); transition: width 0.35s ease; }
+  .recap-bar-fill.low{ background: var(--danger); }
+  .recap-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+  .recap-chip{
+    font-family:'Lora', serif;
+    font-size:12px;
+    padding:3px 9px;
+    border-radius:20px;
+    border:1px solid rgba(var(--ink-rgb),0.2);
+    color: var(--ink-soft);
+  }
+  .recap-chip b{ color: var(--ink); }
+  .recap-chip.present{ border-color: rgba(60,107,76,0.45); }
+  .recap-chip.present b{ color: var(--success); }
+  .recap-chip.absent{ border-color: rgba(var(--danger-rgb),0.45); }
+  .recap-chip.absent b{ color: var(--danger); }
+  .recap-chip.off{ border-color: rgba(var(--gold-rgb),0.5); }
+  .recap-chip.off b{ color: var(--gold); }
+
+  .recap-calc{
+    margin-top:18px;
+    padding:18px;
+    border-radius:10px;
+    border:1px solid rgba(var(--gold-rgb),0.5);
+    background: linear-gradient(160deg, rgba(var(--gold-rgb),0.12), rgba(var(--paper-rgb),0.5));
+    box-shadow: var(--card-shadow);
+    position:relative;
+  }
+  .recap-calc::before{
+    content:"";
+    position:absolute;
+    top:0; left:18px; right:18px;
+    height:1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb),0.9), transparent);
+  }
+  .recap-calc-title{ font-family:'Lora', serif; font-weight:700; font-size:16px; color: var(--ink); margin:0 0 4px; }
+  .recap-calc-hint{ font-family:'Lora', serif; font-size:12.5px; font-style:italic; color: var(--ink-soft); margin:0 0 14px; line-height:1.45; }
+  .recap-calc-fields{ display:flex; gap:12px; flex-wrap:wrap; }
+  .recap-field{ display:flex; flex-direction:column; gap:5px; flex:1; min-width:120px; font-family:'Lora', serif; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; color: var(--ink-soft); }
+  .recap-field input{
+    font-family:'Lora', serif;
+    font-size:18px;
+    padding:9px 10px;
+    border:1.5px solid rgba(var(--ink-rgb),0.22);
+    border-radius:5px;
+    background: rgba(var(--paper-rgb),0.6);
+    color: var(--ink);
+    width:100%;
+    box-sizing:border-box;
+  }
+  .recap-field input:focus{ border-color: var(--gold); outline:none; }
+  .recap-result{ margin-top:16px; display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .recap-result-num{ font-family:'Playfair Display', 'Lora', serif; font-weight:800; font-size:38px; line-height:1; color: var(--ink); }
+  .recap-result-num.ok{ color: var(--success); }
+  .recap-result-num.low{ color: var(--danger); }
+  .recap-result-note{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); font-style:italic; flex:1; min-width:140px; text-align:right; }
+  .recap-fill-btn{
+    margin-top:14px;
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size:13px;
+    padding:8px 14px;
+    border-radius:3px;
+    border:1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    cursor:pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .recap-fill-btn:hover{ background: var(--gold); color: var(--paper); }
 
   /* ============================================================
      DESKTOP STAGE
@@ -6209,7 +6384,7 @@
 
   <div class="profile-field-group">
     <div class="section-label"><span>Streaks</span></div>
-    <p class="broadcast-hint" style="margin-top:0;">Your current consecutive-present streak, subject by subject. Marking a subject absent resets its streak.</p>
+    <p class="broadcast-hint" style="margin-top:0;">Your current consecutive-present streak, subject by subject. Marking a class absent loses the streak; a class marked suspended or not held leaves it unchanged.</p>
     <div class="streak-grid" id="streak-grid"></div>
     <div class="streak-empty" id="streak-empty" style="display:none;">Add a subject and start marking attendance to build a streak.</div>
   </div>
@@ -6856,6 +7031,26 @@
         <button class="save-history-btn" id="save-history-btn">Save to History</button>
       </div>
     </header>
+
+    <section class="recap" id="recap-section">
+      <div class="section-label">
+        <span>Recent Attendance</span>
+        <span class="recap-crest">Premium</span>
+      </div>
+      <div class="recap-tabs">
+        <button type="button" class="recap-tab" data-range="week" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>
+          <span class="recap-tab-title">Last Week</span>
+          <span class="recap-tab-sub">Past 7 days</span>
+        </button>
+        <button type="button" class="recap-tab" data-range="month" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M3 9h18M8 2v4M16 2v4M7.5 13.5h.01M12 13.5h.01M16.5 13.5h.01M7.5 17.5h.01M12 17.5h.01"></path></svg>
+          <span class="recap-tab-title">Last Month</span>
+          <span class="recap-tab-sub">Past 30 days</span>
+        </button>
+      </div>
+      <div class="recap-panel" id="recap-panel" style="display:none;"></div>
+    </section>
 
     <section class="register">
       <div class="section-label">
@@ -9960,6 +10155,7 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
         }
       }
     }catch(e){ /* nothing saved yet */ }
+    try{ renderRecap(false); }catch(e){}
   }
   async function saveRollcall(){
     try{ await window.storage.set(rollcallKeyFor(currentUser.id), JSON.stringify(rollcall), true); }catch(e){}
@@ -10121,17 +10317,247 @@ function rcXpOp(status){
   function rcMarkDelta(status){
     if(status === 'present') return { attended: 1, total: 1 };
     if(status === 'absent') return { attended: 0, total: 1 };
-    return { attended: 0, total: 0 }; // suspended — doesn't count toward classes held
+    // suspended / not_held — the class never counted as held, so neither
+    // number moves.
+    return { attended: 0, total: 0 };
   }
 
-  // Turns a Roll Call status into the same streak instruction the manual
-  // Present/Absent buttons use, so the two stay in sync (present -> +1,
-  // absent -> reset, suspended -> untouched).
+  // Turns a Roll Call status into a streak instruction, so Roll Call and the
+  // manual Present/Absent buttons stay in sync:
+  //   present   -> streak +1
+  //   absent    -> streak is lost (reset to 0)
+  //   suspended -> streak stays exactly as it was
+  //   not_held  -> streak stays exactly as it was
+  // Returning null means "leave the streak alone".
   function rcStreakOp(status){
     if(status === 'present') return { type: 'present' };
     if(status === 'absent') return { type: 'absent' };
-    return null;
+    return null; // suspended or not_held
   }
+
+  // Display names for Roll Call statuses.
+  const RC_STATUS_LABELS = { present: 'Present', absent: 'Absent', suspended: 'Suspended', not_held: 'Not held' };
+
+
+  // ============================================================
+  // RECENT ATTENDANCE — "Last Week" / "Last Month"
+  // Looks back over the last 7 / 30 days, keeps only real working days
+  // (the same isHolidayDateKey() check Roll Call and the Academic Calendar
+  // use, so official holidays, 2nd/4th Saturdays, Sundays and any day the
+  // person marked as a holiday are skipped), and reads what was marked in
+  // Today's Roll Call for each subject. At the bottom, the person can type
+  // how many classes were held and attended to get their own percentage.
+  // ============================================================
+  let recapRange = null; // 'week' | 'month' | null (closed)
+  const recapManual = { week: { held: '', att: '' }, month: { held: '', att: '' } };
+  const RECAP_DAY_NAMES = { 1:'Monday', 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday' };
+
+  // Same scheduling rules as rcSubjectsForToday, but for any weekday.
+  function rcSubjectsForDayName(section, day){
+    if(!day || !TIMETABLE.days[day] || !TIMETABLE.days[day][section]) return { day, codes: [] };
+    const seen = new Set();
+    const codes = [];
+    TIMETABLE.days[day][section].forEach(cell => {
+      const display = ttCleanCell(cell);
+      if(!display || display === 'Break' || display === '\u2014') return;
+      if(section === 'D' && (display === 'BO' || display === 'ZO')) return;
+      display.split(',').map(x => x.trim()).filter(Boolean).forEach(code => {
+        if(!seen.has(code)){ seen.add(code); codes.push(code); }
+      });
+    });
+    return { day, codes };
+  }
+
+  function computeRecap(range){
+    const span = range === 'month' ? 30 : 7;
+    const today = new Date();
+    const section = rollcall.section;
+    const rows = {};
+    const getRow = name => rows[name] || (rows[name] = { name, present: 0, absent: 0, suspended: 0, notHeld: 0, unmarked: 0 });
+    let workingDays = 0, offDays = 0;
+    for(let i = span - 1; i >= 0; i--){
+      const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+      const key = localDateKey(d);
+      const dayName = RECAP_DAY_NAMES[d.getDay()];
+      if(!dayName || isHolidayDateKey(key)){ offDays++; continue; }
+      workingDays++;
+      const marks = (rollcall.marks && rollcall.marks[key]) || {};
+      const pmarks = (rollcall.practicalMarks && rollcall.practicalMarks[key]) || {};
+      const scheduled = section ? rcSubjectsForDayName(section, dayName).codes.map(c => RC_SUBJECT_NAMES[c] || c) : [];
+      const names = new Set(scheduled.concat(Object.keys(marks), Object.keys(pmarks)));
+      names.forEach(name => {
+        const row = getRow(name);
+        const tally = m => {
+          if(m.status === 'present') row.present++;
+          else if(m.status === 'absent') row.absent++;
+          else if(m.status === 'suspended') row.suspended++;
+          else if(m.status === 'not_held') row.notHeld++;
+        };
+        if(marks[name]) tally(marks[name]);
+        else if(scheduled.indexOf(name) !== -1) row.unmarked++;
+        if(pmarks[name]) tally(pmarks[name]);
+      });
+    }
+    const list = Object.keys(rows).sort().map(k => rows[k]);
+    let attended = 0, held = 0;
+    list.forEach(r => { attended += r.present; held += r.present + r.absent; });
+    const first = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (span - 1));
+    return { span, workingDays, offDays, rows: list, attended, held, first, last: today, hasSection: !!section };
+  }
+
+  function recapEl(tag, cls, text){
+    const e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(text !== undefined && text !== null) e.textContent = text;
+    return e;
+  }
+  function recapThreshold(){
+    const t = (typeof state !== 'undefined' && state && Number(state.threshold)) || 75;
+    return t;
+  }
+  function recapShortDate(d){ return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }); }
+
+  function updateRecapResult(range, numEl, noteEl){
+    const m = recapManual[range];
+    const held = parseInt(m.held, 10), att = parseInt(m.att, 10);
+    numEl.className = 'recap-result-num';
+    if(m.held === '' || m.att === '' || isNaN(held) || isNaN(att)){
+      numEl.textContent = '\u2014';
+      noteEl.textContent = 'Enter both numbers to see your percentage.';
+      return;
+    }
+    if(held <= 0 || att < 0){
+      numEl.textContent = '\u2014';
+      noteEl.textContent = 'Classes held must be more than zero.';
+      return;
+    }
+    if(att > held){
+      numEl.textContent = '\u2014';
+      noteEl.textContent = 'Attended can\u2019t be more than the classes held.';
+      return;
+    }
+    const pct = Math.round((att / held) * 100);
+    const line = recapThreshold();
+    numEl.textContent = pct + '%';
+    numEl.classList.add(pct >= line ? 'ok' : 'low');
+    noteEl.textContent = att + ' of ' + held + ' classes \u00b7 ' + (pct >= line ? 'above' : 'below') + ' your ' + line + '% line';
+  }
+
+  function renderRecap(animate){
+    const panel = document.getElementById('recap-panel');
+    if(!panel) return;
+    const tabs = document.querySelectorAll('.recap-tab');
+    tabs.forEach(t => {
+      const on = t.dataset.range === recapRange;
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    if(!recapRange){ panel.style.display = 'none'; panel.innerHTML = ''; return; }
+
+    const range = recapRange;
+    const data = computeRecap(range);
+    panel.innerHTML = '';
+    panel.style.display = 'block';
+    panel.classList.remove('recap-enter');
+    if(animate){ void panel.offsetWidth; panel.classList.add('recap-enter'); }
+
+    const meta = recapEl('p', 'recap-meta');
+    const title = range === 'month' ? 'Last month' : 'Last week';
+    meta.innerHTML = '';
+    const b1 = recapEl('b', null, title);
+    meta.appendChild(b1);
+    meta.appendChild(document.createTextNode(' \u00b7 ' + recapShortDate(data.first) + ' \u2013 ' + recapShortDate(data.last) +
+      ' \u00b7 ' + data.workingDays + ' working day' + (data.workingDays === 1 ? '' : 's') +
+      (data.offDays ? ' (' + data.offDays + ' holiday/off day' + (data.offDays === 1 ? '' : 's') + ' skipped)' : '')));
+    panel.appendChild(meta);
+
+    if(!data.hasSection){
+      panel.appendChild(recapEl('div', 'recap-note', 'Pick your section in Today\u2019s Roll Call so each day\u2019s scheduled periods can be matched. Classes you\u2019ve already marked are shown below.'));
+    }
+
+    if(data.rows.length === 0){
+      panel.appendChild(recapEl('div', 'recap-note', 'Nothing to show for this window yet. Mark your classes in Today\u2019s Roll Call and they\u2019ll appear here.'));
+    }
+
+    const line = recapThreshold();
+    data.rows.forEach(r => {
+      const heldR = r.present + r.absent;
+      const row = recapEl('div', 'recap-row');
+      const top = recapEl('div', 'recap-row-top');
+      top.appendChild(recapEl('span', 'recap-subj', r.name));
+      const pct = heldR > 0 ? Math.round((r.present / heldR) * 100) : null;
+      const pctEl = recapEl('span', 'recap-pct ' + (pct === null ? 'none' : (pct >= line ? 'ok' : 'low')), pct === null ? 'No classes held' : pct + '%');
+      top.appendChild(pctEl);
+      row.appendChild(top);
+      const bar = recapEl('div', 'recap-bar');
+      const fill = recapEl('div', 'recap-bar-fill' + (pct !== null && pct < line ? ' low' : ''));
+      fill.style.width = (pct === null ? 0 : pct) + '%';
+      bar.appendChild(fill);
+      row.appendChild(bar);
+      const chips = recapEl('div', 'recap-chips');
+      const addChip = (cls, label, n) => {
+        const c = recapEl('span', 'recap-chip ' + cls);
+        c.appendChild(document.createTextNode(label + ' '));
+        c.appendChild(recapEl('b', null, String(n)));
+        chips.appendChild(c);
+      };
+      addChip('present', 'Attended', r.present);
+      addChip('absent', 'Absent', r.absent);
+      if(r.suspended) addChip('off', 'Suspended', r.suspended);
+      if(r.notHeld) addChip('off', 'Not held', r.notHeld);
+      if(r.unmarked) addChip('', 'Not marked', r.unmarked);
+      row.appendChild(chips);
+      panel.appendChild(row);
+    });
+
+    // ---- Manual percentage calculator ----
+    const calc = recapEl('div', 'recap-calc');
+    calc.appendChild(recapEl('h3', 'recap-calc-title', 'Work out your percentage'));
+    calc.appendChild(recapEl('p', 'recap-calc-hint', 'Type how many classes were held in this window and how many you attended.'));
+    const fields = recapEl('div', 'recap-calc-fields');
+    const mkField = (label, key) => {
+      const wrap = recapEl('label', 'recap-field');
+      wrap.appendChild(document.createTextNode(label));
+      const inp = document.createElement('input');
+      inp.type = 'number'; inp.min = '0'; inp.inputMode = 'numeric'; inp.placeholder = '0';
+      inp.value = recapManual[range][key];
+      wrap.appendChild(inp);
+      fields.appendChild(wrap);
+      return inp;
+    };
+    const heldInp = mkField('Classes held', 'held');
+    const attInp = mkField('Classes attended', 'att');
+    calc.appendChild(fields);
+    const result = recapEl('div', 'recap-result');
+    const numEl = recapEl('div', 'recap-result-num', '\u2014');
+    const noteEl = recapEl('div', 'recap-result-note', '');
+    result.appendChild(numEl);
+    result.appendChild(noteEl);
+    calc.appendChild(result);
+    heldInp.addEventListener('input', () => { recapManual[range].held = heldInp.value; updateRecapResult(range, numEl, noteEl); });
+    attInp.addEventListener('input', () => { recapManual[range].att = attInp.value; updateRecapResult(range, numEl, noteEl); });
+    if(data.held > 0){
+      const fillBtn = recapEl('button', 'recap-fill-btn', 'Use my Roll Call totals');
+      fillBtn.type = 'button';
+      fillBtn.addEventListener('click', () => {
+        recapManual[range].held = String(data.held);
+        recapManual[range].att = String(data.attended);
+        heldInp.value = String(data.held);
+        attInp.value = String(data.attended);
+        updateRecapResult(range, numEl, noteEl);
+      });
+      calc.appendChild(fillBtn);
+    }
+    updateRecapResult(range, numEl, noteEl);
+    panel.appendChild(calc);
+  }
+
+  document.querySelectorAll('.recap-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      recapRange = (recapRange === btn.dataset.range) ? null : btn.dataset.range;
+      renderRecap(true);
+    });
+  });
 
   async function rcSetMark(subjectFullName, status){
     const dateKey = localDateKey();
@@ -10250,6 +10676,7 @@ if(existing){
   }
 
   function renderRollcall(){
+    try{ renderRecap(false); }catch(e){}
     const picker = document.getElementById('rc-picker');
     const body = document.getElementById('rc-body');
     const subtitle = document.getElementById('rc-subtitle');
@@ -10351,7 +10778,7 @@ if(existing){
     subj.className = 'rc-subject';
     subj.textContent = fullName;
     const status = document.createElement('div');
-    const label = activeMark ? (activeMark.status.charAt(0).toUpperCase() + activeMark.status.slice(1)) : 'Not marked yet';
+    const label = activeMark ? (RC_STATUS_LABELS[activeMark.status] || activeMark.status) : 'Not marked yet';
     status.className = 'rc-status' + (activeMark ? ' ' + activeMark.status : '');
     status.textContent = label + (isPractical ? ' (practical)' : '');
     top.appendChild(subj);
@@ -10381,6 +10808,14 @@ if(existing){
       isPractical ? rcSetPracticalMark(fullName, 'suspended') : rcSetMark(fullName, 'suspended');
     });
 
+    const notHeldBtn = document.createElement('button');
+    notHeldBtn.className = 'btn btn-notheld';
+    notHeldBtn.textContent = 'Not held';
+    notHeldBtn.title = 'The class did not take place — your streak stays as it is';
+    notHeldBtn.addEventListener('click', () => {
+      isPractical ? rcSetPracticalMark(fullName, 'not_held') : rcSetMark(fullName, 'not_held');
+    });
+
     const undoBtn = document.createElement('button');
     undoBtn.className = 'btn btn-undo';
     undoBtn.textContent = 'Undo';
@@ -10392,6 +10827,7 @@ if(existing){
     actions.appendChild(presentBtn);
     actions.appendChild(absentBtn);
     actions.appendChild(suspendedBtn);
+    actions.appendChild(notHeldBtn);
     actions.appendChild(undoBtn);
 
     // Toggle just decides which bucket (theory or practical) the bar above
@@ -11415,6 +11851,7 @@ if(existing){
       els.list.appendChild(buildCard(s));
     });
 
+    try{ renderRecap(false); }catch(e){}
     const { sumAttended, sumTotal, overall } = currentOverall();
     els.overallPct.textContent = overall === null ? '—' : overall + '%';
     els.overallPct.style.color = overall === null ? 'var(--ink)' : (overall >= state.threshold ? 'var(--success)' : 'var(--danger)');
