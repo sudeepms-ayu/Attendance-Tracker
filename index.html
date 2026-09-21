@@ -2832,6 +2832,154 @@
     .stage-glow-a, .stage-glow-b, body::after{ animation:none !important; }
   }
 
+
+  /* ============================================================
+     DESKTOP NAVIGATION DRAWER — desktop only; phone menu untouched
+     ============================================================ */
+  @media (min-width: 860px){
+    .menu-wrap{
+      top:24px;
+      right:24px;
+      z-index:160;
+    }
+    .menu-wrap::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      background:rgba(var(--ink-rgb),0.20);
+      backdrop-filter:blur(2px);
+      -webkit-backdrop-filter:blur(2px);
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transition:opacity .32s ease, visibility 0s linear .32s;
+    }
+    body.menu-desktop-open .menu-wrap::before{
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+      transition:opacity .32s ease, visibility 0s;
+    }
+    #menu-toggle{
+      position:relative;
+      z-index:3;
+      width:46px;
+      height:46px;
+      border-radius:12px;
+      background:rgba(var(--paper-rgb),.94);
+      box-shadow:0 12px 30px -18px rgba(var(--ink-rgb),.55), 0 1px 0 rgba(255,255,255,.35) inset;
+      transition:border-color .24s ease, background .24s ease, transform .24s cubic-bezier(.22,1,.36,1), box-shadow .24s ease;
+    }
+    #menu-toggle:hover{ transform:translateY(-1px); box-shadow:0 18px 34px -18px rgba(var(--ink-rgb),.62); }
+    #menu-toggle:active{ transform:scale(.96); }
+    .menu-dropdown{
+      position:fixed;
+      top:0;
+      right:0;
+      width:min(330px, 31vw);
+      min-width:288px;
+      height:100vh;
+      height:100dvh;
+      max-height:none;
+      box-sizing:border-box;
+      padding:88px 16px 24px;
+      border:0;
+      border-left:1px solid rgba(var(--gold-rgb),.25);
+      border-radius:20px 0 0 20px;
+      background:linear-gradient(180deg, rgba(var(--paper-rgb),.985), rgba(var(--paper-rgb),.94));
+      box-shadow:-30px 0 70px -42px rgba(var(--ink-rgb),.72);
+      transform:translate3d(104%,0,0);
+      transform-origin:right center;
+      opacity:1;
+      visibility:hidden;
+      overflow-y:auto;
+      overscroll-behavior:contain;
+      will-change:transform;
+      transition:transform .46s cubic-bezier(.16,1,.3,1), visibility 0s linear .46s;
+    }
+    .menu-dropdown::before{
+      content:"Menu";
+      position:absolute;
+      top:28px;
+      left:22px;
+      font-family:'Lora', serif;
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+      color:var(--ink-soft);
+    }
+    .menu-dropdown.open{
+      transform:translate3d(0,0,0);
+      opacity:1;
+      visibility:visible;
+      transition:transform .5s cubic-bezier(.16,1,.3,1), visibility 0s;
+    }
+    .menu-dropdown .menu-row{
+      min-height:52px;
+      padding:13px 14px;
+      border:1px solid transparent;
+      border-radius:11px;
+      opacity:0;
+      transform:translateX(18px);
+      transition:background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+    }
+    .menu-dropdown.open .menu-row{ animation:desktopMenuRowIn .42s cubic-bezier(.16,1,.3,1) forwards; }
+    .menu-row:hover{
+      background:rgba(var(--gold-rgb),.10);
+      border-color:rgba(var(--gold-rgb),.25);
+      transform:translateX(-2px);
+    }
+    .menu-row:active{ transform:scale(.985); }
+    .menu-row-icon{ width:19px; height:19px; }
+    .menu-sep{ margin:5px 10px; opacity:.72; }
+    @keyframes desktopMenuRowIn{ to{ opacity:1; transform:translateX(0); } }
+
+    .wrap, .auth-card, footer{
+      transition:transform .5s cubic-bezier(.16,1,.3,1), max-width .5s cubic-bezier(.16,1,.3,1);
+    }
+    body.menu-desktop-open .wrap,
+    body.menu-desktop-open .auth-card,
+    body.menu-desktop-open footer{
+      transform:translateX(clamp(-175px, -12vw, -110px));
+    }
+    body.menu-locked{ overflow:auto; }
+  }
+
+  /* Recent attendance responsiveness and premium state motion (all devices). */
+  .recap-tab{
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+    will-change:transform;
+    transition:transform .22s cubic-bezier(.22,1,.36,1), background .28s ease, box-shadow .28s ease, color .22s ease, border-color .22s ease;
+  }
+  .recap-tab:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .recap-tab.recap-press{ transform:scale(.965); }
+  .recap-panel{
+    transform-origin:top center;
+    will-change:opacity, transform;
+  }
+  .recap-panel.recap-switching{ pointer-events:none; animation:recapPanelOut .16s cubic-bezier(.4,0,1,1) both; }
+  .recap-panel.recap-enter{ animation:recapPanelIn .42s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes recapPanelOut{ to{ opacity:0; transform:translateY(-6px) scale(.992); } }
+  @keyframes recapPanelIn{
+    from{ opacity:0; transform:translateY(12px) scale(.992); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  .recap-panel.recap-enter .recap-row,
+  .recap-panel.recap-enter .recap-calc,
+  .recap-panel.recap-enter .recap-note{
+    animation:recapItemIn .38s cubic-bezier(.16,1,.3,1) both;
+  }
+  .recap-panel.recap-enter .recap-row:nth-of-type(2){ animation-delay:.025s; }
+  .recap-panel.recap-enter .recap-row:nth-of-type(3){ animation-delay:.05s; }
+  .recap-panel.recap-enter .recap-row:nth-of-type(4){ animation-delay:.075s; }
+  @keyframes recapItemIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+  @media (prefers-reduced-motion:reduce){
+    .recap-panel, .recap-panel *, .recap-tab{ animation:none !important; transition:none !important; }
+  }
+
   /* ---------- Premium confirmation modal ---------- */
   .cm-overlay{
     position:fixed; inset:0; z-index:9999;
@@ -7486,10 +7634,15 @@ window.promptCoachingModal = function(opts){
     function setMenuLocked(locked){
       document.body.classList.toggle('menu-locked', locked);
     }
-    const menuObserver = new MutationObserver(() => {
-      setMenuLocked(menuDropdown.classList.contains('open'));
-    });
+    function syncMenuState(){
+      const open = menuDropdown.classList.contains('open');
+      const desktop = window.matchMedia && window.matchMedia('(min-width: 860px)').matches;
+      setMenuLocked(open && !desktop);
+      document.body.classList.toggle('menu-desktop-open', open && desktop);
+    }
+    const menuObserver = new MutationObserver(syncMenuState);
     menuObserver.observe(menuDropdown, { attributes: true, attributeFilter: ['class'] });
+    window.addEventListener('resize', syncMenuState, { passive:true });
 
     menuToggle.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -10458,8 +10611,10 @@ function rcXpOp(status){
     const data = computeRecap(range);
     panel.innerHTML = '';
     panel.style.display = 'block';
-    panel.classList.remove('recap-enter');
-    if(animate){ void panel.offsetWidth; panel.classList.add('recap-enter'); }
+    panel.classList.remove('recap-enter', 'recap-switching');
+    if(animate){
+      requestAnimationFrame(() => panel.classList.add('recap-enter'));
+    }
 
     const meta = recapEl('p', 'recap-meta');
     const title = range === 'month' ? 'Last month' : 'Last week';
@@ -10552,10 +10707,33 @@ function rcXpOp(status){
     panel.appendChild(calc);
   }
 
+  let recapRenderToken = 0;
   document.querySelectorAll('.recap-tab').forEach(btn => {
+    const releasePress = () => btn.classList.remove('recap-press');
+    btn.addEventListener('pointerdown', () => btn.classList.add('recap-press'), { passive:true });
+    btn.addEventListener('pointerup', releasePress, { passive:true });
+    btn.addEventListener('pointercancel', releasePress, { passive:true });
+    btn.addEventListener('pointerleave', releasePress, { passive:true });
     btn.addEventListener('click', () => {
-      recapRange = (recapRange === btn.dataset.range) ? null : btn.dataset.range;
-      renderRecap(true);
+      const token = ++recapRenderToken;
+      const nextRange = (recapRange === btn.dataset.range) ? null : btn.dataset.range;
+      recapRange = nextRange;
+
+      // Paint the selected state before doing the date aggregation and DOM work.
+      document.querySelectorAll('.recap-tab').forEach(t => {
+        const on = t.dataset.range === nextRange;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      const panel = document.getElementById('recap-panel');
+      if(panel && panel.style.display !== 'none') panel.classList.add('recap-switching');
+
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if(token !== recapRenderToken) return;
+          renderRecap(!!nextRange);
+        }, nextRange ? 80 : 150);
+      });
     });
   });
 
