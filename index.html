@@ -1405,6 +1405,17 @@
   @keyframes npShine{ 0%,55%{ left:-45%; } 100%{ left:130%; } }
   @keyframes npRing{ 0%,100%{ box-shadow: 0 10px 20px -8px rgba(var(--gold-rgb),1), 0 0 0 0 rgba(var(--gold-rgb),0.45), inset 0 1px 0 rgba(255,255,255,0.5); } 50%{ box-shadow: 0 10px 20px -8px rgba(var(--gold-rgb),1), 0 0 0 9px rgba(var(--gold-rgb),0), inset 0 1px 0 rgba(255,255,255,0.5); } }
   @media (prefers-reduced-motion: reduce){ .np-shine, .notify-premium .np-icon{ animation:none; } }
+  /* Practical Group Finder: classic premium card, no ambient glow */
+  .notify-premium.pgf-classic{
+    box-shadow: none;
+    background: linear-gradient(135deg, rgba(var(--gold-rgb),0.10), rgba(var(--gold-rgb),0.02) 80%);
+    border: 1px solid rgba(var(--gold-rgb),0.4);
+  }
+  .notify-premium.pgf-classic .np-icon{
+    animation: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .notify-premium.pgf-classic .np-title{ letter-spacing: 0.01em; }
   .notif-profile-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:14px 0; font-family:'Lora', serif; font-size:13.5px; color: var(--ink); }
   .notify-prompt-btn:disabled{ opacity:0.6; cursor:default; }
   .menu-row-icon-wrap{ position:relative; display:inline-flex; align-items:center; justify-content:center; }
@@ -1977,6 +1988,45 @@
     font-style:italic;
     font-size:13px;
     opacity:0.85;
+  }
+  .tt-table td.tt-practical{
+    white-space:normal;
+    position:relative;
+    padding-top:19px;
+  }
+  .tt-table td.tt-practical::before{
+    content:"Practical";
+    position:absolute;
+    top:3px; left:10px;
+    font-size:9px;
+    letter-spacing:0.07em;
+    text-transform:uppercase;
+    font-style:italic;
+    color: var(--ink-soft);
+    opacity:0.85;
+  }
+  .tt-table th:not(:first-child), .tt-table td:not(:first-child){
+    border-left: 1px solid rgba(var(--ink-rgb),0.12);
+  }
+  .tt-revised-badge{
+    display:inline-block;
+    margin:2px 0 6px;
+    padding:3px 12px;
+    border:1px solid var(--gold);
+    border-radius:20px;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--gold);
+    font-weight:700;
+  }
+  .tt-legend{
+    text-align:center;
+    font-size:12px;
+    color: var(--ink-soft);
+    font-style:italic;
+    margin:10px 0 0;
+    line-height:1.7;
   }
   .tt-table tr:last-child td{ border-bottom:none; }
   .tt-table tbody tr{ cursor:pointer; -webkit-tap-highlight-color: transparent; }
@@ -3269,6 +3319,8 @@
     font-size:14.5px; line-height:1.55; color: var(--ink-soft); margin:0 0 24px;
   }
   .cm-actions{ display:flex; gap:10px; justify-content:flex-end; }
+  .cm-actions-stack{ flex-direction:column; }
+  .cm-actions-stack .cm-btn{ width:100%; text-align:center; }
   .cm-btn{
     appearance:none; border:none; cursor:pointer;
     font-family:inherit; font-size:14px; font-weight:600;
@@ -4055,6 +4107,85 @@
   }
   .rc-mark-holiday-confirm:active{ transform: scale(0.96); }
 
+  .rc-hours{
+    font-family:'Lora', serif;
+    font-size:12.5px;
+    color: var(--ink-soft);
+    margin: 0 0 14px 0;
+    padding:10px 14px;
+    border-radius:10px;
+    background: rgba(var(--ink-rgb),0.05);
+    border: 1px solid rgba(var(--ink-rgb),0.12);
+  }
+
+  /* ---- "Add a subject for today" — same tactile control language as the
+     holiday bar, for ad-hoc cards when the printed timetable didn't match
+     what actually happened in class. ---- */
+  .rc-add-card-row{ margin-bottom:16px; }
+  .rc-add-card-btn{
+    display:flex; align-items:center; gap:9px; width:100%;
+    appearance:none; cursor:pointer; text-align:left;
+    font-family:'Lora', serif; font-size:13px; font-weight:600; color: var(--ink);
+    background: rgba(var(--ink-rgb),0.05);
+    border: 1px solid rgba(var(--ink-rgb),0.18);
+    border-radius:12px; padding:12px 16px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .rc-add-card-btn:hover{ background: rgba(var(--ink-rgb),0.09); border-color: rgba(var(--ink-rgb),0.3); }
+  .rc-add-card-icon{ font-family:'Playfair Display', serif; font-size:15px; line-height:1; color: var(--gold); }
+  .rc-add-card-form{
+    display:flex; flex-direction:column; gap:10px; margin-top:10px;
+    padding:14px; border-radius:12px;
+    background: rgba(var(--ink-rgb),0.04); border:1px solid rgba(var(--ink-rgb),0.14);
+    animation: viewFadeSlideIn 0.28s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .rc-add-card-input{
+    width:100%; box-sizing:border-box; font-family:'Lora', serif; font-size:13px; color: var(--ink);
+    background: var(--paper); border:1px solid rgba(var(--ink-rgb),0.16); border-radius:8px;
+    padding:10px 12px;
+  }
+  .rc-add-card-input:focus{ outline:none; border-color: var(--gold); }
+  .rc-add-card-type{ display:flex; gap:8px; }
+  .rc-add-card-type-btn{
+    flex:1; appearance:none; cursor:pointer;
+    font-family:'Lora', serif; font-size:12.5px; font-weight:600; color: var(--ink-soft);
+    background: transparent; border:1px solid rgba(var(--ink-rgb),0.2); border-radius:8px; padding:8px 10px;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .rc-add-card-type-btn.active{
+    background: var(--gold); color: var(--paper); border-color: var(--gold);
+  }
+  .rc-add-card-actions{ display:flex; justify-content:flex-end; gap:10px; }
+  .rc-add-card-cancel{
+    appearance:none; border:1px solid rgba(var(--ink-rgb),0.18); background:transparent; color: var(--ink-soft);
+    font-family:'Lora', serif; font-size:12.5px; font-weight:600; padding:8px 14px; border-radius:8px; cursor:pointer;
+  }
+  .rc-add-card-confirm{
+    appearance:none; border:1px solid var(--gold); background: var(--gold); color: var(--paper);
+    font-family:'Lora', serif; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer;
+    transition: transform 0.15s ease;
+  }
+  .rc-add-card-confirm:active{ transform: scale(0.96); }
+
+  .rc-card-extra{ border-style: dashed; }
+  .rc-card-badge{
+    display:inline-block; margin-left:8px; font-family:'Lora', serif; font-size:10.5px; font-weight:700;
+    letter-spacing:0.03em; text-transform:uppercase; color: var(--gold);
+    background: rgba(var(--gold-rgb),0.12); border:1px solid rgba(var(--gold-rgb),0.35);
+    border-radius:6px; padding:2px 6px; vertical-align:middle;
+  }
+  .rc-card-extra-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    margin-top:14px; padding-top:14px; border-top: 1px dashed rgba(var(--ink-rgb),0.18);
+  }
+  .rc-card-extra-note{ font-family:'Lora', serif; font-size:12px; color: var(--ink-soft); font-style:italic; }
+  .rc-card-remove{
+    appearance:none; cursor:pointer; background:transparent; border:1px solid var(--danger); color: var(--danger);
+    font-family:'Lora', serif; font-size:12px; font-weight:600; padding:6px 10px; border-radius:8px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .rc-card-remove:hover{ background: var(--danger); color: var(--paper); }
+
   /* ================= Profile ================= */
 
   /* The Profile entry lives inside the three-line menu as its first row,
@@ -4527,7 +4658,7 @@
     }
   }
 
-  /* ---- Wanna See Magic!!! (pendulum wave) ---- */
+  /* ---- Wanna See Magic (pendulum wave) ---- */
   .menu-row-icon-magic{ color: var(--gold); }
   .menu-row-magic:hover .menu-row-icon-magic{ animation: magicMenuTwinkle 0.9s ease-in-out infinite; }
   @keyframes magicMenuTwinkle{
@@ -5847,26 +5978,18 @@
           <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg>
           <span class="menu-msg-dot" id="menu-exams-dot" style="display:none;"></span>
         </span>
-        <span>Coaching Exams</span>
+        <span>Exam Tracker</span>
       </span>
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
     <div class="menu-sep"></div>
-    <button class="menu-row menu-row-magic" id="open-magic-btn" type="button">
-      <span class="menu-row-label">
-        <svg class="menu-row-icon menu-row-icon-magic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg>
-        <span>Wanna See Magic!!!</span>
-      </span>
-      <span class="menu-row-arrow">&rsaquo;</span>
-    </button>
-    <div class="menu-sep"></div>
-    <a class="menu-row" id="menu-contact-btn" href="mailto:sudeepsahoo9078@gmail.com?subject=Attendance%20Register%20-%20Concern">
+    <button class="menu-row" id="menu-contact-btn" type="button">
       <span class="menu-row-label">
         <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13z"></path><path d="m4.5 5.5 7.5 6.5 7.5-6.5"></path></svg>
         <span>Contact Us</span>
       </span>
       <span class="menu-row-arrow">&rsaquo;</span>
-    </a>
+    </button>
     <div class="menu-sep"></div>
     <button class="menu-row" id="open-bmc-btn" type="button">
       <span class="menu-row-label">
@@ -5880,14 +6003,6 @@
       <span class="menu-row-label">
         <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="11" rx="5"></rect><path d="M7.5 12h3M9 10.5v3"></path><circle cx="15" cy="11" r="1"></circle><circle cx="17.5" cy="13.5" r="1"></circle></svg>
         <span>Games</span>
-      </span>
-      <span class="menu-row-arrow">&rsaquo;</span>
-    </button>
-    <div class="menu-sep"></div>
-    <button class="menu-row" id="menu-add-coaching-btn" type="button">
-      <span class="menu-row-label">
-        <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9.5 12 4 2 9.5l10 5.5 10-5.5z"></path><path d="M6 12.2v4.3c0 1.66 2.69 3 6 3s6-1.34 6-3v-4.3"></path><path d="M22 9.5v6"></path></svg>
-        <span>Add My Coaching</span>
       </span>
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
@@ -6022,8 +6137,7 @@
       <button type="button" class="hm-explore-link" data-open="holidays"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"></rect><path d="M8 14l2 2 4-4"></path></svg>Academic Calendar</button>
       <button type="button" class="hm-explore-link" data-open="homework"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>Homework</button>
       <button type="button" class="hm-explore-link" data-open="projection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"></path><path d="M4 4h13l-3 4 3 4H4"></path></svg>Projection to Exam</button>
-      <button type="button" class="hm-explore-link" data-open="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg>Coaching Exams</button>
-      <button type="button" class="hm-explore-link" data-open="magic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg>Wanna See Magic!!!</button>
+      <button type="button" class="hm-explore-link" data-open="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg>Exam Tracker</button>
       <button type="button" class="hm-explore-link hm-explore-games" data-open="games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="11" rx="5"></rect><path d="M7.5 12h3M9 10.5v3"></path><circle cx="15" cy="11" r="1"></circle><circle cx="17.5" cy="13.5" r="1"></circle></svg>Games · Bolts &amp; Nuts</button>
     </div>
   </section>
@@ -6041,9 +6155,10 @@
   <button class="tt-back" id="tt-back-btn">&lsaquo; Back</button>
   <header class="cover tt-cover">
     <div class="tt-logo">OU</div>
-    <p class="eyebrow tt-eyebrow">Odisha University of<br>Agriculture &amp; Technology</p>
+    <p class="eyebrow tt-eyebrow">Odisha University of Agriculture &amp; Technology</p>
     <h1 class="tt-title">College of Basic Science<br>&amp; Humanities</h1>
-    <p class="subtitle tt-subtitle">+2 Science (1st Year) &middot; Academic Timetable,<br>2026&ndash;27 &middot; w.e.f. 31.07.2026</p>
+    <span class="tt-revised-badge">Revised Timetable</span>
+    <p class="subtitle tt-subtitle">+2 Science (1st Year) &middot; Revised Academic Timetable,<br>2026&ndash;27 &middot; w.e.f. 19.09.2026</p>
   </header>
 
   <div class="tt-daytabs" id="tt-daytabs"></div>
@@ -6056,6 +6171,19 @@
     <div class="tt-table-scroll">
       <table class="tt-table" id="tt-table"></table>
     </div>
+    <p class="tt-legend">Section A (PCMB Group-1,2,3,4,5,6)<br>Section B (PCMB Group-7,8,9,10,11,12)<br>Section C (PCMB Group-13,14,15,16 : PCMEI Group-17 : PCBEI Group-18)<br>Section D (PCMIT Group-19,20,21,22,23<br>: PCBIT Group-24)</p>
+  <div class="notify-premium pgf-classic" style="margin-top:18px;">
+    <div class="np-icon" style="animation:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    </div>
+    <div class="np-body" style="flex:1 1 0; min-width:180px;">
+      <p class="np-title">Practical Group Finder</p>
+      <p class="notify-prompt-status" style="display:block;">Enter your roll number to see your practical group.</p>
+    </div>
+    <input id="tt-roll-input" class="broadcast-input" style="max-width:160px;" placeholder="IS26-016 or 016" maxlength="12">
+    <button type="button" class="np-btn" id="tt-roll-check-btn">Check</button>
+    <p class="notify-prompt-status" id="tt-roll-result" style="flex:1 1 100%; margin:0 2px 2px 2px;"></p>
+  </div>
   </div>
 </div>
 
@@ -6148,8 +6276,13 @@
   <button class="tt-back" id="exams-back-btn">&lsaquo; Back</button>
   <header class="cover" style="border-bottom:none; padding-bottom:0; margin-bottom:18px;">
     <p class="eyebrow">Countdown, Subject By Subject</p>
-    <h1>Coaching Exams</h1>
-    <p class="subtitle">Pick your section, then a subject and its exam date — it's saved instantly and counts down on its own.</p>
+    <h1>Exam Tracker</h1>
+    <p class="subtitle">Track coaching and school exams separately — both count down automatically, and completed exams move to history.</p>
+
+  <div class="hw-form" style="margin-top:-4px;">
+    <div class="hw-subject-pick" id="exam-type-tabs" style="grid-template-columns: repeat(2, 1fr);"></div>
+  </div>
+
   </header>
 
   <div class="notify-prompt" data-notify-prompt style="display:none;">
@@ -6181,6 +6314,12 @@
           <input id="exam-date-input" type="date" disabled>
         </div>
       </div>
+      <div id="exam-title-row" style="display:none; margin-top:14px;">
+        <label for="exam-title-input">Exam title (required for school exams)</label>
+        <input id="exam-title-input" type="text" class="broadcast-input" placeholder="e.g. Half Yearly Test" maxlength="60">
+        <p class="exam-hint" style="margin-top:8px;">School exams need a title so your history stays clear.</p>
+      </div>
+
       <div id="exam-topic-row" style="display:none;">
         <label for="exam-topic-input">Topic (optional)</label>
         <textarea id="exam-topic-input" rows="2" placeholder="Which topic / chapter is this exam on?"></textarea>
@@ -6190,8 +6329,14 @@
     </div>
 
     <div class="exam-grid" id="exam-grid"></div>
+
+    <section class="history" id="exam-history-section" style="display:none;">
+      <h2 style="margin: 18px 0 10px 0;">History</h2>
+      <div class="history-list" id="exam-history-list"></div>
+      <div class="empty-state" id="exam-history-empty" style="display:none;">No completed exams yet.</div>
+    </section>
     <div class="empty-state" id="exam-empty" style="display:none;">
-      No coaching exams tracked yet. Pick a subject and a date above to start the countdown.
+      No exams tracked yet. Pick a subject and a date above to start the countdown.
     </div>
   </div>
 </div>
@@ -6212,6 +6357,7 @@
   <div id="rc-picker">
     <p class="broadcast-hint">Select your section — this is saved so you won't need to pick it again.</p>
     <div class="rc-section-pick" id="rc-section-pick"></div>
+    <div class="rc-section-pick" id="rc-group-pick" style="display:none; margin-top:10px;"></div>
   </div>
 
   <div id="rc-body" style="display:none;">
@@ -6219,7 +6365,34 @@
       <span>Section <b id="rc-current-section"></b></span>
       <button class="rc-change-btn" id="rc-change-section-btn">change section</button>
     </div>
+    <div class="rc-current-row" id="rc-group-row" style="display:none;">
+      <span>Group <b id="rc-current-group"></b></span>
+      <button class="rc-change-btn" id="rc-change-group-btn">change group</button>
+    </div>
+    <div class="rc-current-row" id="rc-elective-row" style="display:none;">
+      <span>Optional: <b id="rc-elective-label">Odia/Ae &amp; IT/EL</b></span>
+      <button class="rc-change-btn" id="rc-change-elective-btn">choose</button>
+    </div>
     <p class="rc-nudge" id="rc-nudge" style="display:none;"></p>
+    <p class="rc-hours" id="rc-working-hours" style="display:none;"></p>
+    <div class="rc-add-card-row" id="rc-add-card-row" style="display:none;">
+      <button type="button" class="rc-add-card-btn" id="rc-add-card-btn">
+        <span class="rc-add-card-icon">&#10133;</span>
+        <span>Add A Subject For Today</span>
+      </button>
+      <div class="rc-add-card-form" id="rc-add-card-form" style="display:none;">
+        <input type="text" id="rc-add-card-input" class="rc-add-card-input" list="rc-add-card-suggestions" placeholder="Subject name — e.g. Physics" maxlength="40">
+        <datalist id="rc-add-card-suggestions"></datalist>
+        <div class="rc-add-card-type">
+          <button type="button" class="rc-add-card-type-btn active" id="rc-add-card-type-theory" data-type="theory">Theory</button>
+          <button type="button" class="rc-add-card-type-btn" id="rc-add-card-type-practical" data-type="practical">Practical</button>
+        </div>
+        <div class="rc-add-card-actions">
+          <button type="button" class="rc-add-card-cancel" id="rc-add-card-cancel">Cancel</button>
+          <button type="button" class="rc-add-card-confirm" id="rc-add-card-confirm">Add Card</button>
+        </div>
+      </div>
+    </div>
     <div class="rc-mark-holiday-bar" id="rc-mark-holiday-bar" style="display:none;">
       <button type="button" class="rc-mark-holiday-toggle" id="rc-mark-holiday-toggle">
         <span class="rc-mark-holiday-icon">&#10024;</span>
@@ -6326,7 +6499,7 @@
   <button class="tt-back" id="magic-back-btn">&lsaquo; Back</button>
   <header class="cover" style="border-bottom:none; padding-bottom:0; margin-bottom:16px;">
     <p class="eyebrow">Fifteen Pendulums, One Secret</p>
-    <h1>Wanna See Magic!!! <span class="magic-title-spark" aria-hidden="true">✨</span></h1>
+    <h1>Wanna See Magic <span class="magic-title-spark" aria-hidden="true">✨</span></h1>
     <p class="subtitle">Each pendulum keeps its own tempo — watch chaos fold itself back into order.</p>
   </header>
 
@@ -6586,6 +6759,16 @@
         <button class="game-card-play" id="game-card-wow-play" type="button" onclick="event.stopPropagation();typeof wwOpen==='function'&&wwOpen()">Play</button>
       </div>
     </div>
+    <div class="game-card game-card-live game-card-magic" id="game-card-magic" role="button" tabindex="0" aria-label="Open Wanna See Magic" onclick="typeof magicShow==='function'&&magicShow(true)">
+      <div class="game-card-art game-card-art-magic">
+        <span class="game-card-magic-spark" aria-hidden="true"></span>
+      </div>
+      <div class="game-card-body">
+        <div class="game-card-title game-card-title-premium">Wanna See Magic</div>
+        <div class="game-card-tag">Pendulum Wave &middot; A Little Wonder</div>
+        <button class="game-card-play" id="game-card-magic-play" type="button" onclick="event.stopPropagation();typeof magicShow==='function'&&magicShow(true)">Play</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -6749,6 +6932,7 @@
 .game-card:nth-child(2){ animation-delay: .12s; }
 .game-card:nth-child(3){ animation-delay: .19s; }
 .game-card:nth-child(4){ animation-delay: .26s; }
+.game-card:nth-child(5){ animation-delay: .33s; }
 @keyframes gameCardIn{ to{ opacity:1; transform:translateY(0) scale(1); } }
 .game-card-live:hover{ transform: translateY(-4px); box-shadow: 0 18px 34px rgba(var(--ink-rgb),0.16); }
 .game-card-live{ cursor:pointer; }
@@ -6757,6 +6941,29 @@
 .game-card-art{ height:120px; background-size:cover; background-position:center; position:relative; }
   .game-card-art-wow{
     background: linear-gradient(135deg,#1a6b8a 0%,#0d3d52 100%);
+  }
+  .game-card-art-magic{
+    background:
+      radial-gradient(circle at 30% 24%, rgba(217,176,90,0.38), transparent 55%),
+      linear-gradient(135deg,#26221A 0%,#14120D 100%);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .game-card-magic-spark{
+    position:relative; width:34px; height:34px; border-radius:50%;
+    background: radial-gradient(circle, rgba(217,176,90,0.95) 0%, rgba(217,176,90,0) 70%);
+    animation: gameCardMagicPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes gameCardMagicPulse{
+    0%,100%{ opacity:0.55; transform:scale(0.9); }
+    50%{ opacity:1; transform:scale(1.18); }
+  }
+  .game-card-title-premium{
+    color: var(--gold);
+    text-shadow: 0 1px 12px rgba(var(--gold-rgb),0.35);
+    letter-spacing:0.01em;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .game-card-magic-spark{ animation:none !important; }
   }
 
 .game-card-art::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.35) 100%); }
@@ -8114,6 +8321,66 @@ window.promptCoachingModal = function(opts){
   });
 };
 
+// ---------- "Contact Us" choice modal (global helper) ----------
+// Presents two ways to reach the team: request a new coaching to be
+// added, or send a general mail. Resolves 'coaching', 'mail', or null.
+window.contactChoiceModal = function(opts){
+  opts = opts || {};
+  const title = opts.title || 'Contact Us';
+  const message = opts.message || 'What would you like to do?';
+
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'cm-overlay';
+    overlay.innerHTML =
+      '<div class="cm-box" role="dialog" aria-modal="true" aria-labelledby="ccm-title" aria-describedby="ccm-message">' +
+        '<div class="cm-icon">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13z"></path><path d="m4.5 5.5 7.5 6.5 7.5-6.5"></path></svg>' +
+        '</div>' +
+        '<p class="cm-title" id="ccm-title"></p>' +
+        '<p class="cm-message" id="ccm-message"></p>' +
+        '<div class="cm-actions cm-actions-stack">' +
+          '<button type="button" class="cm-btn cm-btn-gold" id="ccm-coaching">Add My Coaching</button>' +
+          '<button type="button" class="cm-btn cm-btn-gold" id="ccm-mail">Mail Us</button>' +
+          '<button type="button" class="cm-btn cm-btn-cancel" id="ccm-cancel">Cancel</button>' +
+        '</div>' +
+      '</div>';
+    overlay.querySelector('#ccm-title').textContent = title;
+    overlay.querySelector('#ccm-message').textContent = message;
+    document.body.appendChild(overlay);
+
+    const cancelBtn = overlay.querySelector('#ccm-cancel');
+    const coachingBtn = overlay.querySelector('#ccm-coaching');
+    const mailBtn = overlay.querySelector('#ccm-mail');
+    const prevFocus = document.activeElement;
+
+    function close(result){
+      overlay.classList.add('cm-closing');
+      const done = () => {
+        overlay.removeEventListener('animationend', done);
+        if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        document.removeEventListener('keydown', onKeydown);
+        if(prevFocus && prevFocus.focus) { try{ prevFocus.focus(); }catch(e){} }
+        resolve(result);
+      };
+      overlay.addEventListener('animationend', done);
+      setTimeout(done, 220);
+    }
+
+    function onKeydown(e){
+      if(e.key === 'Escape') close(null);
+    }
+
+    cancelBtn.addEventListener('click', () => close(null));
+    coachingBtn.addEventListener('click', () => close('coaching'));
+    mailBtn.addEventListener('click', () => close('mail'));
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) close(null); });
+    document.addEventListener('keydown', onKeydown);
+
+    setTimeout(() => { try{ coachingBtn.focus(); }catch(e){} }, 30);
+  });
+};
+
 // ---- Contact Us / Add My Coaching (mailto to the app's support inbox) ----
 (function initContactAndCoachingRequest(){
   const SUPPORT_EMAIL = 'sudeepsahoo9078@gmail.com';
@@ -8125,31 +8392,40 @@ window.promptCoachingModal = function(opts){
     if(mt){ mt.classList.remove('menu-open'); mt.setAttribute('aria-expanded', 'false'); }
   }
 
-  // "Contact Us" is a plain mailto link, so the browser/mail app already
-  // handles the redirect on its own — this just tidies the menu away.
-  const contactBtn = document.getElementById('menu-contact-btn');
-  if(contactBtn) contactBtn.addEventListener('click', closeMenu);
-
   // "Add My Coaching" pops the name prompt, then builds a pre-written
   // mailto (subject + body already filled in, with the typed coaching
   // name dropped into the message) and hands it to the mail app.
-  const addCoachingBtn = document.getElementById('menu-add-coaching-btn');
-  if(addCoachingBtn){
-    addCoachingBtn.addEventListener('click', () => {
+  function sendAddCoachingMail(){
+    promptCoachingModal().then((coachingName) => {
+      if(!coachingName) return;
+      const subject = 'Add My Coaching - ' + coachingName;
+      const body =
+        'Hello,\n\n' +
+        'This app is currently set up for SSC Coaching. I would like to request ' +
+        'that the following coaching institute be added:\n\n' +
+        'Coaching Name: ' + coachingName + '\n\n' +
+        'Thank you.';
+      window.location.href =
+        'mailto:' + SUPPORT_EMAIL +
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(body);
+    });
+  }
+
+  // "Mail us" sends the same general-concern mail the old plain link did.
+  function sendGeneralMail(){
+    window.location.href =
+      'mailto:' + SUPPORT_EMAIL + '?subject=' + encodeURIComponent('Attendance Register - Concern');
+  }
+
+  // "Contact Us" now opens a small choice modal offering both paths.
+  const contactBtn = document.getElementById('menu-contact-btn');
+  if(contactBtn){
+    contactBtn.addEventListener('click', () => {
       closeMenu();
-      promptCoachingModal().then((coachingName) => {
-        if(!coachingName) return;
-        const subject = 'Add My Coaching - ' + coachingName;
-        const body =
-          'Hello,\n\n' +
-          'This app is currently set up for SSC Coaching. I would like to request ' +
-          'that the following coaching institute be added:\n\n' +
-          'Coaching Name: ' + coachingName + '\n\n' +
-          'Thank you.';
-        window.location.href =
-          'mailto:' + SUPPORT_EMAIL +
-          '?subject=' + encodeURIComponent(subject) +
-          '&body=' + encodeURIComponent(body);
+      window.contactChoiceModal().then((choice) => {
+        if(choice === 'coaching') sendAddCoachingMail();
+        else if(choice === 'mail') sendGeneralMail();
       });
     });
   }
@@ -8585,7 +8861,7 @@ window.promptCoachingModal = function(opts){
     wire('profile-new-pass2-eye', 'profile-new-pass2');
   })();
 
-  // ---- Wanna See Magic!!! — pendulum wave synchronization ----
+  // ---- Wanna See Magic — pendulum wave synchronization ----
   (function initMagic(){
     const stage = document.getElementById('magic-stage');
     const canvas = document.getElementById('magic-canvas');
@@ -8916,45 +9192,54 @@ window.promptCoachingModal = function(opts){
     };
   })();
 
-  // ---- Time Table ----
+  // ---- Time Table (REVISED, w.e.f. 19.9.26) ----
+  // 8 columns: 3 morning theory periods, the break, then 4 afternoon periods.
+  // Displayed exactly as printed (hall numbers / practical group numbers and
+  // all). A cell value repeated in two (or three) consecutive columns is a
+  // merged practical block (1h30, or 2h15 for a rare triple) — ttRender()
+  // below visually merges those and labels them "Practical", styled the same
+  // as any other cell. Section D does not take Botany or Zoology (theory or
+  // practical) — those slots are marked '\u2014' below.
+  const TT_REVISED = true;
+  const TT_WEF = '19.09.2026';
   const TIMETABLE = {
-    periods: ['9.30\u201310.15','10.15\u201311.00','11\u201311.45','11.45\u201312.00','12\u201312.45','12.45\u20131.30'],
+    periods: ['9.30\u201310.15','10.15\u201311.00','11\u201311.45','11.45\u201312.00','12\u201312.45','12.45\u20131.30','1.30\u20132.15','2.15\u20133.00'],
     days: {
       Monday: {
-        A: ['PH[5]','CH[5]','OD[5]','Break','BO[5]','\u2014'],
-        B: ['BO[6]','MA[6]','PH[6]','Break','CH[6]','\u2014'],
-        C: ['ZO[10]','PH[H7]','CH[7]','Break','IT[H10], EL[H7]','OD[H7] AE[H6]'],
-        D: ['ZO[H10]','OD[H10] AE[H2]','EN[10]','Break','IT[H10], EL[H7]','\u2014']
+        A: ['MA[H5]','CH[H5]','EN[H5]','Break','PH[H5]','PH[1,2],CH[3,4],BO[5,6]','PH[1,2],CH[3,4],BO[5,6]','ZO[H6]'],
+        B: ['PH[9,10],BO[11,12]','PH[9,10],BO[11,12]','PH[H6]','Break','MA[H6]','ZO[7,8]','ZO[7,8]','OD[H5]AE[H4]'],
+        C: ['ZO[15,16],CH[17,18]','ZO[15,16],CH[17,18]','EL[H9]','Break','CH[H9]','MA[H5]','BO[H10]','MA[H10]'],
+        D: ['IT[H10]','CH[H10]','OD[H10]AE[H6]','Break','EN[H10]','PH[H10]','BO[H10]','\u2014']
       },
       Tuesday: {
-        A: ['EN[5]','MA[5]','CH[5]','Break','ZO[H5]','\u2014'],
-        B: ['ZO[H6]','CH[6]','OD[6]','Break','EN[6]','\u2014'],
-        C: ['CH[7]','IT[H10], EL[H7]','MA[7]','Break','OD[H7] AE[H9]','\u2014'],
-        D: ['MA[10]','IT[H10], EL[H7]','PH[H10]','Break','CH[10]','EN[10]']
+        A: ['OD[H5]','MA[H5]','EN[H5]','Break','CH[H5]','ZO[H5]','\u2014','\u2014'],
+        B: ['PH[7,8],CH[9,10],ZO[11,12]','PH[7,8],CH[9,10],ZO[11,12]','MA[H6]','Break','PH[H6]','EN[H6]','CH[H6]','OD[H6]'],
+        C: ['OD[H6]AE[H4]','MA[H6]','EL[H9]','Break','ZO[H10]','PH[15,16],CH[13,14],BO[18]','PH[15,16],CH[13,14],BO[18]','PH[H10]'],
+        D: ['PH[H10]','CH[H10]','IT[H10]','Break','ZO[H10]','BO[24]','BO[24]','\u2014']
       },
       Wednesday: {
-        A: ['MA[5]','PH[5]','OD[5]','Break','EN[5]','\u2014'],
-        B: ['PH[6]','EN[6]','MA[6]','Break','OD[6]','\u2014'],
-        C: ['EN[7]','IT[H10], EL[H7]','PH[H7]','Break','MA[7]','\u2014'],
-        D: ['OD[H10] AE[H4]','IT[H10], EL[H7]','MA[10]','Break','EN[10]','CH[10]']
+        A: ['CH[H5]','PH[H5]','EN[H5]','Break','OD[H5]','CH[1,2],PH[3,4],ZO[5,6]','CH[1,2],PH[3,4],ZO[5,6]','\u2014'],
+        B: ['ZO[H6]','OD[H6]','CH[H6]','Break','BO[H6]','BO[9,10]','BO[9,10]','\u2014'],
+        C: ['EL[17,18],BO[13,14]','EL[17,18],BO[13,14]','EN[H9]','Break','ZO[H10]','OD[H5]AE[H6]','PH[5]','MA[H2]'],
+        D: ['IT[19,20],PH[21,22],CH[23,24]','IT[19,20],PH[21,22],CH[23,24]','PH[H10]','Break','ZO[H10]','EN[H10]','OD[H10]AE[H6]','\u2014']
       },
       Thursday: {
-        A: ['CH[5]','PH[5]','MA[5]','Break','OD[5]','\u2014'],
-        B: ['MA[6]','OD[6]','CH[6]','Break','PH[6]','\u2014'],
-        C: ['BO[10]','MA[7]','ZO[10]','Break','EN[7]','OD[H7] AE[H6]'],
-        D: ['BO[10]','EN[10]','ZO[10]','Break','CH[10]','PH[H10]']
+        A: ['PH[5,6],BO[1,2],ZO[3,4]','PH[5,6],BO[1,2],ZO[3,4]','OD[H5]','Break','MA[H5]','ZO[H5]','\u2014','\u2014'],
+        B: ['CH[7,8]','CH[7,8]','EN[H6]','Break','CH[H6]','PH[H6]','OD[H6]','CH[H6]'],
+        C: ['OD[H5]AE[H6]','PH[H5]','EL[H9]','Break','EN[H9]','PH[17,18],BO[15,16],ZO[13,14]','PH[17,18],BO[15,16],ZO[13,14]','\u2014'],
+        D: ['CH[H10]','MA[H10]','EN[H10]','Break','IT[H10]','CH[21,22],IT[23,24]','CH[21,22],IT[23,24]','\u2014']
       },
       Friday: {
-        A: ['EN[5]','BO[5]','ZO[H5]','Break','MA[5]','\u2014'],
-        B: ['ZO[H6]','MA[6]','BO[6]','Break','EN[6]','CH[6]'],
-        C: ['PH[H7]','OD[H7] AE[H4]','EN[7]','Break','CH[7]','MA[7]'],
-        D: ['CH[10]','PH[H10]','MA[10]','Break','OD[H10] AE[H4]','\u2014']
+        A: ['PH[H5]','EN[H5]','BO[H5]','Break','\u2014','CH[5,6],BO[3,4],ZO[1,2]','CH[5,6],BO[3,4],ZO[1,2]','\u2014'],
+        B: ['EN[H6]','MA[H6]','OD[H6]','Break','CH[H6]','PH[11,12]','PH[11,12]','\u2014'],
+        C: ['ZO[18],CH[15,16]','ZO[18],CH[15,16]','EN[H1]','Break','BO[H10]','PH[5]','CH[H5]','\u2014'],
+        D: ['ZO[24],PH[19,20]','ZO[24],PH[19,20]','MA[H10]','Break','BO[H10]','OD[H10]AE[H2]','PH[H10]','\u2014']
       },
       Saturday: {
-        A: ['PH[5]','CH[5]','EN[5]','Break','OD[5]','\u2014'],
-        B: ['OD[6]','PH[6]','CH[6]','Break','EN[6]','\u2014'],
-        C: ['BO[10]','EN[7]','PH[H7]','Break','IT[H10], EL[H7]','CH[7]'],
-        D: ['BO[10]','OD[H10] AE[H9]','MA[10]','Break','IT[H10], EL[H7]','PH[H10]']
+        A: ['BO[H5]','CH[H5]','OD[H5]','Break','PH[H5]','MA[H5]','\u2014','\u2014'],
+        B: ['MA[H6]','PH[H6]','BO[H6]','Break','EN[H6]','BO[7,8],ZO[9,10],CH[11,12]','BO[7,8],ZO[9,10],CH[11,12]','\u2014'],
+        C: ['CH[H10]','MA[H10]','EL[H9]','Break','EN[H4]','PH[13,14]','PH[13,14]','\u2014'],
+        D: ['IT[21,22],CH[19,20],PH[23,24]','IT[21,22],CH[19,20],PH[23,24]','IT[H10]','Break','CH[H10]','OD[H6]AE[H10]','EN[H6]','MA[H6]']
       }
     }
   };
@@ -9029,21 +9314,32 @@ window.promptCoachingModal = function(opts){
       const nameTd = document.createElement('td');
       nameTd.textContent = 'Section ' + sec;
       row.appendChild(nameTd);
-      dayData[sec].forEach(cell => {
+      const cells = dayData[sec];
+      // Merge runs of consecutive identical, non-break/non-empty raw cell
+      // values into one wide "Practical" cell (they represent one 90‑minute,
+      // or occasionally 135‑minute, lab block spanning that many periods).
+      let i = 0;
+      while(i < cells.length){
+        const raw = cells[i];
+        let span = 1;
+        while(i + span < cells.length && cells[i + span] === raw && raw !== 'Break' && raw !== '\u2014') span++;
         const td = document.createElement('td');
-        let display = ttCleanCell(cell);
-        // Section D doesn't take Botany or Zoology — those periods are free for them.
-        if(sec === 'D' && (display === 'BO' || display === 'ZO')){
-          td.textContent = 'Free';
-          td.className = 'tt-free';
-        } else if(display === 'Break'){
+        if(raw === 'Break'){
           td.textContent = 'Break';
           td.className = 'tt-break';
+        } else if(raw === '\u2014' || raw === ''){
+          td.textContent = '\u2014';
+          td.className = 'tt-free';
+        } else if(span > 1){
+          td.textContent = raw;
+          td.className = 'tt-practical';
+          td.colSpan = span;
         } else {
-          td.textContent = display;
+          td.textContent = raw;
         }
         row.appendChild(td);
-      });
+        i += span;
+      }
       row.addEventListener('click', () => {
         const wasActive = row.classList.contains('tt-row-active');
         tbody.querySelectorAll('tr.tt-row-active').forEach(r => r.classList.remove('tt-row-active'));
@@ -9063,6 +9359,7 @@ window.promptCoachingModal = function(opts){
       swapped = true;
       card.removeEventListener('transitionend', onFadeOutEnd);
       ttRender();
+    initPracticalGroupFinder();
       card.classList.remove('tt-fade-out');
       card.classList.add('tt-fade-in');
       requestAnimationFrame(() => requestAnimationFrame(() => card.classList.remove('tt-fade-in')));
@@ -9075,6 +9372,50 @@ window.promptCoachingModal = function(opts){
     setTimeout(swap, 200); // safety net in case transitionend doesn't fire
   }
 
+  
+  // ---- Practical group lookup (Academic Timetable) ----
+  const PRACTICAL_GROUPS = {
+    A: {
+      1: ['001','004','007','009','010','012','015','017','025','026','029','031','034','035','036','037'],
+      2: ['039','043','045','049','050','062','065','067','068','069','073','076','079','083','084','085'],
+      3: ['095','096','097','102','106','107','115','121','125','126','127','129','144','148','150','151'],
+      4: ['159','160','173','174','176','180','181','184','189','196','197','199','205','212','219','309'],
+      5: ['313','316','324','339','343','344','346','351','363','366','369','373','376','379','383','384'],
+      6: ['389','390','393','395','399','403','413','419','427','463','464','465','466','481','482','483'],
+    },
+    B: {
+      7: ['071','091','122','133','139','140','145','152','157','158','186','187','191','193','213','217'],
+      8: ['225','227','228','231','235','236','238','239','241','242','244','248','249','252','258','262'],
+      9: ['263','272','286','287','292','293','295','297','302','310','326','336','341','349','353','361'],
+      10:['362','386','391','394','404','405','406','409','410','414','416','418','421','422','424','428'],
+      11:['429','430','431','432','434','435','437','440','443','445','447','451','453','456','459','460'],
+      12:['461','467','472','484','485','486','487','488','489','490','492','493','497'],
+    },
+    C: {
+      13:['006','046','048','054','055','060','061','063','076','088','114','132','154','200','214','216'],
+      14:['220','224','233','253','254','257','267','268','289','303','315','318','334','372','378','457'],
+      15:['468','474','478','500'],
+      16:['208','215','222','290','301','325','407','408','415','454','470','471','475','491','496','501','502'],
+      17:['232','234','259','265','270','273','279','280','282','291','296','299','304','311','345','388'],
+      18:['392','400','412','417','423','433','438','439','441','442','448','449','469','480','494','495','498','499'],
+    },
+    D: {
+      19:['005','008','013','014','016','018','019','020','021','024','028','032','051','052','053','058'],
+      20:['064','072','101','112','117','118','123','146','153','155','161','164','167','177','183','185'],
+      21:['188','194','198','202','203','207','209','210','211','226','306','308','314','317','329','330'],
+      22:['331','332','333','337','338','342','345','356','358','360','365','367','370','375','377','380'],
+      23:['387','396','397','401','402','425','436','450','452','458','462','473','476'],
+      24:['003','022','030','038','090','105','109','111','137','192','230','240','251','328','335','340','359','362','455'],
+    }
+  };
+
+  function normalizeRoll(raw){
+    if(!raw) return null;
+    const t = raw.trim().toUpperCase();
+    const m = t.match(/(\d{3})$/);
+    return m ? m[1] : null;
+  }
+
   function ttShow(){
     ttSelectedDay = ttTodayName() || 'Monday';
     hideAllPages();
@@ -9082,7 +9423,34 @@ window.promptCoachingModal = function(opts){
     document.body.classList.add('tt-mode');
     ttRenderDayTabs();
     ttRender();
+    initPracticalGroupFinder();
     window.scrollTo(0,0);
+  }
+
+  function initPracticalGroupFinder(){
+    const input = document.getElementById('tt-roll-input');
+    const btn = document.getElementById('tt-roll-check-btn');
+    const out = document.getElementById('tt-roll-result');
+    if(!input || !btn || !out) return;
+
+    const lookup = () => {
+      const roll = normalizeRoll(input.value);
+      if(!roll){ out.textContent = 'Enter a roll number like 016 or IS26-016.'; return; }
+      // Determine section/group by scanning the mapping.
+      for(const sec of Object.keys(PRACTICAL_GROUPS)){
+        const groups = PRACTICAL_GROUPS[sec];
+        for(const g of Object.keys(groups)){
+          if(groups[g].includes(roll)){
+            out.textContent = 'Section ' + sec + ' — Group ' + g;
+            return;
+          }
+        }
+      }
+      out.textContent = 'Roll ' + roll + ' not found in the list.';
+    };
+
+    btn.onclick = lookup;
+    input.onkeydown = (e) => { if(e.key === 'Enter') lookup(); };
   }
 
   function ttHide(){
@@ -10068,6 +10436,7 @@ window.promptCoachingModal = function(opts){
     renderHwNotifyRow();
     hwCheckNotifications();
     if(typeof renderExamDayBanner === 'function') renderExamDayBanner();
+    renderExamHistory();
     if(typeof renderExamSoonBanner === 'function') renderExamSoonBanner();
     if(typeof renderRcRemindBanner === 'function') renderRcRemindBanner();
     if(typeof examHolidayCheckNotifications === 'function') examHolidayCheckNotifications();
@@ -10083,28 +10452,54 @@ window.promptCoachingModal = function(opts){
   // date is, and cards for exams that have already happened prune
   // themselves out automatically.
   const EXAMS_KEY = 'attendance-coaching-exams-v1';
+  const SCHOOL_EXAMS_KEY = 'attendance-school-exams-v1';
+  const EXAM_HISTORY_KEY = 'attendance-exam-history-v1';
   function examsKeyFor(id){ return EXAMS_KEY + '::' + id; }
-  let coachingExams = []; // { id, subject, examDate }
+  function schoolExamsKeyFor(id){ return SCHOOL_EXAMS_KEY + '::' + id; }
+  function examHistoryKeyFor(id){ return EXAM_HISTORY_KEY + '::' + id; }
+  let coachingExams = []; // { id, subject, examDate, topic, createdDate }
+  let schoolExams = []; // { id, title, subject, examDate, topic, createdDate }
+  let coachingHistory = []; // completed coaching exams
+  let schoolHistory = []; // completed school exams
+  let activeExamType = 'coaching'; // 'coaching' | 'school'
   let selectedExamSubject = null;
 
   // Which section the subject picker is currently drawing from — saved so
   // returning to this page skips straight to the subject list.
-  const EXAMS_SECTION_KEY = 'coaching-exams-section-v1';
-  function examsSectionKeyFor(id){ return EXAMS_SECTION_KEY + '::' + id; }
-  let examsSection = { section: null };
-
+  const COACHING_EXAMS_SECTION_KEY = 'coaching-exams-section-v1';
+  const SCHOOL_EXAMS_SECTION_KEY = 'school-exams-section-v1';
+  function coachingExamsSectionKeyFor(id){ return COACHING_EXAMS_SECTION_KEY + '::' + id; }
+  function schoolExamsSectionKeyFor(id){ return SCHOOL_EXAMS_SECTION_KEY + '::' + id; }
+  let coachingExamsSection = { section: null };
+  let schoolExamsSection = { section: null };
   async function loadExamsSectionFor(id){
-    examsSection = { section: null };
+    coachingExamsSection = { section: null };
+    schoolExamsSection = { section: null };
     try{
-      const res = await window.storage.get(examsSectionKeyFor(id), true);
+      const res = await window.storage.get(coachingExamsSectionKeyFor(id), true);
       if(res && res.value){
         const parsed = JSON.parse(res.value);
-        if(parsed && typeof parsed === 'object') examsSection.section = parsed.section || null;
+        if(parsed && typeof parsed === 'object') coachingExamsSection.section = parsed.section || null;
       }
-    }catch(e){ /* nothing saved yet */ }
+    }catch(e){}
+    try{
+      const res2 = await window.storage.get(schoolExamsSectionKeyFor(id), true);
+      if(res2 && res2.value){
+        const parsed2 = JSON.parse(res2.value);
+        if(parsed2 && typeof parsed2 === 'object') schoolExamsSection.section = parsed2.section || null;
+      }
+    }catch(e){}
   }
+
   async function saveExamsSection(){
-    try{ await window.storage.set(examsSectionKeyFor(currentUser.id), JSON.stringify(examsSection), true); }catch(e){}
+    try{ await window.storage.set(coachingExamsSectionKeyFor(currentUser.id), JSON.stringify(coachingExamsSection), true); }catch(e){}
+    try{ await window.storage.set(schoolExamsSectionKeyFor(currentUser.id), JSON.stringify(schoolExamsSection), true); }catch(e){}
+  }
+
+  function activeExamSection(){ return activeExamType === 'school' ? schoolExamsSection : coachingExamsSection; }
+  function activeExamSectionsList(){
+    // Coaching has 3 sections, School has 4 (separate saved pick)
+    return activeExamType === 'school' ? ['A','B','C','D'] : ['A','B','C'];
   }
 
   async function loadCoachingExamsFor(id){
@@ -10121,6 +10516,40 @@ window.promptCoachingModal = function(opts){
   async function saveCoachingExams(){
     try{ await window.storage.set(examsKeyFor(currentUser.id), JSON.stringify(coachingExams), true); }catch(e){}
   }
+
+  async function loadSchoolExamsFor(id){
+    schoolExams = [];
+    try{
+      const res = await window.storage.get(schoolExamsKeyFor(id), true);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        if(Array.isArray(parsed)) schoolExams = parsed;
+      }
+    }catch(e){}
+    pruneFinishedExams();
+  }
+  async function saveSchoolExams(){
+    try{ await window.storage.set(schoolExamsKeyFor(currentUser.id), JSON.stringify(schoolExams), true); }catch(e){}
+  }
+
+  function blankHistory(){ return { coaching: [], school: [] }; }
+  async function loadExamHistoryFor(id){
+    coachingHistory = []; schoolHistory = [];
+    try{
+      const res = await window.storage.get(examHistoryKeyFor(id), true);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        if(parsed && typeof parsed === 'object'){
+          if(Array.isArray(parsed.coaching)) coachingHistory = parsed.coaching;
+          if(Array.isArray(parsed.school)) schoolHistory = parsed.school;
+        }
+      }
+    }catch(e){}
+  }
+  async function saveExamHistory(){
+    try{ await window.storage.set(examHistoryKeyFor(currentUser.id), JSON.stringify({ coaching: coachingHistory, school: schoolHistory }), true); }catch(e){}
+  }
+
 
   function examDaysLeft(dateKey){
     const parts = dateKey.split('-').map(Number);
@@ -10164,9 +10593,25 @@ window.promptCoachingModal = function(opts){
   // Cards for exams whose date has fully passed are removed on their own —
   // "that subject card will be deleted automatically" once it's done.
   function pruneFinishedExams(){
-    const before = coachingExams.length;
-    coachingExams = coachingExams.filter(x => examDaysLeft(x.examDate) >= 0);
-    if(coachingExams.length !== before) saveCoachingExams();
+    const today = localDateKey();
+
+    const movePassed = (arr, hist) => {
+      const keep = [];
+      for(const x of arr){
+        if(examDaysLeft(x.examDate) >= 0) keep.push(x);
+        else hist.push(Object.assign({ completedDate: today }, x));
+      }
+      return keep;
+    };
+
+    const beforeC = coachingExams.length;
+    const beforeS = schoolExams.length;
+    coachingExams = movePassed(coachingExams, coachingHistory);
+    schoolExams = movePassed(schoolExams, schoolHistory);
+
+    if(coachingExams.length !== beforeC) saveActiveExamList();
+    if(schoolExams.length !== beforeS) saveSchoolExams();
+    if((coachingExams.length !== beforeC) || (schoolExams.length !== beforeS)) saveExamHistory();
   }
 
   function updateExamsDot(){
@@ -10174,20 +10619,43 @@ window.promptCoachingModal = function(opts){
     if(!dot) return;
     // Glows the moment a subject card is added and stays lit until that
     // exam completes (auto-pruned) or the user removes it.
-    dot.style.display = coachingExams.length > 0 ? 'block' : 'none';
+    dot.style.display = (coachingExams.length + schoolExams.length) > 0 ? 'block' : 'none';
   }
 
+  function renderExamTypeTabs(){
+    const box = document.getElementById('exam-type-tabs');
+    if(!box) return;
+    const make = (key,label) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'hw-subject-chip' + (activeExamType === key ? ' active' : '');
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        activeExamType = key;
+        renderExamTypeTabs();
+        selectedExamSubject = null;
+        renderExamSection();
+      });
+      return btn;
+    };
+    box.innerHTML = '';
+    box.appendChild(make('coaching','Coaching exams'));
+    box.appendChild(make('school','School exams'));
+  }
+
+  function activeExamList(){ return activeExamType === 'school' ? schoolExams : coachingExams; }
+  function saveActiveExamList(){ return activeExamType === 'school' ? saveSchoolExams() : saveCoachingExams(); }
   function renderExamSectionPicker(){
     const box = document.getElementById('exam-section-pick');
     if(!box) return;
     box.innerHTML = '';
-    RC_SECTIONS.forEach(sec => {
+    activeExamSectionsList().forEach(sec => {
       const btn = document.createElement('button');
       btn.className = 'rc-section-btn';
       btn.type = 'button';
       btn.textContent = 'Section ' + sec;
       btn.addEventListener('click', () => {
-        examsSection.section = sec;
+        activeExamSection().section = sec;
         selectedExamSubject = null;
         saveExamsSection();
         renderExamSection();
@@ -10200,8 +10668,8 @@ window.promptCoachingModal = function(opts){
     const box = document.getElementById('exam-subject-pick');
     if(!box) return;
     box.innerHTML = '';
-    if(!examsSection.section) return;
-    const names = projSectionSubjectNames(examsSection.section).map(s => s.name);
+    if(!activeExamSection().section) return;
+    const names = projSectionSubjectNames(activeExamSection().section).map(s => s.name);
     if(selectedExamSubject && !names.includes(selectedExamSubject)) selectedExamSubject = null;
     if(names.length === 0){
       const hint = document.createElement('p');
@@ -10230,7 +10698,7 @@ window.promptCoachingModal = function(opts){
     const picker = document.getElementById('exam-picker');
     const body = document.getElementById('exam-body');
     if(!picker || !body) return;
-    if(!examsSection.section){
+    if(!activeExamSection().section){
       picker.style.display = 'block';
       body.style.display = 'none';
       renderExamSectionPicker();
@@ -10238,9 +10706,11 @@ window.promptCoachingModal = function(opts){
     }
     picker.style.display = 'none';
     body.style.display = 'block';
-    document.getElementById('exam-current-section').textContent = examsSection.section;
+    document.getElementById('exam-current-section').textContent = activeExamSection().section;
+    renderExamTypeTabs();
     renderExamSubjectPicker();
     updateExamDateInputState();
+    updateExamTitleState();
     updateExamTopicState();
     renderCoachingExams();
   }
@@ -10250,18 +10720,32 @@ window.promptCoachingModal = function(opts){
     if(!dateEl) return;
     dateEl.min = localDateKey();
     dateEl.disabled = !selectedExamSubject;
-    const existing = selectedExamSubject ? coachingExams.find(x => x.subject === selectedExamSubject) : null;
+    const existing = selectedExamSubject ? activeExamList().find(x => x.subject === selectedExamSubject) : null;
     dateEl.value = existing ? existing.examDate : '';
   }
 
   // The topic field only appears once a subject has an exam date saved —
   // "after selecting the subject and date" — and stays populated with
   // whatever's already been written if the user reopens that subject.
+  function updateExamTitleState(){
+    const row = document.getElementById('exam-title-row');
+    const input = document.getElementById('exam-title-input');
+    if(!row || !input) return;
+    if(activeExamType !== 'school'){
+      row.style.display = 'none';
+      input.value = '';
+      return;
+    }
+    const existing = selectedExamSubject ? schoolExams.find(x => x.subject === selectedExamSubject) : null;
+    row.style.display = selectedExamSubject ? 'block' : 'none';
+    input.value = existing ? (existing.title || '') : '';
+  }
+
   function updateExamTopicState(){
     const row = document.getElementById('exam-topic-row');
     const textarea = document.getElementById('exam-topic-input');
     if(!row || !textarea) return;
-    const existing = selectedExamSubject ? coachingExams.find(x => x.subject === selectedExamSubject) : null;
+    const existing = selectedExamSubject ? activeExamList().find(x => x.subject === selectedExamSubject) : null;
     if(existing){
       row.style.display = 'block';
       textarea.value = existing.topic || '';
@@ -10271,17 +10755,66 @@ window.promptCoachingModal = function(opts){
     }
   }
 
+  function renderExamHistory(){
+    const section = document.getElementById('exam-history-section');
+    const listEl = document.getElementById('exam-history-list');
+    const empty = document.getElementById('exam-history-empty');
+    if(!section || !listEl || !empty) return;
+    const hist = activeExamType === 'school' ? schoolHistory : coachingHistory;
+    if(!hist.length){ section.style.display = 'none'; listEl.innerHTML = ''; empty.style.display = 'none'; return; }
+    section.style.display = 'block';
+    listEl.innerHTML = '';
+    // newest first
+    hist.slice().reverse().forEach((h) => {
+      const row = document.createElement('div');
+      row.className = 'history-entry';
+      const main = document.createElement('div');
+      main.className = 'hist-main';
+      const title = document.createElement('div');
+      title.style.fontFamily = "'Lora', serif";
+      title.style.fontWeight = '700';
+      title.style.color = 'var(--ink)';
+      const label = (h.title && h.title.trim()) ? (h.title.trim() + ' — ' + h.subject) : h.subject;
+      title.textContent = label;
+      const sub = document.createElement('div');
+      sub.style.fontFamily = "'Lora', serif";
+      sub.style.fontSize = '12px';
+      sub.style.color = 'var(--ink-soft)';
+      sub.textContent = 'Completed: ' + localDateLabel(h.examDate) + (h.topic && h.topic.trim() ? (' · ' + h.topic.trim()) : '');
+      main.appendChild(title); main.appendChild(sub);
+      const edit = document.createElement('button');
+      edit.className = 'hist-remove';
+      edit.type = 'button';
+      edit.textContent = 'edit';
+      edit.addEventListener('click', async () => {
+        const newTopic = prompt('Edit topic (leave blank to clear):', h.topic || '')
+        if(newTopic === null) return;
+        h.topic = newTopic;
+        if(activeExamType === 'school'){
+          const newTitle = prompt('Edit exam title:', h.title || '')
+          if(newTitle !== null){ h.title = newTitle; }
+        }
+        await saveExamHistory();
+        renderExamHistory();
+      });
+      row.appendChild(edit);
+      row.appendChild(main);
+      listEl.appendChild(row);
+    });
+  }
+
   function renderCoachingExams(){
     pruneFinishedExams();
     const grid = document.getElementById('exam-grid');
     const emptyEl = document.getElementById('exam-empty');
     if(!grid) return;
     grid.innerHTML = '';
-    emptyEl.style.display = coachingExams.length === 0 ? 'block' : 'none';
-    const sorted = coachingExams.slice().sort((a,b) => a.examDate < b.examDate ? -1 : (a.examDate > b.examDate ? 1 : 0));
+    emptyEl.style.display = activeExamList().length === 0 ? 'block' : 'none';
+    const sorted = activeExamList().slice().sort((a,b) => a.examDate < b.examDate ? -1 : (a.examDate > b.examDate ? 1 : 0));
     sorted.forEach(exam => grid.appendChild(buildExamCard(exam)));
     updateExamsDot();
     renderExamDayBanner();
+    renderExamHistory();
     if(typeof renderExamSoonBanner === 'function') renderExamSoonBanner();
     if(typeof examHolidayCheckNotifications === 'function') examHolidayCheckNotifications();
   }
@@ -10317,7 +10850,7 @@ window.promptCoachingModal = function(opts){
 
     const subj = document.createElement('div');
     subj.className = 'exam-subject-name';
-    subj.textContent = exam.subject;
+    subj.textContent = (exam.title && exam.title.trim()) ? (exam.title.trim() + ' — ' + exam.subject) : exam.subject;
 
     const dateLabel = document.createElement('div');
     dateLabel.className = 'exam-date-label';
@@ -10347,7 +10880,7 @@ window.promptCoachingModal = function(opts){
       card.classList.add('exam-card-out');
       setTimeout(() => {
         coachingExams = coachingExams.filter(x => x.id !== exam.id);
-        saveCoachingExams();
+        saveActiveExamList();
         renderCoachingExams();
       }, 200);
     });
@@ -10364,6 +10897,7 @@ window.promptCoachingModal = function(opts){
   function examsShow(){
     hideAllPages();
     document.getElementById('coaching-exams-view').style.display = 'block';
+    renderExamTypeTabs();
     renderExamSection();
     window.scrollTo(0,0);
   }
@@ -10378,7 +10912,7 @@ window.promptCoachingModal = function(opts){
   const examsChangeSectionBtn = document.getElementById('exam-change-section-btn');
   if(examsChangeSectionBtn){
     examsChangeSectionBtn.addEventListener('click', () => {
-      examsSection.section = null;
+      activeExamSection().section = null;
       selectedExamSubject = null;
       saveExamsSection();
       renderExamSection();
@@ -10390,14 +10924,34 @@ window.promptCoachingModal = function(opts){
     examDateInput.addEventListener('change', () => {
       const value = examDateInput.value;
       if(!selectedExamSubject || !value) return;
+      // School exams require a title.
+      if(activeExamType === 'school'){
+        const titleEl = document.getElementById('exam-title-input');
+        const titleVal = titleEl ? (titleEl.value || '').trim() : '';
+        if(!titleVal){
+          alert('Please enter the exam title first.');
+          examDateInput.value = '';
+          return;
+        }
+      }
       // One card per subject — picking a new date for a subject that's
       // already tracked updates that card instead of duplicating it.
       // createdDate resets to today each time a date is (re)picked, so
       // the ring always starts full again from this moment.
-      const existing = coachingExams.find(x => x.subject === selectedExamSubject);
+      const list = activeExamList();
+      const existing = list.find(x => x.subject === selectedExamSubject);
       if(existing){ existing.examDate = value; existing.createdDate = localDateKey(); }
-      else coachingExams.push({ id: cryptoId(), subject: selectedExamSubject, examDate: value, topic: '', createdDate: localDateKey() });
-      saveCoachingExams();
+      else {
+        if(activeExamType === 'school') list.push({ id: cryptoId(), title: '', subject: selectedExamSubject, examDate: value, topic: '', createdDate: localDateKey() });
+        else list.push({ id: cryptoId(), subject: selectedExamSubject, examDate: value, topic: '', createdDate: localDateKey() });
+      }
+      if(activeExamType === 'school'){
+        const titleEl = document.getElementById('exam-title-input');
+        const titleVal = titleEl ? (titleEl.value || '').trim() : '';
+        const row = list.find(x => x.subject === selectedExamSubject);
+        if(row) row.title = titleVal;
+      }
+      saveActiveExamList();
       // Keep the subject selected — the topic field now animates in below,
       // "after selecting the subject and date", ready to be filled in.
       renderExamSubjectPicker();
@@ -10411,10 +10965,11 @@ window.promptCoachingModal = function(opts){
   if(examTopicInput){
     examTopicInput.addEventListener('input', () => {
       if(!selectedExamSubject) return;
-      const existing = coachingExams.find(x => x.subject === selectedExamSubject);
+      const list = activeExamList();
+      const existing = list.find(x => x.subject === selectedExamSubject);
       if(existing){
         existing.topic = examTopicInput.value;
-        saveCoachingExams();
+        saveActiveExamList();
       }
     });
     examTopicInput.addEventListener('blur', () => {
@@ -10422,6 +10977,16 @@ window.promptCoachingModal = function(opts){
     });
   }
   const examTopicDoneBtn = document.getElementById('exam-topic-done-btn');
+
+  const examTitleInput = document.getElementById('exam-title-input');
+  if(examTitleInput){
+    examTitleInput.addEventListener('input', () => {
+      if(activeExamType !== 'school' || !selectedExamSubject) return;
+      const existing = schoolExams.find(x => x.subject === selectedExamSubject);
+      if(existing){ existing.title = examTitleInput.value; saveSchoolExams(); }
+    });
+  }
+
   if(examTopicDoneBtn){
     examTopicDoneBtn.addEventListener('click', () => {
       selectedExamSubject = null;
@@ -11031,19 +11596,31 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
   const studymaterialsBackBtn = document.getElementById('studymaterials-back-btn');
   if(studymaterialsBackBtn) studymaterialsBackBtn.addEventListener('click', studymaterialsHide);
 
-  /* ---- Wanna See Magic!!! (pendulum wave) ---- */
+  /* ---- Wanna See Magic (pendulum wave) ---- */
+  let magicOpenedFromGames = false;
   function magicHide(){
     if(window.magicPageHide) window.magicPageHide();
     pageHide('magic-view');
-    backToAppOrAuth();
+    if(magicOpenedFromGames){
+      magicOpenedFromGames = false;
+      if(typeof gamesShow === 'function') gamesShow();
+      else backToAppOrAuth();
+    } else {
+      backToAppOrAuth();
+    }
   }
-  function magicShow(){
+  function magicShow(fromGames){
+    magicOpenedFromGames = (fromGames === true);
     hideAllPages();
     const view = document.getElementById('magic-view');
     view.style.display = 'block';
     window.scrollTo(0,0);
     if(window.magicPageShow) window.magicPageShow();
   }
+  // Expose helpers globally so inline game-card onclick always works
+  window.magicShow = magicShow;
+  window.magicHide = magicHide;
+
   const magicOpenBtn = document.getElementById('open-magic-btn');
   if(magicOpenBtn) magicOpenBtn.addEventListener('click', magicShow);
   const magicBackBtn = document.getElementById('magic-back-btn');
@@ -11266,27 +11843,39 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
 
   const ROLLCALL_KEY = 'attendance-rollcall-v1';
   function rollcallKeyFor(id){ return ROLLCALL_KEY + '::' + id; }
-  let rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {}, recapStart: null };
-  // Which target (theory or practical) the single Present/Absent/Suspended
-  // bar on each roll-call card currently writes to. Purely a UI selector —
-  // not persisted — defaults to whichever already has today's mark.
-  let rcPracticalMode = {};
+  let rollcall = { section: null, group: null, elective: { lang: 'OD', it: 'IT' }, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {}, extraCards: {}, recapStart: null };
   const RC_SECTIONS = ['A','B','C','D'];
-  const RC_SUBJECT_NAMES = { PH:'Physics', CH:'Chemistry', MA:'Mathematics', EN:'English', OD:'Odia', BO:'Botany', ZO:'Zoology', IT:'IT' };
+  // Section-wise group/stream selector (customize freely)
+  const RC_GROUPS = {
+    A: [{ id:'A', name:'A' }],
+    B: [{ id:'B', name:'B' }],
+    C: [{ id:'C', name:'C' }],
+    D: [{ id:'PCMIT', name:'PCMIT' }, { id:'PCBIT', name:'PCBIT' }]
+  };
+  // Which timetable codes are visible per group (only affects Roll Call cards).
+  const RC_GROUP_SUBJECTS = {
+    PCMIT: ['PH','CH','MA','EN','OD','AE','IT'],
+    PCBIT: ['PH','CH','MA','EN','BO','ZO','IT','EL'],
+    A: null, B: null, C: null
+  };
+  const RC_SUBJECT_NAMES = { PH:'Physics', CH:'Chemistry', MA:'Mathematics', EN:'English', OD:'Odia', AE:'AE', BO:'Botany', ZO:'Zoology', IT:'IT', EL:'EL' };
 
   async function loadRollcallFor(id){
-    rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {}, recapStart: null };
+    rollcall = { section: null, group: null, elective: { lang: 'OD', it: 'IT' }, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {}, extraCards: {}, recapStart: null };
     try{
       const res = await window.storage.get(rollcallKeyFor(id), true);
       if(res && res.value){
         const parsed = JSON.parse(res.value);
         if(parsed && typeof parsed === 'object'){
           rollcall.section = parsed.section || null;
+          rollcall.group = parsed.group || null;
+          rollcall.elective = (parsed.elective && typeof parsed.elective === 'object') ? Object.assign({ lang:'OD', it:'IT' }, parsed.elective) : { lang:'OD', it:'IT' };
           rollcall.marks = parsed.marks || {};
           rollcall.practicalMarks = parsed.practicalMarks || {};
           rollcall.holidayOverrides = parsed.holidayOverrides || {};
           rollcall.customHolidays = parsed.customHolidays || {};
           rollcall.recapStart = parsed.recapStart || null;
+          rollcall.extraCards = parsed.extraCards || {};
         }
       }
     }catch(e){ /* nothing saved yet */ }
@@ -11313,12 +11902,95 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
     dayData.forEach(cell => {
       const display = ttCleanCell(cell);
       if(!display || display === 'Break' || display === '\u2014') return;
-      if(section === 'D' && (display === 'BO' || display === 'ZO')) return;
       display.split(',').map(s => s.trim()).filter(Boolean).forEach(code => {
         if(!seen.has(code)){ seen.add(code); codes.push(code); }
       });
     });
     return { day, codes };
+  }
+
+  // Schedule-aware version of rcSubjectsForToday: instead of one code per
+  // subject, returns one entry per (subject, session-type) actually printed
+  // on today's timetable, so a subject with both a theory AND a practical
+  // period on the same day gets two independent entries. Marking "Present"
+  // on a practical entry always writes straight to the practical bucket —
+  // no separate toggle needed, because the schedule already says what kind
+  // of class it is.
+  function rcVisibleCodesFor(section, group){
+    const key = group || section;
+    const list = (RC_GROUP_SUBJECTS && RC_GROUP_SUBJECTS[key]) || null;
+    return Array.isArray(list) ? new Set(list) : null;
+  }
+
+  function rcScheduleForToday(section){
+    const day = ttTodayName();
+    if(!day || !TIMETABLE.days[day] || !TIMETABLE.days[day][section]) return { day, sessions: [] };
+    const dayData = TIMETABLE.days[day][section];
+    const theorySeen = new Set(), practicalSeen = new Set();
+    const sessions = [];
+    dayData.forEach(cell => {
+      if(!cell || cell === 'Break' || cell === '\u2014') return;
+      const re = /([A-Z]{2,4})\[([^\]]*)\]/g;
+      let m;
+      while((m = re.exec(cell))){
+        const code = m[1], bracket = m[2];
+        if(!RC_SUBJECT_NAMES[code]) continue;
+        const isTheory = /H/.test(bracket);
+        if(isTheory){
+          if(!theorySeen.has(code)){ theorySeen.add(code); sessions.push({ code, type: 'theory' }); }
+        } else {
+          if(!practicalSeen.has(code)){ practicalSeen.add(code); sessions.push({ code, type: 'practical' }); }
+        }
+      }
+    });
+    return { day, sessions };
+  }
+
+  // Ad-hoc "extra" roll-call cards for today only — used when the actual
+  // school day didn't match the printed timetable (a practical didn't run,
+  // a theory class was held instead, or vice versa). Scoped per calendar
+  // day inside rollcall.extraCards[dateKey], and persisted the same way as
+  // every other rollcall field.
+  function rcExtraCardsForToday(){
+    const dateKey = localDateKey();
+    return (rollcall.extraCards && rollcall.extraCards[dateKey]) || [];
+  }
+
+  async function rcAddExtraCard(fullName, type){
+    if(!rollcall.section || !fullName) return null;
+    const dateKey = localDateKey();
+    if(!rollcall.extraCards) rollcall.extraCards = {};
+    if(!rollcall.extraCards[dateKey]) rollcall.extraCards[dateKey] = [];
+    const list = rollcall.extraCards[dateKey];
+    const { sessions } = rcScheduleForToday(rollcall.section);
+    const alreadyScheduled = sessions.some(s => (RC_SUBJECT_NAMES[s.code] || s.code) === fullName && s.type === type);
+    if(alreadyScheduled) return null; // already an auto card for this exact subject+type today
+    if(list.some(e => e.fullName === fullName && e.type === type)) return null; // no duplicate extra cards
+    const entry = { id: cryptoId(), fullName, type };
+    list.push(entry);
+    await saveRollcall();
+    renderRollcall();
+    return entry;
+  }
+
+  async function rcRemoveExtraCard(id){
+    const dateKey = localDateKey();
+    const list = (rollcall.extraCards && rollcall.extraCards[dateKey]) || [];
+    const idx = list.findIndex(e => e.id === id);
+    if(idx === -1) return;
+    const entry = list[idx];
+    // Only auto-undo a live mark if this subject+type isn't ALSO on today's
+    // real schedule — otherwise removing the extra card would wipe a
+    // legitimate scheduled mark that happens to share the same subject+type.
+    const { sessions } = rollcall.section ? rcScheduleForToday(rollcall.section) : { sessions: [] };
+    const alsoScheduled = sessions.some(s => (RC_SUBJECT_NAMES[s.code] || s.code) === entry.fullName && s.type === entry.type);
+    if(!alsoScheduled){
+      if(entry.type === 'practical') await rcUndoPracticalMark(entry.fullName);
+      else await rcUndoMark(entry.fullName);
+    }
+    list.splice(idx, 1);
+    await saveRollcall();
+    renderRollcall();
   }
 
   function findOrCreateSubject(subjects, fullName){
@@ -11502,7 +12174,6 @@ function rcXpOp(status){
     TIMETABLE.days[day][section].forEach(cell => {
       const display = ttCleanCell(cell);
       if(!display || display === 'Break' || display === '\u2014') return;
-      if(section === 'D' && (display === 'BO' || display === 'ZO')) return;
       display.split(',').map(x => x.trim()).filter(Boolean).forEach(code => {
         if(!seen.has(code)){ seen.add(code); codes.push(code); }
       });
@@ -11812,6 +12483,40 @@ if(existing){
     el.style.display = 'block';
   }
 
+  function renderRollcallGroupPicker(section){
+    const box = document.getElementById('rc-group-pick');
+    if(!box) return;
+    box.innerHTML = '';
+    const groups = (RC_GROUPS && RC_GROUPS[section]) ? RC_GROUPS[section] : [{ id: section, name: section }];
+    groups.forEach(g => {
+      const btn = document.createElement('button');
+      btn.className = 'rc-section-btn';
+      btn.type = 'button';
+      btn.textContent = g.name;
+      btn.addEventListener('click', () => {
+        rollcall.group = g.id;
+        saveRollcall();
+        renderRollcall();
+      });
+      box.appendChild(btn);
+    });
+  }
+
+  function rcPromptElective(){
+    const lang = prompt('Choose optional language: type OD for Odia or AE for AE', (rollcall.elective && rollcall.elective.lang) || 'OD');
+    if(lang){
+      const v = String(lang).trim().toUpperCase();
+      if(v === 'OD' || v === 'AE') rollcall.elective.lang = v;
+    }
+    const it = prompt('Choose optional subject: type IT for IT or EL for EL', (rollcall.elective && rollcall.elective.it) || 'IT');
+    if(it){
+      const v = String(it).trim().toUpperCase();
+      if(v === 'IT' || v === 'EL') rollcall.elective.it = v;
+    }
+    saveRollcall();
+    renderRollcall();
+  }
+
   function renderRollcallPicker(){
     const box = document.getElementById('rc-section-pick');
     if(!box) return;
@@ -11823,6 +12528,7 @@ if(existing){
       btn.textContent = 'Section ' + sec;
       btn.addEventListener('click', () => {
         rollcall.section = sec;
+        rollcall.group = null;
         saveRollcall();
         renderRollcall();
       });
@@ -11841,18 +12547,62 @@ if(existing){
       picker.style.display = 'block';
       body.style.display = 'none';
       renderRollcallPicker();
-      if(subtitle) subtitle.textContent = "Mark each period — it's saved straight to your attendance register.";
+      const gpick = document.getElementById('rc-group-pick');
+      if(gpick) gpick.style.display = 'none';
+      if(subtitle) subtitle.textContent = "Mark each period \u2014 it's saved straight to your attendance register.";
+      return;
+    }
+    // If this section has multiple groups/streams, ask for it first
+    const groups = (RC_GROUPS && RC_GROUPS[rollcall.section]) || null;
+    const needsGroup = groups && groups.length > 1;
+    const gpick = document.getElementById('rc-group-pick');
+    if(needsGroup && !rollcall.group){
+      picker.style.display = 'block';
+      body.style.display = 'none';
+      if(gpick) gpick.style.display = 'flex';
+      renderRollcallPicker();
+      renderRollcallGroupPicker(rollcall.section);
+      if(subtitle) subtitle.textContent = 'Now choose your group/stream for Section ' + rollcall.section + '.';
       return;
     }
     picker.style.display = 'none';
     body.style.display = 'block';
     document.getElementById('rc-current-section').textContent = rollcall.section;
+    const groupRow = document.getElementById('rc-group-row');
+    const groupName = document.getElementById('rc-current-group');
+    if(needsGroup && groupRow && groupName){
+      groupRow.style.display = 'flex';
+      groupName.textContent = rollcall.group || '';
+    } else if(groupRow){ groupRow.style.display = 'none'; }
+    const electiveRow = document.getElementById('rc-elective-row');
+    if(electiveRow) electiveRow.style.display = 'flex';
 
-    const { day, codes } = rcSubjectsForToday(rollcall.section);
+    const { day, sessions } = rcScheduleForToday(rollcall.section);
+    const visible = rcVisibleCodesFor(rollcall.section, rollcall.group);
+    const filteredSessions = visible ? sessions.filter(s => visible.has(s.code)) : sessions;
+
+    // Merge optional-subject duplicates (OD+AE -> one card, IT+EL -> one card)
+    function mergeOptionalSessions(list){
+      const out = [];
+      const seen = new Set();
+      for(const s of list){
+        let key = s.code;
+        if(key === 'OD' || key === 'AE') key = 'OPT_LANG';
+        if(key === 'IT' || key === 'EL') key = 'OPT_IT';
+        const uniq = key + '::' + s.type;
+        if(seen.has(uniq)) continue;
+        seen.add(uniq);
+        out.push(s);
+      }
+      return out;
+    }
+    const mergedSessions = mergeOptionalSessions(filteredSessions);
     const listEl = document.getElementById('rc-list');
     const emptyEl = document.getElementById('rc-empty');
     const holidayBanner = document.getElementById('rc-holiday-banner');
     const holidayNote = document.getElementById('rc-holiday-note');
+    const workingHoursEl = document.getElementById('rc-working-hours');
+    const addCardRow = document.getElementById('rc-add-card-row');
     listEl.innerHTML = '';
 
     const dateKey = localDateKey();
@@ -11870,6 +12620,8 @@ if(existing){
       // matching one-tap action for undoing it.
       if(holidayNote) holidayNote.style.display = 'none';
       if(markHolidayBar) markHolidayBar.style.display = 'none';
+      if(workingHoursEl) workingHoursEl.style.display = 'none';
+      if(addCardRow) addCardRow.style.display = 'none';
       if(holidayBanner){
         holidayBanner.style.display = 'flex';
         document.getElementById('rc-holiday-reason').textContent = customHoliday
@@ -11880,11 +12632,12 @@ if(existing){
       }
       listEl.style.display = 'none';
       emptyEl.style.display = 'none';
-      if(subtitle) subtitle.textContent = 'No roll call needed today — enjoy the holiday.';
+      if(subtitle) subtitle.textContent = 'No roll call needed today \u2014 enjoy the holiday.';
       return;
     }
     if(holidayBanner) holidayBanner.style.display = 'none';
     if(markHolidayBar) markHolidayBar.style.display = 'flex';
+    if(addCardRow) addCardRow.style.display = 'flex';
     listEl.style.display = '';
 
     if(holidayInfo && overridden){
@@ -11896,49 +12649,37 @@ if(existing){
       holidayNote.style.display = 'none';
     }
 
-    if(subtitle) subtitle.textContent = day ? ('Today is ' + day + ' — Section ' + rollcall.section + "'s scheduled subjects are below.") : "Mark each period — it's saved straight to your attendance register.";
+    if(subtitle) subtitle.textContent = day ? ('Today is ' + day + ' \u2014 Section ' + rollcall.section + "'s scheduled subjects are below.") : "Mark each period \u2014 it's saved straight to your attendance register.";
 
-    if(!day || codes.length === 0){
+    if(typeof rcRenderWorkingHours === 'function') rcRenderWorkingHours();
+
+    const dayMarks = rollcall.marks[dateKey] || {};
+    const dayPracticalMarks = rollcall.practicalMarks[dateKey] || {};
+    const extraCards = typeof rcExtraCardsForToday === 'function' ? rcExtraCardsForToday() : [];
+
+    if((!day || mergedSessions.length === 0) && extraCards.length === 0){
       emptyEl.style.display = 'block';
       emptyEl.textContent = day ? ('No periods scheduled for Section ' + rollcall.section + ' today.') : 'No classes scheduled today.';
       return;
     }
     emptyEl.style.display = 'none';
 
-    const dayMarks = rollcall.marks[dateKey] || {};
-    const dayPracticalMarks = rollcall.practicalMarks[dateKey] || {};
+    const typeCounts = {};
+    mergedSessions.forEach(s => { typeCounts[s.code] = (typeCounts[s.code] || 0) + 1; });
 
-    codes.forEach(code => {
-      const fullName = RC_SUBJECT_NAMES[code] || code;
-      listEl.appendChild(buildRollcallCard(fullName, dayMarks[fullName], dayPracticalMarks[fullName]));
+    mergedSessions.forEach(s => {
+      const fullName = RC_SUBJECT_NAMES[s.code] || s.code;
+      const dual = typeCounts[s.code] > 1;
+      listEl.appendChild(buildAutoRollcallCard(s.code, s.type, dayMarks[fullName], dayPracticalMarks[fullName], dual));
+    });
+    extraCards.forEach(entry => {
+      listEl.appendChild(buildExtraRollcallCard(entry, dayMarks[entry.fullName], dayPracticalMarks[entry.fullName]));
     });
   }
 
-  function buildRollcallCard(fullName, mark, practicalMark){
-    const card = document.createElement('div');
-    card.className = 'rc-card';
-
-    // Which target today's Present/Absent/Suspended bar writes to. Defaults
-    // to practical only if practical already has a mark and theory doesn't;
-    // otherwise defaults to theory. User can flip it with the toggle below.
-    if(rcPracticalMode[fullName] === undefined){
-      rcPracticalMode[fullName] = !!practicalMark && !mark;
-    }
-    const isPractical = rcPracticalMode[fullName];
-    const activeMark = isPractical ? practicalMark : mark;
-
-    const top = document.createElement('div');
-    top.className = 'rc-card-top';
-    const subj = document.createElement('div');
-    subj.className = 'rc-subject';
-    subj.textContent = fullName;
-    const status = document.createElement('div');
-    const label = activeMark ? (RC_STATUS_LABELS[activeMark.status] || activeMark.status) : 'Not marked yet';
-    status.className = 'rc-status' + (activeMark ? ' ' + activeMark.status : '');
-    status.textContent = label + (isPractical ? ' (practical)' : '');
-    top.appendChild(subj);
-    top.appendChild(status);
-
+  // Shared Present/Absent/Suspended/Not-held/Undo button row, used by both
+  // auto-scheduled and user-added roll-call cards.
+  function rcBuildActions(fullName, isPractical, activeMark){
     const actions = document.createElement('div');
     actions.className = 'rc-actions';
 
@@ -11966,7 +12707,7 @@ if(existing){
     const notHeldBtn = document.createElement('button');
     notHeldBtn.className = 'btn btn-notheld';
     notHeldBtn.textContent = 'Not held';
-    notHeldBtn.title = 'The class did not take place — your streak stays as it is';
+    notHeldBtn.title = 'The class did not take place \u2014 your streak stays as it is';
     notHeldBtn.addEventListener('click', () => {
       isPractical ? rcSetPracticalMark(fullName, 'not_held') : rcSetMark(fullName, 'not_held');
     });
@@ -11984,34 +12725,103 @@ if(existing){
     actions.appendChild(suspendedBtn);
     actions.appendChild(notHeldBtn);
     actions.appendChild(undoBtn);
+    return actions;
+  }
 
-    // Toggle just decides which bucket (theory or practical) the bar above
-    // writes to — it doesn't show a second set of controls, and flipping it
-    // never deletes whatever's already marked on the other side.
-    const pracRow = document.createElement('div');
-    pracRow.className = 'rc-practical-row';
-    const pracToggle = document.createElement('button');
-    pracToggle.type = 'button';
-    pracToggle.className = 'rc-toggle' + (isPractical ? ' on' : '');
-    pracToggle.setAttribute('role', 'switch');
-    pracToggle.setAttribute('aria-checked', isPractical ? 'true' : 'false');
-    const pracKnob = document.createElement('span');
-    pracKnob.className = 'rc-toggle-knob';
-    pracToggle.appendChild(pracKnob);
-    const pracLabel = document.createElement('span');
-    pracLabel.className = 'rc-practical-label';
-    pracLabel.textContent = 'Practical class held today';
-    pracRow.appendChild(pracToggle);
-    pracRow.appendChild(pracLabel);
+  function rcCardStatusEl(activeMark, isPractical){
+    const status = document.createElement('div');
+    const label = activeMark ? (RC_STATUS_LABELS[activeMark.status] || activeMark.status) : 'Not marked yet';
+    status.className = 'rc-status' + (activeMark ? ' ' + activeMark.status : '');
+    status.textContent = label + (isPractical ? ' (practical)' : '');
+    return status;
+  }
 
-    pracToggle.addEventListener('click', () => {
-      rcPracticalMode[fullName] = !isPractical;
-      renderRollcall();
-    });
+  // Auto-scheduled card, straight off today's real timetable. The type
+  // (theory vs practical) is locked to what's actually printed for that
+  // period — marking "Present" on a practical session always counts as
+  // practical, with no separate toggle to forget. When the same subject has
+  // both a theory AND a practical session today, a small badge tells the
+  // two cards apart.
+    function buildAutoRollcallCard(code, type, mark, practicalMark, dual){
+    // Optional subjects are shown as combined cards but recorded under the
+    // exact option the student chose.
+    let displayName = RC_SUBJECT_NAMES[code] || code;
+    let actualCode = code;
+    if(code === 'OD' || code === 'AE'){
+      displayName = 'ODIA/AE';
+      actualCode = (rollcall.elective && rollcall.elective.lang) ? rollcall.elective.lang : 'OD';
+    }
+    if(code === 'IT' || code === 'EL'){
+      displayName = 'IT/EL';
+      actualCode = (rollcall.elective && rollcall.elective.it) ? rollcall.elective.it : 'IT';
+    }
+    const fullName = RC_SUBJECT_NAMES[actualCode] || actualCode;
+    const isPractical = type === 'practical';
+    const activeMark = isPractical ? practicalMark : mark;
+
+    const card = document.createElement('div');
+    card.className = 'rc-card';
+
+    const top = document.createElement('div');
+    top.className = 'rc-card-top';
+    const subj = document.createElement('div');
+    subj.className = 'rc-subject';
+    subj.textContent = displayName;
+    if(dual){
+      const badge = document.createElement('span');
+      badge.className = 'rc-card-badge';
+      badge.textContent = isPractical ? 'Practical' : 'Theory';
+      subj.appendChild(badge);
+    }
+    top.appendChild(subj);
+    top.appendChild(rcCardStatusEl(activeMark, isPractical));
 
     card.appendChild(top);
-    card.appendChild(actions);
-    card.appendChild(pracRow);
+    card.appendChild(rcBuildActions(fullName, isPractical, activeMark));
+    return card;
+  }
+
+  // User-added card for a day the printed timetable didn't match reality
+  // (e.g. a practical didn't run and a theory class was held instead, or
+  // vice versa). The subject and type are chosen once, in the "Add a
+  // subject for today" form; removing the card also undoes any mark made
+  // on it, unless that same subject+type is also genuinely scheduled today.
+  function buildExtraRollcallCard(entry, mark, practicalMark){
+    const fullName = entry.fullName;
+    const isPractical = entry.type === 'practical';
+    const activeMark = isPractical ? practicalMark : mark;
+
+    const card = document.createElement('div');
+    card.className = 'rc-card rc-card-extra';
+
+    const top = document.createElement('div');
+    top.className = 'rc-card-top';
+    const subj = document.createElement('div');
+    subj.className = 'rc-subject';
+    subj.textContent = fullName;
+    const badge = document.createElement('span');
+    badge.className = 'rc-card-badge';
+    badge.textContent = isPractical ? 'Practical' : 'Theory';
+    subj.appendChild(badge);
+    top.appendChild(subj);
+    top.appendChild(rcCardStatusEl(activeMark, isPractical));
+
+    card.appendChild(top);
+    card.appendChild(rcBuildActions(fullName, isPractical, activeMark));
+
+    const extraRow = document.createElement('div');
+    extraRow.className = 'rc-card-extra-row';
+    const note = document.createElement('span');
+    note.className = 'rc-card-extra-note';
+    note.textContent = 'Added by you for today';
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'rc-card-remove';
+    removeBtn.textContent = 'Remove this card';
+    removeBtn.addEventListener('click', () => { rcRemoveExtraCard(entry.id); });
+    extraRow.appendChild(note);
+    extraRow.appendChild(removeBtn);
+    card.appendChild(extraRow);
     return card;
   }
 
@@ -12105,6 +12915,60 @@ if(existing){
     });
   }
 
+  // "Add a subject for today" — lets the person add an ad-hoc subject
+  // card when the day's actual classes don't match the printed timetable.
+  // Scoped to today only; removing it also undoes any mark made on it
+  // (unless that same subject+type is also on today's real schedule).
+  const rcAddCardSuggestions = document.getElementById('rc-add-card-suggestions');
+  if(rcAddCardSuggestions && !rcAddCardSuggestions.dataset.built){
+    Object.values(RC_SUBJECT_NAMES).forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      rcAddCardSuggestions.appendChild(opt);
+    });
+    rcAddCardSuggestions.dataset.built = '1';
+  }
+  let rcAddCardType = 'theory';
+  const rcAddCardBtn = document.getElementById('rc-add-card-btn');
+  const rcAddCardFormEl = document.getElementById('rc-add-card-form');
+  const rcAddCardInput = document.getElementById('rc-add-card-input');
+  const rcAddCardTypeTheoryBtn = document.getElementById('rc-add-card-type-theory');
+  const rcAddCardTypePracticalBtn = document.getElementById('rc-add-card-type-practical');
+  function rcSetAddCardType(type){
+    rcAddCardType = type;
+    if(rcAddCardTypeTheoryBtn) rcAddCardTypeTheoryBtn.classList.toggle('active', type === 'theory');
+    if(rcAddCardTypePracticalBtn) rcAddCardTypePracticalBtn.classList.toggle('active', type === 'practical');
+  }
+  if(rcAddCardBtn){
+    rcAddCardBtn.addEventListener('click', () => {
+      if(!rcAddCardFormEl) return;
+      const open = rcAddCardFormEl.style.display === 'flex';
+      rcAddCardFormEl.style.display = open ? 'none' : 'flex';
+      if(!open){
+        if(rcAddCardInput) rcAddCardInput.value = '';
+        rcSetAddCardType('theory');
+        if(rcAddCardInput) rcAddCardInput.focus();
+      }
+    });
+  }
+  if(rcAddCardTypeTheoryBtn) rcAddCardTypeTheoryBtn.addEventListener('click', () => rcSetAddCardType('theory'));
+  if(rcAddCardTypePracticalBtn) rcAddCardTypePracticalBtn.addEventListener('click', () => rcSetAddCardType('practical'));
+  const rcAddCardCancel = document.getElementById('rc-add-card-cancel');
+  if(rcAddCardCancel){
+    rcAddCardCancel.addEventListener('click', () => {
+      if(rcAddCardFormEl) rcAddCardFormEl.style.display = 'none';
+    });
+  }
+  const rcAddCardConfirm = document.getElementById('rc-add-card-confirm');
+  if(rcAddCardConfirm){
+    rcAddCardConfirm.addEventListener('click', async () => {
+      const name = rcAddCardInput ? rcAddCardInput.value.trim() : '';
+      if(!name) return;
+      if(rcAddCardFormEl) rcAddCardFormEl.style.display = 'none';
+      await rcAddExtraCard(name, rcAddCardType);
+    });
+  }
+
   // ---- Projection to Exam ----
   // Section is picked first (and saved). Each subject in that section then
   // gets its own exam date (subject-wise papers often land on different
@@ -12157,7 +13021,6 @@ if(existing){
       dayData[section].forEach(cell => {
         const display = ttCleanCell(cell);
         if(!display || display === 'Break' || display === '\u2014') return;
-        if(section === 'D' && (display === 'BO' || display === 'ZO')) return;
         display.split(',').map(s => s.trim()).filter(Boolean).forEach(code => {
           if(!seen.has(code)){ seen.add(code); codes.push(code); }
         });
@@ -12230,7 +13093,6 @@ if(existing){
     dayData[section].forEach(cell => {
       const display = ttCleanCell(cell);
       if(!display || display === 'Break' || display === '\u2014') return;
-      if(section === 'D' && (display === 'BO' || display === 'ZO')) return;
       display.split(',').map(s => s.trim()).filter(Boolean).forEach(code => {
         result[code] = (result[code] || 0) + 1;
       });
@@ -12602,14 +13464,15 @@ if(existing){
 
     // Projection countdown — a quiet heads-up 7, 3 and 1 day(s) before an
     // exam, so it never arrives as a surprise.
-    for(const exam of coachingExams){
+    for(const exam of coachingExams.concat(schoolExams)){
       const left = examDaysLeft(exam.examDate);
-      if(left === 1 || left === 3 || left === 7){
+      if(left >= 1 && left <= 7){
         const flag = 'proj-' + exam.id + '-' + left + '@' + today;
         if(!sent[flag]){
           const title = left === 1 ? 'Exam tomorrow' : left + ' days to your exam';
-          const body = exam.subject + (exam.topic && exam.topic.trim() ? ' \u2014 ' + exam.topic.trim() : '') + '. Time to review.';
-          if(await hwSendNotification(title, body, 'proj-' + exam.id + '-' + left, 'exam', { style:'examsoon', head: left === 1 ? 'Exam Tomorrow' : left + ' Days to Your Exam', sub: exam.subject + (exam.topic && exam.topic.trim() ? ' \u2014 ' + exam.topic.trim() : '') })){
+          const label = (exam.title && exam.title.trim()) ? (exam.title.trim() + ' — ' + exam.subject) : exam.subject;
+          const body = label + (exam.topic && exam.topic.trim() ? ' \u2014 ' + exam.topic.trim() : '') + '. Time to review.';
+          if(await hwSendNotification(title, body, 'proj-' + exam.id + '-' + left, 'exam', { style:'examsoon', head: left === 1 ? 'Exam Tomorrow' : left + ' Days to Your Exam', sub: label + (exam.topic && exam.topic.trim() ? ' \u2014 ' + exam.topic.trim() : '') })){
             sent[flag] = 1; changed = true;
           }
         }
@@ -12639,7 +13502,7 @@ if(existing){
     const text = document.getElementById('examsoon-banner-text');
     if(!box || !text) return;
     if(examsoonDismissedToday()){ box.style.display = 'none'; text.textContent = ''; return; }
-    const upcoming = coachingExams
+    const upcoming = coachingExams.concat(schoolExams)
       .map(x => ({ x, left: examDaysLeft(x.examDate) }))
       .filter(o => o.left > 0 && o.left <= 7)
       .sort((a, b) => a.left - b.left);
@@ -12682,29 +13545,58 @@ if(existing){
     const overridden = !!(rollcall.holidayOverrides && rollcall.holidayOverrides[today]);
     const customHoliday = rollcall.customHolidays && rollcall.customHolidays[today];
     if((holidayInfo && !overridden) || customHoliday) return true;
-    const { day, codes } = rcSubjectsForToday(rollcall.section);
-    if(!day || codes.length === 0) return true;
+    const { day, sessions } = rcScheduleForToday(rollcall.section);
+    const visible = rcVisibleCodesFor(rollcall.section, rollcall.group);
+    const filteredSessions = visible ? sessions.filter(s => visible.has(s.code)) : sessions;
+
+    // Merge optional-subject duplicates (OD+AE -> one card, IT+EL -> one card)
+    function mergeOptionalSessions(list){
+      const out = [];
+      const seen = new Set();
+      for(const s of list){
+        let key = s.code;
+        if(key === 'OD' || key === 'AE') key = 'OPT_LANG';
+        if(key === 'IT' || key === 'EL') key = 'OPT_IT';
+        const uniq = key + '::' + s.type;
+        if(seen.has(uniq)) continue;
+        seen.add(uniq);
+        out.push(s);
+      }
+      return out;
+    }
+    const mergedSessions = mergeOptionalSessions(filteredSessions);
+    if(!day || sessions.length === 0) return true;
     const dayMarks = rollcall.marks[today] || {};
-    return codes.every(code => !!dayMarks[RC_SUBJECT_NAMES[code] || code]);
+    const dayPracticalMarks = rollcall.practicalMarks[today] || {};
+    // Extra/manual cards are optional by design — only today's real
+    // scheduled sessions are required for "fully marked".
+    return sessions.every(s => {
+      const fullName = RC_SUBJECT_NAMES[s.code] || s.code;
+      return s.type === 'practical' ? !!dayPracticalMarks[fullName] : !!dayMarks[fullName];
+    });
   }
 
   async function rcCheckReminderNotifications(){
     if(!appNotifyOn() || typeof currentUser === 'undefined' || !currentUser) return;
     if(rcTodayFullyMarked()) return;
     const today = localDateKey();
-    const hour = new Date().getHours();
+    const now = new Date();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const { stage1, stage2 } = rcReminderStageMinutes();
     const sent = rcRemindStore();
     Object.keys(sent).forEach(k => { if(!k.endsWith('@' + today)) delete sent[k]; });
     let changed = false;
 
-    // First nudge, after working hours (~4–5pm).
-    if(hour >= 16 && !sent['stage1@' + today]){
+    // First nudge, right after today's working hours end (falls back to
+    // ~4-5pm when working hours aren't known).
+    if(nowMin >= stage1 && !sent['stage1@' + today]){
       if(await hwSendNotification('Mark today\u2019s roll call', 'You haven\u2019t marked attendance for today yet \u2014 a couple of taps and it\u2019s done.', 'rc-remind-1-' + today, 'roll', { style:'roll', sub:'A couple of taps and it\u2019s done' })){
         sent['stage1@' + today] = 1; changed = true;
       }
     }
-    // Last reminder, at night (~9–10pm), only if still unmarked.
-    if(hour >= 21 && !sent['stage2@' + today]){
+    // Last reminder, well after school ends (falls back to ~9-10pm), only
+    // if still unmarked.
+    if(nowMin >= stage2 && !sent['stage2@' + today]){
       if(await hwSendNotification('Last reminder: roll call', 'Today\u2019s attendance is still unmarked \u2014 mark it before the day ends.', 'rc-remind-2-' + today, 'roll', { style:'rollLast', sub:'Today\u2019s roll call is still unmarked' })){
         sent['stage2@' + today] = 1; changed = true;
       }
@@ -12712,12 +13604,6 @@ if(existing){
     if(changed) saveRcRemindStore(sent);
   }
 
-  // The in-app roll-call banner shows once per time window (the 4pm
-  // window, then separately the 9pm "last reminder" window). Tapping
-  // "Got it" or "Mark it" dismisses just that window's banner — it's
-  // free to reappear once the next window starts. Actually marking
-  // today's attendance clears rcTodayFullyMarked() and hides it for
-  // the rest of the day regardless of any dismissal.
   const RC_BANNER_DISMISS_KEY = 'rc-remind-banner-dismiss-v1';
   function rcBannerDismissStore(){
     let d = {};
@@ -12741,9 +13627,11 @@ if(existing){
     const box = document.getElementById('rc-remind-banner');
     const text = document.getElementById('rc-remind-banner-text');
     if(!box || !text) return;
-    const hour = new Date().getHours();
-    if(hour < 16 || rcTodayFullyMarked()){ box.style.display = 'none'; text.textContent = ''; delete box.dataset.stage; return; }
-    const stage = hour >= 21 ? 'stage2' : 'stage1';
+    const now = new Date();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const { stage1, stage2 } = rcReminderStageMinutes();
+    if(nowMin < stage1 || rcTodayFullyMarked()){ box.style.display = 'none'; text.textContent = ''; delete box.dataset.stage; return; }
+    const stage = nowMin >= stage2 ? 'stage2' : 'stage1';
     if(rcBannerStageDismissed(stage)){ box.style.display = 'none'; text.textContent = ''; delete box.dataset.stage; return; }
     box.dataset.stage = stage;
     text.textContent = stage === 'stage2'
@@ -12915,6 +13803,54 @@ if(existing){
     if(start === null || end === null) return null;
     return { start, end };
   }
+  // Today's (or any day's) working-hours window for a section, read
+  // straight off the real academic timetable: first scheduled period's
+  // start to last scheduled period's end. Returns null if nothing at all
+  // is scheduled that day (e.g. Sunday, or a section with a fully blank
+  // row).
+  function ttWorkingHoursFor(section, dayName){
+    if(!dayName || !TIMETABLE.days[dayName] || !TIMETABLE.days[dayName][section]) return null;
+    const row = TIMETABLE.days[dayName][section];
+    let firstIdx = -1, lastIdx = -1;
+    row.forEach((cell, idx) => {
+      if(!cell || cell === 'Break' || cell === '\u2014') return;
+      if(firstIdx === -1) firstIdx = idx;
+      lastIdx = idx;
+    });
+    if(firstIdx === -1) return null;
+    const startRange = ttPeriodRange(TIMETABLE.periods[firstIdx]);
+    const endRange = ttPeriodRange(TIMETABLE.periods[lastIdx]);
+    if(!startRange || !endRange) return null;
+    const startLabel = TIMETABLE.periods[firstIdx].split(/[\u2013-]/)[0];
+    const endLabel = TIMETABLE.periods[lastIdx].split(/[\u2013-]/)[1];
+    return { startMinutes: startRange.start, endMinutes: endRange.end, startLabel, endLabel };
+  }
+  function rcTodayWorkingHours(){
+    if(typeof rollcall === 'undefined' || !rollcall.section) return null;
+    const day = ttTodayName();
+    if(!day) return null;
+    return ttWorkingHoursFor(rollcall.section, day);
+  }
+  function rcRenderWorkingHours(){
+    const el = document.getElementById('rc-working-hours');
+    if(!el) return;
+    const hours = rcTodayWorkingHours();
+    if(!hours){ el.style.display = 'none'; el.textContent = ''; return; }
+    el.textContent = 'Today\u2019s working hours for Section ' + rollcall.section + ': ' + hours.startLabel + '\u2013' + hours.endLabel;
+    el.style.display = 'block';
+  }
+  // Reminder thresholds follow the section's real school-end time instead
+  // of a fixed clock time: first nudge right when school ends, last
+  // reminder 4 hours after that (never earlier than 9pm). Falls back to
+  // the old fixed 4pm / 9pm thresholds when no working hours are known yet
+  // (no section picked, or nothing scheduled that day).
+  function rcReminderStageMinutes(){
+    const hours = typeof rcTodayWorkingHours === 'function' ? rcTodayWorkingHours() : null;
+    const stage1 = hours ? hours.endMinutes : 16 * 60;
+    const stage2 = Math.max(stage1 + 240, 21 * 60);
+    return { stage1, stage2 };
+  }
+
   function isClassHappeningNow(){
     const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const now = new Date();
@@ -13714,6 +14650,7 @@ if(existing){
     updateProjectionDot();
     updateExamsDot();
     renderExamDayBanner();
+    renderExamHistory();
     renderExamSoonBanner();
     renderRcRemindBanner();
     renderHomeworkDueBanner();
@@ -13866,7 +14803,7 @@ if(existing){
     preEditLiveState = null;
     historyUndoSnapshot = null;
     homeworkItems = [];
-    rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {}, recapStart: localDateKey(new Date()) };
+    rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {}, extraCards: {}, recapStart: localDateKey(new Date()) };
     projection = { section: null, examDates: {} };
     coachingExams = [];
     examsSection = { section: null };
@@ -18348,7 +19285,7 @@ addEventListener('game-music-change',()=>{if(saveData&&window.GameMusic){saveDat
 (function(){
 "use strict";
 
-// ─── LEVEL DATA ───────────────────────────────────────────────────────────────
+// ─── LEVEL DATA ─────────────────────────────────────��─────────────────────────
 const WW_LEVELS = [
   {id:1,title:"Farm Fresh",cols:6,rows:5,words:["CAT","CRATE","TRACE","REACT","CATER","TRACE"],bonus:["CARTE"],grid:[
     ["C","R","A","T","E","."],
@@ -20476,7 +21413,7 @@ function wwRenderFoundRow(){
   }).join("");
 }
 
-// ─── PROGRESS ─────────────────────────────────────────────────────────────────
+// ──�� PROGRESS ─────────────────────────────────────────────────────────────────
 function wwGetBoardCellStats(){
   if(!wwLevel) return {total:0,filled:0};
   const grid=wwLevel.grid||[];
