@@ -3087,14 +3087,9 @@
     .menu-sep{ margin:5px 10px; opacity:.72; }
     @keyframes desktopMenuRowIn{ to{ opacity:1; transform:translateX(0); } }
 
-    .wrap, .auth-card, footer{
-      transition:transform .5s cubic-bezier(.16,1,.3,1), max-width .5s cubic-bezier(.16,1,.3,1);
-    }
-    body.menu-desktop-open .wrap,
-    body.menu-desktop-open .auth-card,
-    body.menu-desktop-open footer{
-      transform:translateX(clamp(-175px, -12vw, -110px));
-    }
+    /* Background content no longer shifts/pushes left when the menu opens —
+       the dim overlay + slide-out panel alone are enough to show the menu
+       is open, without moving the page underneath it. */
     body.menu-locked{ overflow:auto; }
   }
 
@@ -8597,10 +8592,11 @@ window.contactChoiceModal = function(opts){
     const STORE_KEY = 'menuRowOrderV1';
     const HOLD_MS = 430;
     const MOVE_CANCEL = 9;
+    const LOGOUT_ID = 'menu-logout-btn'; // always pinned to the very bottom of the menu
 
     function visibleRows(){
       return Array.prototype.slice.call(menuDropdown.querySelectorAll('.menu-row'))
-        .filter(row => row.style.display !== 'none' && getComputedStyle(row).display !== 'none');
+        .filter(row => row.id !== LOGOUT_ID && row.style.display !== 'none' && getComputedStyle(row).display !== 'none');
     }
     function allRows(){
       return Array.prototype.slice.call(menuDropdown.querySelectorAll('.menu-row'));
@@ -8617,8 +8613,14 @@ window.contactChoiceModal = function(opts){
         const p = r.previousElementSibling;
         sepBefore[r.id] = (p && p.classList && p.classList.contains('menu-sep')) ? p : null;
       });
-      const validIds = ids.filter(id => byId[id]);
+      let validIds = ids.filter(id => byId[id]);
       rows.forEach(r => { if(r.id && validIds.indexOf(r.id) === -1) validIds.push(r.id); });
+      // Log out is never reorderable — whatever order the rest ends up in,
+      // Log out always renders last.
+      if(validIds.indexOf(LOGOUT_ID) !== -1){
+        validIds = validIds.filter(id => id !== LOGOUT_ID);
+        validIds.push(LOGOUT_ID);
+      }
       const frag = document.createDocumentFragment();
       validIds.forEach((id, i) => {
         if(i > 0){
@@ -8760,6 +8762,7 @@ window.contactChoiceModal = function(opts){
     menuDropdown.addEventListener('pointerdown', (e) => {
       const row = e.target.closest('.menu-row');
       if(!row || row.classList.contains('menu-row-lifted')) return;
+      if(row.id === LOGOUT_ID) return; // Log out stays pinned — can't be picked up
       if(e.target.closest('.menu-row-move-controls')) return;
       pressRow = row;
       startX = e.clientX; startY = e.clientY;
@@ -10533,6 +10536,13 @@ window.contactChoiceModal = function(opts){
   }
 
   function blankHistory(){ return { coaching: [], school: [] }; }
+  // A date with a year this old can only be leftover junk from the old
+  // premature-save bug (e.g. "1902"), never a real exam date.
+  function isSaneExamDate(dateKey){
+    if(!dateKey || typeof dateKey !== 'string') return false;
+    const y = Number(dateKey.slice(0,4));
+    return y >= 2000;
+  }
   async function loadExamHistoryFor(id){
     coachingHistory = []; schoolHistory = [];
     try{
@@ -10545,6 +10555,10 @@ window.contactChoiceModal = function(opts){
         }
       }
     }catch(e){}
+    const beforeC = coachingHistory.length, beforeS = schoolHistory.length;
+    coachingHistory = coachingHistory.filter(h => isSaneExamDate(h.examDate));
+    schoolHistory = schoolHistory.filter(h => isSaneExamDate(h.examDate));
+    if(coachingHistory.length !== beforeC || schoolHistory.length !== beforeS) saveExamHistory();
   }
   async function saveExamHistory(){
     try{ await window.storage.set(examHistoryKeyFor(currentUser.id), JSON.stringify({ coaching: coachingHistory, school: schoolHistory }), true); }catch(e){}
@@ -10797,7 +10811,24 @@ window.contactChoiceModal = function(opts){
         await saveExamHistory();
         renderExamHistory();
       });
-      row.appendChild(edit);
+      const remove = document.createElement('button');
+      remove.className = 'hist-remove';
+      remove.type = 'button';
+      remove.textContent = 'remove';
+      remove.addEventListener('click', async () => {
+        const list = activeExamType === 'school' ? schoolHistory : coachingHistory;
+        const idx = list.indexOf(h);
+        if(idx === -1) return;
+        list.splice(idx, 1);
+        await saveExamHistory();
+        renderExamHistory();
+      });
+      const actions = document.createElement('div');
+      actions.style.display = 'flex';
+      actions.style.gap = '6px';
+      actions.appendChild(edit);
+      actions.appendChild(remove);
+      row.appendChild(actions);
       row.appendChild(main);
       listEl.appendChild(row);
     });
@@ -10879,7 +10910,8 @@ window.contactChoiceModal = function(opts){
       e.stopPropagation();
       card.classList.add('exam-card-out');
       setTimeout(() => {
-        coachingExams = coachingExams.filter(x => x.id !== exam.id);
+        if(activeExamType === 'school') schoolExams = schoolExams.filter(x => x.id !== exam.id);
+        else coachingExams = coachingExams.filter(x => x.id !== exam.id);
         saveActiveExamList();
         renderCoachingExams();
       }, 200);
@@ -10924,6 +10956,14 @@ window.contactChoiceModal = function(opts){
     examDateInput.addEventListener('change', () => {
       const value = examDateInput.value;
       if(!selectedExamSubject || !value) return;
+      // Guard against the date picker (mostly on Android/mobile) firing a
+      // premature "change" while the year is still only partly typed —
+      // e.g. a stray "0002-09-26" while typing "2026" — which used to get
+      // saved immediately and, having a year far in the past, would look
+      // instantly "completed" and get shoved into History with a garbage
+      // year like 1902. Only accept a fully-formed, sane date.
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
+      if(Number(value.slice(0,4)) < new Date().getFullYear()) return;
       // School exams require a title.
       if(activeExamType === 'school'){
         const titleEl = document.getElementById('exam-title-input');
@@ -14121,6 +14161,12 @@ if(existing){
       els.saveStatus.textContent = 'All entries saved on this device';
     }catch(e){
       els.saveStatus.textContent = 'Could not save just now — keep this tab open';
+    }
+    // Keep this student's saved History entry (matched to them, not just
+    // whichever record happens to be newest) in step with whatever just
+    // changed on the register page itself — not only Roll Call changes.
+    if(currentUser && viewingUserId === currentUser.id){
+      try{ await syncOwnHistoryRecord(state.subjects, state.student, state.threshold); }catch(e){}
     }
   }
 
