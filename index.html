@@ -1648,6 +1648,9 @@
     top: 18px;
     right: 18px;
     z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   @media (max-width:640px){
     .menu-wrap{ top: 12px; right: 12px; }
@@ -1833,6 +1836,67 @@
   }
   body.dark .menu-switch{ background: var(--gold); }
   body.dark .menu-switch .menu-switch-knob{ transform: translateX(16px); background: var(--paper); }
+
+  /* ---- Notification bell ---- */
+  #notif-toggle{ position:relative; }
+  .notif-badge-dot{
+    position:absolute;
+    top:-2px; right:-2px;
+    width:10px; height:10px;
+    border-radius:50%;
+    background: var(--danger);
+    border: 1.5px solid var(--paper);
+    box-shadow: 0 0 0 2px rgba(var(--danger-rgb),0.25);
+  }
+  .notif-panel{
+    position:fixed;
+    top:66px;
+    right:70px;
+    width:min(84vw, 320px);
+    max-height:min(70vh, 420px);
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    background: var(--paper);
+    border:1px solid rgba(var(--ink-rgb),0.16);
+    border-radius:14px;
+    box-shadow: var(--card-shadow);
+    padding:8px;
+    z-index:970;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform: translateY(-8px) scale(0.96);
+    transform-origin: top right;
+    transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.22,1,0.36,1), visibility 0s linear 0.26s;
+  }
+  .notif-panel.open{
+    opacity:1; visibility:visible; pointer-events:auto;
+    transform: translateY(0) scale(1);
+    transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.22,1,0.36,1), visibility 0s linear 0s;
+  }
+  @media (min-width:860px){ .notif-panel{ top:76px; right:82px; } }
+  @media (max-width:640px){ .notif-panel{ right:60px; } }
+  @media (prefers-reduced-motion: reduce){ .notif-panel{ transition:none !important; } }
+  .notif-panel-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:4px 6px 8px 6px; border-bottom:1px solid rgba(var(--ink-rgb),0.1); margin-bottom:4px; }
+  .notif-panel-title{ font-family:'Playfair Display', serif; font-weight:800; font-size:14px; color: var(--ink); }
+  .notif-panel-clear{ background:none; border:none; cursor:pointer; color: var(--gold); font-family:'Lora', serif; font-size:11.5px; padding:2px 4px; }
+  .notif-panel-clear:hover{ text-decoration:underline; }
+  .notif-panel-list{ display:flex; flex-direction:column; }
+  .notif-panel-empty{ padding:26px 8px; text-align:center; font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); }
+  .notif-item{ display:flex; align-items:flex-start; gap:9px; padding:9px 6px; border-bottom:1px solid rgba(var(--ink-rgb),0.08); }
+  .notif-item:last-child{ border-bottom:none; }
+  .notif-item.unread{ background: rgba(var(--gold-rgb),0.08); border-radius:8px; }
+  .notif-item-dot{ width:8px; height:8px; border-radius:50%; background: var(--gold); margin-top:6px; flex:none; }
+  .notif-item.read .notif-item-dot{ background:transparent; }
+  .notif-item-body{ flex:1 1 auto; min-width:0; }
+  .notif-item-title{ font-family:'Lora', serif; font-weight:700; font-size:13px; color: var(--ink); margin:0 0 2px 0; }
+  .notif-item-text{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); margin:0; word-break:break-word; }
+  .notif-item-time{ font-family:'Lora', serif; font-size:10.5px; color: var(--ink-soft); opacity:0.7; margin-top:3px; }
+  .notif-item-actions{ display:flex; flex-direction:column; gap:4px; flex:none; }
+  .notif-item-btn{ background:none; border:none; cursor:pointer; color: var(--ink-soft); font-size:10.5px; font-family:'Lora', serif; padding:2px 4px; white-space:nowrap; }
+  .notif-item-btn:hover{ color: var(--gold); }
+  .notif-item-btn.notif-item-remove:hover{ color: var(--danger); }
 
   /* ---- Time Table page ---- */
   .tt-back{
@@ -5864,6 +5928,18 @@
 <div class="stage-glow stage-glow-b" aria-hidden="true"></div>
 
 <div class="menu-wrap" id="menu-wrap">
+  <button class="theme-toggle" id="notif-toggle" aria-label="Notifications" title="Notifications" aria-expanded="false" aria-haspopup="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+    <span class="notif-badge-dot" id="notif-badge-dot" style="display:none;"></span>
+  </button>
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-panel-head">
+      <span class="notif-panel-title">Notifications</span>
+      <button type="button" class="notif-panel-clear" id="notif-mark-all-btn">Mark all read</button>
+    </div>
+    <div class="notif-panel-list" id="notif-panel-list"></div>
+    <div class="notif-panel-empty" id="notif-panel-empty" style="display:none;">No notifications yet</div>
+  </div>
   <button class="theme-toggle" id="menu-toggle" aria-label="Open menu" title="Menu" aria-expanded="false" aria-haspopup="true">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -8585,6 +8661,129 @@ window.contactChoiceModal = function(opts){
     });
   })();
 
+  // ---- In-app notification center ----
+  (function initNotifCenter(){
+    const toggle = document.getElementById('notif-toggle');
+    const panel = document.getElementById('notif-panel');
+    const list = document.getElementById('notif-panel-list');
+    const empty = document.getElementById('notif-panel-empty');
+    const badge = document.getElementById('notif-badge-dot');
+    const markAllBtn = document.getElementById('notif-mark-all-btn');
+    if(!toggle || !panel || !list) return;
+
+    const STORE_KEY = 'app-notifications-v1';
+    const MAX_ITEMS = 60;
+
+    function load(){
+      try{ const v = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); return Array.isArray(v) ? v : []; }
+      catch(e){ return []; }
+    }
+    function save(items){
+      try{ localStorage.setItem(STORE_KEY, JSON.stringify(items.slice(0, MAX_ITEMS))); }catch(e){}
+    }
+    function timeAgo(ts){
+      const diff = Math.max(0, Date.now() - ts);
+      const min = Math.floor(diff / 60000);
+      if(min < 1) return 'Just now';
+      if(min < 60) return min + (min === 1 ? ' minute ago' : ' minutes ago');
+      const hr = Math.floor(min / 60);
+      if(hr < 24) return hr + (hr === 1 ? ' hour ago' : ' hours ago');
+      const day = Math.floor(hr / 24);
+      return day + (day === 1 ? ' day ago' : ' days ago');
+    }
+    function esc(s){
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+    function updateBadge(items){
+      const hasUnread = items.some(n => !n.read);
+      if(badge) badge.style.display = hasUnread ? '' : 'none';
+    }
+    function render(){
+      const items = load();
+      updateBadge(items);
+      if(!items.length){
+        list.innerHTML = '';
+        if(empty) empty.style.display = '';
+        return;
+      }
+      if(empty) empty.style.display = 'none';
+      list.innerHTML = items.map(n => (
+        '<div class="notif-item ' + (n.read ? 'read' : 'unread') + '" data-id="' + esc(n.id) + '">' +
+          '<span class="notif-item-dot"></span>' +
+          '<div class="notif-item-body">' +
+            '<p class="notif-item-title">' + esc(n.title) + '</p>' +
+            (n.body ? '<p class="notif-item-text">' + esc(n.body) + '</p>' : '') +
+            '<div class="notif-item-time">' + timeAgo(n.time) + '</div>' +
+          '</div>' +
+          '<div class="notif-item-actions">' +
+            (n.read ? '' : '<button type="button" class="notif-item-btn notif-item-read" data-action="read">Mark read</button>') +
+            '<button type="button" class="notif-item-btn notif-item-remove" data-action="remove">Remove</button>' +
+          '</div>' +
+        '</div>'
+      )).join('');
+    }
+
+    // Public hook other parts of the app can call whenever a notifiable
+    // event happens, so it shows up here regardless of push permission.
+    window.ntfAdd = function(title, body, tag){
+      const items = load();
+      const id = (tag ? tag + '-' : '') + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+      items.unshift({ id, title: title || '', body: body || '', time: Date.now(), read: false });
+      save(items);
+      render();
+    };
+
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('.notif-item-btn');
+      if(!btn) return;
+      const row = btn.closest('.notif-item');
+      const id = row && row.getAttribute('data-id');
+      if(!id) return;
+      let items = load();
+      if(btn.dataset.action === 'read'){
+        items = items.map(n => n.id === id ? Object.assign({}, n, { read:true }) : n);
+      } else if(btn.dataset.action === 'remove'){
+        items = items.filter(n => n.id !== id);
+      }
+      save(items);
+      render();
+    });
+
+    if(markAllBtn){
+      markAllBtn.addEventListener('click', () => {
+        const items = load().map(n => Object.assign({}, n, { read:true }));
+        save(items);
+        render();
+      });
+    }
+
+    function closePanel(){
+      panel.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const willOpen = !panel.classList.contains('open');
+      const menuDropdown = document.getElementById('menu-dropdown');
+      const menuToggle = document.getElementById('menu-toggle');
+      if(menuDropdown && menuDropdown.classList.contains('open')){
+        menuDropdown.classList.remove('open');
+        if(menuToggle){ menuToggle.classList.remove('menu-open'); menuToggle.setAttribute('aria-expanded','false'); }
+      }
+      if(willOpen) render();
+      panel.classList.toggle('open', willOpen);
+      toggle.setAttribute('aria-expanded', String(willOpen));
+    });
+    document.addEventListener('click', (e) => {
+      if(!panel.contains(e.target) && e.target !== toggle){ closePanel(); }
+    });
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closePanel();
+    });
+
+    render();
+  })();
+
   // ---- Menu reorder: hold any option to give it your own priority ----
   (function initMenuReorder(){
     const menuDropdown = document.getElementById('menu-dropdown');
@@ -10303,6 +10502,7 @@ window.contactChoiceModal = function(opts){
   }
 
   async function hwSendNotification(title, body, tag, kind, banner){
+    if(typeof window.ntfAdd === 'function') window.ntfAdd(title, body, tag);
     const opts = Object.assign({ body, tag }, notifOptions(kind));
     if(banner){
       try{ const img = await notifBannerUrl(banner); if(img) opts.image = img; }catch(e){}
