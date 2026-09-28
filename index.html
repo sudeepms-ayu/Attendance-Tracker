@@ -1876,7 +1876,16 @@
     transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.22,1,0.36,1), visibility 0s linear 0s;
   }
   @media (min-width:860px){ .notif-panel{ top:76px; right:82px; } }
-  @media (max-width:640px){ .notif-panel{ right:60px; } }
+  @media (max-width:640px){
+    .notif-panel{
+      left:12px;
+      right:12px;
+      width:auto;
+      max-width:340px;
+      margin-left:auto; /* stays right-aligned under the bell on wider phones */
+      top:64px;
+    }
+  }
   @media (prefers-reduced-motion: reduce){ .notif-panel{ transition:none !important; } }
   .notif-panel-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:4px 6px 8px 6px; border-bottom:1px solid rgba(var(--ink-rgb),0.1); margin-bottom:4px; }
   .notif-panel-title{ font-family:'Playfair Display', serif; font-weight:800; font-size:14px; color: var(--ink); }
@@ -8640,12 +8649,21 @@ window.contactChoiceModal = function(opts){
       if(willOpen){
         staggerMenuRows();
         menuDropdown.scrollTop = 0;
+        // Opening the menu closes the notification panel (uses its own fade/slide transition)
+        const np = document.getElementById('notif-panel');
+        const nt = document.getElementById('notif-toggle');
+        if(np && np.classList.contains('open')){
+          np.classList.remove('open');
+          if(nt) nt.setAttribute('aria-expanded','false');
+        }
       }
       const open = menuDropdown.classList.toggle('open');
       menuToggle.classList.toggle('menu-open', open);
       menuToggle.setAttribute('aria-expanded', String(open));
     });
     document.addEventListener('click', (e) => {
+      const notifPanel = document.getElementById('notif-panel');
+      if(notifPanel && notifPanel.contains(e.target)) return; // both can stay open
       if(!menuDropdown.contains(e.target) && e.target !== menuToggle){
         menuDropdown.classList.remove('open');
         menuToggle.classList.remove('menu-open');
@@ -8764,12 +8782,6 @@ window.contactChoiceModal = function(opts){
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
       const willOpen = !panel.classList.contains('open');
-      const menuDropdown = document.getElementById('menu-dropdown');
-      const menuToggle = document.getElementById('menu-toggle');
-      if(menuDropdown && menuDropdown.classList.contains('open')){
-        menuDropdown.classList.remove('open');
-        if(menuToggle){ menuToggle.classList.remove('menu-open'); menuToggle.setAttribute('aria-expanded','false'); }
-      }
       if(willOpen) render();
       panel.classList.toggle('open', willOpen);
       toggle.setAttribute('aria-expanded', String(willOpen));
