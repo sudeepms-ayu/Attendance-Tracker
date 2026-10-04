@@ -12964,8 +12964,19 @@ function rcXpOp(status){
     const today = new Date();
     const todayMid = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const section = rollcall.section;
+    // Rows are driven by the subjects the person added on the Attendance
+    // Register page (state.subjects): every register subject gets a row, in the
+    // same order, and Roll Call / timetable names are matched onto them.
+    // Names that don't correspond to a register subject are not shown.
+    const regSubjects = (typeof state !== 'undefined' && state && Array.isArray(state.subjects)) ? state.subjects : [];
     const rows = {};
-    const getRow = name => rows[name] || (rows[name] = { name, present: 0, absent: 0, suspended: 0, notHeld: 0, unmarked: 0 });
+    regSubjects.forEach(s => {
+      rows[s.id] = { name: s.name, present: 0, absent: 0, suspended: 0, notHeld: 0, unmarked: 0 };
+    });
+    const rowFor = name => {
+      const subj = findSubjectMatch(regSubjects, name);
+      return subj ? rows[subj.id] : null;
+    };
     let workingDays = 0, offDays = 0;
     // Never look further back than the day this profile's tracking actually
     // started (recapStart, set the first time Attendance Register opens),
@@ -12986,21 +12997,26 @@ function rcXpOp(status){
       const marks = (rollcall.marks && rollcall.marks[key]) || {};
       const pmarks = (rollcall.practicalMarks && rollcall.practicalMarks[key]) || {};
       const scheduled = section ? rcSubjectsForDayName(section, dayName).codes.map(c => RC_SUBJECT_NAMES[c] || c) : [];
-      const names = new Set(scheduled.concat(Object.keys(marks), Object.keys(pmarks)));
-      names.forEach(name => {
-        const row = getRow(name);
+      // Gather this day's activity per register subject first, so two names
+      // that resolve to the same subject are never double-counted.
+      const perRow = new Map();
+      const slot = row => { let o = perRow.get(row); if(!o){ o = { scheduled:false, marks:[], pmarks:[] }; perRow.set(row, o); } return o; };
+      scheduled.forEach(n => { const r = rowFor(n); if(r) slot(r).scheduled = true; });
+      Object.keys(marks).forEach(n => { const r = rowFor(n); if(r) slot(r).marks.push(marks[n]); });
+      Object.keys(pmarks).forEach(n => { const r = rowFor(n); if(r) slot(r).pmarks.push(pmarks[n]); });
+      perRow.forEach((o, row) => {
         const tally = m => {
           if(m.status === 'present') row.present++;
           else if(m.status === 'absent') row.absent++;
           else if(m.status === 'suspended') row.suspended++;
           else if(m.status === 'not_held') row.notHeld++;
         };
-        if(marks[name]) tally(marks[name]);
-        else if(scheduled.indexOf(name) !== -1) row.unmarked++;
-        if(pmarks[name]) tally(pmarks[name]);
+        if(o.marks.length) o.marks.forEach(tally);
+        else if(o.scheduled) row.unmarked++;
+        o.pmarks.forEach(tally);
       });
     }
-    const list = Object.keys(rows).sort().map(k => rows[k]);
+    const list = regSubjects.map(s => rows[s.id]);
     let attended = 0, held = 0;
     list.forEach(r => { attended += r.present; held += r.present + r.absent; });
     const first = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (effectiveSpan - 1));
@@ -13070,7 +13086,7 @@ function rcXpOp(status){
     }
 
     if(data.rows.length === 0){
-      panel.appendChild(recapEl('div', 'recap-note', 'Nothing to show for this window yet. Mark your classes in Today\u2019s Roll Call and they\u2019ll appear here.'));
+      panel.appendChild(recapEl('div', 'recap-note', 'No subjects yet. Add your subjects in the register below and they\u2019ll appear here, synced with Today\u2019s Roll Call.'));
     }
 
     const line = recapThreshold();
@@ -14978,6 +14994,7 @@ if(existing){
     nameInput.addEventListener('change', () => {
       s.name = nameInput.value.trim() || 'Untitled subject';
       save();
+      try{ renderRecap(false); }catch(e){}
     });
     const delBtn = document.createElement('button');
     delBtn.className = 'del-btn';
