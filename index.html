@@ -140,7 +140,7 @@
   html.theme-swap-lock, html.theme-swap-lock *{
     transition: none !important;
   }
-  body.dark *{ transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; }
+  :where(body.dark *){ transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; }
   *{box-sizing:border-box;}
   html{ scroll-behavior:smooth; }
   body{
@@ -6098,6 +6098,79 @@
     font-size:11px; color:var(--ink-soft);
   }
 
+
+  /* ================= Smooth UX layer (whole app + notification page) ================= */
+  html{ -webkit-text-size-adjust:100%; }
+  body{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility; }
+  :where(button,[role="button"],a,input,select,textarea,label,summary){ touch-action:manipulation; }
+  @media (prefers-reduced-motion: no-preference){
+    :where(button,[role="button"],a,summary,label,select,.menu-row){
+      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.3s ease, opacity 0.25s ease, scale 0.2s cubic-bezier(.22,1,.36,1), transform 0.25s cubic-bezier(.22,1,.36,1);
+    }
+    :where(button,[role="button"],.menu-row):active{ scale:0.97; }
+    :where(button:disabled,button[disabled]):active{ scale:1; }
+    :where(img){ transition: opacity 0.35s ease; }
+
+    /* ---- Notification page ---- */
+    #notif-view.nv-exit{ animation: nvPageOut 0.21s cubic-bezier(.4,0,1,1) both; pointer-events:none; }
+    @keyframes nvPageOut{ to{ opacity:0; transform: translateY(10px); } }
+    .nv-list{ transition: opacity 0.14s ease, transform 0.14s ease; }
+    .nv-list.nv-leave{ opacity:0; transform: translateY(6px); }
+    .nv-chip-dot{ animation:none; }
+    .nv-chip-dot.nv-new{ animation: nvPop 0.3s cubic-bezier(.34,1.56,.64,1) both; }
+    .nv-act{ transition: opacity 0.25s ease, transform 0.2s cubic-bezier(.22,1,.36,1), color 0.25s ease; }
+    .nv-item.nv-dragging{ box-shadow: var(--card-shadow), 0 16px 28px -16px rgba(0,0,0,0.45); }
+    .nv-more{
+      display:grid; grid-template-rows:0fr; gap:0; margin-top:0; opacity:0; visibility:hidden; animation:none; flex-wrap:nowrap;
+      transition: grid-template-rows 0.38s cubic-bezier(.22,1,.36,1), opacity 0.25s ease, margin-top 0.38s cubic-bezier(.22,1,.36,1), visibility 0s linear 0.38s;
+    }
+    .nv-item.open .nv-more{
+      display:grid; grid-template-rows:1fr; margin-top:11px; opacity:1; visibility:visible; animation:none;
+      transition: grid-template-rows 0.38s cubic-bezier(.22,1,.36,1), opacity 0.3s ease 0.06s, margin-top 0.38s cubic-bezier(.22,1,.36,1), visibility 0s;
+    }
+    .nv-more-in{ min-height:0; overflow:hidden; display:flex; gap:8px; flex-wrap:wrap; }
+    .nv-item .nv-txt{ will-change:auto; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .nv-more{ transition:none !important; }
+    .nv-undo, .nv-undo.show, .nv-undo.out{ transition:none !important; }
+    #notif-view.nv-exit{ animation:none !important; }
+  }
+  .nv-more-in{ min-height:0; }
+  .nv-more{ display:grid; grid-template-rows:0fr; gap:0; margin-top:0; }
+  .nv-item.open .nv-more{ grid-template-rows:1fr; margin-top:11px; }
+
+  /* ---- Undo bar (10 second timer after a notification is removed) ---- */
+  .nv-undo-wrap{
+    position:fixed; left:0; right:0; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index:9000;
+    display:flex; flex-direction:column; align-items:center; gap:8px; padding:0 14px; pointer-events:none;
+  }
+  .nv-undo{
+    pointer-events:auto; position:relative; overflow:hidden; display:flex; align-items:center; gap:12px;
+    width:100%; max-width:420px; padding:12px 12px 15px 16px; border-radius:16px;
+    background: var(--ink); color: var(--paper);
+    box-shadow: 0 18px 34px -14px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.25);
+    opacity:0; transform: translateY(22px) scale(0.96);
+    transition: opacity 0.3s ease, transform 0.42s cubic-bezier(.22,1,.36,1);
+  }
+  .nv-undo.show{ opacity:1; transform:none; }
+  .nv-undo.out{ opacity:0; transform: translateY(14px) scale(0.97); transition-duration:0.25s; }
+  .nv-undo-msg{ flex:1 1 auto; min-width:0; font-family:'Lora', serif; font-weight:700; font-size:13.5px; line-height:1.3; }
+  .nv-undo-msg small{ display:block; font-weight:500; font-size:11.5px; opacity:0.72; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .nv-undo-btn{
+    flex:none; display:flex; align-items:center; gap:9px; border:none; cursor:pointer;
+    padding:8px 8px 8px 15px; border-radius:999px; background: var(--gold); color:#1d1500;
+    font-family:'Lora', serif; font-weight:700; font-size:13px;
+  }
+  .nv-undo-count{
+    min-width:26px; padding:2px 6px; border-radius:999px; background: rgba(0,0,0,0.14);
+    font-size:11.5px; font-variant-numeric: tabular-nums; text-align:center;
+  }
+  .nv-undo-bar{
+    position:absolute; left:0; bottom:0; height:3px; width:100%; background: var(--gold);
+    transform-origin:left center; animation: nvUndoBar 10s linear forwards;
+  }
+  @keyframes nvUndoBar{ from{ transform: scaleX(1); } to{ transform: scaleX(0); } }
 </style>
 </head>
 <body>
@@ -8924,6 +8997,7 @@ window.contactChoiceModal = function(opts){
     };
     const CAT_ICON = { hw:'book', exam:'exam', att:'check', tt:'cal', holiday:'spark', gen:'bell' };
     let filter = 'all';
+    let swapTimer = null, keepOpen = new Set();
 
     function load(){
       try{ const v = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); return Array.isArray(v) ? v : []; }
@@ -8997,7 +9071,7 @@ window.contactChoiceModal = function(opts){
       items.unshift(item);
       save(items);
       updateBadge(items);
-      if(isOpen()) render(false);
+      if(isOpen()){ render(false); listEl.querySelectorAll('.nv-row').forEach(r => { if(r.dataset.id === id) growIn(r); }); }
       else { toggle.classList.remove('nv-ring'); void toggle.offsetWidth; toggle.classList.add('nv-ring'); }
     };
     toggle.addEventListener('animationend', () => toggle.classList.remove('nv-ring'), true);
@@ -9151,6 +9225,22 @@ window.contactChoiceModal = function(opts){
       try{ renderCards(items); }catch(e){}
     }
     function buildChips(items){
+      if(chipsEl.children.length === CATS.length){
+        Array.prototype.forEach.call(chipsEl.children, (b, i) => {
+          const c = CATS[i], on = c.id === filter;
+          b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
+          const n = items.filter(x => !x.read && (c.id === 'all' || catOf(x) === c.id)).length;
+          let d = b.querySelector('.nv-chip-dot');
+          if(n && c.id !== 'all'){
+            if(!d){ d = document.createElement('span'); d.className = 'nv-chip-dot nv-new'; b.appendChild(d); }
+            d.textContent = n > 9 ? '9+' : n;
+          } else if(d){ d.remove(); }
+        });
+        return;
+      }
+      buildChipsFresh(items);
+    }
+    function buildChipsFresh(items){
       chipsEl.innerHTML = '';
       CATS.forEach(c => {
         const b = document.createElement('button');
@@ -9167,7 +9257,9 @@ window.contactChoiceModal = function(opts){
     chipsEl.addEventListener('click', (e) => {
       const b = e.target.closest('.nv-chip'); if(!b || b.dataset.cat === filter) return;
       filter = b.dataset.cat;
-      render(true);
+      chipsEl.querySelectorAll('.nv-chip').forEach(c => { const on = c === b; c.classList.toggle('active', on); c.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      clearTimeout(swapTimer); listEl.classList.add('nv-leave');
+      swapTimer = setTimeout(() => { listEl.classList.remove('nv-leave'); render(true); }, 140);
       const act = chipsEl.querySelector('.nv-chip.active');
       if(act && act.scrollIntoView) act.scrollIntoView({ inline:'center', block:'nearest', behavior:'smooth' });
     });
@@ -9180,14 +9272,96 @@ window.contactChoiceModal = function(opts){
       const items = load(); updateBadge(items); updateHeader(items);
       const keep = chipsEl.scrollLeft; buildChips(items); chipsEl.scrollLeft = keep;
     }
+    // ---------- helpers for smooth list changes ----------
+    function growIn(r){
+      const h = r.offsetHeight, it = r.querySelector('.nv-item');
+      r.style.transition = 'none'; r.style.height = '0px'; r.style.opacity = '0'; r.style.marginBottom = '0';
+      if(it){ it.style.transition = 'none'; it.style.transform = 'translateX(-26px)'; }
+      void r.offsetHeight;
+      r.style.transition = ''; r.style.height = h + 'px'; r.style.opacity = '1'; r.style.marginBottom = '';
+      if(it){ it.style.transition = ''; it.style.transform = ''; }
+      setTimeout(() => { r.style.height = ''; r.style.opacity = ''; }, 460);
+    }
+    function tidyList(){
+      listEl.querySelectorAll('.nv-group').forEach(g => {
+        const nx = g.nextElementSibling;
+        if(!nx || !nx.classList.contains('nv-row')) g.remove();
+      });
+      if(!listEl.querySelector('.nv-row') && !listEl.querySelector('.nv-empty')) listEl.appendChild(emptyState());
+    }
+
+    // ---------- undo bar: 10 seconds to bring a removed notification back ----------
+    const UNDO_MS = 10000, UNDO_MAX = 3;
+    const undoWrap = document.createElement('div');
+    undoWrap.className = 'nv-undo-wrap';
+    undoWrap.setAttribute('role', 'status'); undoWrap.setAttribute('aria-live', 'polite');
+    document.body.appendChild(undoWrap);
+    const undoQueue = [];
+    function dropUndo(entry){
+      const i = undoQueue.indexOf(entry); if(i < 0) return;
+      undoQueue.splice(i, 1);
+      clearTimeout(entry.timer); clearInterval(entry.tick);
+      const el = entry.el;
+      el.classList.remove('show'); el.classList.add('out');
+      setTimeout(() => el.remove(), 320);
+    }
+    function clearUndos(){ undoQueue.slice().forEach(dropUndo); }
+    function restoreItems(list){
+      const ids = new Set(list.map(n => n.id));
+      mutate(it => {
+        const have = new Set(it.map(n => n.id));
+        list.forEach(n => { if(!have.has(n.id)) it.push(n); });
+        it.sort((x, y) => y.time - x.time);
+        return it;
+      });
+      render(false);
+      listEl.querySelectorAll('.nv-row').forEach(r => { if(ids.has(r.dataset.id)) growIn(r); });
+    }
+    function queueUndo(list, label){
+      while(undoQueue.length >= UNDO_MAX) dropUndo(undoQueue[0]);
+      const entry = { list: list };
+      const el = document.createElement('div'); el.className = 'nv-undo';
+      const msg = document.createElement('div'); msg.className = 'nv-undo-msg';
+      msg.textContent = list.length > 1 ? list.length + ' notifications cleared' : 'Notification removed';
+      const sm = document.createElement('small');
+      sm.textContent = list.length > 1 ? 'Undo within 10 seconds' : (label || '');
+      msg.appendChild(sm);
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'nv-undo-btn';
+      const bt = document.createElement('span'); bt.textContent = 'Undo';
+      const cnt = document.createElement('span'); cnt.className = 'nv-undo-count'; cnt.textContent = '10s';
+      btn.appendChild(bt); btn.appendChild(cnt);
+      const bar = document.createElement('div'); bar.className = 'nv-undo-bar';
+      el.appendChild(msg); el.appendChild(btn); el.appendChild(bar);
+      entry.el = el;
+      undoWrap.appendChild(el);
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
+      const start = Date.now();
+      entry.tick = setInterval(() => {
+        const left = Math.max(0, Math.ceil((UNDO_MS - (Date.now() - start)) / 1000));
+        cnt.textContent = left + 's';
+      }, 250);
+      entry.timer = setTimeout(() => dropUndo(entry), UNDO_MS);
+      btn.addEventListener('click', () => { restoreItems(list); dropUndo(entry); });
+      undoQueue.push(entry);
+    }
+
     function removeRow(id, row){
-      if(!row){ mutate(it => it.filter(n => n.id !== id)); render(false); return; }
+      const before = load(), idx = before.findIndex(n => n.id === id);
+      if(idx < 0){ if(row) row.remove(); tidyList(); return; }
+      const gone = before[idx];
+      mutate(it => it.filter(n => n.id !== id));
+      queueUndo([gone], gone.title || 'Notification');
+      refreshMeta();
+      if(!row){ render(false); return; }
       row.style.height = row.offsetHeight + 'px';
       void row.offsetHeight;
       const item = row.querySelector('.nv-item');
-      if(item){ item.style.transition = 'transform 0.3s ease, opacity 0.3s ease'; item.style.transform = 'translateX(-115%)'; item.style.opacity = '0'; }
+      if(item){ item.style.transition = 'transform 0.32s cubic-bezier(.4,0,.2,1), opacity 0.28s ease'; item.style.transform = 'translateX(-115%)'; item.style.opacity = '0'; }
       row.classList.add('nv-removing');
-      setTimeout(() => { mutate(it => it.filter(n => n.id !== id)); render(false); }, 320);
+      let done = false;
+      const fin = () => { if(done) return; done = true; row.remove(); tidyList(); };
+      row.addEventListener('transitionend', (e) => { if(e.target === row && e.propertyName === 'height') fin(); });
+      setTimeout(fin, 450);
     }
     function markRead(id, item, read){
       mutate(it => it.map(n => n.id === id ? Object.assign({}, n, { read: read }) : n));
@@ -9198,11 +9372,13 @@ window.contactChoiceModal = function(opts){
       const cat = catOf(n), lab = labelOf(n);
       const row = document.createElement('div');
       row.className = 'nv-row' + (animate ? ' nv-in' : '');
+      row.dataset.id = n.id;
       if(animate) row.style.setProperty('--d', Math.min(idx * 0.055, 0.5) + 's');
       const hr = document.createElement('div'); hr.className = 'nv-hint rd'; hr.textContent = n.read ? 'Mark unread' : 'Mark read';
       const hl = document.createElement('div'); hl.className = 'nv-hint rm'; hl.textContent = 'Remove';
       const item = document.createElement('div');
       item.className = 'nv-item ' + (n.read ? 'read' : 'unread');
+      if(keepOpen.has(n.id)) item.classList.add('open');
       item.setAttribute('role', 'button'); item.tabIndex = 0;
 
       const ico = document.createElement('div'); ico.className = 'nv-ico t-' + cat;
@@ -9214,7 +9390,8 @@ window.contactChoiceModal = function(opts){
       ttl.appendChild(document.createTextNode(n.title || ''));
       main.appendChild(ttl);
       if(n.body){ const tx = document.createElement('p'); tx.className = 'nv-txt'; tx.textContent = n.body; main.appendChild(tx); }
-      const more = document.createElement('div'); more.className = 'nv-more';
+      const moreOuter = document.createElement('div'); moreOuter.className = 'nv-more';
+      const more = document.createElement('div'); more.className = 'nv-more-in'; moreOuter.appendChild(more);
       if(OPEN_BTN[cat]){
         const go = document.createElement('button'); go.type = 'button'; go.className = 'nv-mini'; go.textContent = OPEN_TXT[cat];
         go.addEventListener('click', (e) => {
@@ -9227,7 +9404,7 @@ window.contactChoiceModal = function(opts){
       const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'nv-mini rm'; rm.textContent = 'Remove';
       rm.addEventListener('click', (e) => { e.stopPropagation(); removeRow(n.id, row); });
       more.appendChild(rm);
-      main.appendChild(more);
+      main.appendChild(moreOuter);
 
       const side = document.createElement('div'); side.className = 'nv-side';
       const l = document.createElement('span'); l.className = 'nv-lbl ' + lab.tone; l.textContent = lab.text;
@@ -9249,7 +9426,7 @@ window.contactChoiceModal = function(opts){
         const mx = e.clientX - sx, my = e.clientY - sy;
         if(!locked){
           if(Math.abs(mx) > 10 && Math.abs(mx) > Math.abs(my) * 1.4){
-            locked = true; moved = true; item.style.transition = 'none';
+            locked = true; moved = true; item.style.transition = 'none'; item.classList.add('nv-dragging'); hr.textContent = item.classList.contains('read') ? 'Mark unread' : 'Mark read';
             try{ item.setPointerCapture(pid); }catch(_){}
           } else if(Math.abs(my) > 10){ active = false; return; }
           else return;
@@ -9262,7 +9439,7 @@ window.contactChoiceModal = function(opts){
       });
       const end = () => {
         if(!active) return; active = false;
-        item.style.transition = '';
+        item.style.transition = ''; item.classList.remove('nv-dragging');
         if(locked && dx < -90){ removeRow(n.id, row); return; }
         if(locked && dx > 90){ markRead(n.id, item, !item.classList.contains('read')); n.read = !n.read; hr.textContent = n.read ? 'Mark unread' : 'Mark read'; }
         item.style.transform = ''; row.style.setProperty('--sw', 0);
@@ -9272,7 +9449,18 @@ window.contactChoiceModal = function(opts){
       const toggleOpen = () => {
         if(moved){ moved = false; return; }
         const opening = !item.classList.contains('open');
+        const tx = item.querySelector('.nv-txt');
+        const h0 = tx ? tx.offsetHeight : 0;
         item.classList.toggle('open', opening);
+        if(tx){
+          const h1 = tx.offsetHeight;
+          if(h0 !== h1){
+            tx.style.overflow = 'hidden'; tx.style.height = h0 + 'px'; void tx.offsetHeight;
+            tx.style.transition = 'height 0.36s cubic-bezier(.22,1,.36,1)'; tx.style.height = h1 + 'px';
+            clearTimeout(tx._t);
+            tx._t = setTimeout(() => { tx.style.height = ''; tx.style.transition = ''; tx.style.overflow = ''; }, 380);
+          }
+        }
         if(opening && item.classList.contains('unread')){ n.read = true; markRead(n.id, item, true); }
       };
       item.addEventListener('click', toggleOpen);
@@ -9291,6 +9479,9 @@ window.contactChoiceModal = function(opts){
       return wrap;
     }
     function render(animate){
+      const openIds = new Set();
+      listEl.querySelectorAll('.nv-item.open').forEach(e => { const r = e.parentNode; if(r && r.dataset && r.dataset.id) openIds.add(r.dataset.id); });
+      keepOpen = animate ? new Set() : openIds;
       const all = load();
       updateBadge(all); updateHeader(all);
       const keep = chipsEl.scrollLeft; buildChips(all); chipsEl.scrollLeft = keep;
@@ -9308,7 +9499,8 @@ window.contactChoiceModal = function(opts){
 
     markAllBtn.addEventListener('click', () => {
       mutate(it => it.map(n => Object.assign({}, n, { read:true })));
-      render(false);
+      listEl.querySelectorAll('.nv-item.unread').forEach(el => { el.classList.remove('unread'); el.classList.add('read'); });
+      refreshMeta();
     });
     clearAllBtn.addEventListener('click', async () => {
       const count = load().length; if(!count) return;
@@ -9317,11 +9509,13 @@ window.contactChoiceModal = function(opts){
       catch(e){ ok = confirm('Clear all notifications?'); }
       if(!ok) return;
       listEl.querySelectorAll('.nv-row').forEach((r, i) => { r.style.transition = 'opacity 0.25s ease ' + (i * 25) + 'ms, transform 0.25s ease ' + (i * 25) + 'ms'; r.style.opacity = '0'; r.style.transform = 'translateX(-30px)'; });
-      setTimeout(() => { save([]); render(false); }, 260 + Math.min(count, 8) * 25);
+      const snapshot = load();
+      setTimeout(() => { save([]); render(false); queueUndo(snapshot, ''); }, 260 + Math.min(count, 8) * 25);
     });
 
     // ---------- open / close ----------
     function show(){
+      closeTok++; closing = false; view.classList.remove('nv-exit');
       try{ if(typeof ntfDailyChecks === 'function') ntfDailyChecks(); }catch(e){}
       hideAllPages();
       view.style.display = 'block';
@@ -9334,12 +9528,25 @@ window.contactChoiceModal = function(opts){
       window.scrollTo(0, 0);
       startAuto();
     }
+    let closing = false, closeTok = 0;
     function hide(){
-      stopAuto();
-      view.style.display = 'none';
+      if(closing) return;
+      stopAuto(); clearUndos();
       toggle.classList.remove('nv-active');
       toggle.setAttribute('aria-expanded', 'false');
-      backToAppOrAuth();
+      if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        view.style.display = 'none'; backToAppOrAuth(); return;
+      }
+      closing = true; const tok = ++closeTok;
+      view.classList.add('nv-exit');
+      setTimeout(() => {
+        if(tok !== closeTok) return; // reopened meanwhile
+        closing = false;
+        view.classList.remove('nv-exit');
+        if(view.style.display === 'none') return; // another page already took over
+        view.style.display = 'none';
+        backToAppOrAuth();
+      }, 210);
     }
     new MutationObserver(() => {
       if(!isOpen()){ toggle.classList.remove('nv-active'); toggle.setAttribute('aria-expanded', 'false'); }
@@ -9352,7 +9559,7 @@ window.contactChoiceModal = function(opts){
     if(backBtn) backBtn.addEventListener('click', hide);
     document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && isOpen()) hide(); });
     // Keep "x minutes ago"-style labels and the list fresh while the page is open.
-    setInterval(() => { if(isOpen() && !document.hidden) render(false); }, 60000);
+    setInterval(() => { if(isOpen() && !document.hidden && !listEl.querySelector('.nv-dragging')) render(false); }, 60000);
     document.addEventListener('visibilitychange', () => { if(!document.hidden){ updateBadge(load()); if(isOpen()) render(false); } });
 
     updateBadge(load());
