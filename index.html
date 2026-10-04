@@ -1845,7 +1845,7 @@
   body.dark .menu-switch .menu-switch-knob{ transform: translateX(16px); background: var(--paper); }
 
   /* ---- Notification bell ---- */
-  #notif-toggle{ position:relative; z-index:966; }
+  #notif-toggle{ position:relative; }
   .notif-badge-dot{
     position:absolute;
     top:-2px; right:-2px;
@@ -1855,93 +1855,199 @@
     border: 1.5px solid var(--paper);
     box-shadow: 0 0 0 2px rgba(var(--danger-rgb),0.25);
   }
-  .notif-panel{
-    position:fixed;
-    top:66px;
-    right:70px;
-    width:min(84vw, 320px);
-    max-height:min(70vh, 420px);
-    overflow-y:auto;
-    overscroll-behavior:contain;
-    -webkit-overflow-scrolling:touch;
-    background: rgba(var(--paper-rgb),0.9);
-    -webkit-backdrop-filter: blur(18px) saturate(1.4);
-    backdrop-filter: blur(18px) saturate(1.4);
-    border:1px solid rgba(var(--gold-rgb),0.55);
-    border-radius:16px;
-    box-shadow: 0 24px 48px -12px rgba(0,0,0,0.45), 0 8px 18px -6px rgba(0,0,0,0.3), 0 0 0 1px rgba(var(--gold-rgb),0.12), 0 0 28px -6px rgba(var(--gold-rgb),0.35);
-    padding:8px;
-    z-index:970;
-    scroll-behavior:smooth;
-    touch-action:pan-y;
-    translate: 0 var(--np-y, 0px);
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-    transform: translateY(-8px) scale(0.96);
-    transform-origin: top right;
-    transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.22,1,0.36,1), visibility 0s linear 0.26s;
+  /* ================= Notifications page ================= */
+  #notif-toggle.nv-active{ border-color: var(--gold); color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--gold-rgb),0.18); }
+  #notif-toggle.nv-ring svg{ animation: nvBell 0.9s cubic-bezier(.36,.07,.19,.97) both; transform-origin: 50% 12%; }
+  @keyframes nvBell{ 0%,100%{transform:rotate(0)} 15%{transform:rotate(14deg)} 30%{transform:rotate(-12deg)} 45%{transform:rotate(8deg)} 60%{transform:rotate(-6deg)} 75%{transform:rotate(3deg)} }
+  #notif-view{ padding-bottom:110px; }
+  #notif-view.nv-enter{ animation: nvPage 0.45s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes nvPage{ from{ opacity:0; transform: translateY(18px); } to{ opacity:1; transform:none; } }
+  .nv-head{ display:flex; align-items:center; gap:14px; padding-right:112px; margin:2px 0 16px 0; min-height:56px; }
+  .nv-avatar{
+    flex:none; width:50px; height:50px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+    border:1.5px solid var(--gold);
+    background: linear-gradient(145deg, rgba(var(--gold-rgb),0.2), rgba(var(--gold-rgb),0.06));
+    box-shadow: 0 0 0 4px rgba(var(--gold-rgb),0.1), 0 8px 18px -10px rgba(var(--gold-rgb),0.9);
+    font-family:'Playfair Display', serif; font-weight:800; font-size:17px; letter-spacing:0.02em; color: var(--gold);
   }
-  .notif-panel.open{
-    opacity:1; visibility:visible; pointer-events:auto;
-    transform: translateY(0) scale(1);
-    transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.22,1,0.36,1), visibility 0s linear 0s;
+  .nv-avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .nv-title{ font-family:'Playfair Display', serif; font-weight:800; font-size:22px; line-height:1.1; color: var(--ink); margin:0; }
+  .nv-sub{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); margin:4px 0 0 0; }
+  .nv-sub b{ color: var(--gold); font-weight:700; }
+  .nv-chips{
+    display:flex; gap:9px; overflow-x:auto; padding:4px 2px 12px 2px; margin:0 -2px;
+    scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; scrollbar-width:none;
   }
-  @media (min-width:860px){ .notif-panel{ top:76px; right:82px; } }
-  @media (max-width:640px){
-    .notif-panel{
-      left: auto;
-      right: 12px;
-      width: min(82vw, 310px);
-      max-width: 310px;
-      margin-left: 0;
-      top: 64px;
-      transform-origin: top right;
-    }
+  .nv-chips::-webkit-scrollbar{ display:none; }
+  .nv-chip{
+    flex:none; scroll-snap-align:start; position:relative;
+    font-family:'Lora', serif; font-weight:600; font-size:13.5px; color: var(--ink-soft);
+    padding:10px 20px; border-radius:999px; cursor:pointer;
+    background: rgba(var(--ink-rgb),0.05); border:1px solid rgba(var(--ink-rgb),0.1);
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.3s ease, border-color 0.25s ease;
   }
-  @media (prefers-reduced-motion: reduce){ .notif-panel{ transition:none !important; } }
-  .notif-panel.np-dragging{ transition:none !important; scroll-behavior:auto; }
-  .notif-panel{ max-height:min(72dvh, 460px); }
-  .notif-panel-head{
-    position:sticky; top:-8px; z-index:2; margin:-8px -8px 4px -8px; padding:10px 14px 8px 14px;
-    background: rgba(var(--paper-rgb),0.94);
-    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-    cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none;
+  .nv-chip:active{ transform: scale(0.95); }
+  .nv-chip.active{
+    color:#fff; border-color: transparent;
+    background: linear-gradient(145deg, color-mix(in srgb, var(--gold) 82%, #fff), var(--gold) 55%, color-mix(in srgb, var(--gold) 70%, #3a2400));
+    box-shadow: 0 10px 20px -10px rgba(var(--gold-rgb),1), inset 0 1px 0 rgba(255,255,255,0.35);
   }
-  .notif-panel.np-dragging .notif-panel-head{ cursor:grabbing; }
-  .notif-panel-head::before{
-    content:''; position:absolute; top:4px; left:50%; width:34px; height:4px; margin-left:-17px;
-    border-radius:4px; background: rgba(var(--ink-rgb),0.25);
+  .nv-chip-dot{
+    position:absolute; top:3px; right:5px; min-width:16px; height:16px; padding:0 4px; border-radius:8px;
+    background: var(--danger); color:#fff; font-size:10px; font-weight:700; line-height:16px; text-align:center;
+    box-shadow: 0 0 0 2px var(--paper); animation: nvPop 0.3s cubic-bezier(.34,1.56,.64,1) both;
   }
-  .notif-item{ transition: background 0.2s ease; }
-  /* Soft blurred scrim behind the open panel so it never blends into the page. */
-  #notif-scrim{
-    position:fixed; inset:0; z-index:965;
-    background: rgba(0,0,0,0.28);
-    -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
-    opacity:0; visibility:hidden; pointer-events:none;
-    transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+  @keyframes nvPop{ from{ transform:scale(0); } to{ transform:scale(1); } }
+  .nv-actions{ display:flex; justify-content:space-between; align-items:center; margin:0 2px 8px 2px; }
+  .nv-act{
+    background:none; border:none; cursor:pointer; padding:6px 4px;
+    font-family:'Lora', serif; font-size:12.5px; font-weight:600; color: var(--gold);
+    transition: opacity 0.2s ease, transform 0.15s ease;
   }
-  #notif-scrim.show{ opacity:1; visibility:visible; pointer-events:auto; transition: opacity 0.25s ease, visibility 0s linear 0s; }
-  .notif-panel-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:4px 6px 8px 6px; border-bottom:1px solid rgba(var(--ink-rgb),0.1); margin-bottom:4px; }
-  .notif-panel-title{ font-family:'Playfair Display', serif; font-weight:800; font-size:14px; color: var(--ink); }
-  .notif-panel-clear{ background:none; border:none; cursor:pointer; color: var(--gold); font-family:'Lora', serif; font-size:11.5px; padding:2px 4px; }
-  .notif-panel-clear:hover{ text-decoration:underline; }
-  .notif-panel-list{ display:flex; flex-direction:column; }
-  .notif-panel-empty{ padding:26px 8px; text-align:center; font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); }
-  .notif-item{ display:flex; align-items:flex-start; gap:9px; padding:9px 6px; border-bottom:1px solid rgba(var(--ink-rgb),0.08); }
-  .notif-item:last-child{ border-bottom:none; }
-  .notif-item.unread{ background: rgba(var(--gold-rgb),0.08); border-radius:8px; }
-  .notif-item-dot{ width:8px; height:8px; border-radius:50%; background: var(--gold); margin-top:6px; flex:none; }
-  .notif-item.read .notif-item-dot{ background:transparent; }
-  .notif-item-body{ flex:1 1 auto; min-width:0; }
-  .notif-item-title{ font-family:'Lora', serif; font-weight:700; font-size:13px; color: var(--ink); margin:0 0 2px 0; }
-  .notif-item-text{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); margin:0; word-break:break-word; }
-  .notif-item-time{ font-family:'Lora', serif; font-size:10.5px; color: var(--ink-soft); opacity:0.7; margin-top:3px; }
-  .notif-item-actions{ display:flex; flex-direction:column; gap:4px; flex:none; }
-  .notif-item-btn{ background:none; border:none; cursor:pointer; color: var(--ink-soft); font-size:10.5px; font-family:'Lora', serif; padding:2px 4px; white-space:nowrap; }
-  .notif-item-btn:hover{ color: var(--gold); }
-  .notif-item-btn.notif-item-remove:hover{ color: var(--danger); }
+  .nv-act.danger{ color: var(--danger); }
+  .nv-act:active{ transform: scale(0.95); }
+  .nv-act[disabled]{ opacity:0.35; pointer-events:none; }
+  .nv-list{ position:relative; }
+  .nv-list.nv-swap{ animation: nvSwap 0.28s ease both; }
+  @keyframes nvSwap{ from{ opacity:0; transform: translateY(8px); } to{ opacity:1; transform:none; } }
+  .nv-group{
+    font-family:'Lora', serif; font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+    color: var(--ink-soft); opacity:0.75; margin:16px 4px 8px 4px;
+  }
+  .nv-row{
+    position:relative; margin-bottom:10px; border-radius:18px; overflow:hidden;
+    transition: height 0.3s cubic-bezier(.4,0,.2,1), margin 0.3s ease, opacity 0.25s ease;
+    --sw:0;
+  }
+  .nv-row.nv-in{ animation: nvRise 0.5s cubic-bezier(.22,1,.36,1) both; animation-delay: var(--d, 0s); }
+  @keyframes nvRise{ from{ opacity:0; transform: translateY(18px) scale(0.98); } to{ opacity:1; transform:none; } }
+  .nv-row.nv-removing{ height:0 !important; margin-bottom:0; opacity:0; }
+  .nv-hint{
+    position:absolute; inset:0; display:flex; align-items:center; padding:0 22px;
+    font-family:'Lora', serif; font-weight:700; font-size:12.5px; letter-spacing:0.04em; opacity:calc(var(--sw) * 1.2);
+  }
+  .nv-hint.rm{ justify-content:flex-end; background: rgba(var(--danger-rgb),0.9); color:#fff; }
+  .nv-hint.rd{ justify-content:flex-start; background: color-mix(in srgb, var(--success) 88%, transparent); color:#fff; }
+  .nv-item{
+    position:relative; display:flex; align-items:flex-start; gap:14px; padding:15px 16px 15px 14px;
+    background: var(--paper); border:1px solid rgba(var(--ink-rgb),0.1); border-radius:18px;
+    box-shadow: var(--card-shadow); cursor:pointer; touch-action:pan-y; user-select:none; -webkit-user-select:none;
+    transition: transform 0.35s cubic-bezier(.22,1,.36,1), background 0.3s ease, border-color 0.3s ease;
+  }
+  .nv-item:active{ background: rgba(var(--gold-rgb),0.06); }
+  .nv-item.unread{ background: linear-gradient(135deg, rgba(var(--gold-rgb),0.13), rgba(var(--gold-rgb),0.03) 70%), var(--paper); border-color: rgba(var(--gold-rgb),0.38); }
+  .nv-ico{
+    flex:none; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    color: var(--tc, var(--gold)); background: color-mix(in srgb, var(--tc, var(--gold)) 15%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tc, var(--gold)) 28%, transparent);
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+  }
+  .nv-item:active .nv-ico{ transform: scale(0.92); }
+  .nv-ico svg{ width:22px; height:22px; }
+  .t-hw{ --tc: var(--danger); } .t-exam{ --tc: var(--gold); } .t-att{ --tc: var(--success); }
+  .t-tt{ --tc:#C9782E; } .t-holiday{ --tc:#5E9A94; } .t-gen{ --tc: var(--ink-soft); }
+  .nv-main{ flex:1 1 auto; min-width:0; }
+  .nv-ttl{ font-family:'Lora', serif; font-weight:700; font-size:15px; line-height:1.25; color: var(--ink); margin:0 0 3px 0; display:flex; align-items:center; gap:7px; }
+  .nv-ttl i{ flex:none; width:8px; height:8px; border-radius:50%; background: var(--gold); box-shadow:0 0 0 3px rgba(var(--gold-rgb),0.2); transition: transform 0.3s ease, opacity 0.3s ease; }
+  .nv-item.read .nv-ttl i{ transform: scale(0); opacity:0; width:0; margin-left:-7px; }
+  .nv-txt{
+    font-family:'Lora', serif; font-size:13px; line-height:1.4; color: var(--ink-soft); margin:0;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .nv-item.open .nv-txt{ -webkit-line-clamp:unset; display:block; }
+  .nv-more{ display:none; gap:8px; margin-top:11px; flex-wrap:wrap; }
+  .nv-item.open .nv-more{ display:flex; animation: nvSwap 0.25s ease both; }
+  .nv-mini{
+    font-family:'Lora', serif; font-size:12px; font-weight:700; padding:6px 13px; border-radius:999px; cursor:pointer;
+    border:1px solid rgba(var(--gold-rgb),0.5); background: rgba(var(--gold-rgb),0.1); color: var(--gold);
+  }
+  .nv-mini.rm{ border-color: rgba(var(--danger-rgb),0.45); background: rgba(var(--danger-rgb),0.08); color: var(--danger); }
+  .nv-mini:active{ transform: scale(0.95); }
+  .nv-side{ flex:none; text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:3px; padding-top:1px; }
+  .nv-lbl{ font-family:'Lora', serif; font-weight:700; font-size:12.5px; white-space:nowrap; }
+  .nv-lbl.danger{ color: var(--danger); } .nv-lbl.gold{ color: var(--gold); } .nv-lbl.success{ color: var(--success); } .nv-lbl.muted{ color: var(--ink-soft); font-weight:600; }
+  .nv-tm{ font-family:'Lora', serif; font-size:11.5px; color: var(--ink-soft); opacity:0.85; white-space:nowrap; }
+  .nv-empty{ text-align:center; padding:54px 20px 30px 20px; animation: nvSwap 0.4s ease both; }
+  .nv-empty-ico{
+    width:84px; height:84px; margin:0 auto 16px auto; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    color: var(--gold); background: radial-gradient(circle at 30% 25%, rgba(var(--gold-rgb),0.25), rgba(var(--gold-rgb),0.05));
+    border:1.5px dashed rgba(var(--gold-rgb),0.5); animation: nvFloat 3.4s ease-in-out infinite;
+  }
+  .nv-empty-ico svg{ width:36px; height:36px; }
+  @keyframes nvFloat{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-6px); } }
+  .nv-empty h3{ font-family:'Playfair Display', serif; font-weight:800; font-size:18px; margin:0 0 6px 0; color: var(--ink); }
+  .nv-empty p{ font-family:'Lora', serif; font-size:13px; color: var(--ink-soft); margin:0 auto; max-width:260px; line-height:1.5; }
+  @media (prefers-reduced-motion: reduce){
+    #notif-view.nv-enter, .nv-row.nv-in, .nv-list.nv-swap, .nv-empty, .nv-empty-ico, #notif-toggle.nv-ring svg, .nv-chip-dot{ animation:none !important; }
+    .nv-item, .nv-row, .nv-chip{ transition:none !important; }
+  }
+
+
+  /* ---- Notification bell badge (replaces the letter avatar) ---- */
+  .nv-avatar svg{ width:25px; height:25px; transform-origin:50% 14%; animation: nvBellIdle 5s ease-in-out 1s infinite; }
+  @keyframes nvBellIdle{ 0%,88%,100%{transform:rotate(0)} 91%{transform:rotate(14deg)} 94%{transform:rotate(-12deg)} 97%{transform:rotate(7deg)} }
+
+  /* ---- Swipeable info boxes ---- */
+  .nv-cards{ position:relative; margin:0 -2px 6px -2px; }
+  .nv-track{
+    display:flex; gap:12px; overflow-x:auto; padding:6px 4px 14px 4px;
+    scroll-snap-type:x mandatory; scroll-behavior:smooth; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    overscroll-behavior-x:contain;
+  }
+  .nv-track::-webkit-scrollbar{ display:none; }
+  .nv-card{
+    --cc: var(--gold); --cc-rgb: var(--gold-rgb);
+    flex:none; width:128px; scroll-snap-align:start; position:relative; overflow:hidden;
+    padding:16px 14px 14px 14px; border-radius:20px; text-align:left; cursor:default;
+    background: linear-gradient(160deg, rgba(var(--cc-rgb),0.16), rgba(var(--cc-rgb),0.04) 65%), var(--paper);
+    border:1px solid rgba(var(--cc-rgb),0.34);
+    box-shadow: var(--card-shadow), 0 12px 22px -16px rgba(var(--cc-rgb),0.9);
+    opacity:0; transform: translateX(34px) scale(0.94);
+    transition: transform 0.35s cubic-bezier(.22,1,.36,1), box-shadow 0.3s ease;
+  }
+  .nv-cards.nv-ready .nv-card{ opacity:1; transform:none; animation: nvCardIn 0.6s cubic-bezier(.22,1,.36,1) backwards; animation-delay: var(--d, 0s); }
+  @keyframes nvCardIn{ from{ opacity:0; transform: translateX(46px) scale(0.92); } to{ opacity:1; transform:none; } }
+  .nv-card:active{ transform: scale(0.96); }
+  .nv-card::after{
+    content:''; position:absolute; top:0; left:-60%; width:45%; height:100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.22), transparent);
+    transform: skewX(-18deg); animation: nvShine 6s ease-in-out infinite; animation-delay: calc(var(--d, 0s) + 1.5s); pointer-events:none;
+  }
+  body.dark .nv-card::after{ background: linear-gradient(100deg, transparent, rgba(255,255,255,0.08), transparent); }
+  @keyframes nvShine{ 0%,70%{ left:-60%; } 100%{ left:140%; } }
+  .nv-card-ico{
+    width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:10px;
+    color: var(--cc); background: rgba(var(--cc-rgb),0.16); box-shadow: inset 0 0 0 1px rgba(var(--cc-rgb),0.3);
+  }
+  .nv-card-ico svg{ width:16px; height:16px; }
+  .nv-card-lbl{ font-family:'Lora', serif; font-size:12px; font-weight:700; letter-spacing:0.02em; color: var(--ink-soft); margin:0 0 4px 0; }
+  .nv-card-val{ font-family:'Playfair Display', serif; font-weight:800; font-size:34px; line-height:1; margin:0 0 6px 0; color: var(--cc); font-variant-numeric: lining-nums; }
+  .nv-card-sub{ font-family:'Lora', serif; font-size:12px; color: var(--ink); margin:0; opacity:0.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .nv-c-att{ --cc: var(--success); --cc-rgb:60,107,76; }
+  body.dark .nv-c-att{ --cc-rgb:127,206,156; }
+  .nv-c-att.low{ --cc: var(--danger); --cc-rgb: var(--danger-rgb); }
+  body.dark .nv-c-att.low{ --cc: var(--danger); --cc-rgb: var(--danger-rgb); }
+  .nv-c-cls{ --cc:#2F6FA8; --cc-rgb:47,111,168; }
+  .nv-c-hw{ --cc:#3F51B5; --cc-rgb:63,81,181; }
+  .nv-c-exam{ --cc: var(--gold); --cc-rgb: var(--gold-rgb); }
+  .nv-c-miss{ --cc: var(--danger); --cc-rgb: var(--danger-rgb); }
+  .nv-c-over{ --cc:#C9782E; --cc-rgb:201,120,46; }
+  .nv-c-next{ --cc:#7B5EA7; --cc-rgb:123,94,167; }
+  .nv-c-unread{ --cc:#5E9A94; --cc-rgb:94,154,148; }
+  body.dark .nv-c-cls{ --cc:#6FB1E8; --cc-rgb:111,177,232; }
+  body.dark .nv-c-hw{ --cc:#8E9CFF; --cc-rgb:142,156,255; }
+  body.dark .nv-c-over{ --cc:#E8A25E; --cc-rgb:232,162,94; }
+  body.dark .nv-c-next{ --cc:#B79AE6; --cc-rgb:183,154,230; }
+  body.dark .nv-c-unread{ --cc:#7FC7BF; --cc-rgb:127,199,191; }
+  body.dark .nv-card{ background: linear-gradient(160deg, rgba(var(--cc-rgb),0.2), rgba(var(--cc-rgb),0.05) 65%), var(--paper); }
+  .nv-dots{ display:flex; justify-content:center; gap:6px; margin:-2px 0 8px 0; }
+  .nv-dot{ width:6px; height:6px; border-radius:999px; background: rgba(var(--ink-rgb),0.22); transition: width 0.3s cubic-bezier(.22,1,.36,1), background 0.3s ease; }
+  .nv-dot.on{ width:20px; background: var(--gold); }
+  @media (prefers-reduced-motion: reduce){
+    .nv-card, .nv-card::after, .nv-avatar svg{ animation:none !important; opacity:1; transform:none; }
+    .nv-track{ scroll-behavior:auto; }
+  }
 
   /* ---- Time Table page ---- */
   .tt-back{
@@ -6027,15 +6133,6 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
     <span class="notif-badge-dot" id="notif-badge-dot" style="display:none;"></span>
   </button>
-  <div id="notif-scrim" aria-hidden="true"></div>
-  <div class="notif-panel" id="notif-panel">
-    <div class="notif-panel-head">
-      <span class="notif-panel-title">Notifications</span>
-      <button type="button" class="notif-panel-clear" id="notif-mark-all-btn">Mark all read</button>
-    </div>
-    <div class="notif-panel-list" id="notif-panel-list"></div>
-    <div class="notif-panel-empty" id="notif-panel-empty" style="display:none;">No notifications yet</div>
-  </div>
   <button class="theme-toggle" id="menu-toggle" aria-label="Open menu" title="Menu" aria-expanded="false" aria-haspopup="true">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -6477,6 +6574,11 @@
     </div>
 
     <div class="hw-form">
+      <div id="exam-title-row" style="display:none; margin-bottom:16px;">
+        <label for="exam-title-input">Exam title (required for school exams)</label>
+        <input id="exam-title-input" type="text" class="broadcast-input" placeholder="e.g. Half Yearly Test" maxlength="60">
+        <p class="exam-hint" style="margin-top:8px;">Type the title first, then pick the subjects and dates.</p>
+      </div>
       <div class="hw-form-row">
         <div>
           <label>Subject</label>
@@ -6489,12 +6591,6 @@
           <input id="exam-date-input" type="date" disabled>
         </div>
       </div>
-      <div id="exam-title-row" style="display:none; margin-top:14px;">
-        <label for="exam-title-input">Exam title (required for school exams)</label>
-        <input id="exam-title-input" type="text" class="broadcast-input" placeholder="e.g. Half Yearly Test" maxlength="60">
-        <p class="exam-hint" style="margin-top:8px;">School exams need a title so your history stays clear.</p>
-      </div>
-
       <div id="exam-topic-row" style="display:none;">
         <label for="exam-topic-input">Topic (optional)</label>
         <textarea id="exam-topic-input" rows="2" placeholder="Which topic / chapter is this exam on?"></textarea>
@@ -7365,7 +7461,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
   <header class="cover" style="border-bottom:none; padding-bottom:0; margin-bottom:6px;">
     <p class="eyebrow">Section-wise, Till Your Exam Date</p>
     <h1>Projection to Exam</h1>
-    <p class="subtitle" id="proj-subtitle">Pick your section, then add an exam date per subject to see periods left and your recovery outlook.</p>
+    <p class="subtitle" id="proj-subtitle">Pick your section, then choose the exam date to see periods left and your recovery outlook.</p>
   </header>
 
   <div class="notify-prompt" data-notify-prompt style="display:none;">
@@ -7385,8 +7481,8 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
     </div>
 
     <div id="proj-examdates">
-      <div class="section-label" style="margin-top:22px;"><span>Exam Dates</span></div>
-      <p class="broadcast-hint" style="margin-top:0;">Subject-wise papers often fall on different days — set (or update) each one below.</p>
+      <div class="section-label" style="margin-top:22px;"><span>Exam Date</span></div>
+      <p class="broadcast-hint" style="margin-top:0;">Pick one exam date — periods left and your recovery outlook are worked out for every subject in your section.</p>
       <div id="proj-examdate-list"></div>
       <p class="broadcast-hint" style="margin-top:8px; font-style:italic;">Periods-left counts below assume none of the remaining days get marked Suspended — that can't be predicted in advance, so treat them as a best case.</p>
     </div>
@@ -7405,6 +7501,27 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
 
     <div class="empty-state" id="proj-empty" style="display:none;"></div>
   </div>
+</div>
+
+<div class="wrap" id="notif-view" style="display:none;">
+  <button class="tt-back" id="nv-back-btn" type="button">&lsaquo; Back</button>
+  <div class="nv-head">
+    <div class="nv-avatar" id="nv-avatar" aria-hidden="true"></div>
+    <div>
+      <h1 class="nv-title">Notifications</h1>
+      <p class="nv-sub" id="nv-sub"></p>
+    </div>
+  </div>
+  <div class="nv-cards" id="nv-cards" aria-label="Quick overview">
+    <div class="nv-track" id="nv-track"></div>
+    <div class="nv-dots" id="nv-dots" aria-hidden="true"></div>
+  </div>
+  <div class="nv-chips" id="nv-chips" role="tablist" aria-label="Filter notifications"></div>
+  <div class="nv-actions">
+    <button type="button" class="nv-act" id="nv-markall">Mark all read</button>
+    <button type="button" class="nv-act danger" id="nv-clearall">Clear all</button>
+  </div>
+  <div class="nv-list" id="nv-list"></div>
 </div>
 
 <div class="wrap" id="profile-view" style="display:none;">
@@ -8772,18 +8889,41 @@ window.contactChoiceModal = function(opts){
     });
   })();
 
-  // ---- In-app notification center ----
+  // ---- In-app notification center (full page) ----
   (function initNotifCenter(){
     const toggle = document.getElementById('notif-toggle');
-    const panel = document.getElementById('notif-panel');
-    const list = document.getElementById('notif-panel-list');
-    const empty = document.getElementById('notif-panel-empty');
+    const view = document.getElementById('notif-view');
+    const listEl = document.getElementById('nv-list');
+    const chipsEl = document.getElementById('nv-chips');
     const badge = document.getElementById('notif-badge-dot');
-    const markAllBtn = document.getElementById('notif-mark-all-btn');
-    if(!toggle || !panel || !list) return;
+    const subEl = document.getElementById('nv-sub');
+    const avatarEl = document.getElementById('nv-avatar');
+    const markAllBtn = document.getElementById('nv-markall');
+    const clearAllBtn = document.getElementById('nv-clearall');
+    const backBtn = document.getElementById('nv-back-btn');
+    if(!toggle || !view || !listEl) return;
 
     const STORE_KEY = 'app-notifications-v1';
-    const MAX_ITEMS = 60;
+    const MAX_ITEMS = 80;
+    const CATS = [
+      { id:'all', label:'All' }, { id:'hw', label:'Homework' }, { id:'exam', label:'Exams' },
+      { id:'att', label:'Attendance' }, { id:'tt', label:'Timetable' }, { id:'holiday', label:'Holidays' }
+    ];
+    const OPEN_BTN = { hw:'open-homework-btn', exam:'open-exams-btn', att:'open-rollcall-btn', tt:'open-timetable-btn', holiday:'open-holidays-btn' };
+    const OPEN_TXT = { hw:'Open Homework', exam:'Open Exams', att:'Open Roll Call', tt:'Open Timetable', holiday:'View Holidays' };
+    const SVG = (d) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+    const ICONS = {
+      book:  SVG('<path d="M4 5a2 2 0 0 1 2-2h12v15H6a2 2 0 0 0-2 2z"></path><path d="M4 20a2 2 0 0 0 2 1h12"></path><path d="M9 8h6M9 12h4"></path>'),
+      exam:  SVG('<rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4h6v3H9z"></path><path d="M9 14l2 2 4-4"></path>'),
+      check: SVG('<path d="M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17"></path><path d="M12 6h8M12 12h8M12 18h8"></path>'),
+      cal:   SVG('<rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M3 9h18M8 2v4M16 2v4M8 14h2M14 14h2M8 18h2"></path>'),
+      spark: SVG('<path d="M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8z"></path><path d="M19 15v5M16.5 17.5h5"></path>'),
+      bell:  SVG('<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path>'),
+      alert: SVG('<path d="M12 3l9.5 16.5h-19z"></path><path d="M12 10v4M12 17h.01"></path>'),
+      flame: SVG('<path d="M12 2c1 3-2 4.5-2 7.5A3.5 3.5 0 0 0 13.5 13c1 0 1.8-.5 2.2-1.2.9 1 1.3 2.2 1.3 3.4A5 5 0 0 1 12 20a5.5 5.5 0 0 1-5.5-5.5C6.5 10 10 8 12 2z"></path>')
+    };
+    const CAT_ICON = { hw:'book', exam:'exam', att:'check', tt:'cal', holiday:'spark', gen:'bell' };
+    let filter = 'all';
 
     function load(){
       try{ const v = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); return Array.isArray(v) ? v : []; }
@@ -8792,162 +8932,430 @@ window.contactChoiceModal = function(opts){
     function save(items){
       try{ localStorage.setItem(STORE_KEY, JSON.stringify(items.slice(0, MAX_ITEMS))); }catch(e){}
     }
-    function timeAgo(ts){
-      const diff = Math.max(0, Date.now() - ts);
-      const min = Math.floor(diff / 60000);
-      if(min < 1) return 'Just now';
-      if(min < 60) return min + (min === 1 ? ' minute ago' : ' minutes ago');
-      const hr = Math.floor(min / 60);
-      if(hr < 24) return hr + (hr === 1 ? ' hour ago' : ' hours ago');
-      const day = Math.floor(hr / 24);
-      return day + (day === 1 ? ' day ago' : ' days ago');
+    function tagOf(n){ return n.tag || String(n.id || '').replace(/-\d{13}-[a-z0-9]{6}$/, ''); }
+    function catOf(n){
+      if(n.cat) return n.cat;
+      const t = tagOf(n);
+      if(/^hw-notify/.test(t)) return 'gen';
+      if(/^hw-/.test(t)) return 'hw';
+      if(/^holiday-/.test(t)) return 'holiday';
+      if(/^(examday|proj|exam-daily)-/.test(t)) return 'exam';
+      if(/^(rc-|att-|streak-)/.test(t)) return 'att';
+      if(/^tt-/.test(t)) return 'tt';
+      return 'gen';
     }
-    function esc(s){
-      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    function dayStart(ts){ const d = new Date(ts); return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
+    function dayDiff(ts){ return Math.round((dayStart(Date.now()) - dayStart(ts)) / 86400000); }
+    function relDay(ts){
+      const n = dayDiff(ts);
+      if(n <= 0) return 'Today';
+      if(n === 1) return 'Yesterday';
+      if(n < 7) return n + ' days ago';
+      return new Date(ts).toLocaleDateString(undefined, { day:'numeric', month:'short' });
+    }
+    function clock(ts){ return new Date(ts).toLocaleTimeString(undefined, { hour:'numeric', minute:'2-digit' }); }
+    function labelOf(n){
+      const fresh = dayDiff(n.time) <= 0;
+      if(!fresh) return { text: relDay(n.time), tone:'muted' };
+      if(n.label) return { text:n.label, tone: n.tone || 'gold' };
+      const t = tagOf(n);
+      if(/^proj-/.test(t)){
+        const m = t.match(/-(\d+)$/); const left = m ? parseInt(m[1], 10) : null;
+        if(left === 1) return { text:'Tomorrow', tone:'danger' };
+        if(left) return { text: left + ' days left', tone: left <= 3 ? 'danger' : 'gold' };
+      }
+      if(/^examday-/.test(t)) return { text:'Today', tone:'danger' };
+      if(/^hw-due-/.test(t)) return { text:'Due today', tone:'danger' };
+      if(/^rc-remind-2/.test(t)) return { text:'Last call', tone:'danger' };
+      if(/^holiday-/.test(t)) return { text:'Holiday', tone:'gold' };
+      return { text:'Today', tone:'gold' };
+    }
+    function groupOf(ts){
+      const n = dayDiff(ts);
+      return n <= 0 ? 'Today' : n === 1 ? 'Yesterday' : 'Earlier';
     }
     function updateBadge(items){
       const hasUnread = items.some(n => !n.read);
       if(badge) badge.style.display = hasUnread ? '' : 'none';
     }
-    function render(){
+
+    // Public hook: any part of the app can call this when something
+    // notifiable happens. extra = { cat, icon, label, tone }.
+    window.ntfAdd = function(title, body, tag, extra){
       const items = load();
+      extra = extra || {};
+      const now = Date.now();
+      // Ignore an identical alert fired again within two minutes (e.g. a
+      // mark toggled back and forth).
+      if(tag && items.some(n => tagOf(n) === tag && now - n.time < 120000)) return;
+      const id = (tag ? tag + '-' : '') + now + '-' + Math.random().toString(36).slice(2, 8);
+      const item = { id, tag: tag || '', title: title || '', body: body || '', time: now, read: false };
+      if(extra.cat) item.cat = extra.cat;
+      if(extra.icon) item.icon = extra.icon;
+      if(extra.label) item.label = extra.label;
+      if(extra.tone) item.tone = extra.tone;
+      items.unshift(item);
+      save(items);
       updateBadge(items);
-      if(!items.length){
-        list.innerHTML = '';
-        if(empty) empty.style.display = '';
+      if(isOpen()) render(false);
+      else { toggle.classList.remove('nv-ring'); void toggle.offsetWidth; toggle.classList.add('nv-ring'); }
+    };
+    toggle.addEventListener('animationend', () => toggle.classList.remove('nv-ring'), true);
+
+    function isOpen(){ return view.style.display === 'block'; }
+
+
+    // ---------- swipeable info boxes ----------
+    const trackEl = document.getElementById('nv-track');
+    const dotsEl = document.getElementById('nv-dots');
+    const cardsWrap = document.getElementById('nv-cards');
+    const CARD_ICONS = {
+      pct:  SVG('<path d="M19 5L5 19"></path><circle cx="7" cy="7" r="2.2"></circle><circle cx="17" cy="17" r="2.2"></circle>'),
+      cls:  ICONS.check,
+      hw:   ICONS.book,
+      exam: ICONS.exam,
+      miss: SVG('<circle cx="12" cy="12" r="9"></circle><path d="M9 9l6 6M15 9l-6 6"></path>'),
+      over: ICONS.alert,
+      next: ICONS.cal,
+      unread: ICONS.bell
+    };
+    function readAttendance(){
+      let pct = null, att = 0, tot = 0;
+      try{
+        const pe = document.getElementById('overall-pct'), ce = document.getElementById('overall-count');
+        const m = pe && pe.textContent.match(/(\d+(?:\.\d+)?)\s*%/); if(m) pct = Math.round(parseFloat(m[1]));
+        const c = ce && ce.textContent.match(/(\d+)\s*\/\s*(\d+)/); if(c){ att = +c[1]; tot = +c[2]; }
+      }catch(e){}
+      let thr = 75;
+      try{ if(typeof state !== 'undefined' && state && +state.threshold) thr = +state.threshold; }catch(e){}
+      return { pct, att, tot, thr };
+    }
+    function daysLeft(dateStr){
+      const p = String(dateStr || '').split('-').map(Number);
+      if(p.length < 3 || p.some(isNaN)) return null;
+      const t = new Date(); t.setHours(0,0,0,0);
+      return Math.round((new Date(p[0], p[1]-1, p[2]) - t) / 86400000);
+    }
+    function readTasks(){
+      let pending = 0, overdue = 0, upcoming = 0, next = null;
+      try{
+        if(typeof homeworkItems !== 'undefined' && Array.isArray(homeworkItems)){
+          homeworkItems.forEach(h => {
+            if(h.completed) return;
+            if(h.deadline && typeof localDateKey === 'function' && h.deadline < localDateKey()) overdue++; else pending++;
+          });
+        }
+      }catch(e){}
+      try{
+        const ex = [].concat(typeof coachingExams !== 'undefined' ? coachingExams : [], typeof schoolExams !== 'undefined' ? schoolExams : []);
+        ex.forEach(x => {
+          const d = daysLeft(x.examDate);
+          if(d !== null && d >= 0){ upcoming++; if(!next || d < next.d) next = { d, subject: x.subject || x.title || 'Exam' }; }
+        });
+      }catch(e){}
+      return { pending, overdue, upcoming, next };
+    }
+    function buildCards(items){
+      const a = readAttendance(), t = readTasks();
+      const unread = items.filter(n => !n.read).length;
+      const low = a.pct !== null && a.pct < a.thr;
+      const cards = [
+        { k:'att',  cls: 'nv-c-att' + (low ? ' low' : ''), icon:'pct', lbl:'Attendance', val: a.pct === null ? '\u2014' : a.pct + '%', sub: a.pct === null ? 'No classes yet' : (low ? 'Below ' + a.thr + '% line' : 'Overall') },
+        { k:'cls',  cls:'nv-c-cls',  icon:'cls',  lbl:'Classes', val: String(a.att), sub:'Attended' },
+        { k:'hw',   cls:'nv-c-hw',   icon:'hw',   lbl:'Homework', val: String(t.pending), sub:'Pending' },
+        { k:'exam', cls:'nv-c-exam', icon:'exam', lbl:'Exams', val: String(t.upcoming), sub:'Upcoming' },
+        { k:'miss', cls:'nv-c-miss', icon:'miss', lbl:'Missed', val: String(Math.max(0, a.tot - a.att)), sub:'Classes absent' },
+        { k:'over', cls:'nv-c-over', icon:'over', lbl:'Overdue', val: String(t.overdue), sub: t.overdue ? 'Homework late' : 'All on time' },
+        { k:'next', cls:'nv-c-next', icon:'next', lbl:'Next exam', val: t.next ? (t.next.d === 0 ? 'Today' : t.next.d + 'd') : '\u2014', sub: t.next ? t.next.subject : 'None scheduled' },
+        { k:'unread', cls:'nv-c-unread', icon:'unread', lbl:'Alerts', val: String(unread), sub: unread ? 'Unread' : 'All read' }
+      ];
+      return cards;
+    }
+    let cardsBuilt = false, autoTimer = null, autoDir = 1, userTouch = 0;
+    function renderCards(items, animate){
+      if(!trackEl) return;
+      const cards = buildCards(items);
+      const keep = trackEl.scrollLeft;
+      if(trackEl.children.length === cards.length){
+        // update in place so swiping isn't interrupted
+        cards.forEach((c, i) => {
+          const el = trackEl.children[i];
+          el.className = 'nv-card ' + c.cls;
+          el.querySelector('.nv-card-val').textContent = c.val;
+          el.querySelector('.nv-card-sub').textContent = c.sub;
+        });
         return;
       }
-      if(empty) empty.style.display = 'none';
-      list.innerHTML = items.map(n => (
-        '<div class="notif-item ' + (n.read ? 'read' : 'unread') + '" data-id="' + esc(n.id) + '">' +
-          '<span class="notif-item-dot"></span>' +
-          '<div class="notif-item-body">' +
-            '<p class="notif-item-title">' + esc(n.title) + '</p>' +
-            (n.body ? '<p class="notif-item-text">' + esc(n.body) + '</p>' : '') +
-            '<div class="notif-item-time">' + timeAgo(n.time) + '</div>' +
-          '</div>' +
-          '<div class="notif-item-actions">' +
-            (n.read ? '' : '<button type="button" class="notif-item-btn notif-item-read" data-action="read">Mark read</button>') +
-            '<button type="button" class="notif-item-btn notif-item-remove" data-action="remove">Remove</button>' +
-          '</div>' +
-        '</div>'
-      )).join('');
-      // Staggered slide-in animation for each notification row
-      var notifRows = list.querySelectorAll('.notif-item');
-      notifRows.forEach(function(row, i){
-        row.style.opacity = '0';
-        row.style.transform = 'translateY(14px)';
-        row.style.transition = 'opacity 0.28s ease ' + (i * 60) + 'ms, transform 0.32s cubic-bezier(0.22,1,0.36,1) ' + (i * 60) + 'ms';
-        requestAnimationFrame(function(){
-          requestAnimationFrame(function(){
-            row.style.opacity = '1';
-            row.style.transform = 'translateY(0)';
-          });
-        });
+      trackEl.innerHTML = '';
+      dotsEl.innerHTML = '';
+      cards.forEach((c, i) => {
+        const el = document.createElement('div');
+        el.className = 'nv-card ' + c.cls; el.style.setProperty('--d', (i * 0.07) + 's');
+        el.innerHTML = '<div class="nv-card-ico">' + CARD_ICONS[c.icon] + '</div><p class="nv-card-lbl"></p><p class="nv-card-val"></p><p class="nv-card-sub"></p>';
+        el.querySelector('.nv-card-lbl').textContent = c.lbl;
+        el.querySelector('.nv-card-val').textContent = c.val;
+        el.querySelector('.nv-card-sub').textContent = c.sub;
+        trackEl.appendChild(el);
+        const d = document.createElement('span'); d.className = 'nv-dot' + (i === 0 ? ' on' : ''); dotsEl.appendChild(d);
+      });
+      cardsWrap.classList.remove('nv-ready'); void cardsWrap.offsetWidth; cardsWrap.classList.add('nv-ready');
+      trackEl.style.scrollBehavior = 'auto'; trackEl.scrollLeft = 0; trackEl.style.scrollBehavior = '';
+    }
+    function updateDots(){
+      if(!trackEl.children.length) return;
+      const first = trackEl.children[0], step = first.offsetWidth + 12;
+      const max = trackEl.scrollWidth - trackEl.clientWidth;
+      let idx = Math.round(trackEl.scrollLeft / step);
+      if(max > 0 && trackEl.scrollLeft >= max - 4) idx = trackEl.children.length - 1;
+      Array.prototype.forEach.call(dotsEl.children, (d, i) => d.classList.toggle('on', i === idx));
+    }
+    trackEl.addEventListener('scroll', () => { window.requestAnimationFrame(updateDots); }, { passive:true });
+    // Gentle auto-slide: drifts left, then back right. Stops while the user touches / after they swipe.
+    function stopAuto(){ if(autoTimer){ clearInterval(autoTimer); autoTimer = null; } }
+    function startAuto(){
+      stopAuto();
+      if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      autoTimer = setInterval(() => {
+        if(!isOpen() || document.hidden || Date.now() - userTouch < 6000) return;
+        const max = trackEl.scrollWidth - trackEl.clientWidth; if(max <= 0) return;
+        const step = trackEl.children[0].offsetWidth + 12;
+        if(autoDir > 0 && trackEl.scrollLeft >= max - 4) autoDir = -1;
+        else if(autoDir < 0 && trackEl.scrollLeft <= 4) autoDir = 1;
+        trackEl.scrollTo({ left: Math.max(0, Math.min(max, trackEl.scrollLeft + autoDir * step)), behavior:'smooth' });
+      }, 3200);
+    }
+    ['pointerdown','touchstart','wheel'].forEach(ev => trackEl.addEventListener(ev, () => { userTouch = Date.now(); }, { passive:true }));
+
+    // ---------- header / chips ----------
+    function profile(){
+      try{
+        const st = (typeof state !== 'undefined' && state && state.student) || {};
+        const sec = (typeof rollcall !== 'undefined' && rollcall && rollcall.section) || '';
+        return { name: (st.name || '').trim(), roll: st.roll || '', avatar: st.avatar || '', section: sec };
+      }catch(e){ return { name:'', roll:'', avatar:'', section:'' }; }
+    }
+    function updateHeader(items){
+      const p = profile();
+      if(!avatarEl.firstElementChild) avatarEl.innerHTML = ICONS.bell;
+      const unread = items.filter(n => !n.read).length;
+      const who = p.name ? p.name.split(/\s+/)[0] : '';
+      const extra = [who, p.section ? 'Section ' + p.section : (p.roll || '')].filter(Boolean).join(' \u00b7 ');
+      subEl.innerHTML = '';
+      const lead = document.createElement('span');
+      if(unread){ const b = document.createElement('b'); b.textContent = unread + ' unread'; lead.appendChild(b); }
+      else lead.textContent = 'You\u2019re all caught up';
+      subEl.appendChild(lead);
+      if(extra) subEl.appendChild(document.createTextNode(' \u00b7 ' + extra));
+      markAllBtn.disabled = unread === 0;
+      clearAllBtn.disabled = items.length === 0;
+      try{ renderCards(items); }catch(e){}
+    }
+    function buildChips(items){
+      chipsEl.innerHTML = '';
+      CATS.forEach(c => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.setAttribute('role', 'tab');
+        b.className = 'nv-chip' + (c.id === filter ? ' active' : '');
+        b.setAttribute('aria-selected', c.id === filter ? 'true' : 'false');
+        b.dataset.cat = c.id;
+        b.textContent = c.label;
+        const n = items.filter(x => !x.read && (c.id === 'all' || catOf(x) === c.id)).length;
+        if(n && c.id !== 'all'){ const d = document.createElement('span'); d.className = 'nv-chip-dot'; d.textContent = n > 9 ? '9+' : n; b.appendChild(d); }
+        chipsEl.appendChild(b);
       });
     }
-
-    // Public hook other parts of the app can call whenever a notifiable
-    // event happens, so it shows up here regardless of push permission.
-    window.ntfAdd = function(title, body, tag){
-      const items = load();
-      const id = (tag ? tag + '-' : '') + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
-      items.unshift({ id, title: title || '', body: body || '', time: Date.now(), read: false });
-      save(items);
-      render();
-    };
-
-    list.addEventListener('click', (e) => {
-      const btn = e.target.closest('.notif-item-btn');
-      if(!btn) return;
-      const row = btn.closest('.notif-item');
-      const id = row && row.getAttribute('data-id');
-      if(!id) return;
-      let items = load();
-      if(btn.dataset.action === 'read'){
-        items = items.map(n => n.id === id ? Object.assign({}, n, { read:true }) : n);
-      } else if(btn.dataset.action === 'remove'){
-        items = items.filter(n => n.id !== id);
-      }
-      save(items);
-      render();
+    chipsEl.addEventListener('click', (e) => {
+      const b = e.target.closest('.nv-chip'); if(!b || b.dataset.cat === filter) return;
+      filter = b.dataset.cat;
+      render(true);
+      const act = chipsEl.querySelector('.nv-chip.active');
+      if(act && act.scrollIntoView) act.scrollIntoView({ inline:'center', block:'nearest', behavior:'smooth' });
     });
 
-    if(markAllBtn){
-      markAllBtn.addEventListener('click', () => {
-        const items = load().map(n => Object.assign({}, n, { read:true }));
-        save(items);
-        render();
-      });
+    // ---------- list ----------
+    function mutate(fn){
+      const items = fn(load()); save(items); return items;
     }
+    function refreshMeta(){
+      const items = load(); updateBadge(items); updateHeader(items);
+      const keep = chipsEl.scrollLeft; buildChips(items); chipsEl.scrollLeft = keep;
+    }
+    function removeRow(id, row){
+      if(!row){ mutate(it => it.filter(n => n.id !== id)); render(false); return; }
+      row.style.height = row.offsetHeight + 'px';
+      void row.offsetHeight;
+      const item = row.querySelector('.nv-item');
+      if(item){ item.style.transition = 'transform 0.3s ease, opacity 0.3s ease'; item.style.transform = 'translateX(-115%)'; item.style.opacity = '0'; }
+      row.classList.add('nv-removing');
+      setTimeout(() => { mutate(it => it.filter(n => n.id !== id)); render(false); }, 320);
+    }
+    function markRead(id, item, read){
+      mutate(it => it.map(n => n.id === id ? Object.assign({}, n, { read: read }) : n));
+      if(item){ item.classList.toggle('read', read); item.classList.toggle('unread', !read); }
+      refreshMeta();
+    }
+    function buildRow(n, idx, animate){
+      const cat = catOf(n), lab = labelOf(n);
+      const row = document.createElement('div');
+      row.className = 'nv-row' + (animate ? ' nv-in' : '');
+      if(animate) row.style.setProperty('--d', Math.min(idx * 0.055, 0.5) + 's');
+      const hr = document.createElement('div'); hr.className = 'nv-hint rd'; hr.textContent = n.read ? 'Mark unread' : 'Mark read';
+      const hl = document.createElement('div'); hl.className = 'nv-hint rm'; hl.textContent = 'Remove';
+      const item = document.createElement('div');
+      item.className = 'nv-item ' + (n.read ? 'read' : 'unread');
+      item.setAttribute('role', 'button'); item.tabIndex = 0;
 
-    const scrim = document.getElementById('notif-scrim');
-    function syncScrim(){ if(scrim) scrim.classList.toggle('show', panel.classList.contains('open')); }
-    new MutationObserver(() => {
-      syncScrim();
-      if(!panel.classList.contains('open')) panel.style.setProperty('--np-y', '0px');
-    }).observe(panel, { attributes:true, attributeFilter:['class'] });
+      const ico = document.createElement('div'); ico.className = 'nv-ico t-' + cat;
+      ico.innerHTML = ICONS[n.icon] || ICONS[CAT_ICON[cat]] || ICONS.bell;
 
-    // Drag the panel up/down smoothly by its header (clamped to the screen).
-    (function(){
-      const head = panel.querySelector('.notif-panel-head');
-      if(!head) return;
-      let startY = 0, baseY = 0, dragging = false, pid = null;
-      const curY = () => parseFloat(panel.style.getPropertyValue('--np-y')) || 0;
-      head.addEventListener('pointerdown', (e) => {
-        if(e.target.closest('button')) return;
-        dragging = true; pid = e.pointerId; startY = e.clientY; baseY = curY();
-        panel.classList.add('np-dragging');
-        try{ head.setPointerCapture(pid); }catch(_){}
+      const main = document.createElement('div'); main.className = 'nv-main';
+      const ttl = document.createElement('p'); ttl.className = 'nv-ttl';
+      const dot = document.createElement('i'); ttl.appendChild(dot);
+      ttl.appendChild(document.createTextNode(n.title || ''));
+      main.appendChild(ttl);
+      if(n.body){ const tx = document.createElement('p'); tx.className = 'nv-txt'; tx.textContent = n.body; main.appendChild(tx); }
+      const more = document.createElement('div'); more.className = 'nv-more';
+      if(OPEN_BTN[cat]){
+        const go = document.createElement('button'); go.type = 'button'; go.className = 'nv-mini'; go.textContent = OPEN_TXT[cat];
+        go.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const target = document.getElementById(OPEN_BTN[cat]);
+          if(target) target.click();
+        });
+        more.appendChild(go);
+      }
+      const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'nv-mini rm'; rm.textContent = 'Remove';
+      rm.addEventListener('click', (e) => { e.stopPropagation(); removeRow(n.id, row); });
+      more.appendChild(rm);
+      main.appendChild(more);
+
+      const side = document.createElement('div'); side.className = 'nv-side';
+      const l = document.createElement('span'); l.className = 'nv-lbl ' + lab.tone; l.textContent = lab.text;
+      const t = document.createElement('span'); t.className = 'nv-tm'; t.textContent = clock(n.time);
+      side.appendChild(l); side.appendChild(t);
+
+      item.appendChild(ico); item.appendChild(main); item.appendChild(side);
+      row.appendChild(hr); row.appendChild(hl); row.appendChild(item);
+
+      // tap = expand + mark read ; swipe left = remove ; swipe right = toggle read
+      let sx = 0, sy = 0, dx = 0, active = false, locked = false, moved = false, pid = null;
+      item.addEventListener('pointerdown', (e) => {
+        if(e.pointerType === 'mouse' && e.button !== 0) return;
+        if(e.target.closest('.nv-mini')) return;
+        active = true; locked = false; moved = false; dx = 0; sx = e.clientX; sy = e.clientY; pid = e.pointerId;
       });
-      head.addEventListener('pointermove', (e) => {
-        if(!dragging) return;
-        const r = panel.getBoundingClientRect();
-        const top0 = r.top - curY();
-        const minY = 8 - top0;
-        const maxY = window.innerHeight - 60 - top0;
-        let y = baseY + (e.clientY - startY);
-        y = Math.max(minY, Math.min(maxY, y));
-        panel.style.setProperty('--np-y', y + 'px');
+      item.addEventListener('pointermove', (e) => {
+        if(!active) return;
+        const mx = e.clientX - sx, my = e.clientY - sy;
+        if(!locked){
+          if(Math.abs(mx) > 10 && Math.abs(mx) > Math.abs(my) * 1.4){
+            locked = true; moved = true; item.style.transition = 'none';
+            try{ item.setPointerCapture(pid); }catch(_){}
+          } else if(Math.abs(my) > 10){ active = false; return; }
+          else return;
+        }
+        dx = mx;
+        item.style.transform = 'translateX(' + dx + 'px)';
+        row.style.setProperty('--sw', Math.min(1, Math.abs(dx) / 90));
+        hr.style.visibility = dx > 0 ? 'visible' : 'hidden';
+        hl.style.visibility = dx < 0 ? 'visible' : 'hidden';
       });
       const end = () => {
-        if(!dragging) return;
-        dragging = false; panel.classList.remove('np-dragging');
-        try{ head.releasePointerCapture(pid); }catch(_){}
+        if(!active) return; active = false;
+        item.style.transition = '';
+        if(locked && dx < -90){ removeRow(n.id, row); return; }
+        if(locked && dx > 90){ markRead(n.id, item, !item.classList.contains('read')); n.read = !n.read; hr.textContent = n.read ? 'Mark unread' : 'Mark read'; }
+        item.style.transform = ''; row.style.setProperty('--sw', 0);
       };
-      head.addEventListener('pointerup', end);
-      head.addEventListener('pointercancel', end);
-    })();
-
-    function closePanel(){
-      panel.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
+      item.addEventListener('pointerup', end);
+      item.addEventListener('pointercancel', end);
+      const toggleOpen = () => {
+        if(moved){ moved = false; return; }
+        const opening = !item.classList.contains('open');
+        item.classList.toggle('open', opening);
+        if(opening && item.classList.contains('unread')){ n.read = true; markRead(n.id, item, true); }
+      };
+      item.addEventListener('click', toggleOpen);
+      item.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleOpen(); } });
+      return row;
     }
+    function emptyState(){
+      const wrap = document.createElement('div'); wrap.className = 'nv-empty';
+      const ic = document.createElement('div'); ic.className = 'nv-empty-ico'; ic.innerHTML = ICONS.bell;
+      const h = document.createElement('h3'); h.textContent = filter === 'all' ? 'Nothing here yet' : 'All clear';
+      const p = document.createElement('p');
+      p.textContent = filter === 'all'
+        ? 'Homework, exams, roll call, timetable and attendance alerts will show up here as they happen.'
+        : 'No ' + (CATS.find(c => c.id === filter) || {}).label.toLowerCase() + ' notifications right now.';
+      wrap.appendChild(ic); wrap.appendChild(h); wrap.appendChild(p);
+      return wrap;
+    }
+    function render(animate){
+      const all = load();
+      updateBadge(all); updateHeader(all);
+      const keep = chipsEl.scrollLeft; buildChips(all); chipsEl.scrollLeft = keep;
+      const items = filter === 'all' ? all : all.filter(n => catOf(n) === filter);
+      listEl.innerHTML = '';
+      if(animate){ listEl.classList.remove('nv-swap'); void listEl.offsetWidth; listEl.classList.add('nv-swap'); }
+      if(!items.length){ listEl.appendChild(emptyState()); return; }
+      let last = '', i = 0;
+      items.forEach(n => {
+        const g = groupOf(n.time);
+        if(g !== last){ const h = document.createElement('div'); h.className = 'nv-group'; h.textContent = g; listEl.appendChild(h); last = g; }
+        listEl.appendChild(buildRow(n, i++, animate));
+      });
+    }
+
+    markAllBtn.addEventListener('click', () => {
+      mutate(it => it.map(n => Object.assign({}, n, { read:true })));
+      render(false);
+    });
+    clearAllBtn.addEventListener('click', async () => {
+      const count = load().length; if(!count) return;
+      let ok = true;
+      try{ ok = await window.confirmModal({ title:'Clear all notifications?', message:'This removes all ' + count + ' notifications from this list.', confirmText:'Clear all', cancelText:'Cancel' }); }
+      catch(e){ ok = confirm('Clear all notifications?'); }
+      if(!ok) return;
+      listEl.querySelectorAll('.nv-row').forEach((r, i) => { r.style.transition = 'opacity 0.25s ease ' + (i * 25) + 'ms, transform 0.25s ease ' + (i * 25) + 'ms'; r.style.opacity = '0'; r.style.transform = 'translateX(-30px)'; });
+      setTimeout(() => { save([]); render(false); }, 260 + Math.min(count, 8) * 25);
+    });
+
+    // ---------- open / close ----------
+    function show(){
+      try{ if(typeof ntfDailyChecks === 'function') ntfDailyChecks(); }catch(e){}
+      hideAllPages();
+      view.style.display = 'block';
+      view.classList.remove('nv-enter'); void view.offsetWidth; view.classList.add('nv-enter');
+      toggle.classList.add('nv-active');
+      toggle.setAttribute('aria-expanded', 'true');
+      filter = 'all';
+      trackEl.innerHTML = ''; userTouch = 0; autoDir = 1;
+      render(true);
+      window.scrollTo(0, 0);
+      startAuto();
+    }
+    function hide(){
+      stopAuto();
+      view.style.display = 'none';
+      toggle.classList.remove('nv-active');
+      toggle.setAttribute('aria-expanded', 'false');
+      backToAppOrAuth();
+    }
+    new MutationObserver(() => {
+      if(!isOpen()){ toggle.classList.remove('nv-active'); toggle.setAttribute('aria-expanded', 'false'); }
+    }).observe(view, { attributes:true, attributeFilter:['style'] });
+
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
-      const willOpen = !panel.classList.contains('open');
-      if(willOpen){
-        render();
-        // Close menu if it is open (mutual exclusivity)
-        const menuDD = document.getElementById('menu-dropdown');
-        const menuTgl = document.getElementById('menu-toggle');
-        if(menuDD && menuDD.classList.contains('open')){
-          menuDD.classList.remove('open');
-          document.body.classList.remove('menu-locked','menu-desktop-open');
-          if(menuTgl){ menuTgl.classList.remove('menu-open'); menuTgl.setAttribute('aria-expanded','false'); }
-        }
-      }
-      panel.classList.toggle('open', willOpen);
-      toggle.setAttribute('aria-expanded', String(willOpen));
+      if(isOpen()) hide(); else show();
     });
-    document.addEventListener('click', (e) => {
-      if(!panel.contains(e.target) && e.target !== toggle){ closePanel(); }
-    });
-    document.addEventListener('keydown', (e) => {
-      if(e.key === 'Escape') closePanel();
-    });
+    if(backBtn) backBtn.addEventListener('click', hide);
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && isOpen()) hide(); });
+    // Keep "x minutes ago"-style labels and the list fresh while the page is open.
+    setInterval(() => { if(isOpen() && !document.hidden) render(false); }, 60000);
+    document.addEventListener('visibilitychange', () => { if(!document.hidden){ updateBadge(load()); if(isOpen()) render(false); } });
 
-    render();
+    updateBadge(load());
   })();
 
   // ---- Menu reorder: hold any option to give it your own priority ----
@@ -10607,7 +11015,7 @@ function initPracticalGroupFinder(){
     pageHide('coaching-exams-view'); pageHide('holidays-view'); pageHide('coaching-timetable-view');
     pageHide('profile-view'); pageHide('studymaterials-view'); pageHide('bmc-view'); pageHide('magic-view');
     pageHide('study-tracker-view'); pageHide('st-tabbar'); pageHide('home-view');
-    pageHide('games-view'); pageHide('bolts-view');
+    pageHide('games-view'); pageHide('bolts-view'); pageHide('notif-view');
     if(window.magicPageHide) window.magicPageHide();
     document.body.classList.remove('tt-mode');
     document.getElementById('menu-dropdown').classList.remove('open');
@@ -11106,8 +11514,8 @@ function initPracticalGroupFinder(){
     }catch(e){ return undefined; }
   }
 
-  async function hwSendNotification(title, body, tag, kind, banner){
-    if(typeof window.ntfAdd === 'function') window.ntfAdd(title, body, tag);
+  async function hwSendNotification(title, body, tag, kind, banner, extra){
+    if(typeof window.ntfAdd === 'function') window.ntfAdd(title, body, tag, extra);
     const opts = Object.assign({ body, tag }, notifOptions(kind));
     if(banner){
       try{ const img = await notifBannerUrl(banner); if(img) opts.image = img; }catch(e){}
@@ -11130,13 +11538,25 @@ function initPracticalGroupFinder(){
     let sent = {};
     try{ sent = JSON.parse(localStorage.getItem(HW_NOTIFIED_KEY) || '{}') || {}; }catch(e){}
     Object.keys(sent).forEach(k => { if(!k.endsWith('@' + today)) delete sent[k]; });
-    const fresh = hwDueToday().filter(h => !sent[h.id + '@' + today]);
-    if(fresh.length){
-      const title = fresh.length === 1 ? 'Homework due today' : fresh.length + ' homework due today';
-      const body = fresh.map(h => h.subject + (h.description ? ' \u2014 ' + hwShort(h.description, 60) : '')).join('\n');
-      const hwSubjects = Array.from(new Set(fresh.map(h => h.subject))).join(' \u00b7 ');
-      if(await hwSendNotification(title, body, 'hw-due-' + today, 'hw', { style:'hw', head: fresh.length === 1 ? 'Homework Due Today' : fresh.length + ' Homework Due Today', sub: hwSubjects })){
-        fresh.forEach(h => { sent[h.id + '@' + today] = 1; });
+    // One reminder a day: every homework still pending, each with its
+    // date, subject and topic.
+    if(!sent['hwdaily@' + today]){
+      const pending = homeworkItems.filter(h => !h.completed)
+        .sort((x, y) => String(x.deadline || '9999').localeCompare(String(y.deadline || '9999')));
+      if(pending.length){
+        const lines = pending.map(h => {
+          const when = !h.deadline ? 'No date' : (h.deadline < today ? 'Overdue \u00b7 ' + localDateLabel(h.deadline) : (h.deadline === today ? 'Today \u00b7 ' + localDateLabel(h.deadline) : localDateLabel(h.deadline)));
+          const topic = (h.description || '').trim();
+          return when + ' \u2014 ' + h.subject + (topic ? ': ' + hwShort(topic, 70) : '');
+        });
+        const dueNow = pending.filter(h => h.deadline === today).length;
+        const title = pending.length === 1 ? 'Homework reminder' : pending.length + ' homework pending';
+        const subjects = Array.from(new Set(pending.map(h => h.subject))).slice(0, 4).join(' \u00b7 ');
+        if(await hwSendNotification(title, lines.join('\n'), 'hw-daily-' + today, 'hw',
+            { style:'hw', head: dueNow ? 'Homework Due Today' : 'Homework Reminder', sub: subjects },
+            { cat:'hw', label: dueNow ? 'Due today' : pending.length + ' pending', tone: dueNow ? 'danger' : 'gold' })){
+          sent['hwdaily@' + today] = 1;
+        }
       }
     }
     try{ localStorage.setItem(HW_NOTIFIED_KEY, JSON.stringify(sent)); }catch(e){}
@@ -11236,6 +11656,96 @@ function initPracticalGroupFinder(){
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }
 
+  // ---- Extra in-app notifications (shown on the Notifications page) ----
+  // Timetable previews (today's classes in the morning, tomorrow's in the
+  // evening) and a homework-due-tomorrow heads-up. These are in-app only —
+  // they never fire a phone notification — and each fires once per day.
+  const NTF_GEN_KEY = 'ntf-gen-sent-v1';
+  function ntfGenStore(){
+    let d = {};
+    try{ d = JSON.parse(localStorage.getItem(NTF_GEN_KEY) || '{}') || {}; }catch(e){}
+    return d;
+  }
+  function ntfSubjectLine(section, dayName){
+    // Unique subject names for that weekday, with (Practical) where the
+    // slot is a practical period — same parsing Roll Call uses.
+    const day = TIMETABLE.days[dayName] && TIMETABLE.days[dayName][section];
+    if(!day) return '';
+    const seen = new Set(), out = [];
+    day.forEach(cell => {
+      if(!cell || cell === 'Break' || cell === '\u2014') return;
+      const re = /([A-Z]{2,4})\[([^\]]*)\]/g; let m;
+      while((m = re.exec(cell))){
+        const name = RC_SUBJECT_NAMES[m[1]]; if(!name) continue;
+        const label = /H/.test(m[2]) ? name : name + ' (Practical)';
+        if(!seen.has(label)){ seen.add(label); out.push(label); }
+      }
+    });
+    return out.join(', ');
+  }
+  function ntfDailyChecks(){
+    if(typeof window.ntfAdd !== 'function') return;
+    if(typeof currentUser === 'undefined' || !currentUser) return;
+    const now = new Date();
+    const hour = now.getHours();
+    const today = localDateKey(now);
+    const tmr = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const tmrKey = localDateKey(tmr);
+    const sent = ntfGenStore();
+    Object.keys(sent).forEach(k => { if(k.indexOf('@' + today) === -1) delete sent[k]; });
+    let changed = false;
+    const once = (key, fn) => { const k = key + '@' + today; if(sent[k]) return; if(fn() !== false){ sent[k] = 1; changed = true; } };
+    const DAYS = { 1:'Monday', 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday' };
+    const section = (typeof rollcall !== 'undefined' && rollcall && rollcall.section) || null;
+
+    if(section){
+      // Morning: today's classes
+      if(hour >= 6 && hour < 13){
+        once('tt-today', () => {
+          const dn = DAYS[now.getDay()];
+          if(!dn || isHolidayDateKey(today)) return false;
+          const line = ntfSubjectLine(section, dn);
+          if(!line) return false;
+          window.ntfAdd('Today\u2019s classes', 'Section ' + section + ' \u00b7 ' + line, 'tt-today-' + today, { cat:'tt', label:'Today', tone:'gold' });
+        });
+      }
+      // Evening: tomorrow's timetable
+      if(hour >= 18){
+        once('tt-tomorrow', () => {
+          const dn = DAYS[tmr.getDay()];
+          if(!dn || isHolidayDateKey(tmrKey)) return false;
+          const line = ntfSubjectLine(section, dn);
+          if(!line) return false;
+          window.ntfAdd('Tomorrow\u2019s timetable', 'Section ' + section + ' \u00b7 ' + dn + ': ' + line, 'tt-tomorrow-' + tmrKey, { cat:'tt', label:'Tomorrow', tone:'gold' });
+        });
+      }
+    }
+    // Homework due tomorrow (from 4 pm)
+    if(false && Array.isArray(homeworkItems)){
+      once('hw-tomorrow', () => {
+        const due = homeworkItems.filter(h => h.deadline === tmrKey && !h.completed);
+        if(!due.length) return false;
+        const title = due.length === 1 ? 'Homework due tomorrow' : due.length + ' homework due tomorrow';
+        const body = due.map(h => h.subject + (h.description ? ' \u2014 ' + hwShort(h.description, 60) : '')).join('; ');
+        window.ntfAdd(title, body, 'hw-tmrw-' + tmrKey, { cat:'hw', label:'Tomorrow', tone:'gold' });
+      });
+    }
+    if(changed){ try{ localStorage.setItem(NTF_GEN_KEY, JSON.stringify(sent)); }catch(e){} }
+  }
+
+  // Attendance streak milestones.
+  const NTF_STREAK_MARKS = [5, 10, 20, 30, 50, 75, 100];
+  function ntfStreakCheck(result, fullName, status){
+    try{
+      if(status !== 'present' || !result || typeof window.ntfAdd !== 'function') return;
+      const subj = findSubjectMatch(result.subjects, fullName);
+      if(!subj) return;
+      const n = subj.streak || 0;
+      if(NTF_STREAK_MARKS.indexOf(n) === -1) return;
+      window.ntfAdd(n + '-class streak in ' + subj.name, 'You\u2019ve been present ' + n + ' classes in a row. Keep it going!', 'streak-' + subj.id + '-' + n, { cat:'att', icon:'flame', label:'Streak', tone:'gold' });
+    }catch(e){}
+  }
+
   // Keep the banner right and fire notifications when the day changes or
   // the app is brought back to the foreground.
   function hwDailyRefresh(){
@@ -11249,6 +11759,7 @@ function initPracticalGroupFinder(){
     if(typeof renderRcRemindBanner === 'function') renderRcRemindBanner();
     if(typeof examHolidayCheckNotifications === 'function') examHolidayCheckNotifications();
     if(typeof rcCheckReminderNotifications === 'function') rcCheckReminderNotifications();
+    try{ ntfDailyChecks(); }catch(e){}
   }
   setInterval(hwDailyRefresh, 60000);
   document.addEventListener('visibilitychange', () => { if(!document.hidden) hwDailyRefresh(); });
@@ -11483,6 +11994,19 @@ function initPracticalGroupFinder(){
     });
   }
 
+  function examNormSubject(n){
+    const m = { ODAE:'OD/AE', 'OD/AE':'OD/AE', Odia:'OD/AE', AE:'OD/AE', OD:'OD/AE', IT:'IT/EL', EL:'IT/EL', 'IT/EL':'IT/EL' };
+    return m[n] || n;
+  }
+  // Older saves used ODAE / IT — move them to the combined OD/AE and IT/EL names.
+  function normalizeExamSubjects(){
+    let c1 = false, c2 = false, c3 = false;
+    coachingExams.forEach(x => { const n = examNormSubject(x.subject); if(n !== x.subject){ x.subject = n; c1 = true; } });
+    schoolExams.forEach(x => { const n = examNormSubject(x.subject); if(n !== x.subject){ x.subject = n; c2 = true; } });
+    coachingHistory.concat(schoolHistory).forEach(x => { const n = examNormSubject(x.subject); if(n !== x.subject){ x.subject = n; c3 = true; } });
+    if(c1) saveCoachingExams(); if(c2) saveSchoolExams(); if(c3) saveExamHistory();
+  }
+
   function renderExamSubjectPicker(){
     const box = document.getElementById('exam-subject-pick');
     if(!box) return;
@@ -11507,6 +12031,7 @@ function initPracticalGroupFinder(){
         selectedExamSubject = (selectedExamSubject === name) ? null : name;
         renderExamSubjectPicker();
         updateExamDateInputState();
+        updateExamTitleState();
         updateExamTopicState();
       });
       box.appendChild(chip);
@@ -11526,6 +12051,7 @@ function initPracticalGroupFinder(){
     picker.style.display = 'none';
     body.style.display = 'block';
     document.getElementById('exam-current-section').textContent = activeExamSection().section;
+    normalizeExamSubjects();
     renderExamTypeTabs();
     renderExamSubjectPicker();
     updateExamDateInputState();
@@ -11556,8 +12082,9 @@ function initPracticalGroupFinder(){
       return;
     }
     const existing = selectedExamSubject ? schoolExams.find(x => x.subject === selectedExamSubject) : null;
-    row.style.display = selectedExamSubject ? 'block' : 'none';
-    input.value = existing ? (existing.title || '') : '';
+    row.style.display = 'block';
+    // A title already typed stays put while subjects are picked (one test, many subjects).
+    if(existing) input.value = existing.title || '';
   }
 
   function updateExamTopicState(){
@@ -11801,6 +12328,7 @@ function initPracticalGroupFinder(){
       // "after selecting the subject and date", ready to be filled in.
       renderExamSubjectPicker();
       updateExamDateInputState();
+      updateExamTitleState();
       updateExamTopicState();
       renderCoachingExams();
     });
@@ -11837,6 +12365,7 @@ function initPracticalGroupFinder(){
       selectedExamSubject = null;
       renderExamSubjectPicker();
       updateExamDateInputState();
+      updateExamTitleState();
       updateExamTopicState();
       renderCoachingExams();
     });
@@ -13270,6 +13799,7 @@ if(existing){
     await saveRollcall();
     await syncOwnHistoryRecord(result.subjects, result.student, result.threshold);
     updateRcNudge(subjectFullName, result.prev, result);
+    ntfStreakCheck(result, subjectFullName, status);
     renderRollcall();
     renderStreaks();
     if(typeof renderRcRemindBanner === 'function') renderRcRemindBanner();
@@ -13312,6 +13842,7 @@ if(existing){
     rollcall.practicalMarks[dateKey][subjectFullName] = { status, prevStreak: result.prevStreak, prevXp: result.prevXp };
     await saveRollcall();
     await syncOwnHistoryRecord(result.subjects, result.student, result.threshold);
+    ntfStreakCheck(result, subjectFullName, status);
     renderRollcall();
     renderStreaks();
   }
@@ -13342,6 +13873,17 @@ if(existing){
     const newPct = (subj.attended / subj.total) * 100;
     const wasOk = prevPct >= threshold, isOk = newPct >= threshold;
     if(wasOk === isOk){ el.style.display = 'none'; return; }
+    try{
+      if(typeof window.ntfAdd === 'function'){
+        window.ntfAdd(
+          isOk ? subj.name + ' is back on track' : 'Attendance alert: ' + subj.name,
+          isOk ? subj.name + ' is back above your ' + threshold + '% line (' + Math.round(newPct) + '%).'
+               : subj.name + ' dropped to ' + Math.round(newPct) + '% \u2014 below your ' + threshold + '% eligibility line.',
+          (isOk ? 'att-up-' : 'att-low-') + subj.id,
+          { cat:'att', icon: isOk ? 'check' : 'alert', label: isOk ? 'Back on track' : 'Below ' + threshold + '%', tone: isOk ? 'success' : 'danger' }
+        );
+      }
+    }catch(e){}
     el.className = 'rc-nudge ' + (isOk ? 'up' : 'down');
     el.textContent = isOk
       ? subj.name + ' is back above your ' + threshold + '% eligibility line (' + Math.round(newPct) + '%).'
@@ -13614,7 +14156,7 @@ if(existing){
     let displayName = RC_SUBJECT_NAMES[code] || code;
     let actualCode = code;
     if(code === 'OD' || code === 'AE'){
-      displayName = 'ODIA/AE';
+      displayName = 'OD/AE';
       actualCode = (rollcall.elective && rollcall.elective.lang) ? rollcall.elective.lang : 'OD';
     }
     if(code === 'IT' || code === 'EL'){
@@ -13843,32 +14385,37 @@ if(existing){
   // section that was picked, per subject, up to that subject's own date.
   const PROJECTION_KEY = 'attendance-projection-v1';
   function projectionKeyFor(id){ return PROJECTION_KEY + '::' + id; }
-  let projection = { section: null, examDates: {} }; // examDates: { subjectFullName: 'YYYY-MM-DD' }
+  let projection = { section: null, examDate: null, examDates: {} }; // one exam date; examDates mirrors it per subject
   const PROJ_SECTIONS = ['A','B','C','D'];
 
   async function loadProjectionFor(id){
-    projection = { section: null, examDates: {} };
+    projection = { section: null, examDate: null, examDates: {} };
     try{
       const res = await window.storage.get(projectionKeyFor(id), true);
       if(res && res.value){
         const parsed = JSON.parse(res.value);
         if(parsed && typeof parsed === 'object'){
           projection.section = parsed.section || null;
-          if(parsed.examDates && typeof parsed.examDates === 'object'){
-            projection.examDates = parsed.examDates;
-          } else if(parsed.examDate && projection.section){
-            // Migrate an older single section-wide date to a per-subject one.
-            projSectionSubjectNames(projection.section).forEach(({name}) => {
-              projection.examDates[name] = parsed.examDate;
-            });
-            saveProjection();
+          if(parsed.examDate) projection.examDate = parsed.examDate;
+          else if(parsed.examDates && typeof parsed.examDates === 'object'){
+            // Older saves kept one date per subject — keep the earliest as the single date.
+            const vals = Object.keys(parsed.examDates).map(k => parsed.examDates[k]).filter(Boolean).sort();
+            if(vals.length) projection.examDate = vals[0];
           }
+          projApplyDate();
         }
       }
     }catch(e){ /* nothing saved yet */ }
   }
   async function saveProjection(){
     try{ await window.storage.set(projectionKeyFor(currentUser.id), JSON.stringify(projection), true); }catch(e){}
+  }
+
+  // Mirrors the single exam date onto every subject of the chosen section.
+  function projApplyDate(){
+    projection.examDates = {};
+    if(!projection.examDate || !projection.section) return;
+    projSectionSubjectNames(projection.section).forEach(({name}) => { projection.examDates[name] = projection.examDate; });
   }
 
   function projDayNameForDate(d){
@@ -13878,21 +14425,26 @@ if(existing){
 
   // Every distinct subject taught to a section across the whole week
   // (not just today), so an exam date can be set for each of them.
+  // OD/AE and IT/EL are optional pairs — each shows as ONE combined subject.
+  const PROJ_DISPLAY = { OD:'OD/AE', AE:'OD/AE', IT:'IT/EL', EL:'IT/EL' };
+  function projDisplayName(code){ return PROJ_DISPLAY[code] || RC_SUBJECT_NAMES[code] || code; }
   function projSectionSubjectNames(section){
-    const codes = [];
+    const out = [];
     const seen = new Set();
     Object.keys(TIMETABLE.days).forEach(dayName => {
       const dayData = TIMETABLE.days[dayName];
       if(!dayData || !dayData[section]) return;
       dayData[section].forEach(cell => {
-        const display = ttCleanCell(cell);
-        if(!display || display === 'Break' || display === '\u2014') return;
-        display.split(',').map(s => s.trim()).filter(Boolean).forEach(code => {
-          if(!seen.has(code)){ seen.add(code); codes.push(code); }
+        if(!cell || cell === 'Break' || cell === '\u2014') return;
+        const plain = String(cell).replace(/\[[^\]]*\]/g, '');
+        (plain.match(/[A-Z]{2}/g) || []).forEach(code => {
+          if(!RC_SUBJECT_NAMES[code]) return;
+          const name = projDisplayName(code);
+          if(!seen.has(name)){ seen.add(name); out.push({ code, name }); }
         });
       });
     });
-    return codes.map(code => ({ code, name: RC_SUBJECT_NAMES[code] || code }));
+    return out;
   }
 
   // Clears out any saved exam date that has quietly passed (instead of
@@ -13901,43 +14453,48 @@ if(existing){
   // not only once the user notices and reopens it.
   function projClearPassedDates(){
     const today = localDateKey();
-    const clearedNames = [];
-    Object.keys(projection.examDates).forEach(name => {
-      const dk = projection.examDates[name];
-      if(dk && dk <= today){
-        clearedNames.push(name);
-        delete projection.examDates[name];
-      }
-    });
-    if(clearedNames.length) saveProjection();
-    return clearedNames;
+    const cleared = [];
+    if(projection.examDate && projection.examDate <= today){
+      cleared.push(projection.examDate);
+      projection.examDate = null;
+      projApplyDate();
+      saveProjection();
+    }
+    return cleared;
   }
 
   function renderProjExamDateList(section){
     const box = document.getElementById('proj-examdate-list');
     if(!box) return;
     box.innerHTML = '';
-    const today = localDateKey();
-    projSectionSubjectNames(section).forEach(({name}) => {
-      const row = document.createElement('div');
-      row.className = 'proj-examdate-row';
-      const label = document.createElement('span');
-      label.className = 'proj-examdate-name';
-      label.textContent = name;
-      const input = document.createElement('input');
-      input.type = 'date';
-      input.min = today;
-      input.value = projection.examDates[name] || '';
-      input.addEventListener('change', () => {
-        if(input.value){ projection.examDates[name] = input.value; }
-        else { delete projection.examDates[name]; }
-        saveProjection();
-        renderProjection();
-      });
-      row.appendChild(label);
-      row.appendChild(input);
-      box.appendChild(row);
+    const row = document.createElement('div');
+    row.className = 'proj-examdate-row';
+    const label = document.createElement('span');
+    label.className = 'proj-examdate-name';
+    label.textContent = 'Exam date';
+    const input = document.createElement('input');
+    input.type = 'date';
+    input.min = localDateKey();
+    input.value = projection.examDate || '';
+    input.addEventListener('change', () => {
+      const v = input.value;
+      if(v && (!/^\d{4}-\d{2}-\d{2}$/.test(v) || Number(v.slice(0,4)) < new Date().getFullYear())) return;
+      projection.examDate = v || null;
+      projApplyDate();
+      saveProjection();
+      renderProjection();
     });
+    row.appendChild(label);
+    row.appendChild(input);
+    box.appendChild(row);
+    const names = projSectionSubjectNames(section).map(x => x.name);
+    if(names.length){
+      const note = document.createElement('p');
+      note.className = 'broadcast-hint';
+      note.style.margin = '8px 0 0 0';
+      note.textContent = 'Applies to: ' + names.join(', ');
+      box.appendChild(note);
+    }
   }
 
   // ---- Attendance Recovery (part of Projection to Exam) ----
@@ -13995,10 +14552,11 @@ if(existing){
   // exam date, and either a recovery plan (below the eligibility line) or
   // a "safe to miss" allowance (at/above it).
   function buildProjSubjectCard(subj, code, section, threshold){
+    subj = Object.assign({}, subj, { name: projDisplayName(code) });
     const H = subj.total, A = subj.attended;
     const curPct = (A / H) * 100;
     const isSafe = curPct >= threshold;
-    const examDateKey = projection.examDates[RC_SUBJECT_NAMES[code] || subj.name] || null;
+    const examDateKey = projection.examDate || null;
     const stats = projSubjectStats(section, code, examDateKey);
     const hasDate = examDateKey && stats.valid;
     const R = hasDate ? stats.periods : 0;
@@ -14128,11 +14686,19 @@ if(existing){
 
     const threshold = state.threshold ?? 75;
     const entries = [];
+    const secNames = new Set(projSectionSubjectNames(section).map(x => x.name));
+    const byDisp = {};
     Object.keys(RC_SUBJECT_NAMES).forEach(code => {
-      const fullName = RC_SUBJECT_NAMES[code];
-      const subj = findSubjectMatch(state.subjects, fullName);
+      const disp = projDisplayName(code);
+      if(!secNames.has(disp)) return; // not taught to this section
+      const subj = findSubjectMatch(state.subjects, RC_SUBJECT_NAMES[code]);
       if(!subj || subj.total <= 0) return; // not in the register yet, or no attendance recorded
-      entries.push({ subj, code });
+      (byDisp[disp] = byDisp[disp] || []).push({ subj, code });
+    });
+    Object.keys(byDisp).forEach(disp => {
+      const arr = byDisp[disp];
+      const el = (typeof rollcall !== 'undefined' && rollcall && rollcall.elective) || {};
+      entries.push(arr.find(e => e.code === el.lang || e.code === el.it) || arr[0]);
     });
 
     if(entries.length === 0){
@@ -14174,6 +14740,7 @@ if(existing){
       btn.textContent = 'Section ' + sec;
       btn.addEventListener('click', () => {
         projection.section = sec;
+        projApplyDate();
         saveProjection();
         renderProjection();
       });
@@ -14205,9 +14772,7 @@ if(existing){
     if(warnEl){
       if(clearedNames.length){
         warnEl.style.display = 'block';
-        warnEl.textContent = (clearedNames.length === 1
-          ? 'Your saved exam date for ' + clearedNames[0] + ' had passed'
-          : 'Your saved exam dates for ' + clearedNames.join(', ') + ' had passed') + ' \u2014 cleared. Add a fresh one above when ready.';
+        warnEl.textContent = 'Your saved exam date had passed \u2014 cleared. Pick a fresh one above when ready.';
         renderProjExamDateList(projection.section); // reflect the now-empty inputs
       } else {
         warnEl.style.display = 'none';
@@ -14247,6 +14812,7 @@ if(existing){
   if(projChangeSectionBtn){
     projChangeSectionBtn.addEventListener('click', () => {
       projection.section = null;
+      projection.examDates = {};
       saveProjection();
       renderProjection();
     });
@@ -14320,27 +14886,29 @@ if(existing){
 
     // Exam(s) today.
     const todaysExams = examSubjectsOn(today);
-    if(todaysExams.length && !sent['examday@' + today]){
-      const title = todaysExams.length === 1 ? 'Exam today' : todaysExams.length + ' exams today';
-      const body = todaysExams.join('\n') + '\nAll the best!';
-      if(await hwSendNotification(title, body, 'examday-' + today, 'exam', { style:'examday', head: todaysExams.length === 1 ? 'Exam Today' : todaysExams.length + ' Exams Today', sub: todaysExams.join('\n') })){
-        sent['examday@' + today] = 1; changed = true;
-      }
-    }
-
-    // Projection countdown — a quiet heads-up 7, 3 and 1 day(s) before an
-    // exam, so it never arrives as a surprise.
-    for(const exam of coachingExams.concat(schoolExams)){
-      const left = examDaysLeft(exam.examDate);
-      if(left >= 1 && left <= 7){
-        const flag = 'proj-' + exam.id + '-' + left + '@' + today;
-        if(!sent[flag]){
-          const title = left === 1 ? 'Exam tomorrow' : left + ' days to your exam';
-          const label = (exam.title && exam.title.trim()) ? (exam.title.trim() + ' — ' + exam.subject) : exam.subject;
-          const body = label + (exam.topic && exam.topic.trim() ? ' \u2014 ' + exam.topic.trim() : '') + '. Time to review.';
-          if(await hwSendNotification(title, body, 'proj-' + exam.id + '-' + left, 'exam', { style:'examsoon', head: left === 1 ? 'Exam Tomorrow' : left + ' Days to Your Exam', sub: label + (exam.topic && exam.topic.trim() ? ' \u2014 ' + exam.topic.trim() : '') })){
-            sent[flag] = 1; changed = true;
-          }
+    // One reminder a day: every upcoming exam with its date, subject, title and topic.
+    if(!sent['examdaily@' + today]){
+      normalizeExamSubjects();
+      const upcoming = coachingExams.concat(schoolExams)
+        .map(x => ({ x, left: examDaysLeft(x.examDate) }))
+        .filter(o => o.left >= 0)
+        .sort((a, b) => a.left - b.left);
+      if(upcoming.length){
+        const lines = upcoming.map(({x, left}) => {
+          const label = (x.title && x.title.trim()) ? (x.subject + ' (' + x.title.trim() + ')') : x.subject;
+          const topic = (x.topic && x.topic.trim()) ? ': ' + x.topic.trim() : '';
+          const when = left === 0 ? 'Today' : (left === 1 ? 'Tomorrow' : 'In ' + left + ' days');
+          return localDateLabel(x.examDate) + ' \u2014 ' + label + topic + ' (' + when + ')';
+        });
+        const anyToday = upcoming.some(o => o.left === 0);
+        const first = upcoming[0].left;
+        const title = anyToday ? (upcoming.filter(o => o.left === 0).length === 1 ? 'Exam today' : 'Exams today')
+          : (upcoming.length === 1 ? 'Exam reminder' : upcoming.length + ' exams coming up');
+        const sub = upcoming.slice(0, 3).map(o => o.x.subject).join(' \u00b7 ') + (upcoming.length > 3 ? ' +' + (upcoming.length - 3) : '');
+        if(await hwSendNotification(title, lines.join('\n'), 'exam-daily-' + today, 'exam',
+            { style: anyToday ? 'examday' : (first === 1 ? 'examsoon' : 'examsoon'), head: anyToday ? 'Exam Today' : (first === 1 ? 'Exam Tomorrow' : 'Exam Reminder'), sub },
+            { cat:'exam', label: anyToday ? 'Today' : (first === 1 ? 'Tomorrow' : first + ' days left'), tone: first <= 1 ? 'danger' : 'gold' })){
+          sent['examdaily@' + today] = 1; changed = true;
         }
       }
     }
@@ -15702,7 +16270,7 @@ if(existing){
     historyUndoSnapshot = null;
     homeworkItems = [];
     rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {}, extraCards: {}, recapStart: localDateKey(new Date()) };
-    projection = { section: null, examDates: {} };
+    projection = { section: null, examDate: null, examDates: {} };
     coachingExams = [];
     examsSection = { section: null };
     selectedExamSubject = null;
