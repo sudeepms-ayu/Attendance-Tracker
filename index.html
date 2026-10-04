@@ -1845,7 +1845,7 @@
   body.dark .menu-switch .menu-switch-knob{ transform: translateX(16px); background: var(--paper); }
 
   /* ---- Notification bell ---- */
-  #notif-toggle{ position:relative; }
+  #notif-toggle{ position:relative; z-index:966; }
   .notif-badge-dot{
     position:absolute;
     top:-2px; right:-2px;
@@ -1864,12 +1864,17 @@
     overflow-y:auto;
     overscroll-behavior:contain;
     -webkit-overflow-scrolling:touch;
-    background: var(--paper);
-    border:1px solid rgba(var(--ink-rgb),0.16);
-    border-radius:14px;
-    box-shadow: var(--card-shadow);
+    background: rgba(var(--paper-rgb),0.9);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    backdrop-filter: blur(18px) saturate(1.4);
+    border:1px solid rgba(var(--gold-rgb),0.55);
+    border-radius:16px;
+    box-shadow: 0 24px 48px -12px rgba(0,0,0,0.45), 0 8px 18px -6px rgba(0,0,0,0.3), 0 0 0 1px rgba(var(--gold-rgb),0.12), 0 0 28px -6px rgba(var(--gold-rgb),0.35);
     padding:8px;
     z-index:970;
+    scroll-behavior:smooth;
+    touch-action:pan-y;
+    translate: 0 var(--np-y, 0px);
     opacity:0;
     visibility:hidden;
     pointer-events:none;
@@ -1895,6 +1900,29 @@
     }
   }
   @media (prefers-reduced-motion: reduce){ .notif-panel{ transition:none !important; } }
+  .notif-panel.np-dragging{ transition:none !important; scroll-behavior:auto; }
+  .notif-panel{ max-height:min(72dvh, 460px); }
+  .notif-panel-head{
+    position:sticky; top:-8px; z-index:2; margin:-8px -8px 4px -8px; padding:10px 14px 8px 14px;
+    background: rgba(var(--paper-rgb),0.94);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none;
+  }
+  .notif-panel.np-dragging .notif-panel-head{ cursor:grabbing; }
+  .notif-panel-head::before{
+    content:''; position:absolute; top:4px; left:50%; width:34px; height:4px; margin-left:-17px;
+    border-radius:4px; background: rgba(var(--ink-rgb),0.25);
+  }
+  .notif-item{ transition: background 0.2s ease; }
+  /* Soft blurred scrim behind the open panel so it never blends into the page. */
+  #notif-scrim{
+    position:fixed; inset:0; z-index:965;
+    background: rgba(0,0,0,0.28);
+    -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+    opacity:0; visibility:hidden; pointer-events:none;
+    transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+  }
+  #notif-scrim.show{ opacity:1; visibility:visible; pointer-events:auto; transition: opacity 0.25s ease, visibility 0s linear 0s; }
   .notif-panel-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:4px 6px 8px 6px; border-bottom:1px solid rgba(var(--ink-rgb),0.1); margin-bottom:4px; }
   .notif-panel-title{ font-family:'Playfair Display', serif; font-weight:800; font-size:14px; color: var(--ink); }
   .notif-panel-clear{ background:none; border:none; cursor:pointer; color: var(--gold); font-family:'Lora', serif; font-size:11.5px; padding:2px 4px; }
@@ -5957,11 +5985,11 @@
   }
   .mentor-name{
     font-size:14px; font-weight:700;
-    color:#ffffff; line-height:1.3;
+    color:var(--ink); line-height:1.3;
     margin-bottom:2px;
   }
   .mentor-role{
-    font-size:11px; color:rgba(255,255,255,0.6);
+    font-size:11px; color:var(--ink-soft);
   }
 
 </style>
@@ -5999,6 +6027,7 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
     <span class="notif-badge-dot" id="notif-badge-dot" style="display:none;"></span>
   </button>
+  <div id="notif-scrim" aria-hidden="true"></div>
   <div class="notif-panel" id="notif-panel">
     <div class="notif-panel-head">
       <span class="notif-panel-title">Notifications</span>
@@ -6316,7 +6345,7 @@
     </div>
     <div class="np-body" style="flex:1 1 0; min-width:180px;">
       <p class="np-title">Practical Group &amp; Your Mentor Finder</p>
-      <p class="notify-prompt-status" style="display:block;">Enter your roll number to see your practical group.</p>
+      <p class="notify-prompt-status" style="display:block;">Enter your roll number to see your practical group and your mentor.</p>
     </div>
     <input id="tt-roll-input" class="broadcast-input" style="max-width:160px;" placeholder="IS26-016 or 016" maxlength="12">
     <button type="button" class="np-btn" id="tt-roll-check-btn">Check</button>
@@ -8851,6 +8880,44 @@ window.contactChoiceModal = function(opts){
         render();
       });
     }
+
+    const scrim = document.getElementById('notif-scrim');
+    function syncScrim(){ if(scrim) scrim.classList.toggle('show', panel.classList.contains('open')); }
+    new MutationObserver(() => {
+      syncScrim();
+      if(!panel.classList.contains('open')) panel.style.setProperty('--np-y', '0px');
+    }).observe(panel, { attributes:true, attributeFilter:['class'] });
+
+    // Drag the panel up/down smoothly by its header (clamped to the screen).
+    (function(){
+      const head = panel.querySelector('.notif-panel-head');
+      if(!head) return;
+      let startY = 0, baseY = 0, dragging = false, pid = null;
+      const curY = () => parseFloat(panel.style.getPropertyValue('--np-y')) || 0;
+      head.addEventListener('pointerdown', (e) => {
+        if(e.target.closest('button')) return;
+        dragging = true; pid = e.pointerId; startY = e.clientY; baseY = curY();
+        panel.classList.add('np-dragging');
+        try{ head.setPointerCapture(pid); }catch(_){}
+      });
+      head.addEventListener('pointermove', (e) => {
+        if(!dragging) return;
+        const r = panel.getBoundingClientRect();
+        const top0 = r.top - curY();
+        const minY = 8 - top0;
+        const maxY = window.innerHeight - 60 - top0;
+        let y = baseY + (e.clientY - startY);
+        y = Math.max(minY, Math.min(maxY, y));
+        panel.style.setProperty('--np-y', y + 'px');
+      });
+      const end = () => {
+        if(!dragging) return;
+        dragging = false; panel.classList.remove('np-dragging');
+        try{ head.releasePointerCapture(pid); }catch(_){}
+      };
+      head.addEventListener('pointerup', end);
+      head.addEventListener('pointercancel', end);
+    })();
 
     function closePanel(){
       panel.classList.remove('open');
@@ -12900,6 +12967,11 @@ function rcXpOp(status){
     const mine = historyRecords.filter(r => r.ownerId === currentUser.id).sort((a,b) => new Date(b.date) - new Date(a.date));
     if(mine.length){
       Object.assign(mine[0], payload);
+      // Only ONE history card per student: drop any older duplicates.
+      if(mine.length > 1){
+        const extra = new Set(mine.slice(1).map(r => r.id));
+        historyRecords = historyRecords.filter(r => !extra.has(r.id));
+      }
     } else {
       historyRecords.push({ id: cryptoId(), ownerId: currentUser.id, ...payload });
     }
@@ -14901,6 +14973,16 @@ if(existing){
     }catch(e){
       // no history yet
     }
+    // Keep only the newest record per student (one card each).
+    (function(){
+      const seen = new Set(), kept = [];
+      historyRecords.slice().sort((x,y) => new Date(y.date) - new Date(x.date)).forEach(r => {
+        const k = r.ownerId || r.id;
+        if(seen.has(k)) return;
+        seen.add(k); kept.push(r);
+      });
+      if(kept.length !== historyRecords.length){ historyRecords = kept; saveHistoryRecords(); }
+    })();
     renderHistory();
   }
 
@@ -15150,10 +15232,16 @@ if(existing){
         if(isNaN(tot) || tot < 0) tot = 0;
         if(att > tot) att = tot; // can't be present more times than classes held
         snapshotFor(kind);
-        s.attended += (att - s[attKey]);
-        s.total += (tot - s[totKey]);
+        const dAtt = att - s[attKey], dTot = tot - s[totKey];
+        s.attended += dAtt;
+        s.total += dTot;
         s[attKey] = att; s[totKey] = tot;
-        save(); render();
+        // Typing in more classes held than classes attended means classes
+        // were missed (absent/bunked), so the streak is lost \u2014 same as
+        // tapping Absent. Extra present classes extend it, as Present does.
+        if(dTot > dAtt) s.streak = 0;
+        else if(dAtt > 0) s.streak = (s.streak || 0) + dAtt;
+        save(); render(); renderStreaks();
       }
       miniAttInput.addEventListener('change', applyMiniManualEntry);
       miniTotInput.addEventListener('change', applyMiniManualEntry);
@@ -15364,8 +15452,17 @@ if(existing){
       cancelEditingHistory();
       els.saveStatus.textContent = 'History record updated';
     } else {
+      // One history card per student: refresh theirs in place instead of
+      // adding another, and remove any older duplicates.
+      const owned = historyRecords.filter(r => r.ownerId === record.ownerId)
+        .sort((x,y) => new Date(y.date) - new Date(x.date));
+      if(owned.length){
+        record.id = owned[0].id;
+        const drop = new Set(owned.map(r => r.id));
+        historyRecords = historyRecords.filter(r => !drop.has(r.id));
+      }
       historyRecords.push(record);
-      els.saveStatus.textContent = 'Saved to history';
+      els.saveStatus.textContent = 'History synced';
     }
     saveHistoryRecords();
     renderHistory();
