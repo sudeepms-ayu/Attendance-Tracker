@@ -1996,6 +1996,18 @@
     overscroll-behavior-x:contain;
   }
   .nv-track::-webkit-scrollbar{ display:none; }
+  .nv-arrow{
+    display:none; position:absolute; top:calc(50% - 26px); width:38px; height:38px; padding:0; border-radius:50%;
+    align-items:center; justify-content:center; cursor:pointer; z-index:3;
+    border:1px solid rgba(var(--gold-rgb),.55); background: var(--paper); color: var(--gold);
+    box-shadow: 0 8px 18px -8px rgba(0,0,0,.55); transition: opacity .2s, transform .2s, background .2s;
+  }
+  .nv-arrow svg{ width:18px; height:18px; }
+  .nv-arrow.prev{ left:-6px; } .nv-arrow.next{ right:-6px; }
+  .nv-arrow:hover:not(:disabled){ background: var(--gold); color: var(--paper); transform: scale(1.08); }
+  .nv-arrow:active:not(:disabled){ transform: scale(.92); }
+  .nv-arrow:disabled{ opacity:0; pointer-events:none; }
+  @media (hover:hover) and (pointer:fine){ .nv-cards.nv-can-scroll .nv-arrow{ display:flex; } }
   .nv-card{
     --cc: var(--gold); --cc-rgb: var(--gold-rgb);
     flex:none; width:128px; scroll-snap-align:start; position:relative; overflow:hidden;
@@ -6188,7 +6200,9 @@
   body.dark .syl-s-math { --ac-rgb: 230,164,135; }
   body.dark .syl-s-it   { --ac-rgb: 182,164,240; }
 
-  #syllabus-view{ --syl-tick:#fff; padding-bottom: 96px; }
+  #syllabus-view{ --syl-tick:#fff; padding-bottom: 20px; margin-bottom: 0; }
+  body.syl-active{ padding-bottom: 0; min-height: 0; }
+  .syl-source{ margin-bottom: 0 !important; }
   body.dark #syllabus-view{ --syl-tick:#15130d; }
   #syllabus-view [lang="or"]{ font-family:'Noto Serif Oriya','Noto Sans Oriya','Kalinga','Lora',serif; font-style:normal; }
   #syllabus-view button{ font-family:inherit; -webkit-tap-highlight-color: transparent; }
@@ -9611,6 +9625,7 @@ window.contactChoiceModal = function(opts){
       });
       cardsWrap.classList.remove('nv-ready'); void cardsWrap.offsetWidth; cardsWrap.classList.add('nv-ready');
       trackEl.style.scrollBehavior = 'auto'; trackEl.scrollLeft = 0; trackEl.style.scrollBehavior = '';
+      setTimeout(() => { try{ updateArrows(); }catch(e){} }, 0);
     }
     function updateDots(){
       if(!trackEl.children.length) return;
@@ -9620,7 +9635,30 @@ window.contactChoiceModal = function(opts){
       if(max > 0 && trackEl.scrollLeft >= max - 4) idx = trackEl.children.length - 1;
       Array.prototype.forEach.call(dotsEl.children, (d, i) => d.classList.toggle('on', i === idx));
     }
-    trackEl.addEventListener('scroll', () => { window.requestAnimationFrame(updateDots); }, { passive:true });
+    // Desktop-only arrows (CSS hides them on touch screens)
+    const arrPrev = document.createElement('button'), arrNext = document.createElement('button');
+    arrPrev.type = arrNext.type = 'button';
+    arrPrev.className = 'nv-arrow prev'; arrNext.className = 'nv-arrow next';
+    arrPrev.setAttribute('aria-label', 'Previous cards'); arrNext.setAttribute('aria-label', 'Next cards');
+    arrPrev.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"></path></svg>';
+    arrNext.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>';
+    cardsWrap.appendChild(arrPrev); cardsWrap.appendChild(arrNext);
+    function updateArrows(){
+      const max = trackEl.scrollWidth - trackEl.clientWidth;
+      cardsWrap.classList.toggle('nv-can-scroll', max > 4);
+      arrPrev.disabled = trackEl.scrollLeft <= 4;
+      arrNext.disabled = trackEl.scrollLeft >= max - 4;
+    }
+    function nudge(dir){
+      userTouch = Date.now();
+      const first = trackEl.children[0]; if(!first) return;
+      trackEl.scrollBy({ left: dir * (first.offsetWidth + 12), behavior:'smooth' });
+    }
+    arrPrev.addEventListener('click', () => nudge(-1));
+    arrNext.addEventListener('click', () => nudge(1));
+    window.addEventListener('resize', updateArrows);
+    trackEl.addEventListener('scroll', () => { window.requestAnimationFrame(() => { updateDots(); updateArrows(); }); }, { passive:true });
+    setTimeout(updateArrows, 300); setTimeout(updateArrows, 1200);
     // Gentle auto-slide: drifts left, then back right. Stops while the user touches / after they swipe.
     function stopAuto(){ if(autoTimer){ clearInterval(autoTimer); autoTimer = null; } }
     function startAuto(){
@@ -9968,7 +10006,7 @@ window.contactChoiceModal = function(opts){
     let closing = false, closeTok = 0;
     function hide(){
       if(closing) return;
-      stopAuto(); clearUndos();
+      stopAuto(); /* undo bar keeps running after Back so the person can still undo */
       toggle.classList.remove('nv-active');
       toggle.setAttribute('aria-expanded', 'false');
       if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -21693,7 +21731,7 @@ addEventListener('game-music-change',()=>{if(window.GameMusic){data.settings.mus
   /* Browser/system Back now walks through visible app screens before exiting. */
   let suppress=false,lastRoute='';
   const shown=el=>el&&getComputedStyle(el).display!=='none';
-  function route(){const ag=document.getElementById('ag-app');if(shown(ag))return'arrow:'+(ag.dataset.screen||'home');const t=document.getElementById('ttt-app');if(shown(t)){const a=t.querySelector('.ttt-screen.active');return'ttt:'+(a?a.dataset.screen:'main')}const ph=document.getElementById('phys');if(shown(ph)){for(const n of ['game','how','stats','settings','levels','home']){const e=ph.querySelector('.ph-'+n);if(shown(e))return'phys:'+n}return'phys:home'}for(const id of ['games-view','studymaterials-view','study-tracker-view','magic-view','bmc-view','profile-view','coaching-timetable-view','holidays-view','coaching-exams-view','projection-view','rollcall-view','homework-view','timetable-view']){if(shown(document.getElementById(id)))return id}return shown(document.getElementById('app-view'))?'app-view':'auth-view'}
+  function route(){const ag=document.getElementById('ag-app');if(shown(ag))return'arrow:'+(ag.dataset.screen||'home');const t=document.getElementById('ttt-app');if(shown(t)){const a=t.querySelector('.ttt-screen.active');return'ttt:'+(a?a.dataset.screen:'main')}const ph=document.getElementById('phys');if(shown(ph)){for(const n of ['game','how','stats','settings','levels','home']){const e=ph.querySelector('.ph-'+n);if(shown(e))return'phys:'+n}return'phys:home'}for(const id of ['notif-view','syllabus-view','games-view','studymaterials-view','study-tracker-view','magic-view','bmc-view','profile-view','coaching-timetable-view','holidays-view','coaching-exams-view','projection-view','rollcall-view','homework-view','timetable-view']){if(shown(document.getElementById(id)))return id}return shown(document.getElementById('app-view'))?'app-view':'auth-view'}
   function pushRoute(){const r=route();if(!suppress&&r!==lastRoute){lastRoute=r;history.pushState({appRoute:r},'',location.href)}}
   function backUI(){const r=route();if(r.startsWith('arrow:')){window.ArrowGame?.back();return}if(r.startsWith('ttt:')){const modal=document.querySelector('#ttt-app .ttt-modal.show');if(modal){const x=modal.querySelector('#ttt-resume,#ttt-result-menu,.ttt-btn');if(x)x.click();return}document.getElementById('ttt-back')?.click();return}if(r==='phys:game'){document.getElementById('ph-exit')?.click();return}if(r==='phys:how'){document.getElementById('ph-how-back')?.click();return}if(r==='phys:stats'){document.getElementById('ph-stats-back')?.click();return}if(r==='phys:settings'){document.getElementById('ph-settings-back')?.click();return}if(r==='phys:levels'){document.getElementById('ph-home')?.click();return}if(r==='phys:home'){document.getElementById('ph-close')?.click();return}if(r==='games-view'){document.getElementById('games-back-btn')?.click();return}const id=r;const view=document.getElementById(id);const back=view&&view.querySelector('[id$="back-btn"],.tt-back,.page-back,[data-action="back"]');if(back)back.click();else if(typeof backToAppOrAuth==='function'){hideAllPages();backToAppOrAuth()}}
   setTimeout(()=>{lastRoute=route();history.replaceState({appRoute:lastRoute},'',location.href);const mo=new MutationObserver(()=>setTimeout(pushRoute,0));mo.observe(document.body,{subtree:true,attributes:true,attributeFilter:['style','class']});addEventListener('popstate',()=>{suppress=true;backUI();setTimeout(()=>{lastRoute=route();suppress=false},180)})},350);
