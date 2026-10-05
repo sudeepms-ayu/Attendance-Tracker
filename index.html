@@ -5686,12 +5686,12 @@
 
   .syl-empty-hint{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); font-style:italic; padding:4px 0 12px 0; margin:0; }
 
-  .syl-group{ margin-bottom:6px; }
-  .syl-group-label{
+  .trk-group{ margin-bottom:6px; }
+  .trk-group-label{
     font-family:'Lora', serif; font-weight:700; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;
     color: var(--ink-soft); margin:14px 0 4px 0; opacity:0.75;
   }
-  .syl-group:first-child .syl-group-label{ margin-top:0; }
+  .trk-group:first-child .trk-group-label{ margin-top:0; }
 
   .syl-chapter-row{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
@@ -12084,6 +12084,12 @@ function initPracticalGroupFinder(){
     examsoon: { theme:'green', head:'Exam Tomorrow' },
     roll:     { theme:'cream', head:'Mark Today\u2019s Roll Call' },
     rollLast: { theme:'ink',   head:'Last Reminder' },
+    task:     { theme:'ink',   head:'Task Pending' },
+    ttToday:  { theme:'cream', head:'Today\u2019s Classes' },
+    ttTmrw:   { theme:'green', head:'Tomorrow\u2019s Timetable' },
+    streak:   { theme:'ink',   head:'Attendance Streak' },
+    attLow:   { theme:'ink',   head:'Attendance Alert' },
+    attUp:    { theme:'green', head:'Back On Track' },
     welcome:  { theme:'green', head:'Notifications Are On' }
   };
   const _notifBannerCache = {};
@@ -12221,6 +12227,17 @@ function initPracticalGroupFinder(){
     return false;
   }
 
+  // Every notification that lands on the Notification page also goes to the
+  // phone, with a banner. If phone notifications are off, it still lands on
+  // the Notification page.
+  window.ntfPush = function(title, body, tag, extra, banner){
+    try{
+      if(hwNotifyOn()) return hwSendNotification(title, body, tag, 'gen', banner, extra);
+    }catch(e){}
+    if(typeof window.ntfAdd === 'function') window.ntfAdd(title, body, tag, extra);
+    return Promise.resolve(false);
+  };
+
   async function hwCheckNotifications(){
     if(!hwNotifyOn() || typeof currentUser === 'undefined' || !currentUser) return;
     const today = localDateKey();
@@ -12304,6 +12321,7 @@ function initPracticalGroupFinder(){
     hwCheckNotifications();
     if(typeof examHolidayCheckNotifications === 'function') examHolidayCheckNotifications();
     if(typeof rcCheckReminderNotifications === 'function') rcCheckReminderNotifications();
+    if(typeof window.stTaskCheckNotifications === 'function') window.stTaskCheckNotifications();
     return true;
   }
 
@@ -12395,7 +12413,7 @@ function initPracticalGroupFinder(){
           if(!dn || isHolidayDateKey(today)) return false;
           const line = ntfSubjectLine(section, dn);
           if(!line) return false;
-          window.ntfAdd('Today\u2019s classes', 'Section ' + section + ' \u00b7 ' + line, 'tt-today-' + today, { cat:'tt', label:'Today', tone:'gold' });
+          window.ntfPush('Today\u2019s classes', 'Section ' + section + ' \u00b7 ' + line, 'tt-today-' + today, { cat:'tt', label:'Today', tone:'gold' }, { style:'ttToday', sub:'Section ' + section + ' \u00b7 ' + dn });
         });
       }
       // Evening: tomorrow's timetable
@@ -12405,7 +12423,7 @@ function initPracticalGroupFinder(){
           if(!dn || isHolidayDateKey(tmrKey)) return false;
           const line = ntfSubjectLine(section, dn);
           if(!line) return false;
-          window.ntfAdd('Tomorrow\u2019s timetable', 'Section ' + section + ' \u00b7 ' + dn + ': ' + line, 'tt-tomorrow-' + tmrKey, { cat:'tt', label:'Tomorrow', tone:'gold' });
+          window.ntfPush('Tomorrow\u2019s timetable', 'Section ' + section + ' \u00b7 ' + dn + ': ' + line, 'tt-tomorrow-' + tmrKey, { cat:'tt', label:'Tomorrow', tone:'gold' }, { style:'ttTmrw', sub:'Section ' + section + ' \u00b7 ' + dn });
         });
       }
     }
@@ -12416,7 +12434,7 @@ function initPracticalGroupFinder(){
         if(!due.length) return false;
         const title = due.length === 1 ? 'Homework due tomorrow' : due.length + ' homework due tomorrow';
         const body = due.map(h => h.subject + (h.description ? ' \u2014 ' + hwShort(h.description, 60) : '')).join('; ');
-        window.ntfAdd(title, body, 'hw-tmrw-' + tmrKey, { cat:'hw', label:'Tomorrow', tone:'gold' });
+        window.ntfPush(title, body, 'hw-tmrw-' + tmrKey, { cat:'hw', label:'Tomorrow', tone:'gold' }, { style:'hw', head:'Homework Due Tomorrow' });
       });
     }
     if(changed){ try{ localStorage.setItem(NTF_GEN_KEY, JSON.stringify(sent)); }catch(e){} }
@@ -12431,7 +12449,7 @@ function initPracticalGroupFinder(){
       if(!subj) return;
       const n = subj.streak || 0;
       if(NTF_STREAK_MARKS.indexOf(n) === -1) return;
-      window.ntfAdd(n + '-class streak in ' + subj.name, 'You\u2019ve been present ' + n + ' classes in a row. Keep it going!', 'streak-' + subj.id + '-' + n, { cat:'att', icon:'flame', label:'Streak', tone:'gold' });
+      window.ntfPush(n + '-class streak in ' + subj.name, 'You\u2019ve been present ' + n + ' classes in a row. Keep it going!', 'streak-' + subj.id + '-' + n, { cat:'att', icon:'flame', label:'Streak', tone:'gold' }, { style:'streak', head: n + '-Class Streak', sub: subj.name });
     }catch(e){}
   }
 
@@ -12449,6 +12467,7 @@ function initPracticalGroupFinder(){
     if(typeof examHolidayCheckNotifications === 'function') examHolidayCheckNotifications();
     if(typeof rcCheckReminderNotifications === 'function') rcCheckReminderNotifications();
     try{ ntfDailyChecks(); }catch(e){}
+    if(typeof window.stTaskCheckNotifications === 'function') window.stTaskCheckNotifications();
   }
   setInterval(hwDailyRefresh, 60000);
   document.addEventListener('visibilitychange', () => { if(!document.hidden) hwDailyRefresh(); });
@@ -15910,13 +15929,14 @@ if(existing){
     const wasOk = prevPct >= threshold, isOk = newPct >= threshold;
     if(wasOk === isOk){ el.style.display = 'none'; return; }
     try{
-      if(typeof window.ntfAdd === 'function'){
-        window.ntfAdd(
+      if(typeof window.ntfPush === 'function'){
+        window.ntfPush(
           isOk ? subj.name + ' is back on track' : 'Attendance alert: ' + subj.name,
           isOk ? subj.name + ' is back above your ' + threshold + '% line (' + Math.round(newPct) + '%).'
                : subj.name + ' dropped to ' + Math.round(newPct) + '% \u2014 below your ' + threshold + '% eligibility line.',
           (isOk ? 'att-up-' : 'att-low-') + subj.id,
-          { cat:'att', icon: isOk ? 'check' : 'alert', label: isOk ? 'Back on track' : 'Below ' + threshold + '%', tone: isOk ? 'success' : 'danger' }
+          { cat:'att', icon: isOk ? 'check' : 'alert', label: isOk ? 'Back on track' : 'Below ' + threshold + '%', tone: isOk ? 'success' : 'danger' },
+          { style: isOk ? 'attUp' : 'attLow', sub: subj.name + ' \u00b7 ' + Math.round(newPct) + '%' }
         );
       }
     }catch(e){}
@@ -19364,9 +19384,9 @@ if(existing){
         + '</div>';
     }
     function sylGroupHtml(group){
-      const label = group.name ? '<p class="syl-group-label">' + sylEsc(group.name) + '</p>' : '';
+      const label = group.name ? '<p class="trk-group-label">' + sylEsc(group.name) + '</p>' : '';
       const rows = group.chapters.map(c => sylChapterRowHtml(group, c)).join('');
-      return '<div class="syl-group">' + label + rows + '</div>';
+      return '<div class="trk-group">' + label + rows + '</div>';
     }
     function sylWeakBannerHtml(weak){
       if(!weak.length) return '';
@@ -20458,11 +20478,78 @@ if(existing){
     async function stTaskRefreshDots(){
       await loadTaskState();
       const hasIncomplete = stTodayTasks().some(t => !t.done);
+      // Red dots are retired: pending tasks now remind through the
+      // Notification page + phone notification instead.
       const tabDot = document.getElementById('st-tab-task-dot');
-      if(tabDot) tabDot.style.display = hasIncomplete ? 'block' : 'none';
+      if(tabDot) tabDot.style.display = 'none';
       const menuDot = document.getElementById('menu-studytracker-task-dot');
-      if(menuDot) menuDot.style.display = hasIncomplete ? 'block' : 'none';
+      if(menuDot) menuDot.style.display = 'none';
+      stTaskCheckNotifications();
+      stTaskSyncToWorker();
     }
+
+    // Saves a snapshot of unfinished tasks for the service worker, and asks
+    // the browser to wake it daily (Chrome/Android, installed app) so the
+    // reminder can show even when the app is closed.
+    async function stTaskSyncToWorker(){
+      try{
+        if(!('caches' in window)) return;
+        const items = taskState.tasks.filter(t => !t.done).map(t => ({ date:t.date, subject:t.subject, title:t.title }));
+        const snap = { items };
+        try{ snap.icon = notifLogoUrl(); snap.badge = NOTIF_BADGE_URL; }catch(e){}
+        try{ const img = await notifBannerUrl({ style:'task', head:'Task Pending', sub: Array.from(new Set(items.map(t => t.subject))).slice(0,4).join(' \u00b7 ') }); if(img) snap.image = img; }catch(e){}
+        const cache = await caches.open('cbsh-task-reminder-v1');
+        await cache.put('./__task-pending.json', new Response(JSON.stringify(snap), { headers:{ 'Content-Type':'application/json' } }));
+        if('serviceWorker' in navigator){
+          const reg = await navigator.serviceWorker.getRegistration();
+          if(reg && reg.periodicSync && items.length){
+            try{ await reg.periodicSync.register('task-pending-daily', { minInterval: 12 * 60 * 60 * 1000 }); }catch(e){}
+          }
+        }
+      }catch(e){}
+    }
+
+    // Daily "task pending" reminder - repeats every day until every
+    // unfinished task is done (or deleted). Shows in the Notification
+    // page and as a phone notification with a banner.
+    async function stTaskCheckNotifications(){
+      try{
+        if(typeof currentUser === 'undefined' || !currentUser) return;
+        await loadTaskState();
+        const today = stTodayKey();
+        const pending = taskState.tasks.filter(t => !t.done && t.date <= today)
+          .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+        if(!pending.length) return;
+        const KEY = 'st_task_notified_v1';
+        let sent = {};
+        try{ sent = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){}
+        Object.keys(sent).forEach(k => { if(!k.endsWith('@' + today)) delete sent[k]; });
+        const mark = 'taskdaily@' + today;
+        if(sent[mark]) return;
+        const lines = pending.slice(0, 6).map(t => (t.date < today ? 'Overdue \u2014 ' : 'Today \u2014 ') + t.subject + ': ' + t.title);
+        if(pending.length > 6) lines.push('+' + (pending.length - 6) + ' more');
+        const title = pending.length === 1 ? 'Task pending' : pending.length + ' tasks pending';
+        const subjects = Array.from(new Set(pending.map(t => t.subject))).slice(0, 4).join(' \u00b7 ');
+        const extra = { cat:'gen', icon:'check', label: pending.length + ' pending', tone:'gold' };
+        let ok = false;
+        const notifyOn = typeof hwNotifyOn === 'function' && hwNotifyOn();
+        if(notifyOn && typeof hwSendNotification === 'function'){
+          ok = await hwSendNotification(title, lines.join('\n'), 'task-daily-' + today, 'task',
+            { style:'task', head:'Task Pending', sub: subjects }, extra);
+        }
+        if(!ok && typeof window.ntfAdd === 'function'){
+          window.ntfAdd(title, lines.join('\n'), 'task-daily-' + today, extra);
+          ok = true;
+        }
+        if(ok){
+          sent[mark] = 1;
+          try{ localStorage.setItem(KEY, JSON.stringify(sent)); }catch(e){}
+        }
+      }catch(e){}
+    }
+    window.stTaskCheckNotifications = stTaskCheckNotifications;
+    setInterval(() => { stTaskCheckNotifications(); }, 3600000);
+    document.addEventListener('visibilitychange', () => { if(!document.hidden) stTaskCheckNotifications(); });
 
     let stTaskEditingId = null;
 
