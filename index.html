@@ -215,6 +215,7 @@
     color: var(--ink);
     letter-spacing: 0.01em;
   }
+
   .subtitle{
     font-family:'Lora', serif;
     font-weight:400;
@@ -3130,7 +3131,7 @@
     body.tt-mode .stage-glow-b{ background: radial-gradient(circle, rgba(var(--tt-label-rgb),0.20) 0%, rgba(var(--tt-label-rgb),0) 70%); }
 
     body::after{
-      content:"ATTENDANCE REGISTER";
+      content:"ATTENDANCE TRACKER";
       position:fixed;
       left:50%; top:50%;
       transform: translate(-50%,-50%) rotate(-7deg);
@@ -6788,13 +6789,6 @@
       </span>
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
-    <div class="menu-sep" id="menu-logout-sep" style="display:none;"></div>
-    <button class="menu-row menu-row-danger" id="menu-logout-btn" type="button" style="display:none;">
-      <span class="menu-row-label">
-        <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-        <span>Log out</span>
-      </span>
-    </button>
   </div>
 </div>
 
@@ -6820,7 +6814,7 @@
       </button>
       <button type="button" class="hm-cta-secondary" id="hm-cta-attendance">
         <svg class="hm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-        Attendance Register
+        Attendance Tracker
       </button>
       <a href="mailto:sudeepsahoo9078@gmail.com?subject=Attendance%20Tracker%20-%20Support" class="hm-cta-tertiary" id="hm-cta-contact">
         <svg class="hm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13z"></path><path d="m4.5 5.5 7.5 6.5 7.5-6.5"></path></svg>
@@ -8148,45 +8142,6 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
   </div>
 
   <div class="profile-field-group">
-    <div class="section-label"><span>Change Password</span></div>
-    <div id="profile-password-fields">
-      <div class="profile-field">
-        <label for="profile-current-pass">Current password</label>
-        <div class="auth-field-pass">
-          <input id="profile-current-pass" type="password" autocomplete="current-password" placeholder="Current password">
-          <button type="button" class="auth-eye-btn" id="profile-current-pass-eye" aria-label="Show password" title="Show password">
-            <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a20.6 20.6 0 0 1 5.06-5.94M9.9 4.24A10.4 10.4 0 0 1 12 4c7 0 11 7 11 7a20.6 20.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-          </button>
-        </div>
-      </div>
-      <div class="profile-field">
-        <label for="profile-new-pass">New password</label>
-        <div class="auth-field-pass">
-          <input id="profile-new-pass" type="password" autocomplete="new-password" placeholder="At least 4 characters">
-          <button type="button" class="auth-eye-btn" id="profile-new-pass-eye" aria-label="Show password" title="Show password">
-            <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a20.6 20.6 0 0 1 5.06-5.94M9.9 4.24A10.4 10.4 0 0 1 12 4c7 0 11 7 11 7a20.6 20.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-          </button>
-        </div>
-      </div>
-      <div class="profile-field">
-        <label for="profile-new-pass2">Confirm new password</label>
-        <div class="auth-field-pass">
-          <input id="profile-new-pass2" type="password" autocomplete="new-password" placeholder="Re-enter new password">
-          <button type="button" class="auth-eye-btn" id="profile-new-pass2-eye" aria-label="Show password" title="Show password">
-            <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a20.6 20.6 0 0 1 5.06-5.94M9.9 4.24A10.4 10.4 0 0 1 12 4c7 0 11 7 11 7a20.6 20.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-          </button>
-        </div>
-      </div>
-      <button class="profile-save-btn" id="profile-password-btn" type="button">Update Password</button>
-      <p class="profile-status" id="profile-password-status"></p>
-    </div>
-    <p class="profile-status" id="profile-admin-pass-note" style="display:none;">The admin password can't be changed here.</p>
-  </div>
-
-  <div class="profile-field-group">
     <div class="section-label"><span>Streaks</span></div>
     <p class="broadcast-hint" style="margin-top:0;">Your current consecutive-present streak, subject by subject. Marking a class absent loses the streak; a class marked suspended or not held leaves it unchanged.</p>
     <div class="streak-grid" id="streak-grid"></div>
@@ -8706,81 +8661,9 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
 </nav>
 
 
-<div class="wrap" id="auth-view">
-  <div class="auth-card">
-    <p class="eyebrow">Regd. Attendance Record</p>
-    <h1>Attendance Register</h1>
-    <p class="subtitle">Sign in to continue</p>
-
-    <div class="broadcast-banner" id="broadcast-banner-auth" style="display:none;">
-      <span class="broadcast-icon">&#128227;</span>
-      <span class="broadcast-text" id="broadcast-text-auth"></span>
-    </div>
-
-    <div class="notify-prompt notify-premium" data-notify-prompt data-default="" style="display:none;">
-      <span class="np-shine" aria-hidden="true"></span>
-      <span class="np-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg></span>
-      <div class="np-body">
-        <p class="np-eyebrow">Stay one step ahead</p>
-        <p class="np-title">Never miss a deadline</p>
-        <p class="np-text">Homework due dates, exam countdowns and roll-call reminders, delivered straight to your phone.</p>
-      </div>
-      <button type="button" class="np-btn notify-prompt-btn">Turn on</button>
-      <p class="hw-notify-status notify-prompt-status"></p>
-    </div>
-
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-login">Login</button>
-      <button class="auth-tab" id="tab-register">Register</button>
-    </div>
-
-    <form class="auth-form" id="login-form">
-      <div class="auth-field">
-        <label for="login-id">User ID</label>
-        <input id="login-id" type="text" autocomplete="username" placeholder="Your ID">
-      </div>
-      <div class="auth-field">
-        <label for="login-pass">Password</label>
-        <div class="auth-field-pass">
-          <input id="login-pass" type="password" autocomplete="current-password" placeholder="Your password">
-          <button type="button" class="auth-eye-btn" id="login-pass-eye" aria-label="Show password" title="Show password">
-            <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a20.6 20.6 0 0 1 5.06-5.94M9.9 4.24A10.4 10.4 0 0 1 12 4c7 0 11 7 11 7a20.6 20.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-          </button>
-        </div>
-      </div>
-      <label class="auth-admin-toggle">
-        <input type="checkbox" id="login-admin-toggle"> Login as admin
-      </label>
-      <div class="auth-error" id="login-error"></div>
-      <button type="submit" class="auth-submit">Login</button>
-    </form>
-
-    <form class="auth-form hidden" id="register-form">
-      <div class="auth-field">
-        <label for="reg-id">Choose a User ID</label>
-        <input id="reg-id" type="text" autocomplete="username" placeholder="e.g. subham24">
-      </div>
-      <div class="auth-field">
-        <label for="reg-pass">Choose a Password</label>
-        <input id="reg-pass" type="password" autocomplete="new-password" placeholder="At least 4 characters">
-      </div>
-      <div class="auth-field">
-        <label for="reg-pass2">Confirm Password</label>
-        <input id="reg-pass2" type="password" autocomplete="new-password" placeholder="Re-enter password">
-      </div>
-      <div class="auth-error" id="register-error"></div>
-      <button type="submit" class="auth-submit">Register</button>
-    </form>
-
-  </div>
-</div>
+<div class="wrap" id="auth-view" style="display:none !important;" hidden></div>
 
 <div class="wrap" id="app-view" style="display:none;">
-
-  <div class="session-bar">
-    <span class="who">Signed in as <b id="session-who"></b></span>
-  </div>
 
   <div class="broadcast-banner" id="broadcast-banner-app" style="display:none;">
     <span class="broadcast-icon">&#128227;</span>
@@ -8850,8 +8733,8 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
 
     <header class="cover">
       <p class="eyebrow">Regd. Attendance Record</p>
-      <h1>Attendance Register</h1>
-      <p class="subtitle">B.Sc. &mdash; Science &amp; Humanities</p>
+      <h1>Attendance Tracker</h1>
+      <p class="subtitle">CBSH - College Of Basic Science And Humanities</p>
       <div class="idfields">
         <div>
           <div class="idfields-name-row">
@@ -10304,26 +10187,6 @@ window.contactChoiceModal = function(opts){
     document.querySelectorAll('[data-tilt-card]').forEach(wire);
   })();
 
-  // ---- Show/hide password (login, register, and profile change-password) ----
-  (function initPasswordToggles(){
-    function wire(btnId, inputId){
-      const btn = document.getElementById(btnId);
-      const input = document.getElementById(inputId);
-      if(!btn || !input) return;
-      btn.addEventListener('click', () => {
-        const showing = input.type === 'text';
-        input.type = showing ? 'password' : 'text';
-        btn.classList.toggle('showing', !showing);
-        btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
-        btn.title = showing ? 'Show password' : 'Hide password';
-      });
-    }
-    wire('login-pass-eye', 'login-pass');
-    wire('profile-current-pass-eye', 'profile-current-pass');
-    wire('profile-new-pass-eye', 'profile-new-pass');
-    wire('profile-new-pass2-eye', 'profile-new-pass2');
-  })();
-
   // ---- Wanna See Magic — pendulum wave synchronization ----
   (function initMagic(){
     const stage = document.getElementById('magic-stage');
@@ -11687,8 +11550,6 @@ function initPracticalGroupFinder(){
     if(typeof currentUser !== 'undefined' && currentUser){
       document.getElementById('app-view').style.display = 'block';
       document.getElementById('app-footer').style.display = 'flex';
-    } else {
-      document.getElementById('auth-view').style.display = 'block';
     }
     window.scrollTo(0,0);
     // If the holiday greeting popup was paused to let the person browse
@@ -17198,21 +17059,6 @@ if(existing){
     authView: document.getElementById('auth-view'),
     appView: document.getElementById('app-view'),
     appFooter: document.getElementById('app-footer'),
-    tabLogin: document.getElementById('tab-login'),
-    tabRegister: document.getElementById('tab-register'),
-    loginForm: document.getElementById('login-form'),
-    registerForm: document.getElementById('register-form'),
-    loginId: document.getElementById('login-id'),
-    loginPass: document.getElementById('login-pass'),
-    loginAdminToggle: document.getElementById('login-admin-toggle'),
-    loginError: document.getElementById('login-error'),
-    regId: document.getElementById('reg-id'),
-    regPass: document.getElementById('reg-pass'),
-    regPass2: document.getElementById('reg-pass2'),
-    registerError: document.getElementById('register-error'),
-    sessionWho: document.getElementById('session-who'),
-    menuLogoutBtn: document.getElementById('menu-logout-btn'),
-    menuLogoutSep: document.getElementById('menu-logout-sep'),
     adminNav: document.getElementById('admin-nav'),
     navRegister: document.getElementById('nav-register'),
     navAdmin: document.getElementById('nav-admin'),
@@ -17239,13 +17085,6 @@ if(existing){
     xpChipValue: document.getElementById('xp-chip-value'),
     streakGrid: document.getElementById('streak-grid'),
     streakEmpty: document.getElementById('streak-empty'),
-    profileCurrentPass: document.getElementById('profile-current-pass'),
-    profileNewPass: document.getElementById('profile-new-pass'),
-    profileNewPass2: document.getElementById('profile-new-pass2'),
-    profilePasswordBtn: document.getElementById('profile-password-btn'),
-    profilePasswordStatus: document.getElementById('profile-password-status'),
-    profilePasswordFields: document.getElementById('profile-password-fields'),
-    profileAdminPassNote: document.getElementById('profile-admin-pass-note'),
     xpManualTotal: document.getElementById('xp-manual-total'),
     xpManualBtn: document.getElementById('xp-manual-btn'),
     xpManualStatus: document.getElementById('xp-manual-status'),
@@ -17450,20 +17289,6 @@ if(existing){
     updateXpChip(false);
     refreshAvatarUi();
     renderStreaks();
-    const isAdmin = !!(currentUser && currentUser.isAdmin);
-    if(els.profilePasswordFields) els.profilePasswordFields.style.display = isAdmin ? 'none' : 'block';
-    if(els.profileAdminPassNote) els.profileAdminPassNote.style.display = isAdmin ? 'block' : 'none';
-    if(els.profilePasswordStatus){ els.profilePasswordStatus.textContent = ''; els.profilePasswordStatus.className = 'profile-status'; }
-    if(els.profileCurrentPass) els.profileCurrentPass.value = '';
-    if(els.profileNewPass) els.profileNewPass.value = '';
-    if(els.profileNewPass2) els.profileNewPass2.value = '';
-    // Reset the eye toggles back to hidden each time the Profile page opens.
-    ['profile-current-pass', 'profile-new-pass', 'profile-new-pass2'].forEach(id => {
-      const input = document.getElementById(id);
-      const btn = document.getElementById(id + '-eye');
-      if(input) input.type = 'password';
-      if(btn){ btn.classList.remove('showing'); btn.setAttribute('aria-label', 'Show password'); btn.title = 'Show password'; }
-    });
     if(els.xpManualTotal) els.xpManualTotal.value = '';
     if(els.xpManualStatus){ els.xpManualStatus.textContent = ''; els.xpManualStatus.className = 'profile-status'; }
   }
@@ -17515,27 +17340,6 @@ if(existing){
       if(els.name) els.name.value = val;
       save();
       updateXpChip(false);
-    });
-  }
-
-  if(els.profilePasswordBtn){
-    els.profilePasswordBtn.addEventListener('click', async () => {
-      const status = els.profilePasswordStatus;
-      const setStatus = (msg, cls) => { if(status){ status.textContent = msg; status.className = 'profile-status' + (cls ? ' ' + cls : ''); } };
-      if(!currentUser || currentUser.isAdmin) return;
-      const cur = els.profileCurrentPass.value;
-      const next = els.profileNewPass.value;
-      const next2 = els.profileNewPass2.value;
-      if(!cur || !next){ setStatus('Fill in your current and new password.', 'is-error'); return; }
-      if(next.length < 4){ setStatus('New password must be at least 4 characters.', 'is-error'); return; }
-      if(next !== next2){ setStatus('New passwords do not match.', 'is-error'); return; }
-      const users = await loadUsers();
-      const match = users.find(u => u.id === currentUser.id);
-      if(!match || match.hash !== simpleHash(cur)){ setStatus('Current password is incorrect.', 'is-error'); return; }
-      match.hash = simpleHash(next);
-      await saveUsers(users);
-      els.profileCurrentPass.value = ''; els.profileNewPass.value = ''; els.profileNewPass2.value = '';
-      setStatus('Password updated.', 'is-success');
     });
   }
 
@@ -18132,25 +17936,10 @@ if(existing){
   });
 
   // ---- Auth ----
-  function showTab(which){
-    const isLogin = which === 'login';
-    els.tabLogin.classList.toggle('active', isLogin);
-    els.tabRegister.classList.toggle('active', !isLogin);
-    els.loginForm.classList.toggle('hidden', !isLogin);
-    els.registerForm.classList.toggle('hidden', isLogin);
-    els.loginError.textContent = '';
-    els.registerError.textContent = '';
-  }
-  els.tabLogin.addEventListener('click', () => showTab('login'));
-  els.tabRegister.addEventListener('click', () => showTab('register'));
-
   async function enterApp(user){
     currentUser = user;
     els.authView.style.display = 'none';
-    els.sessionWho.textContent = user.id + (user.isAdmin ? ' (admin)' : '');
     els.adminNav.style.display = user.isAdmin ? 'flex' : 'none';
-    if(els.menuLogoutBtn) els.menuLogoutBtn.style.display = 'flex';
-    if(els.menuLogoutSep) els.menuLogoutSep.style.display = 'block';
     if(els.profileMenuBtn) els.profileMenuBtn.style.display = 'flex';
     if(els.profileMenuSep) els.profileMenuSep.style.display = 'block';
     showAppTab('register');
@@ -18260,111 +18049,19 @@ if(existing){
     await loadRegisterFor(currentUser.id, currentUser.id);
   });
 
-  els.loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = els.loginId.value.trim();
-    const pass = els.loginPass.value;
-    els.loginError.textContent = '';
-    if(!id || !pass){ els.loginError.textContent = 'Enter both an ID and a password.'; return; }
-
-    if(els.loginAdminToggle.checked){
-      if(id === ADMIN_ID && pass === ADMIN_PASS){
-        const session = { id, isAdmin: true };
-        await saveSession(session);
-        els.loginPass.value = '';
-        await enterApp(session);
-      } else {
-        els.loginError.textContent = 'Incorrect admin ID or password.';
-      }
-      return;
-    }
-
-    const users = await loadUsers();
-    const match = users.find(u => u.id === id);
-    if(!match || match.hash !== simpleHash(pass)){
-      els.loginError.textContent = 'Incorrect ID or password.';
-      return;
-    }
-    const session = { id, isAdmin: false };
-    await saveSession(session);
-    els.loginPass.value = '';
-    await enterApp(session);
-  });
-
-  els.registerForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = els.regId.value.trim();
-    const pass = els.regPass.value;
-    const pass2 = els.regPass2.value;
-    els.registerError.textContent = '';
-
-    if(!id || !pass){ els.registerError.textContent = 'Choose an ID and a password.'; return; }
-    if(id.toLowerCase() === ADMIN_ID.toLowerCase()){ els.registerError.textContent = 'That ID is reserved.'; return; }
-    if(pass.length < 4){ els.registerError.textContent = 'Password must be at least 4 characters.'; return; }
-    if(pass !== pass2){ els.registerError.textContent = 'Passwords do not match.'; return; }
-
-    const users = await loadUsers();
-    if(users.some(u => u.id.toLowerCase() === id.toLowerCase())){
-      els.registerError.textContent = 'That ID is already taken.';
-      return;
-    }
-    users.push({ id, hash: simpleHash(pass) });
-    await saveUsers(users);
-    const session = { id, isAdmin: false };
-    await saveSession(session);
-    els.regPass.value = ''; els.regPass2.value = '';
-    await enterApp(session);
-  });
-
-  els.menuLogoutBtn.addEventListener('click', async () => {
-    document.getElementById('menu-dropdown').classList.remove('open');
-    { const mt = document.getElementById('menu-toggle'); if(mt) mt.classList.remove('menu-open'); }
-    await saveSession(null);
-    currentUser = null;
-    viewingUserId = null;
-    preEditLiveState = null;
-    historyUndoSnapshot = null;
-    homeworkItems = [];
-    rollcall = { section: null, marks: {}, practicalMarks: {}, holidayOverrides: {}, customHolidays: {}, extraCards: {}, recapStart: localDateKey(new Date()) };
-    projection = { section: null, examDate: null, examDates: {} };
-    coachingExams = [];
-    examsSection = { section: null };
-    selectedExamSubject = null;
-    const homeworkDot = document.getElementById('menu-homework-dot');
-    if(homeworkDot) homeworkDot.style.display = 'none';
-    const projectionDot = document.getElementById('menu-projection-dot');
-    if(projectionDot) projectionDot.style.display = 'none';
-    const examsDot = document.getElementById('menu-exams-dot');
-    if(examsDot) examsDot.style.display = 'none';
-    els.historyUndoBanner.style.display = 'none';
-    els.appView.style.display = 'none';
-    els.appFooter.style.display = 'none';
-    els.adminNav.style.display = 'none';
-    els.menuLogoutBtn.style.display = 'none';
-    els.menuLogoutSep.style.display = 'none';
-    if(els.profileMenuBtn) els.profileMenuBtn.style.display = 'none';
-    if(els.profileMenuSep) els.profileMenuSep.style.display = 'none';
-    pageHide('profile-view');
-    els.authView.style.display = 'block';
-    els.loginId.value = ''; els.loginPass.value = ''; els.loginAdminToggle.checked = false;
-    showTab('login');
-  });
-
+  // No login: the app opens straight into the tracker. Data is still saved
+  // under a user ID exactly as before, so everything lands in the same
+  // storage keys. If this device already has a saved session, that same ID
+  // is reused so existing data keeps showing up.
+  const DEFAULT_USER_ID = 'itx_sudeep';
   async function init(){
     loadBroadcastMessage().then(renderBroadcast);
-    const session = await loadSession();
-    if(session && session.id){
-      if(session.isAdmin && session.id !== ADMIN_ID){
-        // stale/invalid admin session, discard
-        await saveSession(null);
-      } else {
-        await enterApp(session);
-        return;
-      }
+    let session = await loadSession();
+    if(!(session && session.id && !session.isAdmin)){
+      session = { id: DEFAULT_USER_ID, isAdmin: false };
+      await saveSession(session);
     }
-    els.authView.style.display = 'block';
-    els.appView.style.display = 'none';
-    els.appFooter.style.display = 'none';
+    await enterApp({ id: session.id, isAdmin: false });
   }
 
   if(els.broadcastSendBtn){
