@@ -14946,6 +14946,21 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
     }
   }
 
+  /* ---- step-by-step Back inside the Syllabus ---- */
+  window.addEventListener('popstate', () => { window.__sylPop = true; setTimeout(() => { window.__sylPop = false; }, 0); });
+  function sylBack(){
+    if(!sylVisible()) return false;
+    let handled = false;
+    const q = document.getElementById('syl-q');
+    if(SYLV.view !== 'home'){ sylGo('home'); handled = true; }
+    else if(SYLV.q){
+      SYLV.q = ''; if(q) q.value = ''; sylRunSearch(true); window.scrollTo(0, 0); handled = true;
+    }
+    // phone/system Back already used up one history step; put it back so the next Back works
+    if(handled && window.__sylPop){ try{ history.pushState({ appRoute:'syllabus-view' }, '', location.href); }catch(e){} }
+    return handled;
+  }
+
   /* ---- show / hide ---- */
   function syllabusHide(){
     pageHide('syllabus-view');
@@ -14982,7 +14997,7 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
     const openBtn = document.getElementById('open-syllabus-btn');
     if(openBtn) openBtn.addEventListener('click', syllabusShow);
     const backBtn = document.getElementById('syllabus-back-btn');
-    if(backBtn) backBtn.addEventListener('click', syllabusHide);
+    if(backBtn) backBtn.addEventListener('click', () => { if(!sylBack()) syllabusHide(); });
   })();
 
 
