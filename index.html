@@ -6171,6 +6171,424 @@
     transform-origin:left center; animation: nvUndoBar 10s linear forwards;
   }
   @keyframes nvUndoBar{ from{ transform: scaleX(1); } to{ transform: scaleX(0); } }
+
+  /* ================================================================
+     SYLLABUS — classic, paper-and-gold digital syllabus
+     ================================================================ */
+  .syl-s-odia { --ac-rgb: 22,118,126; }
+  .syl-s-eng  { --ac-rgb: 162,117,31; }
+  .syl-s-phy  { --ac-rgb: 44,104,168; }
+  .syl-s-chem { --ac-rgb: 60,107,76; }
+  .syl-s-math { --ac-rgb: 138,62,46; }
+  .syl-s-it   { --ac-rgb: 102,80,168; }
+  body.dark .syl-s-odia { --ac-rgb: 118,204,210; }
+  body.dark .syl-s-eng  { --ac-rgb: 230,185,92; }
+  body.dark .syl-s-phy  { --ac-rgb: 120,176,236; }
+  body.dark .syl-s-chem { --ac-rgb: 127,206,156; }
+  body.dark .syl-s-math { --ac-rgb: 230,164,135; }
+  body.dark .syl-s-it   { --ac-rgb: 182,164,240; }
+
+  #syllabus-view{ --syl-tick:#fff; padding-bottom: 96px; }
+  body.dark #syllabus-view{ --syl-tick:#15130d; }
+  #syllabus-view [lang="or"]{ font-family:'Noto Serif Oriya','Noto Sans Oriya','Kalinga','Lora',serif; font-style:normal; }
+  #syllabus-view button{ font-family:inherit; -webkit-tap-highlight-color: transparent; }
+  .syl-hidden{ display:none !important; }
+  #syllabus-view{ touch-action: manipulation; }
+  #syllabus-view .syl-row{ content-visibility:auto; contain-intrinsic-size:auto 58px; }
+  #syllabus-view .syl-unit-inner{ contain: layout paint; }
+  body.syl-active .stage-glow, body.syl-active .stage-grain{ opacity:0 !important; visibility:hidden !important; }
+
+  @keyframes sylRise{ from{ opacity:0; transform: translateY(16px); } to{ opacity:1; transform:none; } }
+  @keyframes sylPop{ 0%{ transform:scale(.82); } 55%{ transform:scale(1.14); } 100%{ transform:scale(1); } }
+  @keyframes sylSheen{ to{ transform: translateX(120%); } }
+  @keyframes sylBurst{
+    0%{ opacity:1; transform: translate(-50%,-50%) scale(1) rotate(0); }
+    100%{ opacity:0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.2) rotate(var(--r)); }
+  }
+  @keyframes sylToastIn{ from{ opacity:0; transform: translate(-50%, 18px) scale(.96); } to{ opacity:1; transform: translate(-50%,0) scale(1); } }
+  @keyframes sylSwap{ to{ opacity:0; transform: translateX(-18px); } }
+
+  .syl-enter{ animation: sylRise .62s cubic-bezier(.16,1,.3,1) both; animation-delay: calc(var(--i,0) * 55ms); }
+
+  .syl-k{
+    font-family:'Lora',serif; font-style:italic; font-size:12.5px; letter-spacing:.05em;
+    color: var(--gold); margin:0 0 6px 0;
+  }
+  .syl-sec{
+    font-family:'Lora',serif; font-weight:600; font-size:19px; margin:30px 0 14px 0; color:var(--ink);
+    display:flex; align-items:center; gap:12px;
+  }
+  .syl-sec::after{ content:''; flex:1; height:1px; background: linear-gradient(90deg, rgba(var(--ink-rgb),.2), transparent); }
+  .syl-link{
+    background:none; border:none; padding:2px 0; cursor:pointer; color: var(--gold);
+    font-family:'Lora',serif; font-size:13px; text-decoration: underline; text-decoration-color: rgba(var(--gold-rgb),.35); text-underline-offset:3px;
+    transition: color .2s, text-decoration-color .2s;
+  }
+  .syl-link:hover{ text-decoration-color: var(--gold); }
+  .syl-dot{ color: var(--ink-soft); margin:0 6px; }
+
+  /* ---- search ---- */
+  .syl-search{
+    display:flex; align-items:center; gap:10px; padding:0 14px; height:46px; margin-bottom:18px;
+    background: rgba(var(--paper-rgb),.55); border:1px solid rgba(var(--ink-rgb),.15); border-radius:999px;
+    box-shadow: var(--card-shadow); transition: border-color .25s, box-shadow .25s;
+  }
+  .syl-search:focus-within{ border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--gold-rgb),.16), var(--card-shadow); }
+  .syl-search svg{ width:18px; height:18px; color: var(--ink-soft); flex:none; }
+  .syl-search input{
+    flex:1; min-width:0; border:none; outline:none; background:transparent; color: var(--ink);
+    font-family:'Lora',serif; font-size:15px;
+  }
+  .syl-search input::placeholder{ color: var(--ink-soft); opacity:.75; }
+  .syl-search input::-webkit-search-cancel-button{ display:none; }
+  .syl-search-x{
+    border:none; background: rgba(var(--ink-rgb),.1); color: var(--ink); width:24px; height:24px; border-radius:50%;
+    cursor:pointer; font-size:16px; line-height:1; padding:0;
+  }
+
+  /* ---- hero ---- */
+  .syl-hero{
+    position:relative; overflow:hidden; display:grid; grid-template-columns:auto 1fr; gap:20px; align-items:center;
+    padding:22px 20px; border-radius:16px; border:1px solid rgba(var(--gold-rgb),.35);
+    background: linear-gradient(150deg, rgba(var(--gold-rgb),.16), rgba(var(--paper-rgb),.55) 58%);
+    box-shadow: var(--card-shadow);
+  }
+  .syl-hero::after{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background: linear-gradient(110deg, transparent 38%, rgba(var(--gold-rgb),.2) 50%, transparent 62%);
+    transform: translateX(-120%); animation: sylSheen 1.7s .55s ease forwards;
+  }
+  .syl-hero-ring{ position:relative; width:118px; height:118px; flex:none; }
+  .syl-ring-svg{ display:block; overflow:visible; }
+  .syl-ring-bg{ fill:none; stroke: rgba(var(--ink-rgb),.12); }
+  .syl-ring-fg{
+    fill:none; stroke: rgb(var(--ac-rgb, var(--gold-rgb))); stroke-linecap:round;
+    transition: stroke-dashoffset 1.25s cubic-bezier(.22,1,.36,1);
+  }
+  .syl-ring-hero .syl-ring-fg{ filter: drop-shadow(0 0 5px rgba(var(--gold-rgb),.45)); }
+  .syl-hero-pct{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Lora',serif; color:var(--ink);
+  }
+  .syl-hero-pct b{ font-size:30px; font-weight:600; letter-spacing:-.01em; }
+  .syl-hero-pct span{ font-size:14px; color: var(--ink-soft); margin: 6px 0 0 2px; }
+  .syl-hero-big{ font-family:'Lora',serif; margin:0 0 6px 0; color:var(--ink); }
+  .syl-hero-big b{ font-size:30px; font-weight:600; }
+  .syl-hero-big span{ font-size:14px; color:var(--ink-soft); }
+  .syl-hero-msg{ margin:0; font-size:13.5px; line-height:1.5; color: var(--ink-soft); font-style:italic; font-family:'Lora',serif; }
+
+  /* ---- pills ---- */
+  .syl-pills{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:12px 0; }
+  .syl-pill{
+    background: rgba(var(--paper-rgb),.5); border:1px solid rgba(var(--ink-rgb),.13); border-radius:12px;
+    padding:12px 8px; text-align:center; box-shadow: var(--card-shadow); color: var(--ink);
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+  }
+  .syl-pill-n{ display:flex; align-items:baseline; gap:4px; font-family:'Lora',serif; }
+  .syl-pill-n b{ font-size:23px; font-weight:600; }
+  .syl-pill-n small{ font-size:11px; color:var(--ink-soft); }
+  .syl-pill-n svg{ width:15px; height:15px; fill: var(--gold); stroke: var(--gold); align-self:center; }
+  .syl-pill-l{ font-size:11.5px; color: var(--ink-soft); font-family:'Lora',serif; letter-spacing:.02em; }
+  .syl-pill-btn{ cursor:pointer; transition: transform .18s, border-color .2s; }
+  .syl-pill-btn:hover{ border-color: var(--gold); transform: translateY(-2px); }
+  .syl-pill-btn:active{ transform: scale(.96); }
+
+  /* ---- up next ---- */
+  .syl-next{
+    --ac-rgb-use: var(--ac-rgb, var(--gold-rgb));
+    position:relative; padding:18px 18px 16px 22px; margin:12px 0; border-radius:14px; overflow:hidden;
+    border:1px solid rgba(var(--ac-rgb, var(--gold-rgb)), .35);
+    background: linear-gradient(160deg, rgba(var(--ac-rgb, var(--gold-rgb)), .12), rgba(var(--paper-rgb),.5) 70%);
+    box-shadow: var(--card-shadow);
+  }
+  .syl-next::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background: rgb(var(--ac-rgb, var(--gold-rgb))); }
+  .syl-next .syl-k{ color: rgb(var(--ac-rgb, var(--gold-rgb))); }
+  .syl-next-t{ font-family:'Lora',serif; font-weight:600; font-size:18px; line-height:1.3; margin:0 0 4px 0; color:var(--ink); }
+  .syl-next-u{ margin:0 0 14px 0; font-size:13px; color: var(--ink-soft); font-family:'Lora',serif; }
+  .syl-next-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .syl-next.syl-swap{ animation: sylSwap .38s ease forwards; }
+
+  /* ---- buttons ---- */
+  .syl-btn{
+    display:inline-flex; align-items:center; gap:8px; justify-content:center; padding:10px 18px; min-height:42px;
+    border-radius:999px; cursor:pointer; font-family:'Lora',serif; font-size:14px; font-weight:500;
+    color: var(--ink); background: transparent; border:1px solid rgba(var(--ink-rgb),.25);
+    transition: transform .16s, background .2s, border-color .2s, color .2s;
+  }
+  .syl-btn svg{ width:16px; height:16px; }
+  .syl-btn:hover{ border-color: var(--gold); color: var(--gold); }
+  .syl-btn:active{ transform: scale(.96); }
+  .syl-btn-solid{ background: var(--gold); border-color: var(--gold); color: var(--paper-soft); }
+  body:not(.dark) .syl-btn-solid{ color:#fffaf0; }
+  .syl-btn-solid:hover{ color: var(--paper-soft); filter: brightness(1.08); }
+  body:not(.dark) .syl-btn-solid:hover{ color:#fffaf0; }
+  .syl-btn-ghost{ border-color: transparent; color: var(--ink-soft); }
+  .syl-btn-ghost.armed{ color: var(--danger); border-color: var(--danger); background: rgba(var(--danger-rgb), .08); }
+
+  /* ---- planner + week ---- */
+  .syl-twocol{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin:12px 0; }
+  @media (max-width:560px){ .syl-twocol{ grid-template-columns:1fr; } }
+  .syl-pace, .syl-week{
+    background: rgba(var(--paper-rgb),.5); border:1px solid rgba(var(--ink-rgb),.13); border-radius:14px;
+    padding:16px; box-shadow: var(--card-shadow);
+  }
+  .syl-pace-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .syl-pace-head .syl-k{ margin:0; }
+  .syl-pace-big{ display:flex; align-items:baseline; gap:8px; font-family:'Lora',serif; }
+  .syl-pace-big b{ font-size:34px; font-weight:600; color:var(--gold); line-height:1; }
+  .syl-pace-big span{ font-size:14px; color:var(--ink-soft); }
+  .syl-pace-msg{ margin:6px 0 12px 0; font-size:13.5px; line-height:1.5; color:var(--ink-soft); font-family:'Lora',serif; }
+  .syl-pace-msg b{ color: var(--ink); }
+  .syl-date{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-family:'Lora',serif; font-size:13px; color:var(--ink-soft); }
+  .syl-date input{
+    font-family:'Lora',serif; font-size:13.5px; color:var(--ink); background: transparent;
+    border:1px solid rgba(var(--ink-rgb),.2); border-radius:8px; padding:7px 9px; outline:none; color-scheme: light;
+  }
+  body.dark .syl-date input{ color-scheme: dark; }
+  .syl-date input:focus{ border-color: var(--gold); }
+  .syl-week-bars{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; height:112px; align-items:end; }
+  .syl-wcol{ display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
+  .syl-wn{ font-size:11px; color:var(--ink-soft); font-family:'Lora',serif; min-height:14px; }
+  .syl-wbar{ width:100%; max-width:26px; height:62px; border-radius:6px; background: rgba(var(--ink-rgb),.07); display:flex; align-items:flex-end; overflow:hidden; }
+  .syl-wbar i{ display:block; width:100%; height:0; border-radius:6px; background: linear-gradient(180deg, rgba(var(--gold-rgb),.75), rgba(var(--gold-rgb),1)); transition: height .9s cubic-bezier(.22,1,.36,1); }
+  .syl-wcol.today .syl-wl{ color: var(--gold); font-weight:700; }
+  .syl-wl{ font-size:11px; color:var(--ink-soft); font-family:'Lora',serif; }
+
+  /* ---- subject cards ---- */
+  .syl-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; }
+  @media (min-width:640px){ .syl-grid{ grid-template-columns: repeat(3, 1fr); } }
+  .syl-card{
+    position:relative; text-align:left; display:flex; flex-direction:column; gap:4px; padding:16px 14px 14px;
+    background: linear-gradient(165deg, rgba(var(--ac-rgb),.1), rgba(var(--paper-rgb),.5) 62%);
+    border:1px solid rgba(var(--ink-rgb),.13); border-radius:14px; color:var(--ink); cursor:pointer;
+    box-shadow: var(--card-shadow); overflow:hidden;
+    animation: sylRise .6s cubic-bezier(.16,1,.3,1) both; animation-delay: calc(var(--i,0) * 55ms);
+    transition: transform .22s cubic-bezier(.2,.9,.3,1.2), border-color .2s, box-shadow .2s;
+  }
+  .syl-card::after{
+    content:''; position:absolute; right:-26px; top:-26px; width:84px; height:84px; border-radius:50%;
+    background: radial-gradient(circle, rgba(var(--ac-rgb),.2), transparent 70%); pointer-events:none;
+  }
+  .syl-card:hover{ transform: translateY(-3px); border-color: rgba(var(--ac-rgb),.6); }
+  .syl-card:active{ transform: scale(.97); }
+  .syl-card-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .syl-card-ico{
+    width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background: rgba(var(--ac-rgb),.15); color: rgb(var(--ac-rgb));
+  }
+  .syl-card-ico svg{ width:21px; height:21px; }
+  .syl-card-pct{ font-family:'Lora',serif; font-size:13px; color:var(--ink-soft); }
+  .syl-card-pct b{ font-size:21px; font-weight:600; color: rgb(var(--ac-rgb)); }
+  .syl-card-name{ font-family:'Lora',serif; font-weight:600; font-size:15.5px; line-height:1.25; }
+  .syl-card-tag{ font-size:11.5px; color:var(--ink-soft); font-family:'Lora',serif; font-style:italic; margin-bottom:8px; }
+  .syl-card-count{ font-size:12px; color:var(--ink-soft); font-family:'Lora',serif; margin-top:6px; }
+  .syl-card.complete{ border-color: rgba(var(--ac-rgb),.7); }
+  .syl-card.complete::before{
+    content:'✦'; position:absolute; right:12px; bottom:10px; color: rgb(var(--ac-rgb)); font-size:16px;
+  }
+  .syl-bar{ display:block; height:5px; border-radius:99px; background: rgba(var(--ink-rgb),.1); overflow:hidden; }
+  .syl-bar i{
+    display:block; height:100%; width:0; border-radius:99px;
+    background: linear-gradient(90deg, rgba(var(--ac-rgb, var(--gold-rgb)),.7), rgb(var(--ac-rgb, var(--gold-rgb))));
+    transition: width .9s cubic-bezier(.22,1,.36,1);
+  }
+
+  .syl-foot{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin: 30px 0 14px; }
+  .syl-source{ text-align:center; font-size:12px; line-height:1.6; color:var(--ink-soft); font-family:'Lora',serif; font-style:italic; margin:6px 8px 0; }
+
+  /* ---- subject view ---- */
+  .syl-crumb{
+    background:none; border:none; color: var(--ink-soft); font-family:'Lora',serif; font-size:13.5px; cursor:pointer;
+    padding:0; margin:0 0 14px 0; transition: color .2s, transform .2s;
+  }
+  .syl-crumb:hover{ color: var(--gold); transform: translateX(-2px); }
+  .syl-sh{
+    display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; padding:18px 16px; border-radius:16px;
+    border:1px solid rgba(var(--ac-rgb),.38);
+    background: linear-gradient(150deg, rgba(var(--ac-rgb),.16), rgba(var(--paper-rgb),.5) 62%);
+    box-shadow: var(--card-shadow);
+  }
+  .syl-sh-ico{ width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; background: rgba(var(--ac-rgb),.18); color: rgb(var(--ac-rgb)); }
+  .syl-sh-ico svg{ width:25px; height:25px; }
+  .syl-sh .syl-k{ color: rgb(var(--ac-rgb)); margin-bottom:2px; }
+  .syl-sh-name{ font-family:'Lora',serif; font-weight:600; font-size:22px; line-height:1.15; margin:0 0 4px; color:var(--ink); }
+  .syl-sh-count{ margin:0; font-size:13px; color: var(--ink-soft); font-family:'Lora',serif; }
+  .syl-sh-count b{ color:var(--ink); font-weight:600; }
+  .syl-sh-ring{ position:relative; width:66px; height:66px; }
+  .syl-sh-pct{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Lora',serif; font-weight:600; font-size:14px; color:var(--ink); }
+
+  .syl-toolbar{ display:flex; flex-direction:column; gap:10px; margin:16px 0 6px; }
+  .syl-seg{
+    position:relative; display:grid; grid-template-columns:repeat(4,1fr); padding:3px; border-radius:999px;
+    background: rgba(var(--ink-rgb),.07); border:1px solid rgba(var(--ink-rgb),.1);
+  }
+  .syl-seg::before{
+    content:''; position:absolute; top:3px; bottom:3px; left:3px; width: calc((100% - 6px) / 4); border-radius:999px;
+    background: rgb(var(--ac-rgb)); box-shadow: 0 4px 12px -4px rgba(var(--ac-rgb),.7);
+    transform: translateX(calc(var(--idx,0) * 100%)); transition: transform .42s cubic-bezier(.3,1.25,.5,1);
+  }
+  .syl-seg button{
+    position:relative; z-index:1; background:none; border:none; padding:9px 4px; border-radius:999px; cursor:pointer;
+    font-family:'Lora',serif; font-size:13px; font-weight:500; color: var(--ink-soft); transition: color .25s;
+  }
+  .syl-seg button.on{ color: var(--syl-tick); }
+  .syl-tools{ text-align:right; }
+
+  .syl-group{
+    font-family:'Lora',serif; font-style:italic; font-weight:500; font-size:13.5px; letter-spacing:.04em; color: var(--gold);
+    margin: 22px 0 10px; display:flex; align-items:center; gap:10px;
+  }
+  .syl-group::after{ content:''; flex:1; height:1px; background: linear-gradient(90deg, rgba(var(--gold-rgb),.4), transparent); }
+  .syl-group-acc{ color: rgb(var(--ac-rgb)); }
+  .syl-group-ico{ width:22px; height:22px; display:inline-flex; }
+  .syl-group-ico svg{ width:100%; height:100%; }
+
+  .syl-unit{
+    position:relative; margin:0 0 10px; border:1px solid rgba(var(--ink-rgb),.13); border-radius:14px;
+    background: rgba(var(--paper-rgb),.5); box-shadow: var(--card-shadow); overflow:hidden;
+    animation: sylRise .55s cubic-bezier(.16,1,.3,1) both; animation-delay: calc(var(--i,0) * 40ms);
+    transition: border-color .3s, box-shadow .3s;
+  }
+  .syl-unit.open{ border-color: rgba(var(--ac-rgb),.38); }
+  .syl-unit.complete{ border-color: rgba(var(--ac-rgb),.6); }
+  .syl-unit-head{
+    width:100%; display:flex; align-items:center; gap:12px; padding:14px 14px 12px; background:none; border:none;
+    text-align:left; cursor:pointer; color:var(--ink);
+  }
+  .syl-unit-no{
+    flex:none; min-width:36px; height:36px; padding:0 7px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    font-family:'Lora',serif; font-weight:600; font-size:12.5px; letter-spacing:.02em; white-space:nowrap;
+    color: rgb(var(--ac-rgb)); background: rgba(var(--ac-rgb),.13); border:1px solid rgba(var(--ac-rgb),.3);
+    transition: background .3s, color .3s;
+  }
+  .syl-unit.complete .syl-unit-no{ background: rgb(var(--ac-rgb)); color: var(--syl-tick); }
+  .syl-unit-main{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .syl-unit-title{ font-family:'Lora',serif; font-weight:600; font-size:15px; line-height:1.3; }
+  .syl-unit-meta{ font-size:11.5px; color:var(--ink-soft); font-family:'Lora',serif; font-style:italic; }
+  .syl-unit-count{ flex:none; font-family:'Lora',serif; font-size:12.5px; color:var(--ink-soft); white-space:nowrap; }
+  .syl-unit-count b{ color: rgb(var(--ac-rgb)); font-size:15px; }
+  .syl-chev{ flex:none; width:18px; height:18px; color:var(--ink-soft); transition: transform .4s cubic-bezier(.3,1.2,.5,1); }
+  .syl-unit.open .syl-chev{ transform: rotate(180deg); }
+  .syl-bar-unit{ margin:0 14px 2px; height:3px; }
+  .syl-unit-body{ display:grid; grid-template-rows:0fr; transition: grid-template-rows .45s cubic-bezier(.22,1,.36,1); }
+  .syl-unit.open .syl-unit-body{ grid-template-rows:1fr; }
+  .syl-unit-inner{ overflow:hidden; min-height:0; }
+  .syl-unit-actions{ padding:10px 16px 2px; display:flex; align-items:center; opacity:0; transform: translateY(-4px); transition: opacity .35s .1s, transform .35s .1s; }
+  .syl-unit.open .syl-unit-actions{ opacity:1; transform:none; }
+
+  /* filters */
+  .syl-units[data-f="pending"] .syl-row.done,
+  .syl-units[data-f="done"] .syl-row:not(.done),
+  .syl-units[data-f="star"] .syl-row:not(.starred){ display:none; }
+
+  .syl-empty{ text-align:center; color:var(--ink-soft); font-family:'Lora',serif; font-style:italic; font-size:14px; padding:28px 12px; }
+  .syl-subnote{
+    margin-top:22px; padding:14px 16px; border:1px dashed rgba(var(--ink-rgb),.25); border-radius:10px;
+    font-size:13px; line-height:1.6; color:var(--ink-soft); font-family:'Lora',serif;
+  }
+
+  /* ---- topic rows ---- */
+  .syl-topics{ list-style:none; margin:0; padding:4px 8px 10px; }
+  .syl-row{
+    display:grid; grid-template-columns: 28px 1fr auto auto; gap:2px 10px; align-items:start;
+    padding:10px 6px; border-radius:10px; position:relative; transition: background .25s;
+  }
+  .syl-row + .syl-row{ border-top:1px solid rgba(var(--ink-rgb),.07); }
+  .syl-row.done{ background: linear-gradient(90deg, rgba(var(--ac-rgb, var(--gold-rgb)),.07), transparent 70%); }
+  .syl-check{
+    width:26px; height:26px; margin-top:1px; padding:0; border-radius:8px; cursor:pointer; display:grid; place-items:center;
+    border:1.7px solid rgba(var(--ink-rgb),.4); background:transparent;
+    transition: background .25s, border-color .25s, box-shadow .25s;
+  }
+  .syl-check:hover{ border-color: rgb(var(--ac-rgb, var(--gold-rgb))); box-shadow: 0 0 0 4px rgba(var(--ac-rgb, var(--gold-rgb)),.12); }
+  .syl-check svg{ width:18px; height:18px; stroke: var(--syl-tick); }
+  .syl-tick{ stroke-dasharray:26; stroke-dashoffset:26; transition: stroke-dashoffset .38s cubic-bezier(.5,0,.2,1) .05s; }
+  .syl-row.done .syl-check{ background: rgb(var(--ac-rgb, var(--gold-rgb))); border-color: rgb(var(--ac-rgb, var(--gold-rgb))); animation: sylPop .4s ease; }
+  .syl-row.done .syl-tick{ stroke-dashoffset:0; }
+  .syl-row-text{ cursor:pointer; min-width:0; padding-top:2px; display:flex; flex-direction:column; gap:2px; }
+  .syl-row-title{
+    font-family:'Lora',serif; font-size:14.5px; line-height:1.45; color:var(--ink); align-self:flex-start;
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 62% / 0% 1.5px;
+    transition: background-size .5s cubic-bezier(.5,0,.2,1), color .3s;
+  }
+  .syl-row.done .syl-row-title{ background-size:100% 1.5px; color: var(--ink-soft); }
+  .syl-row-sub{ font-size:12.5px; line-height:1.5; color:var(--ink-soft); font-family:'Lora',serif; font-style:italic; }
+  .syl-row-ctx{ font-size:11.5px; color: rgb(var(--ac-rgb, var(--gold-rgb))); font-family:'Lora',serif; }
+  .syl-row-done{ font-size:11px; letter-spacing:.03em; color: rgb(var(--ac-rgb, var(--gold-rgb))); font-family:'Lora',serif; min-height:0; max-height:0; opacity:0; overflow:hidden; transition: max-height .35s, opacity .35s; }
+  .syl-row.done .syl-row-done{ max-height:20px; opacity:1; }
+  .syl-ico{
+    width:32px; height:32px; margin-top:-2px; padding:0; border:none; background:none; cursor:pointer; border-radius:50%;
+    display:grid; place-items:center; color: rgba(var(--ink-rgb),.4); transition: color .2s, background .2s, transform .2s;
+  }
+  .syl-ico:hover{ background: rgba(var(--ink-rgb),.07); color: var(--ink); }
+  .syl-ico:active{ transform: scale(.88); }
+  .syl-ico svg{ width:18px; height:18px; }
+  .syl-star-btn svg{ fill:none; stroke: currentColor; transition: fill .25s, stroke .25s, transform .35s cubic-bezier(.3,1.6,.5,1); }
+  .syl-star-btn.on{ color: var(--gold); }
+  .syl-star-btn.on svg{ fill: var(--gold); stroke: var(--gold); transform: rotate(72deg) scale(1.08); }
+  .syl-note-btn.on{ color: rgb(var(--ac-rgb, var(--gold-rgb))); }
+  .syl-note-btn.on::after{
+    content:''; position:absolute; width:6px; height:6px; border-radius:50%; background: rgb(var(--ac-rgb, var(--gold-rgb))); transform: translate(9px,-9px);
+  }
+  .syl-note-btn{ position:relative; }
+  .syl-note-wrap{ grid-column: 1 / -1; display:grid; grid-template-rows:0fr; transition: grid-template-rows .38s cubic-bezier(.22,1,.36,1); }
+  .syl-row.note-open .syl-note-wrap{ grid-template-rows:1fr; }
+  .syl-note-inner{ overflow:hidden; min-height:0; }
+  .syl-note-ta{
+    width:100%; margin-top:8px; padding:10px 12px; resize:vertical; min-height:58px; border-radius:10px; outline:none;
+    background: rgba(var(--paper-rgb),.7); color:var(--ink); border:1px solid rgba(var(--ink-rgb),.18);
+    font-family:'Lora',serif; font-size:13.5px; line-height:1.5; transition: border-color .2s, box-shadow .2s;
+  }
+  .syl-note-ta:focus{ border-color: rgb(var(--ac-rgb, var(--gold-rgb))); box-shadow: 0 0 0 3px rgba(var(--ac-rgb, var(--gold-rgb)),.15); }
+
+  /* ---- results lists ---- */
+  .syl-results .syl-topics, #syl-content > .syl-resgroup .syl-topics{ padding:2px 4px 6px; }
+  .syl-resgroup{
+    margin-bottom:14px; border:1px solid rgba(var(--ink-rgb),.13); border-radius:14px; padding:2px 10px 6px;
+    background: rgba(var(--paper-rgb),.5); box-shadow: var(--card-shadow);
+    animation: sylRise .5s cubic-bezier(.16,1,.3,1) both;
+  }
+  .syl-resgroup .syl-group{ margin:14px 0 6px; }
+  .syl-res-count{ margin:0 2px 12px; font-size:13px; color:var(--ink-soft); font-family:'Lora',serif; font-style:italic; }
+  .syl-listhead{ margin:2px 0 20px; }
+  .syl-listhead .syl-sh-name{ font-size:26px; }
+  .syl-sub{ margin:6px 0 0; font-size:13.5px; line-height:1.55; color:var(--ink-soft); font-family:'Lora',serif; }
+
+  /* ---- toast + particles ---- */
+  .syl-toast{
+    position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 18px); opacity:0; pointer-events:none;
+    z-index: 100000; display:flex; align-items:center; gap:14px; width:max-content; max-width: min(92vw, 460px); box-sizing:border-box;
+    padding:12px 18px; border-radius:22px; text-align:left; line-height:1.4; background: var(--ink); color: var(--paper);
+    font-family:'Lora',serif; font-size:13.5px; box-shadow: 0 14px 34px -12px rgba(0,0,0,.5);
+  }
+  .syl-toast.show{ opacity:1; pointer-events:auto; animation: sylToastIn .45s cubic-bezier(.2,1,.3,1) both; transform: translate(-50%,0); }
+  .syl-toast-msg{ flex:1 1 auto; min-width:0; }
+  .syl-toast .syl-toast-btn{ flex:none; white-space:nowrap; }
+  .syl-toast.big{ background: linear-gradient(120deg, #8b6417, #d9ac45 55%, #8b6417); color:#1b1408; font-weight:600; padding:14px 22px; font-size:14.5px; }
+  .syl-toast-btn{ background:none; border:none; cursor:pointer; color: var(--gold); font-family:'Lora',serif; font-weight:700; font-size:13.5px; padding:0 4px; letter-spacing:.02em; }
+  body:not(.dark) .syl-toast-btn{ color:#E6B95C; }
+  .syl-p{
+    position:fixed; z-index:100001; width:7px; height:7px; border-radius:50%; pointer-events:none;
+    animation: sylBurst .95s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  .syl-p.dia{ border-radius:1px; width:6px; height:9px; }
+
+  @media (max-width:420px){
+    .syl-hero{ gap:14px; padding:18px 14px; }
+    .syl-hero-ring, .syl-hero-ring svg{ width:98px; height:98px; }
+    .syl-hero-pct b{ font-size:25px; }
+    .syl-hero-big b{ font-size:25px; }
+    .syl-hero-msg{ font-size:12.5px; }
+    .syl-sh{ gap:10px; padding:16px 12px; }
+    .syl-sh-ring, .syl-sh-ring svg{ width:54px; height:54px; }
+    .syl-sh-pct{ font-size:12.5px; }
+    .syl-sh-name{ font-size:20px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .syl-enter, .syl-card, .syl-unit, .syl-resgroup, .syl-hero::after, .syl-p, .syl-toast.show{ animation:none !important; }
+    .syl-toast.show{ transform: translate(-50%,0); }
+    .syl-ring-fg, .syl-bar i, .syl-wbar i, .syl-unit-body, .syl-note-wrap, .syl-tick, .syl-row-title, .syl-seg::before, .syl-chev{ transition:none !important; }
+  }
+
 </style>
 </head>
 <body>
@@ -6274,6 +6692,14 @@
       <span class="menu-row-label">
         <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M9 7h7"></path><path d="M9 11h7"></path></svg>
         <span>Study Materials</span>
+      </span>
+      <span class="menu-row-arrow">&rsaquo;</span>
+    </button>
+    <div class="menu-sep"></div>
+    <button class="menu-row" id="open-syllabus-btn" type="button">
+      <span class="menu-row-label">
+        <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17.5" rx="2"></rect><path d="M9 3.5h6v3H9z"></path><path d="m8.8 12.3 1.7 1.7 3-3.2"></path><path d="M8.8 17.5h6.4"></path></svg>
+        <span>Syllabus</span>
       </span>
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
@@ -6468,6 +6894,7 @@
       <button type="button" class="hm-explore-link" data-open="attendance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Attendance Register</button>
       <button type="button" class="hm-explore-link" data-open="study"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.2 2"></path></svg>Track My Studies</button>
       <button type="button" class="hm-explore-link" data-open="materials"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>Study Materials</button>
+      <button type="button" class="hm-explore-link" data-open="syllabus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17.5" rx="2"></rect><path d="M9 3.5h6v3H9z"></path><path d="m8.8 12.3 1.7 1.7 3-3.2"></path></svg>Syllabus</button>
       <button type="button" class="hm-explore-link" data-open="timetable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"></rect><line x1="3" y1="9.5" x2="21" y2="9.5"></line></svg>School Timetable</button>
       <button type="button" class="hm-explore-link" data-open="coaching-timetable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9.5 12 4 2 9.5l10 5.5 10-5.5z"></path><path d="M6 12.2v4.3c0 1.66 2.69 3 6 3s6-1.34 6-3v-4.3"></path></svg>Coaching Timetable</button>
       <button type="button" class="hm-explore-link" data-open="rollcall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Today's Roll Call</button>
@@ -6837,6 +7264,16 @@
   <div class="sm-disclaimer">
     <strong>Copyright Disclaimer:</strong> All study materials provided on this website are intended for educational purposes only. We do not claim ownership of any third-party content. All copyrights belong to their respective authors, publishers, or copyright holders. If you are a copyright owner and believe any material infringes your rights, please contact us for prompt review and removal.
   </div>
+</div>
+
+<div class="wrap syl-wrap" id="syllabus-view" style="display:none;">
+  <button class="tt-back" id="syllabus-back-btn">&lsaquo; Back</button>
+  <header class="cover">
+    <p class="eyebrow">Session 2020-21 &middot; +2 First Year</p>
+    <h1>Syllabus</h1>
+    <p class="subtitle">Your complete syllabus, subject by subject. Tick topics as you finish them, flag the ones to revise, and watch the ring fill.</p>
+  </header>
+  <div id="syl-root"></div>
 </div>
 
 <div class="wrap magic-wrap" id="magic-view" style="display:none;">
@@ -11222,6 +11659,7 @@ function initPracticalGroupFinder(){
     pageHide('coaching-exams-view'); pageHide('holidays-view'); pageHide('coaching-timetable-view');
     pageHide('profile-view'); pageHide('studymaterials-view'); pageHide('bmc-view'); pageHide('magic-view');
     pageHide('study-tracker-view'); pageHide('st-tabbar'); pageHide('home-view');
+    pageHide('syllabus-view'); if(window.syllabusLeave) window.syllabusLeave();
     pageHide('games-view'); pageHide('bolts-view'); pageHide('notif-view');
     if(window.magicPageHide) window.magicPageHide();
     document.body.classList.remove('tt-mode');
@@ -11262,6 +11700,7 @@ function initPracticalGroupFinder(){
     attendance: () => homeHide(),
     study: () => { if(typeof stShow === 'function') stShow(); },
     materials: () => { if(typeof studymaterialsShow === 'function') studymaterialsShow(); },
+    syllabus: () => { if(typeof syllabusShow === 'function') syllabusShow(); },
     timetable: () => { if(typeof ttShow === 'function') ttShow(); },
     'coaching-timetable': () => { if(typeof ctShow === 'function') ctShow(); },
     rollcall: () => { if(typeof rcShow === 'function') rcShow(); },
@@ -13176,6 +13615,1338 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
   if(studymaterialsOpenBtn) studymaterialsOpenBtn.addEventListener('click', studymaterialsShow);
   const studymaterialsBackBtn = document.getElementById('studymaterials-back-btn');
   if(studymaterialsBackBtn) studymaterialsBackBtn.addEventListener('click', studymaterialsHide);
+
+  /* ---- Syllabus ---- */
+  /* ============================================================
+     SYLLABUS DATA — +2 First Year (Session 2020-21)
+     Each topic string is "Title|optional sub-line".
+     ============================================================ */
+  const SYL_DATA = [
+    /* ---------------- ODIA ---------------- */
+    { id:'odia', name:'Odia (MIL)', tag:'Modern Indian Language', icon:'odia', lang:'or',
+      note:'Full marks 100 · 3 hours · 4 periods a week (56 yearly). Textbook: ସାହିତ୍ୟ ଜ୍ୟୋତି, ଏକାଦଶ ଶ୍ରେଣୀ — Odisha State Bureau of Text Book Preparation & Production, Bhubaneswar.',
+      units:[
+        { id:'u1', no:'I', t:'ପ୍ରଥମ ଏକକ – ଗଦ୍ୟ', m:'Prose · 11 periods · 20 marks', tp:[
+          '‘ଶରଶୁପଦର’|ଗୋପୀନାଥ ମହାନ୍ତି',
+          'ଝେଲମ୍ ନଦୀରେ ସଂଧ୍ୟା|କୁଞ୍ଜବିହାରୀ ଦାଶ',
+          'ମଧୁବାବୁ|ଚିନ୍ତାମଣି ଆଶ୍ଚର୍ଯ୍ୟ' ]},
+        { id:'u2', no:'II', t:'ଦ୍ୱିତୀୟ ଏକକ – ପଦ୍ୟ', m:'Poetry · 11 periods · 20 marks', tp:[
+          'ସାହାଡ଼ା ବୃକ୍ଷ|ସାରଳା ଦାସ',
+          'ଶାପ ମୋଚନ|ଜଗନ୍ନାଥ ଦାସ',
+          'ମିତ୍ରତା|ଉପେନ୍ଦ୍ର ଭଞ୍ଜ' ]},
+        { id:'u3', no:'III', t:'ତୃତୀୟ ଏକକ – ଏକାଙ୍କିକା', m:'One-act play · 11 periods · 20 marks', tp:[
+          'ଅତ୍ୟାଚାରିତ|ପ୍ରାଣବନ୍ଧୁ କର',
+          'ଭାଲୁ ଉପଦ୍ରବ|ବିଜୟ ମିଶ୍ର' ]},
+        { id:'u4', no:'IV', t:'ଚତୁର୍ଥ ଏକକ – ବୋଧଜ୍ଞାନ ପରୀକ୍ଷଣ', m:'Comprehension · 11 periods · 20 marks', tp:[
+          'ଅବବୋଧ ପରୀକ୍ଷଣ – ଗଦ୍ୟାଂଶ|ଗୋଟିଏ ଗଦ୍ୟ ଅନୁଚ୍ଛେଦ',
+          'ଅବବୋଧ ପରୀକ୍ଷଣ – ପଦ୍ୟାଂଶ|ଗୋଟିଏ ଅଜ୍ଞାତ କବିତା' ]},
+        { id:'u5', no:'V', t:'ପଞ୍ଚମ ଏକକ – ପ୍ରବନ୍ଧ ଓ ବ୍ୟାକରଣ', m:'Essay & Grammar · 12 periods · 20 marks', tp:[
+          'ପ୍ରବନ୍ଧ|Essay · 150–200 words',
+          'ପଦ ପ୍ରକରଣ – ବିଶେଷ୍ୟ',
+          'ପଦ ପ୍ରକରଣ – ବିଶେଷଣ',
+          'ପଦ ପ୍ରକରଣ – ସର୍ବନାମ',
+          'ପଦ ପ୍ରକରଣ – ଅବ୍ୟୟ',
+          'ପଦ ପ୍ରକରଣ – କ୍ରିୟା' ]}
+      ]},
+
+    /* ---------------- ENGLISH ---------------- */
+    { id:'eng', name:'English', tag:'Arts / Science / Commerce', icon:'quill',
+      note:'Revised syllabus for session 2020-21 · Yearly periods: 70.',
+      units:[
+        { id:'u1', no:'I', t:'Prose', m:'Detailed study', tp:[
+          'Standing Up for Yourself|Yevgeny Yevtushenko',
+          'The Legend behind a Legend|Hariharan Balakrishnan',
+          'In London In Minus Fours|Louis Fischer' ]},
+        { id:'u2', no:'II', t:'Poetry', m:'Detailed study', tp:[
+          'Stopping by Woods on a Snowy Evening|Robert Frost',
+          'Oft, in the Stilly Night|Thomas Moore',
+          'The Inchcape Rock|Robert Southey',
+          'To My True Friend|Elizabeth Pinard' ]},
+        { id:'u3', no:'III', t:'Non-Detailed Study', m:'Short stories', tp:[
+          'Three Questions|Leo Tolstoy',
+          'After Twenty Years|O. Henry',
+          'The Open Window|Saki' ]},
+        { id:'u4', no:'IV', t:'Writing Skills', m:'', tp:[
+          'Writing a Paragraph',
+          'Developing Ideas into Paragraphs',
+          'Writing Personal Letters and Notes',
+          'Writing Applications, Official Letters and Business Letters',
+          'Using Graphics' ]},
+        { id:'u5', no:'V', t:'Grammar', m:'', tp:[
+          'Modal Verbs',
+          'Prepositions',
+          'The Imperatives' ]}
+      ]},
+
+    /* ---------------- PHYSICS ---------------- */
+    { id:'phy', name:'Physics', tag:'Theory · Practicals', icon:'atom',
+      note:'Unit-wise mark distribution and question-wise break-up remain the same as in the earlier syllabus. Practicals: 40 periods in total.',
+      units:[
+        { id:'u1', grp:'Theory', no:'I', t:'Physical World and Measurement', m:'6 periods', tp:[
+          'SI units',
+          'Accuracy and precision of measuring instruments',
+          'Errors in measurement|Absolute, relative and percentage error',
+          'Combination of errors',
+          'Significant figures',
+          'Dimensions of physical quantities',
+          'Dimensional analysis and its applications' ]},
+        { id:'u2a', grp:'Theory', no:'II-A', t:'Kinematics — Motion in a Straight Line', m:'18 periods (Unit II)', tp:[
+          'Rest and motion, frame of reference',
+          'Position–time graph',
+          'Speed and velocity|Uniform and non-uniform motion',
+          'Average speed and instantaneous velocity',
+          'Uniformly accelerated motion',
+          'Velocity–time and position–time graphs',
+          'Relations for uniformly accelerated motion|Graphical treatment' ]},
+        { id:'u2b', grp:'Theory', no:'II-B', t:'Kinematics — Motion in a Plane', m:'18 periods (Unit II)', tp:[
+          'Scalars and vectors, general vectors and notations',
+          'Position and displacement vectors, equality, unit vectors',
+          'Multiplication of a vector by a real number',
+          'Addition and subtraction of vectors',
+          'Relative velocity',
+          'Resolution of a vector, rectangular components',
+          'Dot and cross products of two vectors',
+          'Motion in a plane — uniform velocity and uniform acceleration',
+          'Projectile motion',
+          'Uniform circular motion' ]},
+        { id:'u3', grp:'Theory', no:'III', t:'Laws of Motion', m:'10 periods', tp:[
+          'Force and inertia',
+          'Momentum, impulse and impulse–momentum theorem',
+          'Newton’s laws of motion',
+          'Conservation of linear momentum and its application',
+          'Static and kinetic friction, laws of friction, rolling friction',
+          'Dynamics of uniform circular motion, centripetal force',
+          'Vehicle on a level circular road',
+          'Vehicle on a banked road' ]},
+        { id:'u4', grp:'Theory', no:'IV', t:'Work, Energy and Power', m:'10 periods', tp:[
+          'Work done by a constant force and a variable force',
+          'Kinetic energy and work–energy theorem',
+          'Power',
+          'Notion of potential energy',
+          'Conservative and non-conservative forces',
+          'Conservation of mechanical energy|Kinetic and potential energies',
+          'Elastic and inelastic collisions in one dimension',
+          'Coefficient of restitution' ]},
+        { id:'u5', grp:'Theory', no:'V', t:'Motion of System of Particles and Rigid Bodies', m:'12 periods', tp:[
+          'Centre of mass of a two-particle system',
+          'Momentum conservation and centre of mass motion',
+          'Centre of mass of rigid bodies, uniform rod',
+          'Moment of a force, torque',
+          'Angular momentum and its conservation, applications',
+          'Moment of inertia, radius of gyration',
+          'Moment of inertia of simple geometrical objects|No derivation' ]},
+        { id:'u6', grp:'Theory', no:'VI', t:'Gravitation', m:'8 periods', tp:[
+          'Newton’s law of gravitation',
+          'Gravitational field and potential',
+          'Gravitational potential energy',
+          'Acceleration due to gravity|Variation with altitude and depth',
+          'Escape velocity',
+          'Orbital velocity of a satellite' ]},
+        { id:'u7a', grp:'Theory', no:'VII-1', t:'Bulk Matter — Mechanical Properties of Solids', m:'18 periods (Unit VII)', tp:[
+          'Elastic behaviour, stress, strain, Hooke’s law',
+          'Stress–strain diagram',
+          'Young’s modulus, bulk modulus, shear modulus of rigidity',
+          'Poisson’s ratio',
+          'Elastic energy' ]},
+        { id:'u7b', grp:'Theory', no:'VII-2', t:'Bulk Matter — Mechanical Properties of Fluids', m:'18 periods (Unit VII)', tp:[
+          'Surface energy and surface tension',
+          'Angle of contact',
+          'Excess pressure across a curved surface',
+          'Drops, bubbles and capillary rise',
+          'Viscosity, Stokes’ law, terminal velocity',
+          'Streamline and turbulent flow, critical velocity',
+          'Bernoulli’s theorem and its application' ]},
+        { id:'u7c', grp:'Theory', no:'VII-3', t:'Bulk Matter — Thermal Properties of Matter', m:'18 periods (Unit VII)', tp:[
+          'Heat and temperature',
+          'Thermal expansion of solids, liquids and gases',
+          'Specific heat capacity — Cp, Cv',
+          'Calorimetry',
+          'Change of state, latent heat capacity',
+          'Heat transfer — conduction, convection, radiation',
+          'Thermal conductivity',
+          'Black body radiation (qualitative), Wien’s displacement law, Stefan’s law' ]},
+        { id:'u8', grp:'Theory', no:'VIII', t:'Thermodynamics', m:'10 periods', tp:[
+          'Thermal equilibrium and temperature|Zeroth law',
+          'Heat, work and internal energy',
+          'First law of thermodynamics',
+          'Isothermal and adiabatic processes',
+          'Second law of thermodynamics',
+          'Reversible and irreversible processes',
+          'Carnot’s engine and its efficiency|No derivation' ]},
+        { id:'u9', grp:'Theory', no:'IX', t:'Kinetic Theory of Gases', m:'4 periods', tp:[
+          'Equation of state of a perfect gas',
+          'Work done in compressing a gas',
+          'Pressure exerted by an ideal gas|Elementary idea',
+          'Kinetic interpretation of temperature',
+          'Mean and RMS speed of gas molecules',
+          'Degrees of freedom',
+          'Law of equipartition of energy|Statement only · specific heat of gases' ]},
+        { id:'u10a', grp:'Theory', no:'X-1', t:'Oscillations — Periodic Motion', m:'18 periods (Unit X)', tp:[
+          'Period, frequency, displacement as a function of time',
+          'Periodic function',
+          'Simple harmonic motion and its equation, phase',
+          'Oscillation of a spring, restoring force and force constant',
+          'Kinetic and potential energy in SHM',
+          'Simple pendulum|Derivation of expression for its time period' ]},
+        { id:'u10b', grp:'Theory', no:'X-2', t:'Waves', m:'18 periods (Unit X)', tp:[
+          'Wave motion, transverse and longitudinal waves',
+          'Speed of wave motion',
+          'Displacement relation for a progressive wave',
+          'Speed of longitudinal wave in an elastic medium|Qualitative idea only',
+          'Speed of transverse wave in a stretched string|Qualitative idea only',
+          'Principle of superposition of waves',
+          'Reflection of waves',
+          'Standing waves in strings and organ pipes' ]},
+        { id:'pa', grp:'Practicals', no:'A', t:'Practicals — Section A', m:'7 experiments', tp:[
+          'Vernier calipers|Diameter of a small sphere/cylinder; internal diameter and depth of a beaker/calorimeter; volume',
+          'Screw gauge|Diameter of a wire and thickness of a sheet',
+          'Screw gauge|Volume of an irregular lamina',
+          'Spherometer|Radius of curvature of a spherical surface',
+          'Beam balance|Mass of two different objects',
+          'Parallelogram law of vectors|Weight of a given body',
+          'Simple pendulum|Plot L–T² graph; effective length of a second’s pendulum' ]},
+        { id:'pb', grp:'Practicals', no:'B', t:'Practicals — Section B', m:'7 experiments', tp:[
+          'Young’s modulus of elasticity|Material of a given wire',
+          'Surface tension of water|Capillary rise method',
+          'Coefficient of viscosity|Terminal velocity of a spherical body in a viscous liquid',
+          'Cooling curve|Temperature of a hot body versus time',
+          'Sonometer — frequency vs length|Constant tension',
+          'Sonometer — length vs tension|Constant frequency',
+          'Speed of sound in air|Resonance tube, two resonance positions' ]}
+      ]},
+
+    /* ---------------- CHEMISTRY ---------------- */
+    { id:'chem', name:'Chemistry', tag:'Theory · Practicals', icon:'flask',
+      note:'Practical exam: 30 marks · 3 hours — Salt analysis (acid radical) 10 [Dry test 4, Wet test 6] · Crystallisation / single titration 10 · Viva-voce 6 · Record 4.',
+      units:[
+        { id:'u1', grp:'Theory', no:'I', t:'Some Basic Concepts of Chemistry', m:'', tp:[
+          'Atomic and molecular masses, equivalent mass of elements',
+          'Acid, base and salt',
+          'Oxidants and reductants',
+          'Mole concept and molar mass',
+          'Percentage composition',
+          'Empirical and molecular formula',
+          'Chemical reactions',
+          'Stoichiometry and calculations based on it',
+          'Expression of concentration of solutions' ]},
+        { id:'u2', grp:'Theory', no:'II', t:'Structure of Atom', m:'', tp:[
+          'Atomic number, isotopes, isobars',
+          'Rutherford’s model and its limitations',
+          'Bohr’s model and its limitations',
+          'Shells and subshells',
+          'Dual nature of matter and light, de Broglie’s relationship',
+          'Heisenberg uncertainty principle',
+          'Concept of orbitals, quantum numbers',
+          'Shapes of s, p and d orbitals',
+          'Aufbau principle, Pauli’s exclusion principle, Hund’s rule',
+          'Electronic configuration of atoms',
+          'Stability of half-filled and fully filled orbitals' ]},
+        { id:'u3', grp:'Theory', no:'III', t:'Classification of Elements and Periodicity in Properties', m:'', tp:[
+          'Modern periodic law and the present form of the periodic table',
+          'Periodic trends — atomic, ionic and inert gas radii',
+          'Ionization enthalpy',
+          'Electron gain enthalpy',
+          'Electronegativity',
+          'Valency and oxidation state',
+          'Nomenclature of elements with atomic number greater than 100' ]},
+        { id:'u4', grp:'Theory', no:'IV', t:'Chemical Bonding and Molecular Structure', m:'', tp:[
+          'Valence electrons, ionic bond',
+          'Covalent bond, bond parameters',
+          'Lewis structure',
+          'Polar character of covalent bond',
+          'Covalent character of ionic bond',
+          'Valence bond theory',
+          'Resonance',
+          'Geometry of covalent molecules, VSEPR theory',
+          'Hybridization involving s, p and d orbitals, shapes of molecules',
+          'Molecular orbital theory of homonuclear diatomic molecules|Qualitative idea only',
+          'Hydrogen bond' ]},
+        { id:'u5', grp:'Theory', no:'V', t:'States of Matter — Gases and Liquids', m:'', tp:[
+          'Role of gas laws in elucidating the concept of the molecule',
+          'Boyle’s law, Charles’ law, Gay-Lussac’s law, Avogadro’s law',
+          'Ideal behaviour, empirical derivation of the gas equation',
+          'Avogadro’s number',
+          'Ideal gas equation',
+          'Deviation from ideal behaviour, liquefaction of gases',
+          'Critical temperature',
+          'Kinetic energy and molecular speeds|Elementary idea' ]},
+        { id:'u6', grp:'Theory', no:'VI', t:'Chemical Thermodynamics', m:'', tp:[
+          'System and surroundings, types of systems',
+          'Work, heat, energy',
+          'Extensive and intensive properties, state functions',
+          'First law — internal energy and enthalpy',
+          'Hess’s law of constant heat summation',
+          'Enthalpies of bond dissociation, combustion, formation, neutralization, atomization, sublimation, phase transition, ionization, solution and dilution',
+          'Second law of thermodynamics|Brief introduction',
+          'Entropy as a state function',
+          'Gibbs energy change — spontaneous and non-spontaneous processes, criteria for equilibrium',
+          'Third law of thermodynamics|Statement only' ]},
+        { id:'u7', grp:'Theory', no:'VII', t:'Equilibrium', m:'', tp:[
+          'Equilibrium in physical and chemical processes, dynamic nature',
+          'Law of mass action',
+          'Equilibrium constant — Kc, Kp, Kx and their relationship',
+          'Factors affecting equilibrium, Le Chatelier’s principle',
+          'Ionic equilibrium, ionization of acids and bases',
+          'Strong and weak electrolytes, degree of ionization',
+          'Concept of pH',
+          'Hydrolysis of salts|Elementary idea',
+          'Buffer solution, Henderson equation',
+          'Solubility product, common ion effect',
+          'Numerical problems' ]},
+        { id:'u8', grp:'Theory', no:'VIII', t:'Redox Reactions', m:'', tp:[
+          'Concept of oxidation and reduction',
+          'Redox reactions — loss and gain of electrons',
+          'Oxidation number and change in oxidation number',
+          'Balancing redox reactions' ]},
+        { id:'u9', grp:'Theory', no:'IX', t:'Hydrogen', m:'', tp:[
+          'Position of hydrogen in the periodic table, occurrence, isotopes',
+          'Preparation, properties and uses of hydrogen',
+          'Hydrides — ionic, covalent and interstitial',
+          'Physical and chemical properties of water',
+          'Heavy water',
+          'Hydrogen as a fuel' ]},
+        { id:'u10', grp:'Theory', no:'X', t:'s-Block Elements — Alkali and Alkaline Earth Metals', m:'Groups 1 and 2', tp:[
+          'General introduction, electronic configuration, occurrence',
+          'Anomalous properties of the first element of each group',
+          'Diagonal relationship',
+          'Trends in ionization enthalpy, atomic and ionic radii',
+          'Trends in chemical reactivity with oxygen and halogens',
+          'Uses' ]},
+        { id:'u11', grp:'Theory', no:'XI', t:'Some p-Block Elements', m:'Groups 13 and 14', tp:[
+          'General introduction to p-block elements',
+          'Group 13 — electronic configuration, occurrence, variation of properties, oxidation states, reactivity trends',
+          'Group 13 — anomalous properties of boron',
+          'Boron — physical and chemical properties',
+          'Group 14 — electronic configuration, occurrence, variation of properties, oxidation states, reactivity trends',
+          'Group 14 — anomalous behaviour of carbon',
+          'Carbon — catenation and allotropic forms',
+          'Carbon — physical and chemical properties',
+          'Uses of some important compounds — oxides',
+          'Important compounds of silicon, silicones, zeolites and their uses' ]},
+        { id:'u12', grp:'Theory', no:'XII', t:'Organic Chemistry — Some Basic Principles and Techniques', m:'', tp:[
+          'General introduction, classification and IUPAC nomenclature',
+          'Electronic displacements — inductive effect, electromeric effect',
+          'Resonance and hyperconjugation',
+          'Homolytic and heterolytic fission of a covalent bond',
+          'Free radicals, carbocations, carbanions',
+          'Electrophiles and nucleophiles',
+          'Types of organic reactions' ]},
+        { id:'u13', grp:'Theory', no:'XIII', t:'Hydrocarbons', m:'', tp:[
+          'Classification of hydrocarbons',
+          'Alkanes — nomenclature, isomerism, conformation|Ethane only',
+          'Alkanes — preparation|From unsaturated hydrocarbons, alkyl halides, carboxylic acids (decarboxylation, Kolbe’s electrolytic method)',
+          'Alkanes — physical properties and chemical reactions|Free radical mechanism of halogenation, combustion, controlled oxidation, isomerisation, aromatisation, with steam, pyrolysis',
+          'Alkenes — nomenclature, structure of double bond (ethene), geometrical isomerism',
+          'Alkenes — preparation|From alkynes, alkyl halides, vicinal dihalides, alcohols',
+          'Alkenes — physical properties and chemical reactions|Addition of H₂, halogen, water, hydrogen halides, H₂SO₄ (Markownikoff’s addition and peroxide effect), ozonolysis, oxidation, polymerisation',
+          'Mechanism of electrophilic addition reaction',
+          'Alkynes — nomenclature, structure of triple bond (ethyne)',
+          'Alkynes — preparation and physical properties|From calcium carbide, vicinal dihalides',
+          'Alkynes — chemical reactions|Acidic character, addition of H₂, halogens, hydrogen halides, water, polymerisation',
+          'Aromatic hydrocarbons — introduction, IUPAC nomenclature',
+          'Benzene — resonance, aromaticity',
+          'Preparation of benzene|From acetylene, phenol and aromatic acids',
+          'Benzene — electrophilic substitution mechanism|Nitration, sulphonation, halogenation, Friedel–Crafts alkylation and acylation',
+          'Benzene — addition of hydrogen, addition of chlorine, combustion' ]},
+        { id:'p1', grp:'Practicals', no:'1', t:'Basic Laboratory Techniques', m:'Non-evaluative', tp:[
+          'Bunsen burner|Different parts and their functions',
+          'Chemical balance|Weighing by the equal oscillation method',
+          'Glass tube work|Cutting and bending, drawing a jet, boring a cork' ]},
+        { id:'p2', grp:'Practicals', no:'2', t:'Crystallisation', m:'', tp:[
+          'Preparation of CuSO₄·5H₂O crystals from CuCO₃' ]},
+        { id:'p3a', grp:'Practicals', no:'3-A', t:'Qualitative Analysis — Acid Radicals', m:'10 radicals', tp:[
+          'CO₃²⁻','SO₃²⁻','S²⁻','NO₂⁻','Cl⁻','Br⁻','I⁻','NO₃⁻','SO₄²⁻','PO₄³⁻' ]},
+        { id:'p3b', grp:'Practicals', no:'3-B', t:'Qualitative Analysis — Basic Radicals', m:'Dry tests only · 23 radicals', tp:[
+          'Ag⁺','Pb²⁺','Hg₂²⁺','Cu²⁺','Hg²⁺','Bi³⁺','As³⁺','Sb³⁺','Sn²⁺','Al³⁺','Fe³⁺','Cr³⁺','Co²⁺','Ni²⁺','Zn²⁺','Mn²⁺','Ba²⁺','Sr²⁺','Ca²⁺','NH₄⁺','Mg²⁺','K⁺','Na⁺' ]},
+        { id:'p4', grp:'Practicals', no:'4', t:'Volumetric Analysis', m:'Single titration of acids and bases · 3 experiments', tp:[
+          'Titration 1|Direct determination of normality of one solution from the other',
+          'Titration 2|Involving numerical calculations',
+          'Titration 3|Involving numerical calculations' ]}
+      ]},
+
+    /* ---------------- MATHEMATICS ---------------- */
+    { id:'math', name:'Mathematics', tag:'Six units', icon:'sigma',
+      note:'Book recommended: Bureau’s Higher Secondary (+2) Elements of Mathematics, Part-I — Odisha State Bureau of Text Book Preparation and Production, Bhubaneswar.',
+      units:[
+        { id:'u1a', grp:'Unit I · Sets and Functions', no:'1', t:'Sets', m:'', tp:[
+          'Sets and their representations',
+          'Empty set, finite and infinite sets, equal sets',
+          'Subsets, subsets of real numbers — intervals with notations',
+          'Power set, universal set',
+          'Venn diagrams',
+          'Union and intersection of sets',
+          'Difference of sets, complement of a set, properties of complement',
+          'Practical problems based on sets' ]},
+        { id:'u1b', grp:'Unit I · Sets and Functions', no:'2', t:'Relations and Functions', m:'', tp:[
+          'Ordered pairs, Cartesian product of sets',
+          'Number of elements in the Cartesian product of two finite sets',
+          'Cartesian product of the set of reals (up to R × R)',
+          'Relation — definition, pictorial diagrams, domain, co-domain, range',
+          'Function as a special kind of relation, pictorial representation',
+          'Domain, co-domain and range of a function',
+          'Real-valued functions — constant, identity, polynomial, rational',
+          'Modulus and signum functions',
+          'Exponential, logarithmic and greatest integer functions',
+          'Graphs of these functions' ]},
+        { id:'u1c', grp:'Unit I · Sets and Functions', no:'3', t:'Trigonometric Functions', m:'', tp:[
+          'Positive and negative angles',
+          'Radians and degrees, conversion',
+          'Trigonometric functions with the help of the unit circle',
+          'Truth of sin²x + cos²x = 1 for all x',
+          'Signs of trigonometric functions',
+          'Domain, range and graphs of trigonometric functions',
+          'sin (x ± y) and cos (x ± y) in terms of sin x, sin y, cos x, cos y',
+          'tan (x ± y) and cot (x ± y)',
+          'Sum and difference to product identities|sin x ± sin y, cos x ± cos y',
+          'Identities related to sin 2x, cos 2x, tan 2x, sin 3x, cos 3x, tan 3x',
+          'Trigonometric equations, principal solution' ]},
+        { id:'u2a', grp:'Unit II · Algebra', no:'1', t:'Principle of Mathematical Induction', m:'', tp:[
+          'Process of proof by induction, motivation',
+          'The principle of mathematical induction and simple applications' ]},
+        { id:'u2b', grp:'Unit II · Algebra', no:'2', t:'Complex Numbers and Quadratic Equations', m:'', tp:[
+          'Need for complex numbers, especially √−1',
+          'Algebraic properties of complex numbers',
+          'Argand plane',
+          'Fundamental Theorem of Algebra|Statement',
+          'Solution of quadratic equations in the complex system',
+          'Cube roots of unity and its properties' ]},
+        { id:'u2c', grp:'Unit II · Algebra', no:'3', t:'Linear Inequalities', m:'', tp:[
+          'Algebraic solutions of linear inequalities in one variable',
+          'Representation on the number line',
+          'Graphical solution of linear inequalities in two variables',
+          'Graphical solution of a system of linear inequalities in two variables' ]},
+        { id:'u2d', grp:'Unit II · Algebra', no:'4', t:'Permutations and Combinations', m:'', tp:[
+          'Fundamental principle of counting, factorial n (n!)',
+          'Permutations',
+          'Combinations',
+          'Simple applications' ]},
+        { id:'u2e', grp:'Unit II · Algebra', no:'5', t:'Binomial Theorem', m:'', tp:[
+          'History and statement of the Binomial Theorem|No problems' ]},
+        { id:'u2f', grp:'Unit II · Algebra', no:'6', t:'Sequence and Series', m:'', tp:[
+          'Sequence and series',
+          'Arithmetic Progression (A.P.), Arithmetic Mean (A.M.)',
+          'Geometric Progression (G.P.), general term of a G.P.',
+          'Sum of n terms of a G.P.',
+          'Arithmetic and geometric series',
+          'Infinite G.P. and its sum',
+          'Geometric mean (G.M.), Harmonic mean',
+          'Relation between A.M., G.M. and H.M.' ]},
+        { id:'u3a', grp:'Unit III · Co-ordinate Geometry', no:'1', t:'Straight Lines', m:'', tp:[
+          'Brief recall of two-dimensional geometry',
+          'Slope of a line and angle between two lines',
+          'Forms of equation — parallel to axis, point-slope, slope-intercept',
+          'Forms of equation — two-point, intercept, normal',
+          'General equation of a line',
+          'Family of lines through the point of intersection of two lines',
+          'Distance of a point from a line' ]},
+        { id:'u3b', grp:'Unit III · Co-ordinate Geometry', no:'2', t:'Conic Sections', m:'', tp:[
+          'Sections of a cone — circle, ellipse, parabola, hyperbola',
+          'Standard equation and simple properties of the circle',
+          'Standard equation and simple properties of the parabola',
+          'Standard equation and simple properties of the ellipse',
+          'Standard equation and simple properties of the hyperbola' ]},
+        { id:'u3c', grp:'Unit III · Co-ordinate Geometry', no:'3', t:'Introduction to Three-Dimensional Geometry', m:'', tp:[
+          'Coordinate axes and coordinate planes in three dimensions',
+          'Coordinates of a point',
+          'Distance between two points',
+          'Section formula' ]},
+        { id:'u4', grp:'Unit IV · Calculus', no:'1', t:'Limits and Derivatives', m:'', tp:[
+          'Derivative as rate of change — distance function and geometrically',
+          'Intuitive idea of limit',
+          'Limits of polynomial and rational functions',
+          'Limits of trigonometric, exponential and logarithmic functions',
+          'Definition of derivative, relation to slope of tangent',
+          'Derivative of sum, difference, product and quotient of functions',
+          'Derivative of polynomial and trigonometric functions' ]},
+        { id:'u5', grp:'Unit V · Mathematical Reasoning', no:'1', t:'Mathematical Reasoning', m:'', tp:[
+          'Mathematically acceptable statements',
+          '“If and only if” — necessary and sufficient condition',
+          '“Implies”, “implied by”',
+          '“And”, “or” (and/or), “there exists”',
+          'Use through examples from real life and mathematics' ]},
+        { id:'u6a', grp:'Unit VI · Statistics and Probability', no:'1', t:'Statistics', m:'', tp:[
+          'Measures of dispersion — range, mean deviation',
+          'Variance and standard deviation|Ungrouped and grouped data' ]},
+        { id:'u6b', grp:'Unit VI · Statistics and Probability', no:'2', t:'Probability', m:'', tp:[
+          'Random experiments, outcomes, sample spaces (set representation)',
+          'Events — occurrence, ‘not’, ‘and’ and ‘or’ events',
+          'Exhaustive events, mutually exclusive events',
+          'Probability of an event',
+          'Probability of ‘not’, ‘and’ and ‘or’ events' ]}
+      ]},
+
+    /* ---------------- INFORMATION TECHNOLOGY ---------------- */
+    { id:'it', name:'Information Technology', tag:'Theory · Java · SQL', icon:'chip',
+      note:'Practical (30 marks): Problem solving using Java 10 · SQL queries 5 · Practical records 10 · Viva voce 5. Part III of Unit 2 is left blank in the official syllabus; the Swing and method tables below it are given as reference.',
+      units:[
+        { id:'u1a', grp:'Unit 1 · Introduction to Computer System', no:'1A', t:'Hardware Concepts', m:'10 periods · 10 marks', tp:[
+          'Computer organisation|CPU, memory (RAM, ROM, I/O), devices, communication bus, ports (serial, parallel)',
+          'Input devices|Keyboard, mouse, light pen, touch screen, graphic tablet, joystick, microphone, OCR, OMR, scanner, smart card reader, BCR, MICR, biometric sensors, web camera',
+          'Output devices|Monitor/VDU, LED/LCD screen, television, printers (DMP, deskjet / inkjet / bubble jet, laser), plotter, speaker',
+          'Memory unit|Types of memory, RAM (SDRAM, DRAM), ROM (PROM, EPROM, EEPROM)' ]},
+        { id:'u1b', grp:'Unit 1 · Introduction to Computer System', no:'1B', t:'Types of Software — System, Utility, Application', m:'10 periods · 10 marks', tp:[
+          'System software|Operating systems, need and major functions, OS for mainframe, PC/server, mobile',
+          'Language processors|Assembler, interpreter and compiler',
+          'Utility software|Compression tools, disk defragmenter, antivirus',
+          'General-purpose application software|Word processor, spreadsheet, presentation, DBMS, IDE',
+          'Specific-purpose application software|Inventory management, HRMS, payroll, financial management, reservation system' ]},
+        { id:'u1c', grp:'Unit 1 · Introduction to Computer System', no:'1C', t:'Open Source Concepts', m:'7 periods · 5 marks', tp:[
+          'Open source concepts' ]},
+        { id:'u2a', grp:'Unit 2 · Introduction to Programming (45 periods · 25 marks)', no:'2-I', t:'Getting Started with Programming with IDE', m:'20 periods · 11 marks', tp:[
+          'Introduction, rapid application development with IDE',
+          'Basic interface components|Label, text field, text area, button, checkbox, radio button',
+          'Developing a general application',
+          'Java Swing user interface components|Frame, dialog, option pane, panel, scroll pane, label, text field, password field, text area, button, check box, radio button, combo box, list',
+          'Component handling methods and properties|setText(), getText(), isSelected(), setSelected()' ]},
+        { id:'u2b', grp:'Unit 2 · Introduction to Programming (45 periods · 25 marks)', no:'2-II', t:'Programming Fundamentals', m:'15 periods · 10 marks', tp:[
+          'Data types — concept and built-in types|byte, short, int, long, float, double, char, string, boolean',
+          'Variables|Declaring, naming and assigning values',
+          'Integer and Double object methods|parseInt, parseDouble, parseFloat',
+          'Decision structures|if, if…else, switch',
+          'Looping structures|while, do-while, for' ]},
+        { id:'u2c', grp:'Unit 2 · Introduction to Programming (45 periods · 25 marks)', no:'Ref', t:'Swing Controls — Methods and Properties', m:'Reference table (follows the practical section in the syllabus)', tp:[
+          'JButton|Methods: getText(), setText() · Properties: Background, Enabled, Font, Foreground, Text, Label',
+          'JLabel|Methods: getText(), setText() · Properties: Background, Enabled, Font, Foreground, Text',
+          'JTextField|Methods: getText(), isEditable(), setText() · Properties: Background, Editable, Enabled, Font, Foreground, Text',
+          'JRadioButton|Methods: getText(), setText(), isSelected(), setSelected() · Properties: Background, ButtonGroup, Enabled, Font, Foreground, Label, Selected, Text',
+          'JCheckBox|Methods: getText(), setText(), isSelected(), setSelected() · Properties: ButtonGroup, Font, Foreground, Label, Selected, Text',
+          'ButtonGroup|Property: Add',
+          'JComboBox|Methods: getSelectedItem(), getSelectedIndex(), setModel() · Properties: Background, ButtonGroup, Editable, Enabled, Font, Foreground, Model, SelectedIndex, SelectedItem, Text',
+          'JList|Method: getSelectedValue() · Properties: Background, ButtonGroup, Editable, Enabled, Font, Foreground, Model, SelectedIndex, SelectedItem, Text',
+          'JTable|Methods: addRow(), getModel() · Property: Model',
+          'JOptionPane|Method: showMessageDialog()',
+          'DefaultTableModel|Methods: getRowCount(), removeRow(), addRow()' ]},
+        { id:'u2d', grp:'Unit 2 · Introduction to Programming (45 periods · 25 marks)', no:'Ref', t:'Commonly Used Methods and Database Connectivity', m:'Reference table (follows the practical section in the syllabus)', tp:[
+          'Integer|parseInt(), toDouble(), toString()',
+          'String|concat(), length(), substring(), toDouble(), toLowerCase(), toUpperCase(), trim()',
+          'Double|parseDouble(), toString(), toInt()',
+          'Math|pow(), round()',
+          'Connection and DriverManager|createStatement(), close(), getConnection()',
+          'Statement and ResultSet|executeQuery(), next(), first(), last(), getString()',
+          'Exception and System|getMessage(), exit()' ]},
+        { id:'u3a', grp:'Unit 3 · Relational Database Management System (30 periods · 20 marks)', no:'3-I', t:'DBMS', m:'10 periods · 10 marks', tp:[
+          'Database concepts|Database, relational database, relation/table, attribute/field, tuple/row',
+          'Data types|Text (char, varchar), number (decimal, int/integer), date and time',
+          'Keys|Candidate key, primary key, alternate key, foreign key' ]},
+        { id:'u3b', grp:'Unit 3 · Relational Database Management System (30 periods · 20 marks)', no:'3-II', t:'Introduction to MySQL (ANSI SQL 99)', m:'13 periods · 5 marks', tp:[
+          'Classification of SQL commands',
+          'DML|SELECT, INSERT, UPDATE, DELETE',
+          'DDL|CREATE, DROP, ALTER',
+          'Creating and using a database|CREATE and USE commands',
+          'Creating a table|CREATE TABLE, DESC, INSERT for new rows',
+          'Displaying table data|SELECT all columns, specific columns, arithmetic operators, operator precedence' ]},
+        { id:'u4a', grp:'Unit 4 · IT Applications (7 periods · 5 marks)', no:'4-I', t:'E-Governance', m:'4 periods · 3 marks', tp:[
+          'E-Governance' ]},
+        { id:'u4b', grp:'Unit 4 · IT Applications (7 periods · 5 marks)', no:'4-II', t:'E-Learning', m:'3 periods · 2 marks', tp:[
+          'Definition',
+          'Benefit to students (learners)',
+          'Benefit to teachers|Training management',
+          'E-learning websites and their social impact' ]},
+        { id:'p1', grp:'Practicals', no:'P', t:'Practical Work and Record File', m:'30 marks', tp:[
+          'Problem solving using Java|10 marks · solve problems on all concepts covered',
+          'SQL queries|5 marks · write 5 MySQL queries on one or two tables in the final exam',
+          'Practical record|10 marks · at least 10 solutions of simple problems using IDE-based Java',
+          'Practical record|At least 3 IT application problem-solving frameworks',
+          'Practical record|At least 15 SQL queries on any database',
+          'Viva voce|5 marks' ]}
+      ]},
+  ];
+
+  /* ============================================================
+     SYLLABUS ENGINE
+     ============================================================ */
+  const SYL_KEY_BASE = 'cbsh-syllabus-v1:';
+  const SYL_RM = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  /* ---- flatten the data ---- */
+  const SYL_IDX = {};      // id -> item
+  const SYL_ALL = [];      // every topic
+  const SYL_UNIT = {};     // unit key -> unit
+  const SYL_SUBJ = {};     // subject id -> subject
+  SYL_DATA.forEach(s => {
+    SYL_SUBJ[s.id] = s;
+    s.items = [];
+    s.units.forEach(u => {
+      u.sid = s.id;
+      u.key = s.id + '.' + u.id; SYL_UNIT[u.key] = u;
+      u.items = u.tp.map((raw, i) => {
+        const parts = String(raw).split('|');
+        const it = { id: u.key + '.' + i, t: parts[0].trim(), sub: (parts[1] || '').trim(), u: u, s: s };
+        it.h = (it.t + ' ' + it.sub + ' ' + u.t + ' ' + s.name).toLowerCase(); SYL_IDX[it.id] = it; SYL_ALL.push(it); s.items.push(it);
+        return it;
+      });
+    });
+  });
+
+  const SYL_ICONS = {
+    atom:  '<circle cx="12" cy="12" r="1.8"></circle><ellipse cx="12" cy="12" rx="9.5" ry="3.8"></ellipse><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(60 12 12)"></ellipse><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(120 12 12)"></ellipse>',
+    flask: '<path d="M9.5 3h5"></path><path d="M10.5 3v6.2L4.8 18.6A2 2 0 0 0 6.5 21.5h11a2 2 0 0 0 1.7-2.9L13.5 9.2V3"></path><path d="M7.6 15.5h8.8"></path>',
+    sigma: '<path d="M18 5H6.5l6 7-6 7H18"></path>',
+    chip:  '<rect x="6" y="6" width="12" height="12" rx="2"></rect><rect x="9.5" y="9.5" width="5" height="5" rx=".8"></rect><path d="M9 2.5V6M15 2.5V6M9 18v3.5M15 18v3.5M2.5 9H6M2.5 15H6M18 9h3.5M18 15h3.5"></path>',
+    quill: '<path d="M20 4c-7 0-12 4-13.5 11L5 20"></path><path d="M20 4c0 6-3.5 10.5-10 11.5"></path><path d="M5 20l3.2-3.2"></path>',
+    odia:  ''
+  };
+  function sylIcon(id){
+    if(id === 'odia') return '<svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="17.2" text-anchor="middle" font-size="15" font-weight="600" fill="currentColor" stroke="none" font-family="\'Noto Serif Oriya\',\'Noto Sans Oriya\',\'Kalinga\',serif">ଓ</text></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (SYL_ICONS[id] || '') + '</svg>';
+  }
+
+  /* ---- state ---- */
+  let SYL = { done:{}, star:{}, notes:{}, target:'', last:'' };
+  const SYLV = { view:'home', filter:'all', q:'', open:{} };
+  let sylKey = SYL_KEY_BASE + 'guest';
+  let sylSaveTimer = null, sylToastTimer = null, sylResetTimer = null, sylFilterTimer = null, sylSearchTimer = null;
+  let sylUndoSnap = null;
+
+  function sylUserKey(){
+    try{
+      if(typeof currentUser !== 'undefined' && currentUser && currentUser.id) return SYL_KEY_BASE + currentUser.id;
+    }catch(e){}
+    return SYL_KEY_BASE + 'guest';
+  }
+  function sylParse(raw){
+    const base = { done:{}, star:{}, notes:{}, target:'', last:'' };
+    if(!raw) return base;
+    try{
+      const o = JSON.parse(raw);
+      if(o && typeof o === 'object'){
+        base.done = (o.done && typeof o.done === 'object') ? o.done : {};
+        base.star = (o.star && typeof o.star === 'object') ? o.star : {};
+        base.notes = (o.notes && typeof o.notes === 'object') ? o.notes : {};
+        base.target = typeof o.target === 'string' ? o.target : '';
+        base.last = typeof o.last === 'string' ? o.last : '';
+      }
+    }catch(e){}
+    // drop ids that no longer exist in the syllabus
+    ['done','star','notes'].forEach(k => { Object.keys(base[k]).forEach(id => { if(!SYL_IDX[id]) delete base[k][id]; }); });
+    return base;
+  }
+  function sylLoad(){
+    sylKey = sylUserKey();
+    let raw = null;
+    try{ raw = localStorage.getItem(sylKey); }catch(e){}
+    SYL = sylParse(raw);
+    if(raw === null && window.storage && typeof window.storage.get === 'function'){
+      // secondary source (cloud-backed storage when the host provides one)
+      Promise.resolve().then(() => window.storage.get(sylKey)).then(r => {
+        if(r && r.value && !Object.keys(SYL.done).length && !Object.keys(SYL.notes).length){
+          SYL = sylParse(r.value);
+          if(sylVisible()) sylRender();
+        }
+      }).catch(() => {});
+    }
+  }
+  function sylSaveNow(){
+    clearTimeout(sylSaveTimer); sylSaveTimer = null;
+    const str = JSON.stringify(SYL);
+    try{ localStorage.setItem(sylKey, str); }catch(e){}
+    try{
+      if(window.storage && typeof window.storage.set === 'function'){
+        const p = window.storage.set(sylKey, str);
+        if(p && p.catch) p.catch(() => {});
+      }
+    }catch(e){}
+  }
+  function sylSave(){
+    clearTimeout(sylSaveTimer);
+    sylSaveTimer = setTimeout(sylSaveNow, 160);
+  }
+  window.addEventListener('pagehide', () => { if(sylSaveTimer) sylSaveNow(); });
+  document.addEventListener('visibilitychange', () => { if(document.hidden && sylSaveTimer) sylSaveNow(); });
+
+  /* ---- helpers ---- */
+  function sylEsc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function sylRoot(){ return document.getElementById('syl-root'); }
+  function sylVisible(){ const v = document.getElementById('syllabus-view'); return !!(v && v.style.display !== 'none'); }
+  function sylCount(items){ let d = 0; for(let i = 0; i < items.length; i++){ if(SYL.done[items[i].id]) d++; } return d; }
+  function sylPct(d, t){ return t ? Math.round(d * 100 / t) : 0; }
+  function sylDayKey(ts){ const d = new Date(ts); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+  function sylShortDate(ts){ try{ return new Date(ts).toLocaleDateString(undefined, { day:'numeric', month:'short' }); }catch(e){ return ''; } }
+  function sylBuzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+  function sylOverall(){ const d = sylCount(SYL_ALL); return { d: d, t: SYL_ALL.length, p: sylPct(d, SYL_ALL.length) }; }
+
+  function sylStats(){
+    const todayKey = sylDayKey(Date.now());
+    const days = {};
+    let today = 0;
+    Object.keys(SYL.done).forEach(id => {
+      const k = sylDayKey(SYL.done[id]);
+      days[k] = (days[k] || 0) + 1;
+      if(k === todayKey) today++;
+    });
+    // streak: consecutive days with at least one completion (alive if yesterday had one)
+    let streak = 0;
+    const cur = new Date();
+    if(!days[sylDayKey(cur.getTime())]) cur.setDate(cur.getDate() - 1);
+    while(days[sylDayKey(cur.getTime())]){ streak++; cur.setDate(cur.getDate() - 1); }
+    // last 7 days
+    const week = [];
+    for(let i = 6; i >= 0; i--){
+      const d = new Date(); d.setDate(d.getDate() - i);
+      week.push({ n: days[sylDayKey(d.getTime())] || 0, label: d.toLocaleDateString(undefined, { weekday:'narrow' }), today: i === 0 });
+    }
+    const stars = Object.keys(SYL.star).length;
+    const notes = Object.keys(SYL.notes).length;
+    return { today: today, streak: streak, week: week, stars: stars, notes: notes };
+  }
+
+  function sylMessage(p){
+    if(p === 0) return 'A clean slate. Tick your first topic and the ring begins to fill.';
+    if(p < 15) return 'Good beginning — steady steps carry the longest distance.';
+    if(p < 35) return 'The foundations are going in. Keep this rhythm.';
+    if(p < 60) return 'Past the quarter mark and moving well. Stay consistent.';
+    if(p < 85) return 'More than half the syllabus is behind you. Keep going.';
+    if(p < 100) return 'The finish line is in sight — polish the last few topics.';
+    return 'Syllabus complete. Revise with a calm mind — well done.';
+  }
+
+  function sylPace(){
+    const o = sylOverall(); const left = o.t - o.d;
+    if(!SYL.target) return { state:'none' };
+    const tgt = new Date(SYL.target + 'T23:59:59');
+    if(isNaN(tgt.getTime())) return { state:'none' };
+    const now = new Date();
+    const dayMs = 86400000;
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const daysLeft = Math.floor((new Date(tgt.getFullYear(), tgt.getMonth(), tgt.getDate()).getTime() - startOfToday) / dayMs) + 1;
+    if(left === 0) return { state:'done', date: tgt };
+    if(daysLeft <= 0) return { state:'past', left: left, date: tgt };
+    return { state:'run', left: left, days: daysLeft, per: Math.ceil(left / daysLeft), date: tgt };
+  }
+
+  /* ---- SVG ring ---- */
+  function sylRing(pct, size, stroke, cls){
+    const r = (size - stroke) / 2, c = 2 * Math.PI * r;
+    return '<svg class="syl-ring-svg ' + (cls || '') + '" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true">'
+      + '<circle class="syl-ring-bg" cx="' + size/2 + '" cy="' + size/2 + '" r="' + r + '" stroke-width="' + stroke + '"></circle>'
+      + '<circle class="syl-ring-fg" cx="' + size/2 + '" cy="' + size/2 + '" r="' + r + '" stroke-width="' + stroke + '" stroke-dasharray="' + c.toFixed(2) + '" stroke-dashoffset="' + c.toFixed(2) + '" data-c="' + c.toFixed(2) + '" data-p="' + pct + '" transform="rotate(-90 ' + size/2 + ' ' + size/2 + ')"></circle>'
+      + '</svg>';
+  }
+  function sylSetRing(svg, pct){
+    const fg = svg && svg.querySelector('.syl-ring-fg'); if(!fg) return;
+    const c = parseFloat(fg.getAttribute('data-c'));
+    fg.setAttribute('data-p', pct);
+    fg.style.strokeDashoffset = (c * (1 - pct / 100)).toFixed(2);
+  }
+
+  /* ---- entrance animations (rings, bars, counters) ---- */
+  function sylAnimateIn(scope){
+    const root = scope || sylRoot(); if(!root) return;
+    const go = () => {
+      root.querySelectorAll('.syl-ring-fg[data-p]').forEach(fg => {
+        const c = parseFloat(fg.getAttribute('data-c')), p = parseFloat(fg.getAttribute('data-p'));
+        fg.style.strokeDashoffset = (c * (1 - p / 100)).toFixed(2);
+      });
+      root.querySelectorAll('[data-w]').forEach(el => { el.style.width = el.getAttribute('data-w') + '%'; });
+      root.querySelectorAll('[data-h]').forEach(el => { el.style.height = el.getAttribute('data-h') + '%'; });
+    };
+    if(SYL_RM){ go(); } else { requestAnimationFrame(() => requestAnimationFrame(go)); }
+    root.querySelectorAll('[data-count]').forEach(el => {
+      const to = parseInt(el.getAttribute('data-count'), 10) || 0;
+      if(SYL_RM || to === 0){ el.textContent = to; return; }
+      const t0 = performance.now(), dur = 800;
+      const step = now => {
+        const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = Math.round(to * e);
+        if(k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+  function sylTween(el, to){
+    if(!el) return;
+    const from = parseInt(el.textContent, 10) || 0;
+    if(SYL_RM || from === to){ el.textContent = to; return; }
+    const t0 = performance.now(), dur = 420;
+    const step = now => {
+      const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = Math.round(from + (to - from) * e);
+      if(k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  /* ============================================================
+     RENDER — shared pieces
+     ============================================================ */
+  function sylSearchBar(){
+    return '<div class="syl-search" role="search">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.6-3.6"></path></svg>'
+      + '<input id="syl-q" type="search" inputmode="search" autocomplete="off" spellcheck="false" placeholder="Search every topic, chapter, note…" value="' + sylEsc(SYLV.q) + '" aria-label="Search the syllabus">'
+      + '<button class="syl-search-x" id="syl-qx" type="button" data-act="clearsearch" aria-label="Clear search"' + (SYLV.q ? '' : ' style="display:none"') + '>&times;</button>'
+      + '</div>';
+  }
+
+  function sylNoteTA(v){
+    return '<textarea class="syl-note-ta" rows="2" maxlength="600" placeholder="Your note — formula, trick, page number…" aria-label="Note">' + sylEsc(v || '') + '</textarea>';
+  }
+  function sylFill(sec){
+    const ul = sec && sec.querySelector('.syl-topics[data-lazy]'); if(!ul) return;
+    const u = SYL_UNIT[sec.getAttribute('data-unit')]; if(!u) return;
+    ul.innerHTML = u.items.map(it => sylRowHTML(it, false)).join('');
+    ul.removeAttribute('data-lazy');
+  }
+  function sylRowHTML(it, ctx){
+    const done = !!SYL.done[it.id], star = !!SYL.star[it.id], note = SYL.notes[it.id] || '';
+    const lang = it.s.lang ? ' lang="' + it.s.lang + '"' : '';
+    return '<li class="syl-row' + (done ? ' done' : '') + (star ? ' starred' : '') + (note ? ' has-note' : '') + '" data-id="' + it.id + '">'
+      + '<button class="syl-check" type="button" role="checkbox" aria-checked="' + done + '" data-act="toggle" aria-label="Mark ' + sylEsc(it.t) + ' as done">'
+      +   '<svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="syl-tick" d="M5.5 12.8l4.2 4.2L18.8 7.6"></path></svg>'
+      + '</button>'
+      + '<div class="syl-row-text" data-act="toggle">'
+      +   '<span class="syl-row-title"' + lang + '>' + sylEsc(it.t) + '</span>'
+      +   (it.sub ? '<span class="syl-row-sub"' + lang + '>' + sylEsc(it.sub) + '</span>' : '')
+      +   (ctx ? '<span class="syl-row-ctx">' + sylEsc(it.u.no + ' · ' + it.u.t) + '</span>' : '')
+      +   '<span class="syl-row-done">' + (done ? 'Done · ' + sylShortDate(SYL.done[it.id]) : '') + '</span>'
+      + '</div>'
+      + '<button class="syl-ico syl-star-btn' + (star ? ' on' : '') + '" type="button" data-act="star" aria-pressed="' + star + '" aria-label="Flag for revision" title="Flag for revision">'
+      +   '<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.2l2.75 5.6 6.15.9-4.45 4.35 1.05 6.15L12 17.3l-5.5 2.9 1.05-6.15L3.1 9.7l6.15-.9z"></path></svg>'
+      + '</button>'
+      + '<button class="syl-ico syl-note-btn' + (note ? ' on' : '') + '" type="button" data-act="note" aria-label="Add a note" title="Add a note">'
+      +   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.2 8.8a2.1 2.1 0 0 0-3-3L5 17z"></path><path d="m14.5 6.5 3 3"></path></svg>'
+      + '</button>'
+      + '<div class="syl-note-wrap"><div class="syl-note-inner">' + (note ? sylNoteTA(note) : '') + '</div></div>'
+      + '</li>';
+  }
+
+  function sylSubjectCard(s, i){
+    const d = sylCount(s.items), t = s.items.length, p = sylPct(d, t);
+    return '<button class="syl-card syl-s-' + s.id + (p === 100 ? ' complete' : '') + '" type="button" data-act="open" data-sid="' + s.id + '" style="--i:' + i + '">'
+      + '<span class="syl-card-top"><span class="syl-card-ico">' + sylIcon(s.icon) + '</span><span class="syl-card-pct"><b data-count="' + p + '">' + p + '</b>%</span></span>'
+      + '<span class="syl-card-name"' + (s.lang ? ' lang="' + s.lang + '"' : '') + '>' + sylEsc(s.name) + '</span>'
+      + '<span class="syl-card-tag">' + sylEsc(s.tag) + '</span>'
+      + '<span class="syl-bar"><i data-w="' + p + '"></i></span>'
+      + '<span class="syl-card-count">' + d + ' / ' + t + ' topics</span>'
+      + '</button>';
+  }
+
+  function sylPickNext(){
+    const order = [];
+    if(SYL.last && SYL_SUBJ[SYL.last]) order.push(SYL_SUBJ[SYL.last]);
+    SYL_DATA.forEach(s => { if(order.indexOf(s) < 0) order.push(s); });
+    for(let i = 0; i < order.length; i++){
+      const it = order[i].items.find(x => !SYL.done[x.id]);
+      if(it) return it;
+    }
+    return null;
+  }
+
+  function sylPaceHTML(){
+    const pc = sylPace();
+    const today = new Date(); const minStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+    let body;
+    if(pc.state === 'none'){
+      body = '<p class="syl-pace-msg">Set the day you want to finish by — I’ll work out how many topics a day it takes.</p>';
+    } else if(pc.state === 'done'){
+      body = '<p class="syl-pace-msg"><b>Target met.</b> Every topic is ticked — you finished ahead of ' + sylEsc(pc.date.toLocaleDateString(undefined, { day:'numeric', month:'long' })) + '.</p>';
+    } else if(pc.state === 'past'){
+      body = '<p class="syl-pace-msg"><b>' + pc.left + ' topics</b> are still pending and the target date has passed. Pick a new date to re-plan.</p>';
+    } else {
+      body = '<div class="syl-pace-big"><b>' + pc.per + '</b><span>topic' + (pc.per === 1 ? '' : 's') + ' a day</span></div>'
+        + '<p class="syl-pace-msg">' + pc.left + ' left · ' + pc.days + ' day' + (pc.days === 1 ? '' : 's') + ' to ' + sylEsc(pc.date.toLocaleDateString(undefined, { day:'numeric', month:'short' })) + '</p>';
+    }
+    return '<div class="syl-pace" id="syl-pace">'
+      + '<div class="syl-pace-head"><span class="syl-k">Finish-by planner</span>'
+      + (SYL.target ? '<button type="button" class="syl-link" data-act="cleartarget">Clear</button>' : '') + '</div>'
+      + body
+      + '<label class="syl-date"><span>Target date</span><input type="date" id="syl-target" min="' + minStr + '" value="' + sylEsc(SYL.target) + '"></label>'
+      + '</div>';
+  }
+
+  /* ============================================================
+     RENDER — Home
+     ============================================================ */
+  function sylHomeHTML(){
+    const o = sylOverall(), st = sylStats(), nx = sylPickNext();
+    const maxW = Math.max.apply(null, st.week.map(w => w.n).concat([1]));
+    let h = '';
+    h += '<div class="syl-hero syl-enter" style="--i:0">'
+      +   '<div class="syl-hero-ring">' + sylRing(o.p, 118, 9, 'syl-ring-hero')
+      +     '<div class="syl-hero-pct"><b data-count="' + o.p + '">' + o.p + '</b><span>%</span></div></div>'
+      +   '<div class="syl-hero-text">'
+      +     '<p class="syl-k">Overall progress</p>'
+      +     '<p class="syl-hero-big"><b data-count="' + o.d + '">' + o.d + '</b><span> / ' + o.t + ' topics</span></p>'
+      +     '<p class="syl-hero-msg" id="syl-hero-msg">' + sylEsc(sylMessage(o.p)) + '</p>'
+      +   '</div>'
+      + '</div>';
+
+    h += '<div class="syl-pills syl-enter" style="--i:1">'
+      +   '<div class="syl-pill"><span class="syl-pill-n"><b data-count="' + st.today + '">' + st.today + '</b></span><span class="syl-pill-l">Done today</span></div>'
+      +   '<div class="syl-pill"><span class="syl-pill-n"><b data-count="' + st.streak + '">' + st.streak + '</b><small>day' + (st.streak === 1 ? '' : 's') + '</small></span><span class="syl-pill-l">Streak</span></div>'
+      +   '<button type="button" class="syl-pill syl-pill-btn" data-act="starred"><span class="syl-pill-n"><b data-count="' + st.stars + '">' + st.stars + '</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.75 5.6 6.15.9-4.45 4.35 1.05 6.15L12 17.3l-5.5 2.9 1.05-6.15L3.1 9.7l6.15-.9z"></path></svg></span><span class="syl-pill-l">Revision list ›</span></button>'
+      + '</div>';
+
+    if(nx){
+      h += '<div class="syl-next syl-s-' + nx.s.id + ' syl-enter" style="--i:2" data-id="' + nx.id + '">'
+        +   '<span class="syl-k">Up next · ' + sylEsc(nx.s.name) + '</span>'
+        +   '<p class="syl-next-t"' + (nx.s.lang ? ' lang="' + nx.s.lang + '"' : '') + '>' + sylEsc(nx.t) + '</p>'
+        +   '<p class="syl-next-u"' + (nx.s.lang ? ' lang="' + nx.s.lang + '"' : '') + '>' + sylEsc(nx.u.no + ' · ' + nx.u.t) + '</p>'
+        +   '<div class="syl-next-actions">'
+        +     '<button type="button" class="syl-btn syl-btn-solid" data-act="nextdone">Mark done</button>'
+        +     '<button type="button" class="syl-btn" data-act="nextopen" data-sid="' + nx.s.id + '">Open subject</button>'
+        +   '</div></div>';
+    } else {
+      h += '<div class="syl-next syl-enter" style="--i:2"><span class="syl-k">All clear</span><p class="syl-next-t">Nothing pending — the whole syllabus is complete.</p></div>';
+    }
+
+    h += '<div class="syl-twocol syl-enter" style="--i:3">'
+      +   sylPaceHTML()
+      +   '<div class="syl-week"><div class="syl-pace-head"><span class="syl-k">Last 7 days</span></div>'
+      +   '<div class="syl-week-bars">'
+      +   st.week.map(w => '<div class="syl-wcol' + (w.today ? ' today' : '') + '"><span class="syl-wn">' + (w.n || '') + '</span><div class="syl-wbar"><i data-h="' + Math.max(w.n ? 10 : 4, Math.round(w.n * 100 / maxW)) + '"></i></div><span class="syl-wl">' + sylEsc(w.label) + '</span></div>').join('')
+      +   '</div></div>'
+      + '</div>';
+
+    h += '<h2 class="syl-sec syl-enter" style="--i:4">Subjects</h2>';
+    h += '<div class="syl-grid">' + SYL_DATA.map((s, i) => sylSubjectCard(s, i + 5)).join('') + '</div>';
+
+    h += '<div class="syl-foot syl-enter" style="--i:11">'
+      +   '<button type="button" class="syl-btn" data-act="share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="2.6"></circle><circle cx="6" cy="12" r="2.6"></circle><circle cx="18" cy="19" r="2.6"></circle><path d="m8.3 10.7 7.4-4.3M8.3 13.3l7.4 4.3"></path></svg>Share progress</button>'
+      +   '<button type="button" class="syl-btn syl-btn-ghost" id="syl-reset-btn" data-act="reset">Reset progress</button>'
+      + '</div>'
+      + '<p class="syl-source">Built from the official revised syllabus for session 2020-21 · +2 First Year (Odia, English, Physics, Chemistry, Mathematics, Information Technology). Your ticks, flags and notes are saved on this device for your account.</p>';
+    return h;
+  }
+
+  /* ============================================================
+     RENDER — Subject
+     ============================================================ */
+  function sylUnitHTML(u, idx){
+    const d = sylCount(u.items), t = u.items.length, p = sylPct(d, t);
+    const open = !!SYLV.open[u.key];
+    const lang = u.items[0] && u.items[0].s.lang ? ' lang="' + u.items[0].s.lang + '"' : '';
+    return '<section class="syl-unit' + (open ? ' open' : '') + (p === 100 ? ' complete' : '') + '" data-unit="' + u.key + '" style="--i:' + Math.min(idx, 10) + '">'
+      + '<button class="syl-unit-head" type="button" data-act="unit" aria-expanded="' + open + '">'
+      +   '<span class="syl-unit-no">' + sylEsc(u.no) + '</span>'
+      +   '<span class="syl-unit-main"><span class="syl-unit-title"' + lang + '>' + sylEsc(u.t) + '</span>'
+      +   (u.m ? '<span class="syl-unit-meta">' + sylEsc(u.m) + '</span>' : '') + '</span>'
+      +   '<span class="syl-unit-count"><b>' + d + '</b>/' + t + '</span>'
+      +   '<svg class="syl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>'
+      + '</button>'
+      + '<div class="syl-bar syl-bar-unit"><i data-w="' + p + '"></i></div>'
+      + '<div class="syl-unit-body"><div class="syl-unit-inner">'
+      +   '<div class="syl-unit-actions"><button type="button" class="syl-link" data-act="unitall">Mark all done</button><span class="syl-dot">·</span><button type="button" class="syl-link" data-act="unitnone">Clear</button></div>'
+      +   '<ul class="syl-topics"' + (open ? '' : ' data-lazy="1"') + '>' + (open ? u.items.map(it => sylRowHTML(it, false)).join('') : '') + '</ul>'
+      + '</div></div>'
+      + '</section>';
+  }
+
+  function sylSubjectHTML(s){
+    const d = sylCount(s.items), t = s.items.length, p = sylPct(d, t);
+    const fi = { all:0, pending:1, done:2, star:3 }[SYLV.filter] || 0;
+    let h = '';
+    h += '<button class="syl-crumb" type="button" data-act="home">&lsaquo; All subjects</button>';
+    h += '<header class="syl-sh syl-s-' + s.id + ' syl-enter" style="--i:0">'
+      +   '<span class="syl-sh-ico">' + sylIcon(s.icon) + '</span>'
+      +   '<div class="syl-sh-main"><p class="syl-k">' + sylEsc(s.tag) + '</p><h2 class="syl-sh-name"' + (s.lang ? ' lang="' + s.lang + '"' : '') + '>' + sylEsc(s.name) + '</h2>'
+      +   '<p class="syl-sh-count" id="syl-sh-count"><b>' + d + '</b> of ' + t + ' topics</p></div>'
+      +   '<div class="syl-sh-ring" id="syl-sh-ring">' + sylRing(p, 66, 6, '') + '<span class="syl-sh-pct" id="syl-sh-pct">' + p + '%</span></div>'
+      + '</header>';
+    h += '<div class="syl-toolbar syl-s-' + s.id + ' syl-enter" style="--i:1">'
+      +   '<div class="syl-seg" style="--idx:' + fi + '" id="syl-seg" role="tablist">'
+      +     ['all|All','pending|Pending','done|Done','star|Flagged'].map(x => { const a = x.split('|'); return '<button type="button" role="tab" class="' + (SYLV.filter === a[0] ? 'on' : '') + '" data-act="filter" data-f="' + a[0] + '" aria-selected="' + (SYLV.filter === a[0]) + '">' + a[1] + '</button>'; }).join('')
+      +   '</div>'
+      +   '<div class="syl-tools"><button type="button" class="syl-link" data-act="expand">Expand all</button><span class="syl-dot">·</span><button type="button" class="syl-link" data-act="collapse">Collapse all</button></div>'
+      + '</div>';
+    let lastGrp = null;
+    h += '<div class="syl-units syl-s-' + s.id + '" id="syl-units" data-f="' + SYLV.filter + '">';
+    s.units.forEach((u, i) => {
+      if(u.grp && u.grp !== lastGrp){ h += '<h3 class="syl-group syl-enter" style="--i:' + Math.min(i, 10) + '">' + sylEsc(u.grp) + '</h3>'; lastGrp = u.grp; }
+      h += sylUnitHTML(u, i);
+    });
+    h += '<p class="syl-empty" id="syl-empty" style="display:none"></p>';
+    h += '</div>';
+    if(s.note) h += '<div class="syl-subnote">' + sylEsc(s.note) + '</div>';
+    return h;
+  }
+
+  /* ============================================================
+     RENDER — result lists (search / revision list)
+     ============================================================ */
+  function sylListHTML(items, opts){
+    if(!items.length) return '<p class="syl-empty">' + sylEsc(opts.empty) + '</p>';
+    const groups = [];
+    SYL_DATA.forEach(s => {
+      const g = items.filter(it => it.s === s);
+      if(g.length) groups.push({ s: s, items: g });
+    });
+    let h = '<p class="syl-res-count">' + ((opts.total && opts.total > items.length) ? 'Showing first ' + items.length + ' of ' + opts.total + ' topics — type more to narrow' : items.length + (items.length === 1 ? ' topic' : ' topics')) + (opts.q ? ' for “' + sylEsc(opts.q) + '”' : '') + '</p>';
+    groups.forEach(g => {
+      h += '<section class="syl-resgroup syl-s-' + g.s.id + '"><h3 class="syl-group syl-group-acc"><span class="syl-group-ico">' + sylIcon(g.s.icon) + '</span>' + sylEsc(g.s.name) + '</h3><ul class="syl-topics">'
+        + g.items.map(it => sylRowHTML(it, true)).join('') + '</ul></section>';
+    });
+    return h;
+  }
+  function sylSearchItems(q){
+    const needle = q.toLowerCase();
+    const hits = SYL_ALL.filter(it => it.h.indexOf(needle) >= 0 || (SYL.notes[it.id] && SYL.notes[it.id].toLowerCase().indexOf(needle) >= 0));
+    const out = hits.slice(0, 60); out.total = hits.length; return out;
+  }
+
+  /* ============================================================
+     RENDER — orchestration
+     ============================================================ */
+  function sylRender(keepScroll){
+    const root = sylRoot(); if(!root) return;
+    let inner = '';
+    if(SYLV.view === 'home'){
+      inner = sylSearchBar() + '<div id="syl-results" class="syl-results" style="display:none"></div><div id="syl-content">' + sylHomeHTML() + '</div>';
+    } else if(SYLV.view === 'starred'){
+      const items = SYL_ALL.filter(it => SYL.star[it.id]);
+      inner = '<button class="syl-crumb" type="button" data-act="home">&lsaquo; Back to overview</button>'
+        + '<header class="syl-listhead syl-enter" style="--i:0"><p class="syl-k">Flagged for revision</p><h2 class="syl-sh-name">Revision list</h2><p class="syl-sub">Everything you starred, across all subjects. Tap the star again to remove a topic.</p></header>'
+        + '<div id="syl-content">' + sylListHTML(items, { empty:'Nothing flagged yet. Tap the star on any topic to add it here.' }) + '</div>';
+    } else if(SYL_SUBJ[SYLV.view]){
+      inner = sylSearchBar() + '<div id="syl-results" class="syl-results" style="display:none"></div><div id="syl-content">' + sylSubjectHTML(SYL_SUBJ[SYLV.view]) + '</div>';
+    } else { SYLV.view = 'home'; return sylRender(keepScroll); }
+    root.innerHTML = inner;
+    if(SYLV.q && (SYLV.view === 'home' || SYL_SUBJ[SYLV.view])) sylRunSearch(true);
+    if(SYL_SUBJ[SYLV.view]) sylApplyFilter(true);
+    sylAnimateIn(root);
+    if(!keepScroll) window.scrollTo(0, 0);
+  }
+
+  function sylRunSearch(silent){
+    const res = document.getElementById('syl-results'), content = document.getElementById('syl-content'), x = document.getElementById('syl-qx');
+    if(!res || !content) return;
+    const q = SYLV.q.trim();
+    if(x) x.style.display = SYLV.q ? '' : 'none';
+    if(q.length < 2){
+      res.style.display = 'none'; res.innerHTML = '';
+      content.style.display = '';
+      return;
+    }
+    const found = sylSearchItems(q);
+    res.innerHTML = sylListHTML(found, { q: q, total: found.total, empty:'No topic matches “' + q + '”. Try a shorter word.' });
+    res.style.display = '';
+    content.style.display = 'none';
+  }
+
+  function sylApplyFilter(instant){
+    const box = document.getElementById('syl-units'); if(!box) return;
+    const f = SYLV.filter;
+    box.setAttribute('data-f', f);
+    let any = false;
+    box.querySelectorAll('.syl-unit').forEach(sec => {
+      const u = SYL_UNIT[sec.getAttribute('data-unit')]; if(!u) return;
+      let vis = 0;
+      if(f === 'all') vis = u.items.length;
+      else u.items.forEach(it => { const d = !!SYL.done[it.id]; if((f === 'pending' && !d) || (f === 'done' && d) || (f === 'star' && SYL.star[it.id])) vis++; });
+      sec.classList.toggle('syl-hidden', f !== 'all' && vis === 0);
+      if(f !== 'all' && vis > 0 && !instant){ sylFill(sec); sec.classList.add('open'); SYLV.open[sec.getAttribute('data-unit')] = true; const hd = sec.querySelector('.syl-unit-head'); if(hd) hd.setAttribute('aria-expanded', 'true'); }
+      if(vis > 0 || f === 'all') any = true;
+    });
+    // hide group headings whose units are all hidden
+    box.querySelectorAll('.syl-group').forEach(g => {
+      let n = g.nextElementSibling, shown = false;
+      while(n && !n.classList.contains('syl-group')){ if(n.classList.contains('syl-unit') && !n.classList.contains('syl-hidden')) shown = true; n = n.nextElementSibling; }
+      g.classList.toggle('syl-hidden', !shown);
+    });
+    const em = document.getElementById('syl-empty');
+    if(em){
+      const msg = { pending:'Nothing pending here — every topic is done. ', done:'No topic is ticked yet in this subject.', star:'No flagged topics here. Tap the star on a topic to flag it for revision.' }[f] || '';
+      em.textContent = msg; em.style.display = (!any && f !== 'all') ? '' : 'none';
+    }
+  }
+
+  /* ============================================================
+     INTERACTIONS
+     ============================================================ */
+  function sylToast(msg, actionLabel, actionFn, big){
+    let el = document.getElementById('syl-toast');
+    if(!el){ el = document.createElement('div'); el.id = 'syl-toast'; el.className = 'syl-toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    el.className = 'syl-toast' + (big ? ' big' : '');
+    el.innerHTML = '<span class="syl-toast-msg">' + sylEsc(msg) + '</span>' + (actionLabel ? '<button type="button" class="syl-toast-btn">' + sylEsc(actionLabel) + '</button>' : '');
+    const b = el.querySelector('.syl-toast-btn');
+    if(b) b.addEventListener('click', () => { if(actionFn) actionFn(); sylHideToast(); });
+    void el.offsetWidth;
+    el.classList.add('show');
+    clearTimeout(sylToastTimer);
+    sylToastTimer = setTimeout(sylHideToast, actionLabel ? 6500 : (big ? 4200 : 2600));
+  }
+  function sylHideToast(){ const el = document.getElementById('syl-toast'); if(el) el.classList.remove('show'); }
+
+  function sylBurst(x, y, rgb, n){
+    if(SYL_RM) return;
+    n = n || 14;
+    const frag = document.createDocumentFragment();
+    const cols = ['rgb(' + rgb + ')', 'rgb(var(--gold-rgb))', 'rgba(var(--ink-rgb),0.55)'];
+    for(let i = 0; i < n; i++){
+      const p = document.createElement('i');
+      p.className = 'syl-p' + (i % 3 === 0 ? ' dia' : '');
+      const ang = Math.random() * Math.PI * 2, dist = 34 + Math.random() * (n > 20 ? 150 : 56);
+      p.style.cssText = 'left:' + x + 'px;top:' + y + 'px;background:' + cols[i % cols.length] + ';--dx:' + (Math.cos(ang) * dist).toFixed(1) + 'px;--dy:' + (Math.sin(ang) * dist - (n > 20 ? 40 : 10)).toFixed(1) + 'px;--r:' + Math.round(Math.random() * 360) + 'deg;animation-delay:' + Math.round(Math.random() * 80) + 'ms';
+      frag.appendChild(p);
+      setTimeout(() => { if(p.parentNode) p.parentNode.removeChild(p); }, 1200);
+    }
+    document.body.appendChild(frag);
+  }
+  function sylRGBof(el){
+    try{
+      const v = getComputedStyle(el).getPropertyValue('--ac-rgb').trim();
+      if(v) return v;
+    }catch(e){}
+    return '162,117,31';
+  }
+
+  function sylSyncRow(id){
+    const done = !!SYL.done[id];
+    document.querySelectorAll('.syl-row[data-id="' + id + '"]').forEach(r => {
+      r.classList.toggle('done', done);
+      const c = r.querySelector('.syl-check'); if(c) c.setAttribute('aria-checked', done);
+      const d = r.querySelector('.syl-row-done'); if(d) d.textContent = done ? 'Done · ' + sylShortDate(SYL.done[id]) : '';
+    });
+  }
+  function sylSyncUnit(u, opts){
+    const sec = document.querySelector('.syl-unit[data-unit="' + u.key + '"]'); if(!sec) return;
+    const d = sylCount(u.items), t = u.items.length, p = sylPct(d, t);
+    const cnt = sec.querySelector('.syl-unit-count b'); if(cnt) cnt.textContent = d;
+    const bar = sec.querySelector('.syl-bar-unit i'); if(bar) bar.style.width = p + '%';
+    sec.classList.toggle('complete', p === 100);
+  }
+  function sylSyncSubjectHeader(s){
+    if(SYLV.view !== s.id) return;
+    const d = sylCount(s.items), t = s.items.length, p = sylPct(d, t);
+    const c = document.getElementById('syl-sh-count'); if(c) c.innerHTML = '<b>' + d + '</b> of ' + t + ' topics';
+    const r = document.getElementById('syl-sh-ring'); if(r) sylSetRing(r.querySelector('svg'), p);
+    const pc = document.getElementById('syl-sh-pct'); if(pc) pc.textContent = p + '%';
+  }
+  function sylSyncHome(){
+    // home is only on screen when no subject is open; handled by re-render on entry.
+  }
+
+  function sylSetDone(id, val, srcEl){
+    const it = SYL_IDX[id]; if(!it) return;
+    const was = !!SYL.done[id];
+    if(val === was) return;
+    if(val) SYL.done[id] = Date.now(); else delete SYL.done[id];
+    SYL.last = it.s.id;
+    sylSave();
+    sylSyncRow(id); sylSyncUnit(it.u); sylSyncSubjectHeader(it.s);
+    if(SYLV.view !== 'home' && SYL_SUBJ[SYLV.view] && SYLV.filter !== 'all'){
+      clearTimeout(sylFilterTimer); sylFilterTimer = setTimeout(() => sylApplyFilter(true), 720);
+    }
+    if(val){
+      sylBuzz(12);
+      const row = srcEl || document.querySelector('.syl-row[data-id="' + id + '"] .syl-check');
+      let cx = window.innerWidth / 2, cy = window.innerHeight / 2, rgb = sylRGBof(row || document.body);
+      if(row){ const b = row.getBoundingClientRect(); cx = b.left + 13; cy = b.top + b.height / 2; }
+      sylBurst(cx, cy, rgb, 11);
+      // celebrations
+      const unitDone = sylCount(it.u.items) === it.u.items.length;
+      const subjDone = sylCount(it.s.items) === it.s.items.length;
+      const allDone = sylCount(SYL_ALL) === SYL_ALL.length;
+      if(allDone){ sylBurst(window.innerWidth / 2, window.innerHeight * 0.35, '162,117,31', 44); sylToast('The entire +2 first-year syllabus is complete ✦', '', null, true); sylBuzz([20, 40, 20]); }
+      else if(subjDone){ sylBurst(window.innerWidth / 2, window.innerHeight * 0.35, sylRGBof(row || document.body), 34); sylToast(it.s.name + ' is complete ✦', '', null, true); }
+      else if(unitDone){ sylToast('Unit complete — ' + it.u.t, '', null, false); }
+    }
+  }
+
+  function sylSnapshot(){ sylUndoSnap = JSON.stringify({ done: SYL.done, star: SYL.star }); }
+  function sylUndo(){
+    if(!sylUndoSnap) return;
+    try{ const o = JSON.parse(sylUndoSnap); SYL.done = o.done || {}; SYL.star = o.star || {}; }catch(e){}
+    sylUndoSnap = null; sylSaveNow(); sylRender(true);
+  }
+
+  function sylUnitBulk(ukey, val){
+    const u = SYL_DATA.reduce((acc, s) => acc || s.units.find(x => x.key === ukey), null); if(!u) return;
+    sylSnapshot();
+    const now = Date.now();
+    let changed = 0;
+    u.items.forEach(it => {
+      if(val && !SYL.done[it.id]){ SYL.done[it.id] = now; changed++; }
+      else if(!val && SYL.done[it.id]){ delete SYL.done[it.id]; changed++; }
+      sylSyncRow(it.id);
+    });
+    if(!changed){ sylUndoSnap = null; return; }
+    SYL.last = u.sid;
+    sylSave(); sylSyncUnit(u); sylSyncSubjectHeader(SYL_SUBJ[u.sid]);
+    if(SYLV.filter !== 'all'){ clearTimeout(sylFilterTimer); sylFilterTimer = setTimeout(() => sylApplyFilter(true), 720); }
+    if(val){
+      const sec = document.querySelector('.syl-unit[data-unit="' + ukey + '"]');
+      if(sec){ const b = sec.getBoundingClientRect(); sylBurst(Math.min(window.innerWidth - 40, b.left + 60), Math.max(80, b.top + 40), sylRGBof(sec), 22); }
+      sylBuzz(18);
+    }
+    sylToast((val ? 'Marked ' : 'Cleared ') + changed + ' topic' + (changed === 1 ? '' : 's'), 'Undo', sylUndo);
+  }
+
+  function sylToggleUnit(sec, force){
+    const open = force === undefined ? !sec.classList.contains('open') : force;
+    if(open) sylFill(sec);
+    sec.classList.toggle('open', open);
+    SYLV.open[sec.getAttribute('data-unit')] = open;
+    const hd = sec.querySelector('.syl-unit-head'); if(hd) hd.setAttribute('aria-expanded', open);
+  }
+
+  function sylShare(){
+    const o = sylOverall();
+    const lines = ['My +2 First Year syllabus progress — ' + o.p + '% (' + o.d + '/' + o.t + ' topics)', ''];
+    SYL_DATA.forEach(s => { const d = sylCount(s.items), t = s.items.length; lines.push('• ' + s.name + ': ' + sylPct(d, t) + '% (' + d + '/' + t + ')'); });
+    const st = sylStats();
+    lines.push('', 'Streak: ' + st.streak + ' day' + (st.streak === 1 ? '' : 's') + ' · CBSH Attendance Tracker');
+    const text = lines.join('\n');
+    if(navigator.share){ navigator.share({ title:'Syllabus progress', text: text }).catch(() => {}); return; }
+    const done = () => sylToast('Progress copied to clipboard');
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done).catch(() => sylFallbackCopy(text, done)); }
+    else sylFallbackCopy(text, done);
+  }
+  function sylFallbackCopy(text, cb){
+    try{
+      const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    }catch(e){ sylToast('Could not copy on this device'); }
+  }
+
+  function sylGo(view){
+    SYLV.view = view; SYLV.q = ''; SYLV.filter = 'all';
+    if(SYL_SUBJ[view]){
+      SYL.last = view; sylSave();
+      // open the first unit that still has pending topics (or the first one)
+      SYLV.open = {};
+      const s = SYL_SUBJ[view];
+      const first = s.units.find(u => sylCount(u.items) < u.items.length) || s.units[0];
+      if(first) SYLV.open[first.key] = true;
+    }
+    sylRender(false);
+  }
+
+  /* ---- delegated events ---- */
+  function sylOnClick(e){
+    const t = e.target.closest('[data-act]'); if(!t) return;
+    const act = t.getAttribute('data-act');
+    const row = t.closest('.syl-row');
+    switch(act){
+      case 'open': sylGo(t.getAttribute('data-sid')); break;
+      case 'home': sylGo('home'); break;
+      case 'starred': sylGo('starred'); break;
+      case 'nextopen': sylGo(t.getAttribute('data-sid')); break;
+      case 'nextdone': {
+        const card = t.closest('.syl-next'); const id = card && card.getAttribute('data-id');
+        if(id){
+          const b = t.getBoundingClientRect();
+          sylSetDone(id, true, t);
+          sylBurst(b.left + b.width / 2, b.top + b.height / 2, sylRGBof(card), 14);
+          card.classList.add('syl-swap');
+          setTimeout(() => { if(SYLV.view === 'home' && sylVisible()) sylRender(true); }, 380);
+        }
+        break;
+      }
+      case 'toggle': if(row){ const id = row.getAttribute('data-id'); sylSetDone(id, !SYL.done[id], row.querySelector('.syl-check')); } break;
+      case 'star': if(row){
+        const id = row.getAttribute('data-id');
+        if(SYL.star[id]) delete SYL.star[id]; else { SYL.star[id] = 1; const b = t.getBoundingClientRect(); sylBurst(b.left + b.width / 2, b.top + b.height / 2, '162,117,31', 8); sylBuzz(8); }
+        sylSave();
+        document.querySelectorAll('.syl-row[data-id="' + id + '"]').forEach(r => {
+          r.classList.toggle('starred', !!SYL.star[id]);
+          const sb = r.querySelector('.syl-star-btn'); if(sb){ sb.classList.toggle('on', !!SYL.star[id]); sb.setAttribute('aria-pressed', !!SYL.star[id]); }
+        });
+        if(SYLV.view === 'starred'){ setTimeout(() => { if(sylVisible() && SYLV.view === 'starred') sylRender(true); }, 320); }
+        else if(SYLV.view !== 'home' && SYLV.filter === 'star'){ clearTimeout(sylFilterTimer); sylFilterTimer = setTimeout(() => sylApplyFilter(true), 520); }
+      } break;
+      case 'note': if(row){
+        const open = !row.classList.contains('note-open');
+        row.classList.toggle('note-open', open);
+        if(open){ const inn = row.querySelector('.syl-note-inner'); if(inn && !inn.querySelector('.syl-note-ta')) inn.innerHTML = sylNoteTA(''); const ta = row.querySelector('.syl-note-ta'); if(ta) setTimeout(() => { try{ ta.focus({ preventScroll:true }); }catch(err){ ta.focus(); } }, 280); }
+      } break;
+      case 'unit': { const sec = t.closest('.syl-unit'); if(sec) sylToggleUnit(sec); } break;
+      case 'unitall': { const sec = t.closest('.syl-unit'); if(sec) sylUnitBulk(sec.getAttribute('data-unit'), true); } break;
+      case 'unitnone': { const sec = t.closest('.syl-unit'); if(sec) sylUnitBulk(sec.getAttribute('data-unit'), false); } break;
+      case 'expand': document.querySelectorAll('#syl-units .syl-unit:not(.syl-hidden)').forEach(s => sylToggleUnit(s, true)); break;
+      case 'collapse': document.querySelectorAll('#syl-units .syl-unit').forEach(s => sylToggleUnit(s, false)); break;
+      case 'filter': {
+        SYLV.filter = t.getAttribute('data-f');
+        const seg = document.getElementById('syl-seg');
+        if(seg){
+          seg.style.setProperty('--idx', { all:0, pending:1, done:2, star:3 }[SYLV.filter]);
+          seg.querySelectorAll('button').forEach(b => { const on = b.getAttribute('data-f') === SYLV.filter; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+        }
+        sylApplyFilter(false);
+      } break;
+      case 'clearsearch': {
+        SYLV.q = ''; const i = document.getElementById('syl-q'); if(i){ i.value = ''; i.focus(); }
+        sylRunSearch(true);
+      } break;
+      case 'cleartarget': SYL.target = ''; sylSave(); { const p = document.getElementById('syl-pace'); if(p){ const w = document.createElement('div'); w.innerHTML = sylPaceHTML(); p.replaceWith(w.firstChild); } } break;
+      case 'share': sylShare(); break;
+      case 'reset': {
+        const btn = document.getElementById('syl-reset-btn');
+        if(btn && btn.getAttribute('data-armed') !== '1'){
+          btn.setAttribute('data-armed', '1'); btn.textContent = 'Tap again to confirm'; btn.classList.add('armed');
+          clearTimeout(sylResetTimer);
+          sylResetTimer = setTimeout(() => { if(btn){ btn.removeAttribute('data-armed'); btn.textContent = 'Reset progress'; btn.classList.remove('armed'); } }, 3200);
+        } else {
+          clearTimeout(sylResetTimer);
+          sylSnapshot(); SYL.done = {}; sylSaveNow(); sylRender(true);
+          sylToast('All ticks cleared — your flags and notes are kept', 'Undo', sylUndo);
+        }
+      } break;
+    }
+  }
+  function sylOnInput(e){
+    const t = e.target;
+    if(t.id === 'syl-q'){
+      SYLV.q = t.value;
+      const x = document.getElementById('syl-qx'); if(x) x.style.display = t.value ? '' : 'none';
+      clearTimeout(sylSearchTimer); sylSearchTimer = setTimeout(() => sylRunSearch(false), 220);
+    } else if(t.classList.contains('syl-note-ta')){
+      const row = t.closest('.syl-row'); if(!row) return;
+      const id = row.getAttribute('data-id'), v = t.value.trim();
+      if(v) SYL.notes[id] = t.value; else delete SYL.notes[id];
+      row.classList.toggle('has-note', !!v);
+      const nb = row.querySelector('.syl-note-btn'); if(nb) nb.classList.toggle('on', !!v);
+      sylSave();
+    }
+  }
+  function sylOnChange(e){
+    const t = e.target;
+    if(t.id === 'syl-target'){
+      SYL.target = t.value || ''; sylSave();
+      const p = document.getElementById('syl-pace');
+      if(p){ const w = document.createElement('div'); w.innerHTML = sylPaceHTML(); const n = w.firstChild; p.replaceWith(n); }
+      if(SYL.target) sylToast('Target saved');
+    }
+  }
+
+  /* ---- show / hide ---- */
+  function syllabusHide(){
+    pageHide('syllabus-view');
+    sylLeave();
+    backToAppOrAuth();
+  }
+  function sylLeave(){
+    document.body.classList.remove('syl-active');
+    if(sylSaveTimer) sylSaveNow();
+    sylHideToast();
+    const el = document.getElementById('syl-toast'); if(el && el.parentNode) el.parentNode.removeChild(el);
+    document.querySelectorAll('.syl-p').forEach(p => p.remove());
+  }
+  window.syllabusLeave = sylLeave;
+  function syllabusShow(){
+    hideAllPages();
+    const view = document.getElementById('syllabus-view');
+    view.style.display = 'block';
+    document.body.classList.add('syl-active');
+    sylLoad();
+    SYLV.q = ''; SYLV.filter = 'all'; SYLV.view = 'home';
+    sylRender(false);
+    window.scrollTo(0, 0);
+  }
+  window.syllabusShow = syllabusShow;
+
+  (function sylWire(){
+    const root = sylRoot();
+    if(root){
+      root.addEventListener('click', sylOnClick);
+      root.addEventListener('input', sylOnInput);
+      root.addEventListener('change', sylOnChange);
+    }
+    const openBtn = document.getElementById('open-syllabus-btn');
+    if(openBtn) openBtn.addEventListener('click', syllabusShow);
+    const backBtn = document.getElementById('syllabus-back-btn');
+    if(backBtn) backBtn.addEventListener('click', syllabusHide);
+  })();
+
 
   /* ---- Wanna See Magic (pendulum wave) ---- */
   let magicOpenedFromGames = false;
