@@ -7173,6 +7173,7 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
       <div class="history-list" id="exam-history-list"></div>
       <div class="empty-state" id="exam-history-empty" style="display:none;">No completed exams yet.</div>
     </section>
+    <div id="exam-restore-host"></div>
     <div class="empty-state" id="exam-empty" style="display:none;">
       No exams tracked yet. Pick a subject and a date above to start the countdown.
     </div>
@@ -8885,6 +8886,9 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       <div class="history-empty" id="history-empty">No saved records yet. Use "Save to History" above to keep a dated copy of a student's attendance percentage.</div>
     </section>
 
+    <div id="att-restore-host"></div>
+    <div id="att-history-restore-host"></div>
+
   </div>
 
   <div id="admin-view" style="display:none;">
@@ -8954,6 +8958,95 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
   <button class="reset-all" id="reset-all">Clear all data</button>
 </footer>
 
+<style id="restore-kit-style">
+  .rk-bar{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:22px 0 6px; padding:14px 18px; border:1px dashed rgba(var(--gold-rgb),0.6); border-radius:4px; background:rgba(var(--gold-rgb),0.08); animation:rkIn .35s cubic-bezier(.22,1,.36,1) both; }
+  .rk-bar.rk-out, .rk-ttt.rk-out{ animation:rkOut .3s ease forwards; }
+  .rk-text{ font-family:'Lora', serif; font-size:14px; color:var(--ink); line-height:1.45; flex:1 1 220px; }
+  .rk-text small{ display:block; color:var(--ink-soft); font-size:12px; margin-top:3px; }
+  .rk-btn{ font-family:'Lora', serif; font-weight:600; font-size:13px; padding:9px 16px; border-radius:3px; border:1.5px solid var(--gold); background:transparent; color:var(--gold); cursor:pointer; }
+  .rk-btn:hover{ background:var(--gold); color:var(--paper); }
+  .rk-btn[disabled]{ opacity:.6; cursor:default; }
+  .ttt-card.rk-ttt{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; animation:rkIn .35s cubic-bezier(.22,1,.36,1) both; }
+  .rk-ttt .rk-text{ font-size:14px; line-height:1.4; flex:1 1 200px; }
+  .rk-ttt .rk-text small{ display:block; opacity:.7; font-size:12px; margin-top:3px; }
+  @keyframes rkIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+  @keyframes rkOut{ to{ opacity:0; transform:translateY(8px); } }
+  @media (prefers-reduced-motion: reduce){ .rk-bar, .rk-bar.rk-out, .rk-ttt, .rk-ttt.rk-out{ animation:none; } }
+</style>
+<script id="restore-kit">
+// Restore-after-reset helper. A backup only exists after the user actually
+// resets / removes saved data; the "Restore" bar is shown while a backup is
+// pending and disappears for good once it has been restored.
+window.RestoreKit = (function(){
+  var PREFIX = 'restore-backup-v1::';
+  function read(key){
+    try{ var raw = localStorage.getItem(PREFIX + key); return raw ? JSON.parse(raw) : null; }catch(e){ return null; }
+  }
+  function write(key, payload){
+    try{ localStorage.setItem(PREFIX + key, JSON.stringify({ payload: payload, ts: Date.now() })); }catch(e){}
+  }
+  function discard(key){ try{ localStorage.removeItem(PREFIX + key); }catch(e){} }
+  // arm(key, fn): fn(previousPayload|null) returns the payload to keep, or null to leave things as they are.
+  function arm(key, fn){
+    if(!key) return;
+    var rec = read(key);
+    var next = fn(rec ? rec.payload : null);
+    if(next == null) return;
+    write(key, next);
+    refreshAll();
+  }
+  var mounts = [];
+  function refreshAll(){ mounts.forEach(function(m){ try{ m.refresh(); }catch(e){} }); }
+  function mount(opts){
+    var host = typeof opts.host === 'string' ? document.getElementById(opts.host) : opts.host;
+    if(!host) return { refresh: function(){} };
+    function currentKey(){ try{ return typeof opts.key === 'function' ? opts.key() : opts.key; }catch(e){ return null; } }
+    function refresh(){
+      host.innerHTML = '';
+      var key = currentKey();
+      if(!key) return;
+      var rec = read(key);
+      if(!rec) return;
+      var visible = true;
+      try{ visible = opts.show ? !!opts.show(rec.payload) : true; }catch(e){ visible = false; }
+      if(!visible) return;
+      var bar = document.createElement('div');
+      bar.className = opts.barClass || 'rk-bar';
+      bar.setAttribute('role', 'status');
+      var text = document.createElement('div');
+      text.className = 'rk-text';
+      text.textContent = opts.text(rec.payload);
+      if(opts.sub){
+        var small = document.createElement('small');
+        small.textContent = opts.sub(rec.payload);
+        text.appendChild(small);
+      }
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = opts.btnClass || 'rk-btn';
+      btn.textContent = opts.button || 'Restore';
+      btn.addEventListener('click', async function(){
+        btn.disabled = true;
+        var result;
+        try{ result = await opts.onRestore(rec.payload); }
+        catch(e){ btn.disabled = false; return; }   // cancelled / failed: backup stays
+        if(result && result.keep) write(key, result.keep); else discard(key);
+        if(bar.parentNode){
+          bar.classList.add('rk-out');
+          setTimeout(refresh, 300);
+        } else { refresh(); }
+      });
+      bar.appendChild(text);
+      bar.appendChild(btn);
+      host.appendChild(bar);
+    }
+    var m = { refresh: refresh };
+    mounts.push(m);
+    return m;
+  }
+  return { arm: arm, mount: mount, read: read, discard: discard, refreshAll: refreshAll };
+})();
+</script>
 <script>
 // ---------- Premium confirmation modal (global helper) ----------
 // Usage: confirmModal({ title, message, confirmText, cancelText }).then(ok => { if(ok) ... })
@@ -12513,6 +12606,49 @@ function initPracticalGroupFinder(){
     try{ await window.storage.set(examHistoryKeyFor(currentUser.id), JSON.stringify({ coaching: coachingHistory, school: schoolHistory }), true); }catch(e){}
   }
 
+  // ---- Restore removed exam-history entries ----
+  function examBackupKey(){ return currentUser ? 'exam-history::' + currentUser.id : null; }
+  function examSameEntry(a, b){ return a.examDate === b.examDate && a.subject === b.subject && (a.title || '') === (b.title || ''); }
+  function examArmBackup(type, entry){
+    const key = examBackupKey();
+    if(!key) return;
+    window.RestoreKit.arm(key, prev => {
+      const p = prev && typeof prev === 'object' ? prev : {};
+      const next = { coaching: Array.isArray(p.coaching) ? p.coaching.slice() : [], school: Array.isArray(p.school) ? p.school.slice() : [] };
+      if(!next[type].some(x => examSameEntry(x, entry))) next[type].push(JSON.parse(JSON.stringify(entry)));
+      return next;
+    });
+  }
+  function examPendingFor(p){
+    const type = activeExamType === 'school' ? 'school' : 'coaching';
+    const cur = type === 'school' ? schoolHistory : coachingHistory;
+    const list = p && Array.isArray(p[type]) ? p[type] : [];
+    return list.filter(x => !cur.some(c => examSameEntry(c, x)));
+  }
+  window.__examRestore = window.RestoreKit.mount({
+    host: 'exam-restore-host',
+    key: examBackupKey,
+    show: p => examPendingFor(p).length > 0,
+    text: p => {
+      const n = examPendingFor(p).length;
+      const kind = activeExamType === 'school' ? 'school' : 'coaching';
+      return n === 1 ? 'A completed ' + kind + ' exam was removed from History.' : n + ' completed ' + kind + ' exams were removed from History.';
+    },
+    sub: () => 'Restore puts them back in your History list.',
+    button: 'Restore history',
+    onRestore: async (p) => {
+      const type = activeExamType === 'school' ? 'school' : 'coaching';
+      const cur = type === 'school' ? schoolHistory : coachingHistory;
+      examPendingFor(p).forEach(x => cur.push(x));
+      cur.sort((a, b) => a.examDate < b.examDate ? -1 : (a.examDate > b.examDate ? 1 : 0));
+      await saveExamHistory();
+      renderExamHistory();
+      const next = { coaching: p.coaching || [], school: p.school || [] };
+      next[type] = [];
+      return (next.coaching.length || next.school.length) ? { keep: next } : undefined;
+    }
+  });
+
 
   function examDaysLeft(dateKey){
     const parts = dateKey.split('-').map(Number);
@@ -12735,6 +12871,7 @@ function initPracticalGroupFinder(){
   }
 
   function renderExamHistory(){
+    if(window.__examRestore) window.__examRestore.refresh();
     const section = document.getElementById('exam-history-section');
     const listEl = document.getElementById('exam-history-list');
     const empty = document.getElementById('exam-history-empty');
@@ -12784,6 +12921,7 @@ function initPracticalGroupFinder(){
         const list = activeExamType === 'school' ? schoolHistory : coachingHistory;
         const idx = list.indexOf(h);
         if(idx === -1) return;
+        examArmBackup(activeExamType === 'school' ? 'school' : 'coaching', h);
         list.splice(idx, 1);
         await saveExamHistory();
         renderExamHistory();
@@ -17162,6 +17300,7 @@ if(existing){
   let editingHistoryId = null; // set when editing an existing saved record
   let preEditLiveState = null; // backs up the real live register while editing a history record
   let historyUndoSnapshot = null; // last removed/cleared history state, for one-click undo
+  var attRestoreRefs = { data: null, hist: null }; // restore-after-reset bars (see RestoreKit)
 
   const els = {
     name: document.getElementById('f-name'),
@@ -17520,6 +17659,7 @@ if(existing){
     if(!isOwn) els.viewingBannerText.textContent = 'Viewing and editing "' + label + '"\'s register (as admin).';
     hydrateFields();
     render();
+    if(attRestoreRefs.data) attRestoreRefs.data.refresh();
   }
 
   async function loadHistory(){
@@ -17865,6 +18005,7 @@ if(existing){
   }
 
   function renderHistory(){
+    if(attRestoreRefs.hist) attRestoreRefs.hist.refresh();
     els.clearHistoryBtn.style.display = (currentUser && currentUser.isAdmin) ? 'inline' : 'none';
     els.historyList.innerHTML = '';
     els.historyEmpty.style.display = historyRecords.length === 0 ? 'block' : 'none';
@@ -17912,6 +18053,7 @@ if(existing){
         removeBtn.className = 'hist-remove';
         removeBtn.textContent = 'remove';
         removeBtn.addEventListener('click', () => {
+          attArmHistoryBackup([rec]);
           historyUndoSnapshot = historyRecords.slice();
           historyRecords = historyRecords.filter(r => r.id !== rec.id);
           if(editingHistoryId === rec.id) cancelEditingHistory();
@@ -18032,12 +18174,93 @@ if(existing){
     if(!currentUser || !currentUser.isAdmin) return;
     if(historyRecords.length === 0) return;
     if(!confirm('Clear all saved history records? You can undo this right after, with one click.')) return;
+    attArmHistoryBackup(historyRecords);
     historyUndoSnapshot = historyRecords.slice();
     const count = historyRecords.length;
     historyRecords = [];
     saveHistoryRecords();
     renderHistory();
     showHistoryUndo('Cleared ' + count + ' history record' + (count === 1 ? '' : 's'));
+  });
+
+  // ---- Restore after reset (attendance register + saved history) ----
+  function attHasData(s){
+    if(!s) return false;
+    const st = s.student || {};
+    if(st.name || st.roll || st.sem) return true;
+    if(typeof s.xp === 'number' && s.xp > 0) return true;
+    if((s.threshold ?? 75) !== 75) return true;
+    const subs = Array.isArray(s.subjects) ? s.subjects : [];
+    if(subs.some(x => (x.attended||0) > 0 || (x.total||0) > 0 || (x.theoryTotal||0) > 0 || (x.practicalTotal||0) > 0)) return true;
+    const defNames = ['Physics','Chemistry','Mathematics','English','Odia (MIL)'];
+    return subs.length !== defNames.length || subs.some((x,i) => x.name !== defNames[i]);
+  }
+  function attDataKey(){ return viewingUserId ? 'attendance-data::' + viewingUserId : null; }
+  // Called only when "Clear all data" is confirmed. Never overwrites a
+  // backup with an already-empty register.
+  function attArmDataBackup(){
+    const key = attDataKey();
+    if(!key || !attHasData(state)) return;
+    window.RestoreKit.arm(key, () => ({ state: JSON.parse(JSON.stringify(state)), savedAt: new Date().toISOString() }));
+  }
+  attRestoreRefs.data = window.RestoreKit.mount({
+    host: 'att-restore-host',
+    key: attDataKey,
+    text: () => 'You cleared your saved attendance.',
+    sub: p => 'Restore brings back your subjects, classes attended and student details' + (p && p.savedAt ? ' as they were on ' + formatDate(p.savedAt) : '') + '.',
+    button: 'Restore my attendance',
+    onRestore: async (p) => {
+      if(attHasData(state)){
+        const ok = await confirmModal({
+          title: 'Restore saved attendance?',
+          message: 'This will replace what is on the register right now with the attendance you cleared.',
+          confirmText: 'Restore',
+          cancelText: 'Keep current'
+        });
+        if(!ok) throw new Error('cancelled');
+      }
+      if(editingHistoryId) cancelEditingHistory();
+      state = p.state;
+      if(Array.isArray(state.subjects)) state.subjects.forEach(migrateSubjectTypeFields);
+      history = {};
+      hydrateFields();
+      await save();
+      render();
+    }
+  });
+
+  function attMyVisible(list){
+    if(!currentUser) return [];
+    return currentUser.isAdmin ? list : list.filter(r => r.ownerId === currentUser.id);
+  }
+  function attArmHistoryBackup(recs){
+    const add = (recs || []).filter(r => r && r.id);
+    if(!add.length) return;
+    window.RestoreKit.arm('attendance-history', prev => {
+      const list = prev && Array.isArray(prev.records) ? prev.records.slice() : [];
+      add.forEach(r => { if(!list.some(x => x.id === r.id)) list.push(JSON.parse(JSON.stringify(r))); });
+      return { records: list };
+    });
+  }
+  function attPendingHistory(p){
+    const recs = p && Array.isArray(p.records) ? p.records : [];
+    return attMyVisible(recs).filter(r => !historyRecords.some(h => h.id === r.id || (h.ownerId && h.ownerId === r.ownerId)));
+  }
+  attRestoreRefs.hist = window.RestoreKit.mount({
+    host: 'att-history-restore-host',
+    key: () => 'attendance-history',
+    show: p => attPendingHistory(p).length > 0,
+    text: p => { const n = attPendingHistory(p).length; return n === 1 ? 'A saved history record was removed.' : n + ' saved history records were removed.'; },
+    sub: () => 'Restore puts them back in your History list.',
+    button: 'Restore history',
+    onRestore: async (p) => {
+      const back = attPendingHistory(p);
+      back.forEach(r => historyRecords.push(r));
+      await saveHistoryRecords();
+      renderHistory();
+      const rest = (p.records || []).filter(r => !attMyVisible([r]).length);
+      return rest.length ? { keep: { records: rest } } : undefined;
+    }
   });
 
   function addSubject(){
@@ -18058,11 +18281,13 @@ if(existing){
       cancelText: 'Cancel'
     }).then((ok) => {
       if(!ok) return;
+      if(!editingHistoryId) attArmDataBackup();
       state = { student:{name:'',roll:'',sem:''}, threshold:75, subjects: defaultSubjects() };
       history = {};
       cancelEditingHistory();
       hydrateFields();
       save(); render();
+      if(attRestoreRefs.data) attRestoreRefs.data.refresh();
     });
   });
 
@@ -21508,6 +21733,7 @@ window.openPhysicalBolts=open;function wire(){let o=$('#game-card-bolts-play');i
         <div class="ttt-stat-grid" id="ttt-stat-grid"></div>
         <div class="ttt-card"><strong>AI difficulty record</strong><div id="ttt-difficulty-stats" class="ttt-history" style="margin-top:12px"></div></div>
         <div class="ttt-card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><strong>Recent games</strong><button class="ttt-btn small secondary" id="ttt-clear-history">Clear</button></div><div class="ttt-history" id="ttt-history" style="margin-top:12px"></div></div>
+        <div id="ttt-restore-host"></div>
       </section>
 
       <section class="ttt-screen" data-screen="settings">
@@ -21586,7 +21812,9 @@ function finish(r){cancelAI();status='ended';renderBoard();const s=scoreObj();le
 function updateStats(type){data.stats.total++;if(mode==='ai'){const d=data.stats.difficulty[difficulty];if(type==='win'){data.stats.wins++;data.stats.currentStreak++;data.stats.bestStreak=Math.max(data.stats.bestStreak,data.stats.currentStreak);d.w++;data.achievements.firstWin=true;if(data.stats.currentStreak>=3)data.achievements.streak3=true}else if(type==='loss'){data.stats.losses++;data.stats.currentStreak=0;d.l++}else{data.stats.draws++;d.d++;if(difficulty==='hard')data.achievements.hardDraw=true}}else{if(type==='manual-a')data.stats.manual.a++;else if(type==='manual-b')data.stats.manual.b++;else data.stats.manual.draw++}
  const label=type==='win'?'YOU WON':type==='loss'?'AI WON':type==='draw'?'DRAW':type==='manual-a'?`${names.a.toUpperCase()} WON`:type==='manual-b'?`${names.b.toUpperCase()} WON`:'DRAW';data.history.unshift({label,mode,difficulty:mode==='ai'?difficulty:'friend',moves,date:Date.now()});data.history=data.history.slice(0,30)}
 function showResult(headline,type){q('#ttt-result-icon').textContent=type==='draw'?'＝':type==='loss'?'O':'★';q('#ttt-result-title').textContent=headline;q('#ttt-result-copy').textContent=`${mode==='ai'?difficulty.toUpperCase()+' difficulty · ':''}${moves} moves${type==='win'?` · Current streak ${data.stats.currentStreak}`:''}`;q('#ttt-result-modal').classList.add('show')}
-function renderStats(){const total=data.stats.total,rate=total?Math.round(data.stats.wins/total*100):0;q('#ttt-stat-grid').innerHTML=[['Total games',total],['Wins',data.stats.wins],['Losses',data.stats.losses],['Draws',data.stats.draws],['Win rate',rate+'%'],['Best streak',data.stats.bestStreak]].map(([l,v])=>`<div class="ttt-stat"><strong>${v}</strong><span>${l}</span></div>`).join('');q('#ttt-difficulty-stats').innerHTML=['easy','medium','hard'].map(k=>{const d=data.stats.difficulty[k];return`<div class="ttt-history-row"><strong>${k[0].toUpperCase()+k.slice(1)}</strong><span>${d.w}W · ${d.l}L · ${d.d}D</span></div>`}).join('');q('#ttt-history').innerHTML=data.history.length?data.history.map((h,i)=>`<div class="ttt-history-row"><div><strong>Game ${data.stats.total-i} · ${escapeHtml(h.label)}</strong><span>${h.difficulty} · ${h.moves} moves</span></div><span>${new Date(h.date).toLocaleDateString()}</span></div>`).join(''):'<div class="ttt-section-sub">No completed games yet.</div>'}
+function tttArm(p){const c=o=>JSON.parse(JSON.stringify(o));RestoreKit.arm('ttt-history',prev=>{const n=prev&&typeof prev==='object'?prev:{};if(p.history&&p.history.length)n.history=c(p.history);if(p.stats&&p.stats.total>0)n.stats=c(p.stats);if(p.achievements&&Object.values(p.achievements).some(Boolean))n.achievements=c(p.achievements);return(n.history||n.stats||n.achievements)?n:null})}
+window.__tttRestore=RestoreKit.mount({host:'ttt-restore-host',key:()=>'ttt-history',barClass:'ttt-card rk-ttt',btnClass:'ttt-btn small',button:'Restore',show:p=>!!(p&&(p.history||p.stats||p.achievements)),text:p=>p.stats?'You reset your Tic Tac Toe statistics.':'You cleared your recent games.',sub:p=>p.stats?'Restore brings back your statistics, history and achievements.':'Restore brings your recent games back.',onRestore:async p=>{if(data.stats.total>0||data.history.length){const ok=await confirmBox('Restore saved data?','Games played since the reset will be replaced.','Restore');if(!ok)throw new Error('cancelled')}if(p.history)data.history=p.history;if(p.stats)data.stats=p.stats;if(p.achievements)data.achievements=p.achievements;save();renderStats();toast('Restored')}});
+function renderStats(){if(window.__tttRestore)window.__tttRestore.refresh();const total=data.stats.total,rate=total?Math.round(data.stats.wins/total*100):0;q('#ttt-stat-grid').innerHTML=[['Total games',total],['Wins',data.stats.wins],['Losses',data.stats.losses],['Draws',data.stats.draws],['Win rate',rate+'%'],['Best streak',data.stats.bestStreak]].map(([l,v])=>`<div class="ttt-stat"><strong>${v}</strong><span>${l}</span></div>`).join('');q('#ttt-difficulty-stats').innerHTML=['easy','medium','hard'].map(k=>{const d=data.stats.difficulty[k];return`<div class="ttt-history-row"><strong>${k[0].toUpperCase()+k.slice(1)}</strong><span>${d.w}W · ${d.l}L · ${d.d}D</span></div>`}).join('');q('#ttt-history').innerHTML=data.history.length?data.history.map((h,i)=>`<div class="ttt-history-row"><div><strong>Game ${data.stats.total-i} · ${escapeHtml(h.label)}</strong><span>${h.difficulty} · ${h.moves} moves</span></div><span>${new Date(h.date).toLocaleDateString()}</span></div>`).join(''):'<div class="ttt-section-sub">No completed games yet.</div>'}
 function escapeHtml(s){return String(s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
 function renderSettings(){qa('.ttt-switch').forEach(b=>{const on=b.dataset.setting==='music'&&window.GameMusic?window.GameMusic.enabled():!!data.settings[b.dataset.setting];b.classList.toggle('on',on);b.setAttribute('aria-checked',String(on))});q('#ttt-first-rule').value=data.settings.first;setTheme()}
 function confirmBox(title,copy,yes='Reset'){return new Promise(resolve=>{const m=q('#ttt-confirm-modal');q('#ttt-confirm-title').textContent=title;q('#ttt-confirm-copy').textContent=copy;q('#ttt-confirm-yes').textContent=yes;m.classList.add('show');const done=v=>{m.classList.remove('show');q('#ttt-confirm-yes').onclick=null;q('#ttt-confirm-no').onclick=null;resolve(v)};q('#ttt-confirm-yes').onclick=()=>{tone('tap');done(true)};q('#ttt-confirm-no').onclick=()=>{tone('tap');done(false)}})}
@@ -21595,7 +21823,7 @@ function resume(){tone('tap');q('#ttt-pause-modal').classList.remove('show');sta
 
 q('#ttt-back').onclick=goBack;q('#ttt-quick-settings').onclick=()=>{if(screen==='play'&&status!=='ended'){cancelAI();status='paused';renderBoard()}show('settings')};q('#ttt-friend').onclick=()=>setup('manual');q('#ttt-ai').onclick=()=>show('difficulty');qa('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));qa('[data-difficulty]').forEach(b=>b.onclick=()=>{difficulty=b.dataset.difficulty;data.settings.difficulty=difficulty;save();setup('ai')});qa('.ttt-symbol').forEach(b=>b.onclick=()=>{qa('.ttt-symbol').forEach(x=>x.classList.toggle('selected',x===b));tone('tap')});q('#ttt-setup-form').onsubmit=e=>{e.preventDefault();launch()};q('#ttt-new').onclick=startRound;q('#ttt-reset').onclick=()=>confirmBox('Reset this game?','The board will be cleared. Scores will stay.').then(ok=>ok&&startRound());q('#ttt-menu').onclick=()=>confirmBox('Return to menu?','The current round will be lost.','Leave').then(ok=>{if(ok){cancelAI();clearTimeout(resultTimer);status='idle';stack=[];show('main',false)}});q('#ttt-pause').onclick=pause;q('#ttt-play-again').onclick=()=>{q('#ttt-result-modal').classList.remove('show');startRound()};q('#ttt-result-menu').onclick=()=>{clearTimeout(resultTimer);q('#ttt-result-modal').classList.remove('show');stack=[];show('main',false)};q('#ttt-resume').onclick=resume;q('#ttt-pause-new').onclick=()=>{q('#ttt-pause-modal').classList.remove('show');startRound()};q('#ttt-pause-settings').onclick=()=>{q('#ttt-pause-modal').classList.remove('show');stack.push('play');show('settings',false)};q('#ttt-pause-menu').onclick=()=>{q('#ttt-pause-modal').classList.remove('show');status='idle';stack=[];show('main',false)};
 qa('.ttt-switch').forEach(b=>b.onclick=()=>{const k=b.dataset.setting;if(k==='music'&&window.GameMusic){data.settings.music=window.GameMusic.toggle()}else data.settings[k]=!data.settings[k];save();renderSettings();tone('tap')});q('#ttt-first-rule').onchange=e=>{data.settings.first=e.target.value;save()};qa('.ttt-theme-btn').forEach(b=>b.onclick=()=>{data.settings.theme=b.dataset.theme;save();setTheme();tone('tap')});
-q('#ttt-clear-history').onclick=()=>confirmBox('Clear history?','Recent games will be removed.').then(ok=>{if(ok){data.history=[];save();renderStats()}});q('#ttt-reset-scores').onclick=()=>confirmBox('Reset scores?','Both Friend and AI scoreboards will return to zero.').then(ok=>{if(ok){data.scores=defaults().scores;save();toast('Scores reset')}});q('#ttt-reset-stats').onclick=()=>confirmBox('Reset statistics?','Statistics, streaks, history, and achievements will be erased.').then(ok=>{if(ok){const d=defaults();data.stats=d.stats;data.history=[];data.achievements=d.achievements;save();renderStats();toast('Statistics reset')}});q('#ttt-reset-all').onclick=()=>confirmBox('Reset all data?','Every Tic Tac Toe setting and result will be erased.').then(ok=>{if(ok){data=defaults();save();setTheme();renderSettings();toast('All data reset')}});
+q('#ttt-clear-history').onclick=()=>confirmBox('Clear history?','Recent games will be removed.').then(ok=>{if(ok){tttArm({history:data.history});data.history=[];save();renderStats()}});q('#ttt-reset-scores').onclick=()=>confirmBox('Reset scores?','Both Friend and AI scoreboards will return to zero.').then(ok=>{if(ok){data.scores=defaults().scores;save();toast('Scores reset')}});q('#ttt-reset-stats').onclick=()=>confirmBox('Reset statistics?','Statistics, streaks, history, and achievements will be erased.').then(ok=>{if(ok){tttArm({stats:data.stats,history:data.history,achievements:data.achievements});const d=defaults();data.stats=d.stats;data.history=[];data.achievements=d.achievements;save();renderStats();toast('Statistics reset')}});q('#ttt-reset-all').onclick=()=>confirmBox('Reset all data?','Every Tic Tac Toe setting and result will be erased.').then(ok=>{if(ok){tttArm({stats:data.stats,history:data.history,achievements:data.achievements});data=defaults();save();setTheme();renderSettings();toast('All data reset')}});
 window.addEventListener('keydown',e=>{if(app.style.display==='none')return;if(e.key==='Escape'){if(q('.ttt-modal.show')){if(q('#ttt-pause-modal').classList.contains('show'))resume();return}screen==='play'?pause():goBack();return}if(screen!=='play'||status!=='playing')return;if(/^[1-9]$/.test(e.key))cellPress(Number(e.key)-1);if(e.key.toLowerCase()==='r')q('#ttt-reset').click();if(e.key.toLowerCase()==='n')startRound()});
 addEventListener('game-music-change',()=>{if(window.GameMusic){data.settings.music=window.GameMusic.enabled();save();if(screen==='settings')renderSettings()}});window.openTicTacToe=openApp;setTheme();
 })();
