@@ -2657,11 +2657,7 @@
   .rc-section-btn.selected, .rc-prac-chip.active{
     border-color: var(--gold);
     box-shadow: 0 0 0 1px var(--gold), 0 0 14px 2px var(--gold);
-    animation: rcSelGlow 2.4s ease-in-out infinite;
-  }
-  @keyframes rcSelGlow{
-    0%,100%{ box-shadow: 0 0 0 1px var(--gold), 0 0 8px 1px var(--gold); }
-    50%{ box-shadow: 0 0 0 1px var(--gold), 0 0 18px 4px var(--gold); }
+    animation: none;
   }
   .rc-section-btn:nth-child(1){ animation-delay: 0.02s; }
   .rc-section-btn:nth-child(2){ animation-delay: 0.06s; }
@@ -6644,6 +6640,17 @@
   window.si = window.si || function () { (window.si.q = window.si.q || []).push(arguments); };
 </script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
+<style id="perf-smooth">
+/* Roll Call: these two rows stay in the page (logic still runs) but are not shown. */
+#rc-elective-row, #rc-working-hours{ display:none !important; }
+/* Smoother scrolling: no blur filters / backdrop blurs on always-on layers. */
+.stage-glow{ filter:none !important; will-change:transform; backface-visibility:hidden; }
+.stage-grain{ display:none !important; }
+.st-tabbar{ -webkit-backdrop-filter:none !important; backdrop-filter:none !important; background: rgba(var(--paper-rgb),0.98) !important; }
+body.is-scrolling .stage-glow, body.is-scrolling [class*="glow-drift"]{ animation-play-state:paused !important; }
+html{ scroll-behavior:auto !important; }
+body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
+</style>
 </head>
 <body>
 <script>
@@ -25364,5 +25371,15 @@ document.addEventListener("DOMContentLoaded",function(){
 })();
 </script>
 
+<script>
+(function(){
+  var t=null, b=document.body;
+  window.addEventListener('scroll', function(){
+    if(!b.classList.contains('is-scrolling')) b.classList.add('is-scrolling');
+    clearTimeout(t);
+    t=setTimeout(function(){ b.classList.remove('is-scrolling'); }, 140);
+  }, { passive:true });
+})();
+</script>
 </body>
 </html>
