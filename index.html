@@ -5466,11 +5466,8 @@
   .st-task-due-overdue{ color: var(--danger); background: rgba(var(--danger-rgb),0.12); border-color: rgba(var(--danger-rgb),0.35); animation: stDotPulse 1.8s ease-in-out infinite; }
   .st-task-due-done{ color: var(--success); background: rgba(60,107,76,0.12); border-color: rgba(60,107,76,0.35); }
   .st-task-item[data-status="overdue"]{ border-color: rgba(var(--danger-rgb),0.4); }
-  .st-task-item[data-status="today"]::before, .st-task-item[data-status="overdue"]::before{
-    content:''; width:8px; height:8px; border-radius:50%; background: var(--danger); flex:none; margin-right:-4px;
-    box-shadow: 0 0 8px 1px rgba(var(--danger-rgb),0.7); animation: stDotPulse 1.4s ease-in-out infinite;
-  }
-  .st-task-item[data-status="upcoming"]::before{ content:''; width:8px; height:8px; border-radius:50%; background: rgba(var(--gold-rgb),0.7); flex:none; margin-right:-4px; }
+  /* no leading dot on task cards */
+  .st-task-item::before{ content:none !important; display:none !important; }
   .st-task-item-done{ opacity:0.72; }
   .st-task-item.st-task-editing::before{ display:none; }
   .st-task-item{ will-change: transform, opacity; }
@@ -5489,7 +5486,7 @@
     .st-task-due-overdue, .st-task-item::before, .st-task-item.st-task-new, .st-task-summary-card.st-task-has-pending .st-task-summary-icon{ animation:none !important; }
   }
 
-  .menu-msg-dot-task{ top:auto; bottom:-2px; right:-2px; left:auto; }
+  .menu-msg-dot-task{ top:-3px; right:-3px; bottom:auto; left:auto; animation:none; }
   .st-task-summary-card{ margin-bottom:16px; }
   .st-task-summary-row{ display:flex; align-items:center; gap:13px; }
   .st-task-summary-icon{
@@ -21150,9 +21147,9 @@ if(existing){
       // Red dot on the Task tab and on the "Track My Studies" menu row for
       // as long as any task is still pending - same as the Homework dot.
       const tabDot = document.getElementById('st-tab-task-dot');
-      if(tabDot){ tabDot.style.display = hasIncomplete ? 'block' : 'none'; tabDot.classList.add('menu-msg-dot-live'); }
+      if(tabDot){ tabDot.style.display = hasIncomplete ? 'block' : 'none'; tabDot.classList.remove('menu-msg-dot-live'); }
       const menuDot = document.getElementById('menu-studytracker-task-dot');
-      if(menuDot){ menuDot.style.display = hasIncomplete ? 'block' : 'none'; menuDot.classList.add('menu-msg-dot-live'); }
+      if(menuDot){ menuDot.style.display = hasIncomplete ? 'block' : 'none'; menuDot.classList.remove('menu-msg-dot-live'); }
       stTaskCheckNotifications();
       stTaskSyncToWorker();
     }
