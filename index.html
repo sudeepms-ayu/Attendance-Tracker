@@ -2653,16 +2653,45 @@
     text-align:center;
     animation: chipPopIn 0.32s cubic-bezier(0.16,1,0.3,1) backwards;
   }
-  .rc-section-btn:hover{ border-color: var(--gold); }
-  .rc-section-btn.selected, .rc-prac-chip.active{
+  .rc-section-btn, .rc-prac-chip{
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.28s ease, background-color 0.28s ease, color 0.28s ease, transform 0.18s cubic-bezier(.22,1,.36,1);
+  }
+  @media (hover:hover){
+    .rc-section-btn:hover, .rc-prac-chip:hover{ border-color: rgba(var(--gold-rgb),0.7); }
+  }
+  .rc-section-btn:active, .rc-prac-chip:active{ transform: scale(0.97); }
+  /* Section / group: a clean gold hairline with a whisper of tint, no glow */
+  .rc-section-btn.selected{
     border-color: var(--gold);
-    box-shadow: 0 0 0 1px var(--gold), 0 0 14px 2px var(--gold);
+    background: rgba(var(--gold-rgb),0.10);
+    box-shadow: none;
     animation: none;
   }
   .rc-section-btn:nth-child(1){ animation-delay: 0.02s; }
   .rc-section-btn:nth-child(2){ animation-delay: 0.06s; }
   .rc-section-btn:nth-child(3){ animation-delay: 0.10s; }
   .rc-section-btn:nth-child(4){ animation-delay: 0.14s; }
+  /*RCANIM*/
+  /* ---- Roll Call: smooth step-by-step transitions ---- */
+  #rc-picker, #rc-body{ transition: opacity .22s ease, transform .22s cubic-bezier(.22,1,.36,1), filter .22s ease; }
+  #rc-picker.rc-leaving, #rc-body.rc-leaving{ opacity:0; transform: translateY(8px) scale(.985); filter: blur(2px); pointer-events:none; }
+  .rc-enter{ animation: rcStageIn .5s cubic-bezier(.22,1,.36,1) both; }
+  .rc-enter > *{ animation: rcRise .55s cubic-bezier(.22,1,.36,1) both; animation-delay: calc(var(--i, 0) * 55ms + 40ms); }
+  @keyframes rcStageIn{ from{ opacity:0; } to{ opacity:1; } }
+  @keyframes rcRise{ from{ opacity:0; transform: translateY(16px); } to{ opacity:1; transform:none; } }
+  .rc-hint-in{ animation: rcRise .5s cubic-bezier(.22,1,.36,1) both; }
+  #rc-group-pick.rc-enter{ animation: rcRise .5s cubic-bezier(.22,1,.36,1) both; }
+  #rc-group-pick.rc-enter > *{ animation: chipPopIn .4s cubic-bezier(0.16,1,0.3,1) backwards; animation-delay: calc(var(--i, 0) * 60ms + 80ms); }
+  .rc-section-btn:nth-child(n+5){ animation-delay: .18s; }
+  .rc-section-btn.selected.just-picked, .rc-prac-chip.just-picked, .hw-subject-chip.just-picked{ animation: rcPick .45s cubic-bezier(.22,1,.36,1); }
+  @keyframes rcPick{ 0%{ transform: scale(1); } 40%{ transform: scale(1.07); box-shadow: 0 0 0 6px rgba(var(--gold-rgb),0.22); } 100%{ transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--gold-rgb),0); } }
+  .rc-change-btn{ transition: opacity .2s ease, transform .15s ease; }
+  .rc-change-btn:active{ transform: scale(.93); opacity:.7; }
+  @media (prefers-reduced-motion: reduce){
+    #rc-picker, #rc-body{ transition:none !important; }
+    .rc-enter, .rc-enter > *, .rc-hint-in, #rc-group-pick.rc-enter > *, .just-picked{ animation:none !important; }
+  }
   .rc-current-row{
     display:flex;
     align-items:center;
@@ -2814,16 +2843,32 @@
   .proj-export-btn{ margin-top:6px; }
   /* ---- Practical group picker (Today's Roll Call) ---- */
   .rc-prac-box{ margin: 4px 0 20px 0; padding-bottom:14px; border-bottom: 1px solid rgba(var(--ink-rgb),0.15); }
-  .rc-prac-box .rc-current-row{ margin:0 0 10px 0; padding-bottom:0; border-bottom:none; }
-  .rc-prac-chips{ display:grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap:8px; margin: 0 0 10px 0; }
+  .rc-prac-box .rc-current-row{ margin:0; padding-bottom:0; border-bottom:none; }
+  .rc-prac-chips{ display:grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap:8px; margin: 0 0 10px 0; padding:1px; }
   .rc-prac-chip{
     font-family:'Lora', serif; font-weight:700; font-size:15px;
     padding: 11px 6px; border-radius:6px; cursor:pointer; text-align:center;
     border: 1px solid rgba(var(--ink-rgb),0.18);
     background: rgba(var(--paper-rgb),0.5); color: var(--ink);
   }
-  .rc-prac-chip:hover{ border-color: var(--gold); }
-  .rc-prac-chip.active{ border-color: var(--gold); background: rgba(var(--ink-rgb),0.9); color: var(--paper, #fff); }
+  /* Practical group: solid ink fill, no glow */
+  .rc-prac-chip.active{ border-color: var(--ink); background: var(--ink); color: var(--paper, #fff); box-shadow:none; }
+  /* Smooth open / close for the practical group chips + help note */
+  .rc-collapse{
+    display:grid; grid-template-rows:0fr; opacity:0; visibility:hidden;
+    transition: grid-template-rows 0.5s cubic-bezier(.22,1,.36,1), opacity 0.32s ease, visibility 0s linear 0.5s;
+  }
+  .rc-collapse.open{
+    grid-template-rows:1fr; opacity:1; visibility:visible;
+    transition: grid-template-rows 0.5s cubic-bezier(.22,1,.36,1), opacity 0.38s ease 0.05s, visibility 0s;
+  }
+  .rc-collapse-in{ min-height:0; overflow:hidden; padding-top:10px; }
+  .rc-collapse-in > *{ transform: translateY(-8px); transition: transform 0.5s cubic-bezier(.22,1,.36,1); }
+  .rc-collapse.open .rc-collapse-in > *{ transform:none; }
+  @media (prefers-reduced-motion: reduce){
+    .rc-collapse, .rc-collapse.open, .rc-collapse-in > *{ transition:none !important; }
+    .rc-section-btn, .rc-prac-chip{ transition:none !important; }
+  }
   .rc-prac-help{
     font-family:'Lora', serif; font-size:12.5px; line-height:1.55;
     color: var(--ink-soft); margin:0; padding:9px 12px; border-radius:6px;
@@ -5413,6 +5458,37 @@
   .st-an-cal-cell.st-an-cal-today .st-an-cal-num{ color: var(--gold); font-weight:700; }
 
   /* ================= Tasks panel ================= */
+  /* ---- Smart Tasks: due badges, dots, smooth motion ---- */
+  .st-task-meta{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .st-task-due{ font-family:'Lora', serif; font-size:10.5px; font-weight:700; padding:4px 9px; border-radius:999px; border:1px solid transparent; transition: all .3s ease; }
+  .st-task-due-today{ color: var(--gold); background: rgba(var(--gold-rgb),0.14); border-color: rgba(var(--gold-rgb),0.32); }
+  .st-task-due-upcoming{ color: var(--ink-soft); background: rgba(var(--ink-rgb),0.06); border-color: rgba(var(--ink-rgb),0.14); }
+  .st-task-due-overdue{ color: var(--danger); background: rgba(var(--danger-rgb),0.12); border-color: rgba(var(--danger-rgb),0.35); animation: stDotPulse 1.8s ease-in-out infinite; }
+  .st-task-due-done{ color: var(--success); background: rgba(60,107,76,0.12); border-color: rgba(60,107,76,0.35); }
+  .st-task-item[data-status="overdue"]{ border-color: rgba(var(--danger-rgb),0.4); }
+  .st-task-item[data-status="today"]::before, .st-task-item[data-status="overdue"]::before{
+    content:''; width:8px; height:8px; border-radius:50%; background: var(--danger); flex:none; margin-right:-4px;
+    box-shadow: 0 0 8px 1px rgba(var(--danger-rgb),0.7); animation: stDotPulse 1.4s ease-in-out infinite;
+  }
+  .st-task-item[data-status="upcoming"]::before{ content:''; width:8px; height:8px; border-radius:50%; background: rgba(var(--gold-rgb),0.7); flex:none; margin-right:-4px; }
+  .st-task-item-done{ opacity:0.72; }
+  .st-task-item.st-task-editing::before{ display:none; }
+  .st-task-item{ will-change: transform, opacity; }
+  .st-task-item.st-task-new{ animation: stTaskIn 0.6s cubic-bezier(0.22,1,0.36,1) both, stTaskFlash 1.4s ease 0.3s 1; }
+  @keyframes stTaskIn{ from{ opacity:0; transform: translateY(-14px) scale(0.94); } to{ opacity:1; transform:none; } }
+  @keyframes stTaskFlash{ 0%{ box-shadow: 0 0 0 0 rgba(var(--gold-rgb),0.55); } 100%{ box-shadow: 0 0 0 14px rgba(var(--gold-rgb),0); } }
+  .st-task-summary-pct.st-pop{ animation: stPop .45s cubic-bezier(0.22,1,0.36,1); }
+  @keyframes stPop{ 0%{ transform: scale(0.7); opacity:.4; } 60%{ transform: scale(1.18); } 100%{ transform:scale(1); opacity:1; } }
+  .st-task-summary-card.st-task-has-pending .st-task-summary-icon{ animation: stDotPulse 2.2s ease-in-out infinite; }
+  .st-goal-fill{ transition: width .6s cubic-bezier(0.22,1,0.36,1); }
+  .st-task-deadline-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-family:'Lora', serif; font-size:13px; color: var(--ink-soft); }
+  .st-task-deadline-row em{ font-style:normal; opacity:.7; font-size:11.5px; }
+  .st-task-deadline-row input{ width:auto; flex:0 1 170px; }
+  .st-task-inline-form{ transition: opacity .25s ease, transform .25s cubic-bezier(0.22,1,0.36,1); }
+  @media (prefers-reduced-motion: reduce){
+    .st-task-due-overdue, .st-task-item::before, .st-task-item.st-task-new, .st-task-summary-card.st-task-has-pending .st-task-summary-icon{ animation:none !important; }
+  }
+
   .menu-msg-dot-task{ top:auto; bottom:-2px; right:-2px; left:auto; }
   .st-task-summary-card{ margin-bottom:16px; }
   .st-task-summary-row{ display:flex; align-items:center; gap:13px; }
@@ -6196,7 +6272,9 @@
     opacity:0; transform: translateY(22px) scale(0.96);
     transition: opacity 0.3s ease, transform 0.42s cubic-bezier(.22,1,.36,1);
   }
+  .nv-undo{ touch-action: pan-y; user-select:none; -webkit-user-select:none; }
   .nv-undo.show{ opacity:1; transform:none; }
+  .nv-undo.dragging{ transition:none; cursor:grabbing; }
   .nv-undo.out{ opacity:0; transform: translateY(14px) scale(0.97); transition-duration:0.25s; }
   .nv-undo-msg{ flex:1 1 auto; min-width:0; font-family:'Lora', serif; font-weight:700; font-size:13.5px; line-height:1.3; }
   .nv-undo-msg small{ display:block; font-weight:500; font-size:11.5px; opacity:0.72; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -6650,6 +6728,291 @@
 body.is-scrolling .stage-glow, body.is-scrolling [class*="glow-drift"]{ animation-play-state:paused !important; }
 html{ scroll-behavior:auto !important; }
 body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
+</style>
+<style id="rv-style">
+/* ================= Revision tab ================= */
+/* six-tab bottom bar: keep every label on one line */
+.st-tabbar{ padding-left:2px; padding-right:2px; }
+.st-tab{ min-width:0; padding-left:1px; padding-right:1px; font-size:9.6px; letter-spacing:-0.1px; white-space:nowrap; }
+
+#st-panel-revise{ --rv-ease:cubic-bezier(0.22,1,0.36,1); }
+.rv{ font-family:'Lora', serif; color:var(--ink); padding-bottom:30px; }
+.rv, .rv *{ box-sizing:border-box; }
+.rv sub, .rv sup{ font-size:0.64em; line-height:0; position:relative; vertical-align:baseline; font-weight:inherit; }
+.rv sub{ bottom:-0.28em; }
+.rv sup{ top:-0.55em; }
+.rv button{ font-family:'Lora', serif; -webkit-tap-highlight-color:transparent; }
+.rv button:disabled{ opacity:0.45; cursor:default; }
+.rv-view{ animation: rvViewIn 0.5s var(--rv-ease) both; }
+@keyframes rvViewIn{ from{ opacity:0; transform:translateY(16px); } to{ opacity:1; transform:none; } }
+.rv-stag{ animation: rvRise 0.55s var(--rv-ease) both; animation-delay: calc(var(--i,0) * 55ms + 40ms); }
+@keyframes rvRise{ from{ opacity:0; transform:translateY(18px) scale(0.985); } to{ opacity:1; transform:none; } }
+.rv-fade{ animation: rvViewIn 0.45s var(--rv-ease) both; }
+
+.rv-eyebrow{ font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); font-weight:700; margin:0 0 8px 0; }
+.rv-title{ font-family:'Playfair Display','Lora',serif; font-weight:800; font-size:30px; line-height:1.15; margin:0 0 18px 0; color:var(--ink); }
+.rv-title em, .rv-hero-title em{ color:var(--gold); font-style:italic; }
+.rv-label{ font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-soft); font-weight:700; margin:22px 2px 10px 2px; }
+.rv-note{ font-size:12.5px; line-height:1.6; color:var(--ink-soft); margin:16px 4px 0 4px; }
+.rv-note b{ color:var(--ink); }
+
+/* hero */
+.rv-hero, .rv-all, .rv-setup, .rv-res{
+  position:relative; overflow:hidden; border-radius:24px; padding:26px 22px 22px 22px;
+  background: linear-gradient(155deg, rgba(var(--gold-rgb),0.16) 0%, rgba(var(--paper-rgb),0.6) 58%, rgba(var(--gold-rgb),0.07) 100%);
+  border:1px solid rgba(var(--gold-rgb),0.3);
+  box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.05), 0 26px 44px -28px rgba(var(--ink-rgb),0.55);
+}
+.rv-hero-glow{
+  position:absolute; width:210px; height:210px; right:-60px; top:-70px; border-radius:50%; pointer-events:none;
+  background: radial-gradient(circle, rgba(var(--gold-rgb),0.34) 0%, rgba(var(--gold-rgb),0) 68%);
+  animation: rvGlow 7s ease-in-out infinite alternate;
+}
+@keyframes rvGlow{ from{ transform:translate(0,0) scale(1); } to{ transform:translate(-18px,16px) scale(1.12); } }
+.rv-hero-title{ font-family:'Playfair Display','Lora',serif; font-weight:800; font-size:31px; line-height:1.15; margin:0 0 10px 0; position:relative; }
+.rv-hero-sub{ font-size:14px; line-height:1.6; color:var(--ink-soft); margin:0 0 18px 0; position:relative; }
+.rv-steps{ display:flex; align-items:center; gap:8px; position:relative; font-size:12px; font-weight:600; color:var(--ink-soft); }
+.rv-steps span{ display:inline-flex; align-items:center; gap:6px; }
+.rv-steps b{ width:20px; height:20px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; background:var(--gold); color:var(--paper); }
+.rv-steps i{ flex:1; height:1px; background:linear-gradient(90deg, rgba(var(--gold-rgb),0.5), rgba(var(--gold-rgb),0.1)); }
+
+/* subject cards */
+.rv-subj{
+  width:100%; display:flex; align-items:center; gap:14px; text-align:left; cursor:pointer; margin:0 0 12px 0; padding:16px 16px;
+  border-radius:20px; color:var(--ink); background:rgba(var(--paper-rgb),0.7); border:1.5px solid rgba(var(--ink-rgb),0.14);
+  position:relative; transition: transform 0.25s var(--rv-ease), border-color 0.2s ease, box-shadow 0.25s ease;
+}
+.rv-subj-ico{ width:50px; height:50px; flex:none; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:24px; background:rgba(var(--gold-rgb),0.14); border:1px solid rgba(var(--gold-rgb),0.3); }
+.rv-subj-main{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1; }
+.rv-subj-name{ font-family:'Playfair Display','Lora',serif; font-weight:700; font-size:20px; }
+.rv-subj-sub{ font-size:12.5px; color:var(--ink-soft); }
+.rv-subj-meta{ font-size:11.5px; color:var(--gold); font-weight:600; margin-top:2px; }
+.rv-subj-go{ width:20px; height:20px; color:var(--gold); flex:none; transition: transform 0.25s var(--rv-ease); }
+.rv-subj-go svg{ width:20px; height:20px; display:block; }
+.rv-subj-ready{ border-color:rgba(var(--gold-rgb),0.5); background:linear-gradient(150deg, rgba(var(--gold-rgb),0.15), rgba(var(--paper-rgb),0.7) 70%); box-shadow:0 18px 30px -22px rgba(var(--gold-rgb),0.7); }
+.rv-subj-ready:active{ transform:scale(0.98); }
+.rv-subj-ready:hover .rv-subj-go{ transform:translateX(4px); }
+.rv-subj-soon{ border-style:dashed; opacity:0.72; }
+.rv-subj-soon .rv-subj-ico{ filter:grayscale(0.7); }
+.rv-subj-soon:active{ transform:scale(0.985); }
+.rv-pill{ position:absolute; top:12px; right:14px; display:inline-flex; align-items:center; gap:5px; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; font-weight:700; padding:4px 9px; border-radius:99px; }
+.rv-pill svg{ width:11px; height:11px; }
+.rv-pill-ready{ background:var(--gold); color:var(--paper); }
+.rv-pill-soon{ background:rgba(var(--ink-rgb),0.08); color:var(--ink-soft); border:1px solid rgba(var(--ink-rgb),0.16); }
+.rv-subj-ready .rv-subj-go{ position:absolute; right:14px; bottom:14px; }
+.rv-nudge{ animation: rvNudge 0.5s ease both; }
+@keyframes rvNudge{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-7px); } 40%{ transform:translateX(6px); } 60%{ transform:translateX(-4px); } 80%{ transform:translateX(3px); } }
+
+/* top bar */
+.rv-top{ display:flex; align-items:center; justify-content:space-between; margin:0 0 14px 0; }
+.rv-bk, .rv-skip{ display:inline-flex; align-items:center; gap:4px; background:none; border:none; cursor:pointer; padding:6px 4px; font-size:13px; font-weight:600; color:var(--ink-soft); transition:color 0.18s ease, transform 0.18s ease; }
+.rv-bk svg{ width:16px; height:16px; }
+.rv-bk:hover, .rv-skip:hover{ color:var(--gold); }
+.rv-bk:active{ transform:translateX(-2px); }
+.rv-bk.arm{ color:var(--danger); }
+.rv-skip{ color:var(--gold); }
+.rv-qn{ font-size:13px; color:var(--ink-soft); font-weight:600; }
+.rv-qn b{ color:var(--gold); font-size:16px; }
+
+/* topic tiles */
+.rv-all{ padding:20px 18px 18px 18px; margin-bottom:6px; }
+.rv-all-title{ font-family:'Playfair Display','Lora',serif; font-weight:700; font-size:20px; margin:0 0 2px 0; position:relative; }
+.rv-tile{
+  border-radius:20px; padding:16px; margin:0 0 12px 0; background:rgba(var(--paper-rgb),0.7); border:1px solid rgba(var(--ink-rgb),0.12);
+  box-shadow: var(--card-shadow);
+}
+.rv-tile-top{ display:flex; align-items:center; gap:13px; margin-bottom:12px; }
+.rv-badge{ width:52px; height:52px; flex:none; border-radius:15px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display','Lora',serif; font-weight:700; font-size:15px; color:var(--gold); background:rgba(var(--gold-rgb),0.12); border:1px solid rgba(var(--gold-rgb),0.32); }
+.rv-badge-s{ font-size:10.5px; }
+.rv-tile-main{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.rv-tile-title{ font-family:'Playfair Display','Lora',serif; font-weight:700; font-size:17px; line-height:1.25; }
+.rv-tile-sub{ font-size:12px; color:var(--ink-soft); display:block; margin:0; }
+.rv-tile-meta{ font-size:11.5px; color:var(--ink-soft); margin:7px 0 12px 0; }
+.rv-tile-btns{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.rv-bar{ height:6px; border-radius:99px; background:rgba(var(--ink-rgb),0.1); overflow:hidden; position:relative; }
+.rv-bar span{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg, rgba(var(--gold-rgb),0.7), var(--gold)); transition:width 0.6s var(--rv-ease); animation: rvBarIn 0.9s var(--rv-ease) both; transform-origin:left; }
+@keyframes rvBarIn{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+.rv-bar-lg{ height:8px; margin:0 0 14px 0; }
+.rv-reset{ display:block; margin:22px auto 0 auto; background:none; border:none; font-size:12px; color:var(--ink-soft); text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:8px; }
+.rv-reset.arm{ color:var(--danger); }
+
+/* buttons */
+.rv-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:14px; padding:13px 16px; font-size:14.5px; font-weight:700; cursor:pointer;
+  transition: transform 0.2s var(--rv-ease), box-shadow 0.25s ease, border-color 0.2s ease, color 0.2s ease; border:1.5px solid transparent;
+}
+.rv-btn svg{ width:17px; height:17px; flex:none; }
+.rv-btn:active:not(:disabled){ transform:scale(0.97); }
+.rv-btn-gold{ background:linear-gradient(180deg, color-mix(in srgb, var(--gold) 82%, #fff) 0%, var(--gold) 100%); color:#241a05; box-shadow:0 12px 22px -12px rgba(var(--gold-rgb),0.85); }
+.rv-btn-gold:hover{ box-shadow:0 16px 26px -12px rgba(var(--gold-rgb),0.95); }
+.rv-btn-line{ background:transparent; color:var(--ink); border-color:rgba(var(--ink-rgb),0.22); }
+.rv-btn-line:hover:not(:disabled){ border-color:var(--gold); color:var(--gold); }
+.rv-btn-ghost{ background:transparent; color:var(--ink-soft); }
+.rv-btn-ghost:hover{ color:var(--gold); }
+.rv-wide{ width:100%; margin-top:10px; }
+
+/* learn: segmented control */
+.rv-seg{ position:relative; display:grid; grid-template-columns:1fr 1fr; padding:4px; margin:0 0 16px 0; border-radius:16px; background:rgba(var(--ink-rgb),0.07); border:1px solid rgba(var(--ink-rgb),0.1); }
+.rv-seg button{ position:relative; z-index:1; background:none; border:none; padding:10px 6px; font-size:13.5px; font-weight:700; color:var(--ink-soft); cursor:pointer; transition:color 0.3s ease; }
+.rv-seg button.on{ color:#241a05; }
+.rv-seg-pill{ position:absolute; top:4px; bottom:4px; left:4px; width:calc(50% - 4px); border-radius:12px; background:linear-gradient(180deg, color-mix(in srgb, var(--gold) 82%, #fff), var(--gold)); transition:transform 0.45s var(--rv-ease); box-shadow:0 8px 16px -10px rgba(var(--gold-rgb),0.9); }
+.rv-seg[data-m="sheet"] .rv-seg-pill{ transform:translateX(100%); }
+
+.rv-prog{ display:flex; align-items:center; justify-content:space-between; margin:0 2px 8px 2px; }
+.rv-prog-t{ font-size:13px; color:var(--ink-soft); }
+.rv-prog-t b{ color:var(--gold); font-size:16px; }
+.rv-mini{ display:inline-flex; align-items:center; gap:5px; background:none; border:1px solid rgba(var(--ink-rgb),0.18); border-radius:99px; padding:5px 11px; font-size:11.5px; font-weight:600; color:var(--ink-soft); cursor:pointer; transition:all 0.2s ease; }
+.rv-mini svg{ width:13px; height:13px; }
+.rv-mini:hover{ color:var(--gold); border-color:var(--gold); }
+
+/* deck + cards */
+.rv-deck{ position:relative; height:340px; margin:8px 0 20px 0; perspective:1300px; }
+.rv-ghost{ position:absolute; left:0; right:0; top:0; bottom:0; border-radius:26px; border:1px solid rgba(var(--gold-rgb),0.22); background:rgba(var(--paper-rgb),0.9); }
+.rv-ghost-1{ transform:translateY(11px) scale(0.955); opacity:0.7; }
+.rv-ghost-2{ transform:translateY(21px) scale(0.91); opacity:0.4; }
+.rv-card{ position:absolute; inset:0; touch-action:pan-y; user-select:none; -webkit-user-select:none; cursor:grab; transition:transform 0.4s var(--rv-ease); will-change:transform; }
+.rv-card.rv-enter{ animation: rvCardIn 0.55s var(--rv-ease) both; }
+@keyframes rvCardIn{ from{ opacity:0; transform:translateY(24px) scale(0.94); } to{ opacity:1; transform:none; } }
+.rv-card.rv-dragging{ transition:none; cursor:grabbing; }
+.rv-flip{ position:absolute; inset:0; transition:transform 0.75s var(--rv-ease); transform-style:preserve-3d; -webkit-transform-style:preserve-3d; }
+.rv-card.flipped .rv-flip{ transform:rotateY(180deg); }
+.rv-face{
+  position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:26px; padding:22px 20px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:10px; overflow:hidden;
+  background: linear-gradient(155deg, rgba(var(--gold-rgb),0.18) 0%, var(--paper) 60%, rgba(var(--gold-rgb),0.08) 100%);
+  border:1px solid rgba(var(--gold-rgb),0.4); box-shadow: 0 1px 0 rgba(var(--ink-rgb),0.06), 0 30px 46px -26px rgba(var(--ink-rgb),0.6);
+}
+.rv-face::before{ content:''; position:absolute; inset:9px; border-radius:19px; border:1px solid rgba(var(--gold-rgb),0.2); pointer-events:none; }
+.rv-face-b{ transform:rotateY(180deg); }
+.rv-tag{ display:inline-block; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; font-weight:700; color:var(--gold); padding:4px 10px; border-radius:99px; background:rgba(var(--gold-rgb),0.12); border:1px solid rgba(var(--gold-rgb),0.25); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.rv-q{ margin:6px 0 0 0; font-size:13px; color:var(--ink-soft); }
+.rv-name{ font-family:'Playfair Display','Lora',serif; font-weight:700; font-size:27px; line-height:1.25; margin:0; color:var(--ink); word-break:break-word; }
+.rv-hint{ margin:8px 0 0 0; font-size:11.5px; color:var(--ink-soft); opacity:0.85; }
+.rv-formula{ font-family:'Playfair Display','Lora',serif; font-weight:800; color:var(--gold); margin:4px 0 0 0; line-height:1.25; word-break:break-word; }
+.rv-fs-xl{ font-size:50px; } .rv-fs-l{ font-size:38px; } .rv-fs-m{ font-size:28px; } .rv-fs-s{ font-size:20px; }
+.rv-card.flipped .rv-formula{ animation: rvFormulaIn 0.9s var(--rv-ease) 0.25s both; }
+@keyframes rvFormulaIn{ from{ opacity:0; filter:blur(8px); transform:scale(0.88); } to{ opacity:1; filter:blur(0); transform:none; } }
+.rv-card-note{ margin:0; font-size:13.5px; font-style:italic; color:var(--ink); line-height:1.5; }
+.rv-chip{ display:inline-block; font-size:12px; padding:5px 11px; border-radius:99px; background:rgba(var(--ink-rgb),0.07); color:var(--ink-soft); }
+.rv-stamp{ position:absolute; top:22px; padding:5px 12px; border-radius:10px; font-size:13px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; opacity:0; pointer-events:none; z-index:3; border:2px solid; }
+.rv-stamp-yes{ left:18px; color:var(--success); border-color:var(--success); transform:rotate(-8deg); }
+.rv-stamp-no{ right:18px; color:var(--danger); border-color:var(--danger); transform:rotate(8deg); }
+
+.rv-actions{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.rv-act{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:14px 10px; font-size:14px; font-weight:700; border-radius:16px; cursor:pointer; transition:transform 0.2s var(--rv-ease), background 0.2s ease; border:1.5px solid; background:transparent; }
+.rv-act svg{ width:18px; height:18px; }
+.rv-act:active{ transform:scale(0.96); }
+.rv-act-no{ color:var(--danger); border-color:rgba(var(--danger-rgb),0.5); }
+.rv-act-no:hover{ background:rgba(var(--danger-rgb),0.09); }
+.rv-act-yes{ color:var(--success); border-color:color-mix(in srgb, var(--success) 55%, transparent); }
+.rv-act-yes:hover{ background:color-mix(in srgb, var(--success) 12%, transparent); }
+.rv-left{ text-align:center; font-size:12px; color:var(--ink-soft); margin:14px 0 0 0; }
+
+.rv-intro, .rv-done{ text-align:center; border-radius:24px; padding:26px 20px 18px 20px; border:1px solid rgba(var(--gold-rgb),0.3); background:linear-gradient(155deg, rgba(var(--gold-rgb),0.14), rgba(var(--paper-rgb),0.6) 60%); }
+.rv-intro-ico{ display:inline-block; font-size:26px; color:var(--gold); margin-bottom:6px; animation: rvSpin 6s linear infinite; }
+@keyframes rvSpin{ to{ transform:rotate(360deg); } }
+.rv-intro-title, .rv-done-title{ font-family:'Playfair Display','Lora',serif; font-size:23px; font-weight:800; margin:0 0 14px 0; }
+.rv-tips{ text-align:left; margin:0 0 6px 0; }
+.rv-tips p{ margin:0 0 9px 0; padding:10px 13px 10px 14px; font-size:13.5px; line-height:1.55; border-radius:12px; background:rgba(var(--paper-rgb),0.7); border-left:3px solid var(--gold); }
+.rv-intro .rv-tips p{ animation: rvRise 0.5s var(--rv-ease) both; }
+.rv-intro .rv-tips p:nth-child(2){ animation-delay:0.08s; } .rv-intro .rv-tips p:nth-child(3){ animation-delay:0.16s; }
+.rv-intro .rv-tips p:nth-child(4){ animation-delay:0.24s; } .rv-intro .rv-tips p:nth-child(5){ animation-delay:0.32s; } .rv-intro .rv-tips p:nth-child(6){ animation-delay:0.4s; } .rv-intro .rv-tips p:nth-child(7){ animation-delay:0.48s; }
+.rv-done-ring{ width:78px; height:78px; border-radius:50%; margin:0 auto 14px auto; display:flex; align-items:center; justify-content:center; color:var(--gold); border:2px solid var(--gold); background:rgba(var(--gold-rgb),0.12); animation: rvPop 0.7s var(--rv-ease) both; }
+.rv-done-ring svg{ width:38px; height:38px; stroke-dasharray:30; stroke-dashoffset:30; animation: rvDraw 0.6s ease 0.35s forwards; }
+@keyframes rvPop{ 0%{ transform:scale(0.4); opacity:0; } 70%{ transform:scale(1.08); opacity:1; } 100%{ transform:scale(1); } }
+@keyframes rvDraw{ to{ stroke-dashoffset:0; } }
+.rv-done-sub{ font-size:14px; line-height:1.6; color:var(--ink-soft); margin:0 0 8px 0; }
+
+/* study sheet */
+.rv-sheet{ display:flex; flex-direction:column; gap:8px; }
+.rv-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border-radius:14px; background:rgba(var(--paper-rgb),0.7); border:1px solid rgba(var(--ink-rgb),0.1); }
+.rv-row-l{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.rv-row-n{ font-size:14px; font-weight:600; }
+.rv-row-t{ font-size:11.5px; color:var(--ink-soft); }
+.rv-row-f{ font-family:'Playfair Display','Lora',serif; font-weight:700; font-size:18px; color:var(--gold); text-align:right; flex:none; max-width:52%; word-break:break-word; }
+
+/* exam */
+.rv-setup{ text-align:left; }
+.rv-chips{ display:flex; flex-wrap:wrap; gap:10px; margin:0 0 18px 0; position:relative; }
+.rv-cc{ padding:10px 18px; border-radius:99px; font-size:14px; font-weight:700; cursor:pointer; background:transparent; color:var(--ink); border:1.5px solid rgba(var(--ink-rgb),0.2); transition:all 0.25s var(--rv-ease); }
+.rv-cc.on{ background:var(--gold); color:#241a05; border-color:var(--gold); transform:scale(1.04); box-shadow:0 10px 18px -12px rgba(var(--gold-rgb),0.9); }
+.rv-setup .rv-btn{ position:relative; }
+.rv-qcard{ text-align:center; border-radius:24px; padding:26px 18px 22px 18px; margin:0 0 16px 0; background:linear-gradient(155deg, rgba(var(--gold-rgb),0.16), var(--paper) 62%, rgba(var(--gold-rgb),0.07)); border:1px solid rgba(var(--gold-rgb),0.38); box-shadow:0 26px 40px -28px rgba(var(--ink-rgb),0.6); }
+.rv-qin{ animation: rvRise 0.5s var(--rv-ease) both; }
+.rv-shake{ animation: rvNudge 0.5s ease both; border-color:rgba(var(--danger-rgb),0.6); }
+.rv-glow{ animation: rvGlowOk 0.7s ease both; }
+@keyframes rvGlowOk{ 0%{ box-shadow:0 0 0 0 color-mix(in srgb, var(--success) 60%, transparent); } 100%{ box-shadow:0 0 0 18px transparent; } }
+.rv-qbig{ font-family:'Playfair Display','Lora',serif; font-weight:700; color:var(--ink); margin:14px 0 8px 0; line-height:1.25; word-break:break-word; }
+.rv-qb-m{ font-size:26px; } .rv-qb-s{ font-size:20px; } .rv-qb-xl{ font-size:44px; }
+.rv-qb-math{ color:var(--gold); font-weight:800; }
+.rv-qprompt{ margin:0; font-size:13px; color:var(--ink-soft); }
+.rv-opts{ display:flex; flex-direction:column; gap:10px; }
+.rv-opt{
+  display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:13px 14px; border-radius:16px; cursor:pointer; color:var(--ink);
+  background:rgba(var(--paper-rgb),0.75); border:1.5px solid rgba(var(--ink-rgb),0.16);
+  transition: transform 0.2s var(--rv-ease), border-color 0.2s ease, background 0.25s ease, opacity 0.3s ease;
+}
+.rv-opt:active:not(:disabled){ transform:scale(0.98); }
+.rv-opt:disabled{ opacity:1; }
+.rv-opt-l{ width:30px; height:30px; flex:none; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:var(--gold); background:rgba(var(--gold-rgb),0.13); transition:all 0.25s ease; }
+.rv-opt-t{ flex:1; min-width:0; font-family:'Playfair Display','Lora',serif; font-weight:700; font-size:17px; line-height:1.3; word-break:break-word; }
+.rv-opt-sm{ font-size:14px; }
+.rv-opt-m{ width:22px; height:22px; flex:none; }
+.rv-opt-m svg{ width:22px; height:22px; display:block; }
+.rv-opt.right{ border-color:var(--success); background:color-mix(in srgb, var(--success) 14%, transparent); animation: rvPulse 0.6s var(--rv-ease); }
+.rv-opt.right .rv-opt-l{ background:var(--success); color:#0e1a12; }
+.rv-opt.right .rv-opt-m{ color:var(--success); }
+.rv-opt.wrong{ border-color:var(--danger); background:rgba(var(--danger-rgb),0.12); animation: rvNudge 0.5s ease; }
+.rv-opt.wrong .rv-opt-l{ background:var(--danger); color:#1c0b07; }
+.rv-opt.wrong .rv-opt-m{ color:var(--danger); }
+.rv-opt.dim{ opacity:0.5; }
+@keyframes rvPulse{ 0%{ transform:scale(1); } 45%{ transform:scale(1.025); } 100%{ transform:scale(1); } }
+.rv-fb{ display:none; margin:14px 0 0 0; padding:13px 15px; border-radius:16px; flex-direction:column; gap:3px; font-size:13.5px; }
+.rv-fb.show{ display:flex; animation: rvRise 0.4s var(--rv-ease) both; }
+.rv-fb.ok{ background:color-mix(in srgb, var(--success) 12%, transparent); border:1px solid color-mix(in srgb, var(--success) 45%, transparent); }
+.rv-fb.bad{ background:rgba(var(--danger-rgb),0.1); border:1px solid rgba(var(--danger-rgb),0.4); }
+.rv-fb-h{ display:inline-flex; align-items:center; gap:6px; font-weight:800; }
+.rv-fb-h svg{ width:16px; height:16px; }
+.rv-fb.ok .rv-fb-h{ color:var(--success); } .rv-fb.bad .rv-fb-h{ color:var(--danger); }
+.rv-fb-l{ font-weight:600; line-height:1.5; }
+.rv-fb-n{ font-size:12.5px; color:var(--ink-soft); font-style:italic; }
+.rv-next.rv-pop{ animation: rvRise 0.45s var(--rv-ease) both; }
+
+/* results */
+.rv-res{ text-align:center; padding:24px 18px 20px 18px; }
+.rv-ring{ position:relative; width:150px; height:150px; margin:10px auto 14px auto; }
+.rv-ring svg{ width:150px; height:150px; transform:rotate(-90deg); }
+.rv-ring circle{ fill:none; stroke-width:9; }
+.rv-ring-bg{ stroke:rgba(var(--ink-rgb),0.12); }
+.rv-ring-fg{ stroke:var(--gold); stroke-linecap:round; filter:drop-shadow(0 0 6px rgba(var(--gold-rgb),0.55)); }
+.rv-ring-c{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display','Lora',serif; font-weight:800; color:var(--ink); }
+.rv-ring-n{ font-size:46px; line-height:1; } .rv-ring-p{ font-size:18px; color:var(--gold); margin-left:2px; }
+.rv-verdict{ font-family:'Playfair Display','Lora',serif; font-weight:800; font-size:27px; margin:0 0 6px 0; color:var(--gold); position:relative; }
+.rv-stats{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; position:relative; }
+.rv-stats div{ padding:10px 2px; border-radius:14px; background:rgba(var(--paper-rgb),0.7); border:1px solid rgba(var(--ink-rgb),0.1); display:flex; flex-direction:column; gap:2px; }
+.rv-stats b{ font-size:16px; font-family:'Playfair Display','Lora',serif; }
+.rv-stats span{ font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-soft); }
+.rv-bestline{ margin:14px 0 0 0; font-size:12.5px; color:var(--gold); font-weight:700; position:relative; }
+.rv-res-btns{ margin-top:14px; }
+.rv-res-btns .rv-btn{ margin-top:10px; }
+.rv-miss{ border-radius:18px; padding:14px; margin:0 0 10px 0; background:rgba(var(--paper-rgb),0.7); border:1px solid rgba(var(--ink-rgb),0.12); }
+.rv-miss-q{ font-family:'Playfair Display','Lora',serif; font-weight:700; font-size:19px; margin:10px 0 8px 0; }
+.rv-miss-a{ display:flex; align-items:center; gap:8px; margin:0 0 5px 0; padding:8px 10px; border-radius:10px; font-family:'Playfair Display','Lora',serif; font-weight:700; font-size:15.5px; }
+.rv-miss-a svg{ width:16px; height:16px; flex:none; }
+.rv-miss-a.ok{ background:color-mix(in srgb, var(--success) 13%, transparent); color:var(--success); }
+.rv-miss-a.bad{ background:rgba(var(--danger-rgb),0.1); color:var(--danger); }
+.rv-miss-n{ margin:6px 2px 0 2px; font-size:12px; color:var(--ink-soft); font-style:italic; }
+.rv-sparks{ position:absolute; left:50%; top:130px; width:0; height:0; pointer-events:none; }
+.rv-sparks span{ position:absolute; width:7px; height:7px; border-radius:50%; background:var(--gold); opacity:0; animation: rvSpark 1.2s ease-out var(--d) both; }
+@keyframes rvSpark{ 0%{ opacity:0; transform:translate(0,0) scale(0.4); } 25%{ opacity:1; } 100%{ opacity:0; transform:translate(var(--x), var(--y)) scale(1); } }
+
+/* toast */
+.rv-toast{ position:fixed; left:50%; bottom:calc(86px + env(safe-area-inset-bottom,0px)); z-index:80; max-width:min(92vw, 420px); padding:12px 18px; border-radius:16px; font-family:'Lora',serif; font-size:13px; line-height:1.5; text-align:center; color:var(--ink); background:var(--paper); border:1px solid rgba(var(--gold-rgb),0.5); box-shadow:0 18px 34px -16px rgba(0,0,0,0.55); opacity:0; transform:translate(-50%, 14px); pointer-events:none; transition:opacity 0.3s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1); }
+.rv-toast.show{ opacity:1; transform:translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce){
+  .rv *, .rv-toast{ animation-duration:0.01ms !important; animation-delay:0s !important; transition-duration:0.01ms !important; }
+}
 </style>
 </head>
 <body>
@@ -7213,8 +7576,12 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
         <span>Practical Group <b id="rc-current-prac-group">Not selected</b></span>
         <button class="rc-change-btn" id="rc-change-prac-btn" type="button">choose</button>
       </div>
-      <div class="rc-prac-chips" id="rc-prac-chips"></div>
-      <p class="rc-prac-help" id="rc-prac-help">Don&rsquo;t know your practical group? Open <a id="rc-prac-help-link">School Timetable</a> from the menu, scroll to <b>Practical Group &amp; Your Mentor Finder</b>, type your roll number (like <b>016</b> or <b>IS26-016</b>) and tap <b>Check</b>. It shows your group number &mdash; pick that number here.</p>
+      <div class="rc-collapse" id="rc-prac-collapse">
+        <div class="rc-collapse-in">
+          <div class="rc-prac-chips" id="rc-prac-chips"></div>
+          <p class="rc-prac-help" id="rc-prac-help">Don&rsquo;t know your practical group? Open <a id="rc-prac-help-link">School Timetable</a> from the menu, scroll to <b>Practical Group &amp; Your Mentor Finder</b>, type your roll number (like <b>016</b> or <b>IS26-016</b>) and tap <b>Check</b>. It shows your group number &mdash; pick that number here.</p>
+        </div>
+      </div>
     </div>
     <div class="rc-current-row" id="rc-elective-row" style="display:none;">
       <span>Optional: <b id="rc-elective-label">Odia/Ae &amp; IT/EL</b></span>
@@ -8527,6 +8894,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
         <button type="button" class="st-subject-chip" data-subject="Chemistry">Chemistry</button>
         <button type="button" class="st-subject-chip" data-subject="Mathematics">Mathematics</button>
       </div>
+      <label class="st-task-deadline-row"><span>Due date <em>(optional)</em></span><input type="date" id="st-task-deadline-input" class="syl-input"></label>
       <div class="syl-form-actions">
         <button type="button" class="syl-form-cancel" id="st-task-cancel-btn">Cancel</button>
         <button type="button" class="syl-form-confirm" id="st-task-confirm-btn">Add Task</button>
@@ -8683,6 +9051,11 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       </p>
     </div>
   </section>
+
+  <!-- ===================== REVISION ===================== -->
+  <section class="st-panel" id="st-panel-revise" style="display:none;">
+    <div id="rv-root"></div>
+  </section>
 </div>
 
 <!-- Kept OUTSIDE #study-tracker-view on purpose: that view carries the
@@ -8720,6 +9093,10 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
   <button type="button" class="st-tab" data-tab="flash">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"></path></svg>
     <span>Flashcards</span>
+  </button>
+  <button type="button" class="st-tab" data-tab="revise">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"></path><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"></path></svg>
+    <span>Revision</span>
   </button>
 </nav>
 
@@ -9863,6 +10240,67 @@ window.contactChoiceModal = function(opts){
       entry.timer = setTimeout(() => dropUndo(entry), UNDO_MS);
       btn.addEventListener('click', () => { restoreItems(list); dropUndo(entry); });
       undoQueue.push(entry);
+      attachSwipe(entry);
+    }
+
+    // Swipe the banner sideways to dismiss it (like closing a browser tab)
+    function swipeAway(entry, dir){
+      const i = undoQueue.indexOf(entry); if(i < 0) return;
+      undoQueue.splice(i, 1);
+      clearTimeout(entry.timer); clearInterval(entry.tick);
+      const el = entry.el;
+      el.classList.remove('dragging');
+      el.style.transition = 'transform 0.28s cubic-bezier(.4,0,.8,.6), opacity 0.26s ease';
+      el.style.transform = 'translateX(' + (dir * (el.offsetWidth + 40)) + 'px)';
+      el.style.opacity = '0';
+      el.style.pointerEvents = 'none';
+      setTimeout(() => {
+        el.style.height = el.offsetHeight + 'px';
+        void el.offsetHeight;
+        el.style.transition = 'height 0.26s cubic-bezier(.22,1,.36,1), margin 0.26s cubic-bezier(.22,1,.36,1), padding 0.26s ease';
+        el.style.height = '0px'; el.style.paddingTop = '0px'; el.style.paddingBottom = '0px';
+        el.style.marginBottom = '-8px';
+        setTimeout(() => el.remove(), 300);
+      }, 200);
+    }
+    function attachSwipe(entry){
+      const el = entry.el;
+      let sx = 0, sy = 0, dx = 0, t0 = 0, id = null, mode = null;
+      el.addEventListener('pointerdown', (e) => {
+        if(e.target.closest('.nv-undo-btn')) return;
+        if(e.pointerType === 'mouse' && e.button !== 0) return;
+        id = e.pointerId; sx = e.clientX; sy = e.clientY; dx = 0; t0 = Date.now(); mode = null;
+      });
+      el.addEventListener('pointermove', (e) => {
+        if(id === null || e.pointerId !== id) return;
+        const mx = e.clientX - sx, my = e.clientY - sy;
+        if(!mode){
+          if(Math.abs(mx) < 6 && Math.abs(my) < 6) return;
+          mode = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+          if(mode === 'x'){ try{ el.setPointerCapture(id); }catch(_){} el.classList.add('dragging'); }
+        }
+        if(mode !== 'x') return;
+        dx = mx;
+        const w = el.offsetWidth || 320;
+        el.style.transform = 'translateX(' + dx + 'px)';
+        el.style.opacity = String(Math.max(0.15, 1 - Math.abs(dx) / (w * 0.95)));
+      });
+      function end(e){
+        if(id === null || (e && e.pointerId !== id)) return;
+        const wasX = mode === 'x';
+        id = null; mode = null;
+        if(!wasX) return;
+        const w = el.offsetWidth || 320;
+        const v = Math.abs(dx) / Math.max(1, Date.now() - t0);
+        if(Math.abs(dx) > w * 0.33 || (v > 0.45 && Math.abs(dx) > 28)){
+          swipeAway(entry, dx < 0 ? -1 : 1);
+        } else {
+          el.classList.remove('dragging');
+          el.style.transform = ''; el.style.opacity = '';
+        }
+      }
+      el.addEventListener('pointerup', end);
+      el.addEventListener('pointercancel', end);
     }
 
     function removeRow(id, row){
@@ -16030,9 +16468,14 @@ if(existing){
       btn.textContent = g.name;
       if(rollcall.group === g.id) btn.classList.add('selected');
       btn.addEventListener('click', () => {
+        if(box.dataset.busy) return;
+        box.dataset.busy = '1';
+        box.querySelectorAll('.rc-section-btn.selected').forEach(x => x.classList.remove('selected'));
+        btn.classList.add('selected');
         rollcall.group = g.id;
         saveRollcall();
-        renderRollcall();
+        const pk = document.getElementById('rc-picker'); if(pk) setTimeout(() => pk.classList.add('rc-leaving'), 90);
+        setTimeout(() => { delete box.dataset.busy; renderRollcall(); }, 300);
       });
       box.appendChild(btn);
     });
@@ -16071,7 +16514,8 @@ if(existing){
     const open = rcPracPickerOpen || !chosen;
     btn.style.display = chosen ? '' : 'none';
     btn.textContent = open ? 'close' : 'change group';
-    chips.style.display = open ? 'grid' : 'none';
+    const wrap = document.getElementById('rc-prac-collapse');
+    if(wrap) wrap.classList.toggle('open', open);
     chips.innerHTML = '';
     list.forEach(g => {
       const c = document.createElement('button');
@@ -16079,10 +16523,18 @@ if(existing){
       c.className = 'rc-prac-chip' + (chosen === g ? ' active' : '');
       c.textContent = g;
       c.addEventListener('click', () => {
+        if(chips.dataset.busy) return;
+        chips.dataset.busy = '1';
         rollcall.pracGroup = String(g);
-        rcPracPickerOpen = false;
         saveRollcall();
-        renderRollcall();
+        chips.querySelectorAll('.rc-prac-chip.active').forEach(x => x.classList.remove('active'));
+        c.classList.add('active');
+        label.textContent = 'Group ' + g;
+        setTimeout(() => {
+          delete chips.dataset.busy;
+          rcPracPickerOpen = false;
+          renderRollcall();
+        }, 260);
       });
       chips.appendChild(c);
     });
@@ -16099,17 +16551,53 @@ if(existing){
       btn.textContent = 'Section ' + sec;
       if(rollcall.section === sec) btn.classList.add('selected');
       btn.addEventListener('click', () => {
+        if(box.dataset.busy) return;
+        box.dataset.busy = '1';
+        box.querySelectorAll('.rc-section-btn.selected').forEach(x => x.classList.remove('selected'));
+        btn.classList.add('selected');
         rollcall.section = sec;
         rollcall.group = null;
         rollcall.pracGroup = null;
         saveRollcall();
-        renderRollcall();
+        const gp = document.getElementById('rc-group-pick'); if(gp) gp.style.opacity = '';
+        setTimeout(() => { delete box.dataset.busy; renderRollcall(); }, 280);
       });
       box.appendChild(btn);
     });
   }
 
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest && e.target.closest('.rc-section-btn, .rc-prac-chip, .hw-subject-chip');
+    if(!b) return;
+    b.classList.remove('just-picked'); void b.offsetWidth; b.classList.add('just-picked');
+    setTimeout(() => b.classList.remove('just-picked'), 520);
+  }, true);
+  function rcStage(){
+    const pk = document.getElementById('rc-picker'), bd = document.getElementById('rc-body'), gp = document.getElementById('rc-group-pick');
+    if(bd && bd.style.display === 'block') return 'body';
+    if(pk && pk.style.display === 'block') return (gp && gp.style.display === 'flex') ? 'group' : 'section';
+    return '';
+  }
+  function rcPlayEnter(el){
+    if(!el) return;
+    Array.from(el.children).forEach((c, i) => c.style.setProperty('--i', i));
+    el.classList.remove('rc-enter'); void el.offsetWidth; el.classList.add('rc-enter');
+    clearTimeout(el._rcT); el._rcT = setTimeout(() => el.classList.remove('rc-enter'), 1200);
+  }
   function renderRollcall(){
+    const pk = document.getElementById('rc-picker'), bd = document.getElementById('rc-body');
+    if(pk) pk.classList.remove('rc-leaving');
+    if(bd) bd.classList.remove('rc-leaving');
+    const before = rcStage();
+    renderRollcallInner();
+    const after = rcStage();
+    if(after && after !== before){
+      if(after === 'body') rcPlayEnter(bd);
+      else if(after === 'group'){ rcPlayEnter(document.getElementById('rc-group-pick')); const h = pk && pk.querySelector('.broadcast-hint'); if(h){ h.classList.remove('rc-hint-in'); void h.offsetWidth; h.classList.add('rc-hint-in'); } }
+      else rcPlayEnter(pk);
+    }
+  }
+  function renderRollcallInner(){
     try{ renderRecap(false); }catch(e){}
     const picker = document.getElementById('rc-picker');
     const body = document.getElementById('rc-body');
@@ -16424,14 +16912,47 @@ if(existing){
   if(rcOpenBtn) rcOpenBtn.addEventListener('click', rcShow);
   const rcBackBtn = document.getElementById('rc-back-btn');
   if(rcBackBtn) rcBackBtn.addEventListener('click', rcHide);
+  // Fades the current step out, then runs the change - used by every
+  // "change ..." button so each step transitions smoothly.
+  function rcLeave(cb){
+    const body = document.getElementById('rc-body');
+    if(!body){ cb(); return; }
+    body.classList.add('rc-leaving');
+    setTimeout(cb, 230);
+  }
   const rcChangeSectionBtn = document.getElementById('rc-change-section-btn');
   if(rcChangeSectionBtn){
     rcChangeSectionBtn.addEventListener('click', () => {
-      rollcall.section = null;
-      saveRollcall();
-      const nudgeEl = document.getElementById('rc-nudge');
-      if(nudgeEl) nudgeEl.style.display = 'none';
-      renderRollcall();
+      if(rcChangeSectionBtn.dataset.busy) return;
+      rcChangeSectionBtn.dataset.busy = '1';
+      rcLeave(() => {
+        delete rcChangeSectionBtn.dataset.busy;
+        rollcall.section = null;
+        rollcall.group = null;
+        saveRollcall();
+        const nudgeEl = document.getElementById('rc-nudge');
+        if(nudgeEl) nudgeEl.style.display = 'none';
+        renderRollcall();
+      });
+    });
+  }
+  // "change group" (the section's group/stream, e.g. PCMIT) - this button
+  // had no click handler at all, which is why it did nothing.
+  const rcChangeGroupBtn = document.getElementById('rc-change-group-btn');
+  if(rcChangeGroupBtn){
+    rcChangeGroupBtn.type = 'button';
+    rcChangeGroupBtn.addEventListener('click', () => {
+      if(rcChangeGroupBtn.dataset.busy) return;
+      rcChangeGroupBtn.dataset.busy = '1';
+      rcLeave(() => {
+        delete rcChangeGroupBtn.dataset.busy;
+        rollcall.group = null;
+        saveRollcall();
+        const nudgeEl = document.getElementById('rc-nudge');
+        if(nudgeEl) nudgeEl.style.display = 'none';
+        renderRollcall();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     });
   }
   const rcChangePracBtn = document.getElementById('rc-change-prac-btn');
@@ -18877,7 +19398,7 @@ if(existing){
     let stTimerRunningFlag = false;
     let stTickCount = 0;
     let stActiveTab = 'study';
-    const ST_TABS = ['study','stats','task','track','flash'];
+    const ST_TABS = ['study','stats','task','track','flash','revise'];
 
     function stUpdateTimerVisual(){
       const timeEl = document.getElementById('st-timer-time');
@@ -18980,6 +19501,7 @@ if(existing){
       if(tab === 'task' && typeof stTaskRender === 'function') stTaskRender();
       if(tab === 'track' && typeof sylRender === 'function') sylRender();
       if(tab === 'flash' && typeof fcInit === 'function') fcInit();
+      if(tab === 'revise' && typeof rvInit === 'function') rvInit();
       const view = document.getElementById('study-tracker-view');
       if(view) view.scrollTo ? view.scrollTo({top:0,behavior:'smooth'}) : window.scrollTo(0,0);
       window.scrollTo({top:0, behavior:'smooth'});
@@ -20490,38 +21012,132 @@ if(existing){
     // ====================================================================
     const TASK_KEY = 'study-tasks-v1';
     function taskKeyFor(id){ return TASK_KEY + '::' + id; }
-    function defaultTaskState(){ return { tasks: [] }; }
+    function defaultTaskState(){ return { tasks: [], deleted: [], updatedAt: 0 }; }
     let taskState = null;
     let taskStateUserId = null;
+    let taskLoadPromise = null, taskLoadPromiseUser = null;
 
+    // ---- Rock-solid persistence --------------------------------------
+    // Every save is written to THREE places (window.storage, localStorage
+    // and IndexedDB) and every load picks whichever copy is newest, so a
+    // full/blocked localStorage, a refresh mid-save or a missing
+    // window.storage can no longer wipe the list.
+    const TASK_IDB = 'cbsh-tasks-db', TASK_IDB_STORE = 'kv';
+    function taskIdbOpen(){
+      return new Promise((resolve, reject) => {
+        try{
+          const rq = indexedDB.open(TASK_IDB, 1);
+          rq.onupgradeneeded = () => { rq.result.createObjectStore(TASK_IDB_STORE); };
+          rq.onsuccess = () => resolve(rq.result);
+          rq.onerror = () => reject(rq.error);
+        }catch(e){ reject(e); }
+      });
+    }
+    async function taskIdbGet(key){
+      try{
+        const db = await taskIdbOpen();
+        return await new Promise(res => {
+          const rq = db.transaction(TASK_IDB_STORE).objectStore(TASK_IDB_STORE).get(key);
+          rq.onsuccess = () => res(rq.result || null);
+          rq.onerror = () => res(null);
+        });
+      }catch(e){ return null; }
+    }
+    async function taskIdbSet(key, val){
+      try{
+        const db = await taskIdbOpen();
+        await new Promise(res => {
+          const tx = db.transaction(TASK_IDB_STORE, 'readwrite');
+          tx.objectStore(TASK_IDB_STORE).put(val, key);
+          tx.oncomplete = () => res(true); tx.onerror = () => res(false); tx.onabort = () => res(false);
+        });
+      }catch(e){}
+    }
+    function taskParse(raw){
+      try{
+        const o = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        if(o && Array.isArray(o.tasks)) return o;
+      }catch(e){}
+      return null;
+    }
+    // Writes straight to localStorage - synchronous, so it also works from
+    // pagehide/visibilitychange right before the page closes.
+    function taskSaveLocalSync(){
+      if(!currentUser || !taskState) return;
+      try{ localStorage.setItem(taskKeyFor(currentUser.id) + '::mirror', JSON.stringify(taskState)); }catch(e){}
+    }
     async function loadTaskState(){
       if(!currentUser) return defaultTaskState();
       if(taskState && taskStateUserId === currentUser.id) return taskState;
-      let st = defaultTaskState();
-      try{
-        const res = await window.storage.get(taskKeyFor(currentUser.id), true);
-        if(res && res.value){
-          const parsed = JSON.parse(res.value);
-          st = Object.assign(defaultTaskState(), parsed);
-          if(!Array.isArray(st.tasks)) st.tasks = [];
+      if(taskLoadPromise && taskLoadPromiseUser === currentUser.id) return taskLoadPromise;
+      const uid = currentUser.id;
+      taskLoadPromiseUser = uid;
+      taskLoadPromise = (async () => {
+        const key = taskKeyFor(uid);
+        const found = [];
+        try{ const r = await window.storage.get(key, true); if(r && r.value){ const o = taskParse(r.value); if(o) found.push(o); } }catch(e){}
+        try{ const o = taskParse(localStorage.getItem(key + '::mirror')); if(o) found.push(o); }catch(e){}
+        try{ const o = taskParse(await taskIdbGet(key)); if(o) found.push(o); }catch(e){}
+        let st = defaultTaskState();
+        if(found.length){
+          found.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+          st = Object.assign(defaultTaskState(), found[0]);
+          // Never lose a task that only exists in an older copy.
+          const have = new Set(st.tasks.map(t => t.id));
+          found.slice(1).forEach(o => o.tasks.forEach(t => { if(t && t.id && !have.has(t.id) && !(st.deleted || []).includes(t.id)){ st.tasks.push(t); have.add(t.id); } }));
         }
-      }catch(e){}
-      taskState = st;
-      taskStateUserId = currentUser.id;
-      return st;
+        if(!Array.isArray(st.tasks)) st.tasks = [];
+        if(!Array.isArray(st.deleted)) st.deleted = [];
+        if(taskState && taskStateUserId === uid) return taskState; // a save already happened meanwhile
+        taskState = st;
+        taskStateUserId = uid;
+        return st;
+      })();
+      try{ return await taskLoadPromise; } finally { taskLoadPromise = null; }
     }
     async function saveTaskState(){
       if(!currentUser || !taskState) return;
-      try{ await window.storage.set(taskKeyFor(currentUser.id), JSON.stringify(taskState), true); }catch(e){}
+      taskState.updatedAt = Date.now();
+      const json = JSON.stringify(taskState);
+      const key = taskKeyFor(currentUser.id);
+      taskSaveLocalSync();
+      try{ await window.storage.set(key, json, true); }catch(e){}
+      await taskIdbSet(key, json);
+      try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
     }
+    // Last-chance synchronous flush when the page is hidden/refreshed.
+    window.addEventListener('pagehide', taskSaveLocalSync);
+    document.addEventListener('visibilitychange', () => { if(document.hidden) taskSaveLocalSync(); });
     function stEscapeHtml(str){
       return String(str == null ? '' : str).replace(/[&<>"']/g, ch => (
         { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]
       ));
     }
+    // Smart list: everything still pending (overdue ones carry over, upcoming
+    // ones show with their due date) + whatever was finished today.
+    function stTaskDue(t){ return t.deadline || t.date || ''; }
     function stTodayTasks(){
       if(!taskState) return [];
-      return taskState.tasks.filter(t => t.date === stTodayKey());
+      const today = stTodayKey();
+      return taskState.tasks.filter(t => !t.done || (t.doneOn || t.date) === today);
+    }
+    function stTaskStatus(t){
+      if(t.done) return 'done';
+      const today = stTodayKey(), due = stTaskDue(t);
+      if(due && due < today) return 'overdue';
+      if(due === today) return 'today';
+      return 'upcoming';
+    }
+    function stTaskDueLabel(t){
+      const st = stTaskStatus(t), due = stTaskDue(t);
+      if(st === 'done') return 'Done';
+      if(!t.deadline) return st === 'overdue' ? 'Overdue' : 'Today';
+      const d = new Date(due + 'T00:00:00'), n = new Date(stTodayKey() + 'T00:00:00');
+      const diff = Math.round((d - n) / 86400000);
+      if(diff < 0) return 'Overdue \u00b7 ' + (-diff) + 'd';
+      if(diff === 0) return 'Due today';
+      if(diff === 1) return 'Due tomorrow';
+      return 'Due ' + d.toLocaleDateString(undefined, { day:'numeric', month:'short' });
     }
 
     // Keeps the red dots on the Task tab and the "Track My Studies" menu
@@ -20530,13 +21146,13 @@ if(existing){
     // ever been opened) as well as after every render.
     async function stTaskRefreshDots(){
       await loadTaskState();
-      const hasIncomplete = stTodayTasks().some(t => !t.done);
-      // Red dots are retired: pending tasks now remind through the
-      // Notification page + phone notification instead.
+      const hasIncomplete = !!taskState && taskState.tasks.some(t => !t.done);
+      // Red dot on the Task tab and on the "Track My Studies" menu row for
+      // as long as any task is still pending - same as the Homework dot.
       const tabDot = document.getElementById('st-tab-task-dot');
-      if(tabDot) tabDot.style.display = 'none';
+      if(tabDot){ tabDot.style.display = hasIncomplete ? 'block' : 'none'; tabDot.classList.add('menu-msg-dot-live'); }
       const menuDot = document.getElementById('menu-studytracker-task-dot');
-      if(menuDot) menuDot.style.display = 'none';
+      if(menuDot){ menuDot.style.display = hasIncomplete ? 'block' : 'none'; menuDot.classList.add('menu-msg-dot-live'); }
       stTaskCheckNotifications();
       stTaskSyncToWorker();
     }
@@ -20547,7 +21163,7 @@ if(existing){
     async function stTaskSyncToWorker(){
       try{
         if(!('caches' in window)) return;
-        const items = taskState.tasks.filter(t => !t.done).map(t => ({ date:t.date, subject:t.subject, title:t.title }));
+        const items = taskState.tasks.filter(t => !t.done).map(t => ({ date:stTaskDue(t), subject:t.subject, title:t.title }));
         const snap = { items };
         try{ snap.icon = notifLogoUrl(); snap.badge = NOTIF_BADGE_URL; }catch(e){}
         try{ const img = await notifBannerUrl({ style:'task', head:'Task Pending', sub: Array.from(new Set(items.map(t => t.subject))).slice(0,4).join(' \u00b7 ') }); if(img) snap.image = img; }catch(e){}
@@ -20570,8 +21186,8 @@ if(existing){
         if(typeof currentUser === 'undefined' || !currentUser) return;
         await loadTaskState();
         const today = stTodayKey();
-        const pending = taskState.tasks.filter(t => !t.done && t.date <= today)
-          .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+        const pending = taskState.tasks.filter(t => !t.done && stTaskDue(t) <= today)
+          .sort((a, b) => String(stTaskDue(a)).localeCompare(String(stTaskDue(b))));
         if(!pending.length) return;
         const KEY = 'st_task_notified_v1';
         let sent = {};
@@ -20579,7 +21195,7 @@ if(existing){
         Object.keys(sent).forEach(k => { if(!k.endsWith('@' + today)) delete sent[k]; });
         const mark = 'taskdaily@' + today;
         if(sent[mark]) return;
-        const lines = pending.slice(0, 6).map(t => (t.date < today ? 'Overdue \u2014 ' : 'Today \u2014 ') + t.subject + ': ' + t.title);
+        const lines = pending.slice(0, 6).map(t => (stTaskDue(t) < today ? 'Overdue \u2014 ' : 'Today \u2014 ') + t.subject + ': ' + t.title);
         if(pending.length > 6) lines.push('+' + (pending.length - 6) + ' more');
         const title = pending.length === 1 ? 'Task pending' : pending.length + ' tasks pending';
         const subjects = Array.from(new Set(pending.map(t => t.subject))).slice(0, 4).join(' \u00b7 ');
@@ -20610,6 +21226,7 @@ if(existing){
       const row = document.createElement('div');
       row.className = 'st-task-item' + (task.done ? ' st-task-item-done' : '') + (stTaskEditingId === task.id ? ' st-task-editing' : '');
       row.dataset.id = task.id;
+      row.dataset.status = stTaskStatus(task);
 
       if(stTaskEditingId === task.id){
         row.innerHTML =
@@ -20632,7 +21249,8 @@ if(existing){
         '</button>' +
         '<div class="st-task-item-main">' +
           '<p class="st-task-item-title">' + stEscapeHtml(task.title) + '</p>' +
-          '<span class="st-task-chip">' + stEscapeHtml(task.subject) + '</span>' +
+          '<div class="st-task-meta"><span class="st-task-chip">' + stEscapeHtml(task.subject) + '</span>' +
+          '<span class="st-task-due st-task-due-' + stTaskStatus(task) + '">' + stEscapeHtml(stTaskDueLabel(task)) + '</span></div>' +
         '</div>' +
         '<div class="st-task-item-actions">' +
           '<button type="button" class="st-task-act st-task-play" data-action="play" aria-label="Study this now"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></button>' +
@@ -20653,7 +21271,11 @@ if(existing){
       const pctEl = document.getElementById('st-task-summary-pct');
       const trackEl = document.getElementById('st-task-progress-track');
       const fillEl = document.getElementById('st-task-progress-fill');
-      if(subEl) subEl.textContent = total > 0 ? (doneCount + ' of ' + total + ' completed') : 'No tasks yet';
+      const overdueN = tasks.filter(t => stTaskStatus(t) === 'overdue').length;
+      if(subEl) subEl.textContent = total > 0 ? (doneCount + ' of ' + total + ' completed' + (overdueN ? ' \u00b7 ' + overdueN + ' overdue' : '')) : 'No tasks yet';
+      const sumCard = document.querySelector('.st-task-summary-card');
+      if(sumCard) sumCard.classList.toggle('st-task-has-pending', tasks.some(t => !t.done));
+      if(pctEl && pctEl.textContent !== (pct + '%')){ pctEl.classList.remove('st-pop'); void pctEl.offsetWidth; pctEl.classList.add('st-pop'); }
       if(pctEl){ pctEl.style.display = total > 0 ? 'block' : 'none'; pctEl.textContent = pct + '%'; }
       if(trackEl) trackEl.style.display = total > 0 ? 'block' : 'none';
       if(fillEl) fillEl.style.width = pct + '%';
@@ -20667,11 +21289,21 @@ if(existing){
         } else {
           if(emptyEl) emptyEl.style.display = 'none';
           // Unfinished tasks first (each in the order they were added), completed ones after.
+          const rank = { overdue:0, today:1, upcoming:2, done:3 };
           const sorted = tasks.slice().sort((a,b) => {
-            if(a.done !== b.done) return a.done ? 1 : -1;
-            return a.createdAt - b.createdAt;
+            const ra = rank[stTaskStatus(a)], rb = rank[stTaskStatus(b)];
+            if(ra !== rb) return ra - rb;
+            const da = stTaskDue(a), db = stTaskDue(b);
+            if(da !== db) return String(da).localeCompare(String(db));
+            return (a.createdAt || 0) - (b.createdAt || 0);
           });
-          sorted.forEach(task => listEl.appendChild(stBuildTaskRow(task)));
+          sorted.forEach((task, i) => {
+            const row = stBuildTaskRow(task);
+            row.style.animationDelay = Math.min(i * 45, 300) + 'ms';
+            if(task.id === stTaskJustAdded){ row.classList.add('st-task-new'); }
+            listEl.appendChild(row);
+          });
+          stTaskJustAdded = null;
         }
       }
       await stTaskRefreshDots();
@@ -20694,6 +21326,7 @@ if(existing){
       const t = taskState.tasks.find(x => x.id === id);
       if(!t) return;
       t.done = !t.done;
+      t.doneOn = t.done ? stTodayKey() : '';
       await saveTaskState();
       await stTaskRender();
     }
@@ -20725,6 +21358,7 @@ if(existing){
       if(row) row.classList.add('st-task-removing');
       await loadTaskState();
       taskState.tasks = taskState.tasks.filter(x => x.id !== id);
+      taskState.deleted = (taskState.deleted || []).concat(id).slice(-200);
       await saveTaskState();
       setTimeout(() => { stTaskRender(); }, row ? 220 : 0);
     }
@@ -20759,6 +21393,8 @@ if(existing){
     const stTaskCreateBtn = document.getElementById('st-task-create-btn');
     const stTaskForm = document.getElementById('st-task-inline-form');
     const stTaskTitleInput = document.getElementById('st-task-title-input');
+    const stTaskDeadlineInput = document.getElementById('st-task-deadline-input');
+    let stTaskJustAdded = null;
     const stTaskSubjectChips = document.getElementById('st-task-subject-chips');
     function stCloseTaskForm(){
       if(!stTaskForm) return;
@@ -20772,8 +21408,13 @@ if(existing){
       const activeChip = stTaskSubjectChips ? stTaskSubjectChips.querySelector('.st-subject-chip.active') : null;
       const subject = activeChip ? activeChip.dataset.subject : 'Self Study';
       await loadTaskState();
-      taskState.tasks.push({ id: cryptoId(), title, subject, date: stTodayKey(), done:false, createdAt: Date.now() });
+      const dl = stTaskDeadlineInput ? stTaskDeadlineInput.value : '';
+      const newId = cryptoId();
+      stTaskJustAdded = newId;
+      taskState.tasks.push({ id: newId, title, subject, date: stTodayKey(), deadline: dl || '', done:false, createdAt: Date.now() });
       await saveTaskState();
+      // new task -> a fresh reminder today that includes it
+      try{ const K = 'st_task_notified_v1'; const m = JSON.parse(localStorage.getItem(K) || '{}'); delete m['taskdaily@' + stTodayKey()]; localStorage.setItem(K, JSON.stringify(m)); }catch(e){}
       stCloseTaskForm();
       await stTaskRender();
     }
@@ -20782,6 +21423,7 @@ if(existing){
       requestAnimationFrame(() => stTaskForm.classList.add('show'));
       stTaskCreateBtn.style.display = 'none';
       stTaskTitleInput.value = '';
+      if(stTaskDeadlineInput){ stTaskDeadlineInput.value = ''; stTaskDeadlineInput.min = stTodayKey(); }
       stTaskSubjectChips.querySelectorAll('.st-subject-chip').forEach((c, i) => c.classList.toggle('active', i === 0));
       stTaskTitleInput.focus();
     });
@@ -25607,6 +26249,950 @@ document.addEventListener("DOMContentLoaded",function(){
     clearTimeout(t);
     t=setTimeout(function(){ b.classList.remove('is-scrolling'); }, 140);
   }, { passive:true });
+})();
+</script>
+<script id="rv-script">
+/* ================= Revision tab (Chemistry · Class 11 compounds & formulae) ================= */
+(function(){
+  'use strict';
+  var panel = document.getElementById('st-panel-revise');
+  var root  = document.getElementById('rv-root');
+  if(!panel || !root) return;
+
+  /* ---------- persistence ---------- */
+  var STORE_KEY = 'rv-chem-v1';
+  var store = { known:[], best:{}, tries:{} };
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw){
+      var o = JSON.parse(raw);
+      if(o && typeof o === 'object'){
+        store.known = Array.isArray(o.known) ? o.known : [];
+        store.best  = o.best  || {};
+        store.tries = o.tries || {};
+      }
+    }
+  }catch(e){}
+  var knownSet = {};
+  store.known.forEach(function(k){ knownSet[k] = 1; });
+  function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){} }
+
+  /* ---------- text helpers ---------- */
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var SUBM = {'\u2080':'0','\u2081':'1','\u2082':'2','\u2083':'3','\u2084':'4','\u2085':'5','\u2086':'6','\u2087':'7','\u2088':'8','\u2089':'9','\u2099':'n'};
+  var SUPM = {'\u2070':'0','\u00B9':'1','\u00B2':'2','\u00B3':'3','\u2074':'4','\u2075':'5','\u2076':'6','\u2077':'7','\u2078':'8','\u2079':'9','\u207A':'+','\u207B':'\u2212'};
+  function fmt(s){
+    s = esc(s);
+    s = s.replace(/[\u2080-\u2089\u2099]+/g, function(m){
+      return '<sub>' + m.split('').map(function(c){ return SUBM[c]; }).join('') + '</sub>';
+    });
+    s = s.replace(/[\u2070\u00B9\u00B2\u00B3\u2074-\u207B]+/g, function(m){
+      return '<sup>' + m.split('').map(function(c){ return SUPM[c] || c; }).join('') + '</sup>';
+    });
+    return s;
+  }
+  function normF(f){
+    return String(f).replace(/\(aq\)/g,'').replace('HOOC\u2013COOH','H\u2082C\u2082O\u2084').replace(/\s+/g,'');
+  }
+  function rnd(n){ return Math.floor(Math.random() * n); }
+  function shuffle(a){
+    for(var i = a.length - 1; i > 0; i--){ var j = rnd(i + 1), t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+
+  /* ---------- data: Class 11 Chemistry compounds (line: Name|Formula|Note|Common name|Condensed structure|m=mixture) ---------- */
+  function P(txt){
+    return txt.trim().split('\n').map(function(l){
+      var p = l.split('|');
+      return { n:p[0].trim(), f:p[1].trim(), t:(p[2]||'').trim(), c:(p[3]||'').trim(), s:(p[4]||'').trim(), m:(p[5]||'').trim() === 'm' };
+    });
+  }
+
+  var ION_TIPS = [
+    'Exam rule: the total positive charge must equal the total negative charge in a neutral ionic compound.',
+    'Calcium chloride: Ca\u00B2\u207A + 2Cl\u207B \u2192 CaCl\u2082',
+    'Aluminium oxide: 2Al\u00B3\u207A + 3O\u00B2\u207B \u2192 Al\u2082O\u2083',
+    'Aluminium sulfate: 2Al\u00B3\u207A + 3SO\u2084\u00B2\u207B \u2192 Al\u2082(SO\u2084)\u2083',
+    'Ammonium carbonate: 2NH\u2084\u207A + CO\u2083\u00B2\u207B \u2192 (NH\u2084)\u2082CO\u2083',
+    'Use brackets when more than one copy of a polyatomic ion is needed.'
+  ];
+
+  var TOPICS = [
+    { id:'cat', grp:'Inorganic', title:'Positive ions', sub:'Cations', noun:'ion', icon:'Na\u207A', tips:ION_TIPS, raw:
+'Hydrogen ion|H\u207A|Charge +1\n' +
+'Hydronium ion|H\u2083O\u207A|Charge +1\n' +
+'Ammonium|NH\u2084\u207A|Charge +1\n' +
+'Sodium|Na\u207A|Charge +1\n' +
+'Potassium|K\u207A|Charge +1\n' +
+'Lithium|Li\u207A|Charge +1\n' +
+'Silver|Ag\u207A|Charge +1\n' +
+'Magnesium|Mg\u00B2\u207A|Charge +2\n' +
+'Calcium|Ca\u00B2\u207A|Charge +2\n' +
+'Barium|Ba\u00B2\u207A|Charge +2\n' +
+'Zinc|Zn\u00B2\u207A|Charge +2\n' +
+'Copper(I)|Cu\u207A|Charge +1\n' +
+'Copper(II)|Cu\u00B2\u207A|Charge +2\n' +
+'Iron(II), ferrous|Fe\u00B2\u207A|Charge +2\n' +
+'Iron(III), ferric|Fe\u00B3\u207A|Charge +3\n' +
+'Aluminium|Al\u00B3\u207A|Charge +3\n' +
+'Lead(II)|Pb\u00B2\u207A|Charge +2\n' +
+'Tin(II)|Sn\u00B2\u207A|Charge +2\n' +
+'Chromium(III)|Cr\u00B3\u207A|Charge +3\n' +
+'Nickel(II)|Ni\u00B2\u207A|Charge +2\n' +
+'Cobalt(II)|Co\u00B2\u207A|Charge +2\n' +
+'Manganese(II)|Mn\u00B2\u207A|Charge +2' },
+
+    { id:'ani', grp:'Inorganic', title:'Negative ions', sub:'Anions and radicals', noun:'ion', icon:'Cl\u207B', tips:ION_TIPS, raw:
+'Fluoride|F\u207B|Charge \u22121\n' +
+'Chloride|Cl\u207B|Charge \u22121\n' +
+'Bromide|Br\u207B|Charge \u22121\n' +
+'Iodide|I\u207B|Charge \u22121\n' +
+'Hydroxide|OH\u207B|Charge \u22121\n' +
+'Nitrate|NO\u2083\u207B|Charge \u22121\n' +
+'Nitrite|NO\u2082\u207B|Charge \u22121\n' +
+'Hydrogen carbonate / bicarbonate|HCO\u2083\u207B|Charge \u22121\n' +
+'Hydrogen sulfate|HSO\u2084\u207B|Charge \u22121\n' +
+'Acetate / ethanoate|CH\u2083COO\u207B|Charge \u22121\n' +
+'Permanganate|MnO\u2084\u207B|Charge \u22121\n' +
+'Hypochlorite|ClO\u207B|Charge \u22121\n' +
+'Chlorate|ClO\u2083\u207B|Charge \u22121\n' +
+'Perchlorate|ClO\u2084\u207B|Charge \u22121\n' +
+'Cyanide|CN\u207B|Charge \u22121\n' +
+'Oxide|O\u00B2\u207B|Charge \u22122\n' +
+'Sulfide|S\u00B2\u207B|Charge \u22122\n' +
+'Carbonate|CO\u2083\u00B2\u207B|Charge \u22122\n' +
+'Sulfate|SO\u2084\u00B2\u207B|Charge \u22122\n' +
+'Sulfite|SO\u2083\u00B2\u207B|Charge \u22122\n' +
+'Thiosulfate|S\u2082O\u2083\u00B2\u207B|Charge \u22122\n' +
+'Chromate|CrO\u2084\u00B2\u207B|Charge \u22122\n' +
+'Dichromate|Cr\u2082O\u2087\u00B2\u207B|Charge \u22122\n' +
+'Peroxide|O\u2082\u00B2\u207B|Charge \u22122\n' +
+'Manganate|MnO\u2084\u00B2\u207B|Charge \u22122\n' +
+'Phosphate|PO\u2084\u00B3\u207B|Charge \u22123\n' +
+'Nitride|N\u00B3\u207B|Charge \u22123\n' +
+'Phosphide|P\u00B3\u207B|Charge \u22123\n' +
+'Borate (common form)|BO\u2083\u00B3\u207B|Charge \u22123' },
+
+    { id:'aci', grp:'Inorganic', title:'Common acids', sub:'Mineral and organic acids', noun:'acid', icon:'HCl', tips:[
+      'Nitric acid = HNO\u2083; nitrous acid = HNO\u2082.',
+      'Sulfuric acid = H\u2082SO\u2084; sulfurous acid = H\u2082SO\u2083.',
+      'Phosphoric acid = H\u2083PO\u2084; phosphorous acid = H\u2083PO\u2083.',
+      'Note: H\u2083PO\u2083 is dibasic in ordinary acid\u2013base reactions, whereas H\u2083PO\u2084 is tribasic.'
+    ], raw:
+'Hydrochloric acid|HCl\n' +
+'Sulfuric acid|H\u2082SO\u2084\n' +
+'Sulfurous acid|H\u2082SO\u2083\n' +
+'Nitric acid|HNO\u2083\n' +
+'Nitrous acid|HNO\u2082\n' +
+'Phosphoric acid|H\u2083PO\u2084\n' +
+'Phosphorous acid|H\u2083PO\u2083\n' +
+'Carbonic acid|H\u2082CO\u2083\n' +
+'Boric acid|H\u2083BO\u2083\n' +
+'Acetic acid / ethanoic acid|CH\u2083COOH\n' +
+'Formic acid / methanoic acid|HCOOH\n' +
+'Oxalic acid|H\u2082C\u2082O\u2084\n' +
+'Hydrofluoric acid|HF\n' +
+'Hydrobromic acid|HBr\n' +
+'Hydroiodic acid|HI\n' +
+'Hydrosulfuric acid (aqueous H\u2082S)|H\u2082S\n' +
+'Hypochlorous acid|HClO\n' +
+'Chlorous acid|HClO\u2082\n' +
+'Chloric acid|HClO\u2083\n' +
+'Perchloric acid|HClO\u2084' },
+
+    { id:'bas', grp:'Inorganic', title:'Bases & hydroxides', sub:'Bases, alkalis and hydroxides', noun:'compound', icon:'OH\u207B', tips:[], raw:
+'Sodium hydroxide|NaOH|Caustic soda|Caustic soda\n' +
+'Potassium hydroxide|KOH|Caustic potash|Caustic potash\n' +
+'Calcium hydroxide|Ca(OH)\u2082|Slaked lime|Slaked lime\n' +
+'Magnesium hydroxide|Mg(OH)\u2082|Milk of magnesia is its suspension\n' +
+'Barium hydroxide|Ba(OH)\u2082|Strong base\n' +
+'Aluminium hydroxide|Al(OH)\u2083|Amphoteric hydroxide\n' +
+'Zinc hydroxide|Zn(OH)\u2082|Amphoteric hydroxide\n' +
+'Iron(II) hydroxide|Fe(OH)\u2082|Green precipitate\n' +
+'Iron(III) hydroxide|Fe(OH)\u2083|Reddish-brown precipitate\n' +
+'Copper(II) hydroxide|Cu(OH)\u2082|Blue precipitate\n' +
+'Ammonia in water|NH\u2083(aq)|Aqueous ammonia; sometimes conventionally represented as NH\u2084OH' },
+
+    { id:'sal', grp:'Inorganic', title:'Salts & everyday compounds', sub:'Common names and formulae', noun:'compound', icon:'NaCl', tips:[
+      'Five compounds you must not confuse:',
+      'Washing soda: Na\u2082CO\u2083\u00B710H\u2082O',
+      'Baking soda: NaHCO\u2083',
+      'Gypsum: CaSO\u2084\u00B72H\u2082O',
+      'Plaster of Paris: CaSO\u2084\u00B7\u00BDH\u2082O',
+      'Quicklime: CaO; slaked lime: Ca(OH)\u2082',
+      'The dot followed by water in a formula indicates water of crystallisation. For example, CuSO\u2084\u00B75H\u2082O contains five water molecules per formula unit.'
+    ], raw:
+'Sodium chloride|NaCl|Common salt|Common salt\n' +
+'Sodium carbonate|Na\u2082CO\u2083|Soda ash, anhydrous|Soda ash\n' +
+'Sodium carbonate decahydrate|Na\u2082CO\u2083\u00B710H\u2082O|Washing soda|Washing soda\n' +
+'Sodium hydrogencarbonate|NaHCO\u2083|Baking soda|Baking soda\n' +
+'Calcium carbonate|CaCO\u2083|Limestone, chalk and marble are mainly this\n' +
+'Calcium oxide|CaO|Quicklime|Quicklime\n' +
+'Calcium hydroxide|Ca(OH)\u2082|Slaked lime|Slaked lime\n' +
+'Calcium sulfate dihydrate|CaSO\u2084\u00B72H\u2082O|Gypsum|Gypsum\n' +
+'Calcium sulfate hemihydrate|CaSO\u2084\u00B7\u00BDH\u2082O|Plaster of Paris|Plaster of Paris\n' +
+'Magnesium sulfate heptahydrate|MgSO\u2084\u00B77H\u2082O|Epsom salt|Epsom salt\n' +
+'Copper(II) sulfate pentahydrate|CuSO\u2084\u00B75H\u2082O|Blue vitriol|Blue vitriol\n' +
+'Iron(II) sulfate heptahydrate|FeSO\u2084\u00B77H\u2082O|Green vitriol|Green vitriol\n' +
+'Potash alum|KAl(SO\u2084)\u2082\u00B712H\u2082O|Alum|Alum\n' +
+'Ammonium chloride|NH\u2084Cl|Sal ammoniac|Sal ammoniac\n' +
+'Ammonium sulfate|(NH\u2084)\u2082SO\u2084|Fertiliser\n' +
+'Ammonium nitrate|NH\u2084NO\u2083|Fertiliser\n' +
+'Potassium nitrate|KNO\u2083|Saltpetre|Saltpetre\n' +
+'Sodium nitrate|NaNO\u2083|Chile saltpetre|Chile saltpetre\n' +
+'Silver nitrate|AgNO\u2083|Laboratory reagent\n' +
+'Lead(II) nitrate|Pb(NO\u2083)\u2082|Lead salt\n' +
+'Barium sulfate|BaSO\u2084|Insoluble sulfate\n' +
+'Sodium thiosulfate pentahydrate|Na\u2082S\u2082O\u2083\u00B75H\u2082O|Hypo|Hypo\n' +
+'Potassium permanganate|KMnO\u2084|Purple oxidising agent\n' +
+'Potassium dichromate|K\u2082Cr\u2082O\u2087|Orange oxidising agent\n' +
+'Sodium sulfite|Na\u2082SO\u2083|Sulfite salt\n' +
+'Sodium sulfate decahydrate|Na\u2082SO\u2084\u00B710H\u2082O|Glauber\'s salt|Glauber\'s salt\n' +
+'Sodium acetate|CH\u2083COONa|Acetate salt\n' +
+'Calcium phosphate|Ca\u2083(PO\u2084)\u2082|Phosphate salt\n' +
+'Aluminium sulfate|Al\u2082(SO\u2084)\u2083|Sulfate salt\n' +
+'Iron(III) sulfate|Fe\u2082(SO\u2084)\u2083|Ferric sulfate\n' +
+'Copper(II) chloride|CuCl\u2082|Copper salt\n' +
+'Zinc sulfate|ZnSO\u2084|Zinc salt\n' +
+'Sodium sulfide|Na\u2082S|Sulfide salt\n' +
+'Calcium chloride|CaCl\u2082|Calcium salt' },
+
+    { id:'oxi', grp:'Inorganic', title:'Oxides, peroxides & gases', sub:'Important point for each', noun:'compound', icon:'CO\u2082', tips:[], raw:
+'Water|H\u2082O|Common solvent\n' +
+'Heavy water|D\u2082O|Deuterium oxide\n' +
+'Hydrogen peroxide|H\u2082O\u2082|Peroxide\n' +
+'Carbon monoxide|CO|Toxic gas\n' +
+'Carbon dioxide|CO\u2082|Acidic oxide\n' +
+'Sulfur dioxide|SO\u2082|Acidic oxide\n' +
+'Sulfur trioxide|SO\u2083|Forms sulfuric acid with water\n' +
+'Nitric oxide|NO|Nitrogen monoxide\n' +
+'Nitrogen dioxide|NO\u2082|Brown gas\n' +
+'Dinitrogen monoxide|N\u2082O|Nitrous oxide\n' +
+'Dinitrogen trioxide|N\u2082O\u2083|Nitrogen(III) oxide\n' +
+'Dinitrogen tetroxide|N\u2082O\u2084|Dimer of NO\u2082\n' +
+'Dinitrogen pentoxide|N\u2082O\u2085|Nitrogen(V) oxide\n' +
+'Silicon dioxide|SiO\u2082|Silica|Silica\n' +
+'Aluminium oxide|Al\u2082O\u2083|Amphoteric oxide\n' +
+'Zinc oxide|ZnO|Amphoteric oxide\n' +
+'Iron(II) oxide|FeO|Iron oxide\n' +
+'Iron(III) oxide|Fe\u2082O\u2083|Iron oxide\n' +
+'Magnetite|Fe\u2083O\u2084|Mixed iron oxide\n' +
+'Copper(I) oxide|Cu\u2082O|Red oxide\n' +
+'Copper(II) oxide|CuO|Black oxide\n' +
+'Sodium oxide|Na\u2082O|Basic oxide\n' +
+'Potassium oxide|K\u2082O|Basic oxide\n' +
+'Calcium oxide|CaO|Quicklime|Quicklime\n' +
+'Phosphorus pentoxide|P\u2084O\u2081\u2080|Molecular formula; empirical formula P\u2082O\u2085\n' +
+'Sodium peroxide|Na\u2082O\u2082|Peroxide\n' +
+'Potassium superoxide|KO\u2082|Superoxide\n' +
+'Ammonia|NH\u2083|Basic gas\n' +
+'Hydrogen sulfide|H\u2082S|Toxic gas\n' +
+'Methane|CH\u2084|Simplest alkane\n' +
+'Chlorine dioxide|ClO\u2082|Oxide of chlorine' },
+
+    { id:'ele', grp:'Inorganic', title:'Diatomic & molecular elements', sub:'Elements in molecular form', noun:'element', icon:'O\u2083', tips:[
+      'Remember the seven common diatomic elements in their elemental molecular form: H\u2082, N\u2082, O\u2082, F\u2082, Cl\u2082, Br\u2082, I\u2082.',
+      'Also remember ozone, O\u2083, and the common molecular forms P\u2084 and S\u2088.'
+    ], raw:
+'Hydrogen molecule|H\u2082|Common diatomic element\n' +
+'Nitrogen molecule|N\u2082|Common diatomic element\n' +
+'Oxygen molecule|O\u2082|Common diatomic element\n' +
+'Fluorine molecule|F\u2082|Common diatomic element\n' +
+'Chlorine molecule|Cl\u2082|Common diatomic element\n' +
+'Bromine molecule|Br\u2082|Common diatomic element\n' +
+'Iodine molecule|I\u2082|Common diatomic element\n' +
+'Ozone|O\u2083\n' +
+'Phosphorus (molecular form)|P\u2084|Common molecular form\n' +
+'Sulfur (molecular form)|S\u2088|Common molecular form' },
+
+    { id:'in11', grp:'Inorganic', title:'Class XI inorganic extras', sub:'Hydrogen, s-block and p-block', noun:'compound', icon:'B\u2082H\u2086', tips:[
+      'Check your current syllabus before spending time on topics not yet taught.',
+      'Accuracy note: water gas, producer gas and syngas are mixtures, not single compounds with one fixed chemical formula. Zeolites also have variable compositions rather than one universal formula.'
+    ], raw:
+'Borax decahydrate|Na\u2082B\u2084O\u2087\u00B710H\u2082O\n' +
+'Orthoboric acid|H\u2083BO\u2083\n' +
+'Diborane|B\u2082H\u2086\n' +
+'Silicon tetrachloride|SiCl\u2084\n' +
+'Sodium silicate (representative formula)|Na\u2082SiO\u2083\n' +
+'Sodium hydride|NaH\n' +
+'Calcium hydride|CaH\u2082\n' +
+'Lithium aluminium hydride|LiAlH\u2084\n' +
+'Sodium peroxide|Na\u2082O\u2082\n' +
+'Potassium superoxide|KO\u2082\n' +
+'Sodium hypochlorite|NaClO\n' +
+'Bleaching powder (conventional formula)|CaOCl\u2082\n' +
+'Hydrogen chloride|HCl\n' +
+'Hydrogen fluoride|HF\n' +
+'Hydrogen sulfide|H\u2082S\n' +
+'Ammonia|NH\u2083\n' +
+'Water gas|CO + H\u2082|Mixture, not a single compound||| m\n' +
+'Producer gas|Mainly CO + N\u2082; composition varies|Mixture, not a single compound||| m\n' +
+'Syngas|Mainly CO + H\u2082|Mixture, not a single compound||| m' },
+
+    { id:'hyd', grp:'Organic', title:'Hydrocarbons', sub:'Alkanes, alkenes, alkynes and arenes', noun:'compound', icon:'CH\u2084', tips:[
+      'For organic chemistry, learn both the molecular formula and the condensed structural formula wherever possible.'
+    ], raw:
+'Methane|CH\u2084|||CH\u2084\n' +
+'Ethane|C\u2082H\u2086|||CH\u2083\u2013CH\u2083\n' +
+'Propane|C\u2083H\u2088|||CH\u2083\u2013CH\u2082\u2013CH\u2083\n' +
+'Butane|C\u2084H\u2081\u2080|||CH\u2083\u2013CH\u2082\u2013CH\u2082\u2013CH\u2083\n' +
+'Pentane|C\u2085H\u2081\u2082|||CH\u2083(CH\u2082)\u2083CH\u2083\n' +
+'Hexane|C\u2086H\u2081\u2084|||CH\u2083(CH\u2082)\u2084CH\u2083\n' +
+'Ethene|C\u2082H\u2084|||CH\u2082=CH\u2082\n' +
+'Propene|C\u2083H\u2086|||CH\u2082=CH\u2013CH\u2083\n' +
+'But-1-ene|C\u2084H\u2088|||CH\u2082=CH\u2013CH\u2082\u2013CH\u2083\n' +
+'Ethyne (acetylene)|C\u2082H\u2082|||HC\u2261CH\n' +
+'Propyne|C\u2083H\u2084|||CH\u2083\u2013C\u2261CH\n' +
+'But-1-yne|C\u2084H\u2086|||HC\u2261C\u2013CH\u2082\u2013CH\u2083\n' +
+'Benzene|C\u2086H\u2086|Six-membered aromatic ring\n' +
+'Toluene|C\u2087H\u2088|||C\u2086H\u2085\u2013CH\u2083\n' +
+'Naphthalene|C\u2081\u2080H\u2088|Two fused aromatic rings' },
+
+    { id:'alc', grp:'Organic', title:'Alcohols & ethers', sub:'Hydroxy and ether compounds', noun:'compound', icon:'ROH', tips:[
+      'Ethanol and dimethyl ether have the same molecular formula, C\u2082H\u2086O, but different structures. They are functional isomers.'
+    ], raw:
+'Methanol|CH\u2083OH\n' +
+'Ethanol|C\u2082H\u2085OH\n' +
+'Propan-1-ol|CH\u2083CH\u2082CH\u2082OH\n' +
+'Propan-2-ol|CH\u2083CHOHCH\u2083\n' +
+'Ethylene glycol|HOCH\u2082CH\u2082OH\n' +
+'Glycerol|C\u2083H\u2085(OH)\u2083\n' +
+'Dimethyl ether|CH\u2083OCH\u2083\n' +
+'Methoxyethane|CH\u2083OCH\u2082CH\u2083\n' +
+'Diethyl ether|C\u2082H\u2085OC\u2082H\u2085' },
+
+    { id:'car', grp:'Organic', title:'Aldehydes & ketones', sub:'Carbonyl compounds', noun:'compound', icon:'RCHO', tips:[], raw:
+'Methanal (formaldehyde)|HCHO\n' +
+'Ethanal (acetaldehyde)|CH\u2083CHO\n' +
+'Propanal|CH\u2083CH\u2082CHO\n' +
+'Propanone (acetone)|CH\u2083COCH\u2083\n' +
+'Butan-2-one|CH\u2083COCH\u2082CH\u2083' },
+
+    { id:'cae', grp:'Organic', title:'Carboxylic acids & esters', sub:'Acids and their esters', noun:'compound', icon:'RCOOH', tips:[], raw:
+'Methanoic acid (formic acid)|HCOOH\n' +
+'Ethanoic acid (acetic acid)|CH\u2083COOH\n' +
+'Propanoic acid|CH\u2083CH\u2082COOH\n' +
+'Butanoic acid|CH\u2083CH\u2082CH\u2082COOH\n' +
+'Oxalic acid|HOOC\u2013COOH\n' +
+'Methyl methanoate|HCOOCH\u2083\n' +
+'Methyl ethanoate|CH\u2083COOCH\u2083\n' +
+'Ethyl ethanoate|CH\u2083COOC\u2082H\u2085' },
+
+    { id:'hal', grp:'Organic', title:'Halo compounds', sub:'Haloalkanes and haloarenes', noun:'compound', icon:'CHCl\u2083', tips:[], raw:
+'Chloromethane|CH\u2083Cl\n' +
+'Chloroethane|C\u2082H\u2085Cl\n' +
+'Dichloromethane|CH\u2082Cl\u2082\n' +
+'Chloroform (trichloromethane)|CHCl\u2083\n' +
+'Carbon tetrachloride (tetrachloromethane)|CCl\u2084\n' +
+'Iodoform (triiodomethane)|CHI\u2083\n' +
+'Chlorobenzene|C\u2086H\u2085Cl\n' +
+'Bromobenzene|C\u2086H\u2085Br' },
+
+    { id:'nit', grp:'Organic', title:'Nitrogen compounds', sub:'Amines, amides and more', noun:'compound', icon:'RNH\u2082', tips:[], raw:
+'Methylamine|CH\u2083NH\u2082\n' +
+'Ethylamine|C\u2082H\u2085NH\u2082\n' +
+'Aniline|C\u2086H\u2085NH\u2082\n' +
+'Acetamide (ethanamide)|CH\u2083CONH\u2082\n' +
+'Urea|CO(NH\u2082)\u2082\n' +
+'Acetonitrile (ethanenitrile)|CH\u2083CN\n' +
+'Nitrobenzene|C\u2086H\u2085NO\u2082\n' +
+'Nitromethane|CH\u2083NO\u2082' },
+
+    { id:'oth', grp:'Organic', title:'Other important organics', sub:'Sugars, polymers, phenol and aspirin', noun:'compound', icon:'C\u2086H\u2081\u2082O\u2086', tips:[], raw:
+'Glucose|C\u2086H\u2081\u2082O\u2086\n' +
+'Fructose|C\u2086H\u2081\u2082O\u2086\n' +
+'Sucrose|C\u2081\u2082H\u2082\u2082O\u2081\u2081\n' +
+'Starch|(C\u2086H\u2081\u2080O\u2085)\u2099\n' +
+'Cellulose|(C\u2086H\u2081\u2080O\u2085)\u2099\n' +
+'Phenol|C\u2086H\u2085OH\n' +
+'Aspirin (acetylsalicylic acid)|C\u2089H\u2088O\u2084' }
+  ];
+
+  var TBYID = {};
+  TOPICS.forEach(function(t){
+    TBYID[t.id] = t;
+    t.items = P(t.raw).map(function(it){ it.tid = t.id; it.k = t.noun; it.key = it.n + '|' + it.f; return it; });
+  });
+  var ALLP = [], seenName = {};
+  TOPICS.forEach(function(t){
+    t.items.forEach(function(it){
+      var k = it.n.toLowerCase();
+      if(seenName[k]) return;
+      seenName[k] = 1; ALLP.push(it);
+    });
+  });
+  var FMAP = {};
+  ALLP.forEach(function(it){ if(it.m) return; var k = normF(it.f); FMAP[k] = (FMAP[k] || 0) + 1; });
+
+  function getTopic(tid){
+    if(tid === 'all') return { id:'all', title:'All topics', sub:'Everything mixed together', noun:'compound', icon:'\u2726', tips:[], items:ALLP };
+    return TBYID[tid];
+  }
+  function poolOf(tid){ return getTopic(tid).items.filter(function(it){ return !it.m; }); }
+
+  /* ---------- state ---------- */
+  var S = { view:'', L:null, E:null, lastCount:{}, resetArm:false, leaveArm:false };
+  var busy = false;
+
+  /* ---------- toast ---------- */
+  function toast(msg){
+    var t = document.getElementById('rv-toast');
+    if(!t){ t = document.createElement('div'); t.id = 'rv-toast'; t.className = 'rv-toast'; document.body.appendChild(t); }
+    t.textContent = msg;
+    t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
+    clearTimeout(t._h); t._h = setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  }
+
+  function setView(name, html){
+    S.view = name;
+    root.innerHTML = '<div class="rv rv-view rv-v-' + name + '">' + html + '</div>';
+    try{ window.scrollTo(0, 0); }catch(e){}
+  }
+
+  function knownCount(items){
+    var c = 0; items.forEach(function(it){ if(knownSet[it.key]) c++; });
+    return c;
+  }
+  var ICON = {
+    back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
+    lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+    arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+    cross:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+    redo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>',
+    shuffle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 4 3 3-3 3"/><path d="M2 7h6.5a4 4 0 0 1 3.5 2"/><path d="m18 20 3-3-3-3"/><path d="M2 17h6.5a4 4 0 0 0 3.4-2l1.2-2.2A4 4 0 0 1 16.5 11H21"/></svg>'
+  };
+
+  /* ================= HOME ================= */
+  function renderHome(){
+    var topicCount = TOPICS.length;
+    var h = '';
+    h += '<div class="rv-hero rv-stag" style="--i:0"><span class="rv-hero-glow" aria-hidden="true"></span>' +
+         '<p class="rv-eyebrow">Smart Revision</p>' +
+         '<h2 class="rv-hero-title">Revise it. <em>Remember it.</em></h2>' +
+         '<p class="rv-hero-sub">Learn with flip cards, then prove it in a flashcard exam and see your result. Pick a subject to begin.</p>' +
+         '<div class="rv-steps"><span><b>1</b>Revise</span><i></i><span><b>2</b>Exam</span><i></i><span><b>3</b>Result</span></div></div>';
+    h += '<p class="rv-label rv-stag" style="--i:1">Choose a subject</p>';
+    h += '<button type="button" class="rv-subj rv-subj-ready rv-stag" style="--i:2" data-rv="subject" data-s="Chemistry">' +
+         '<span class="rv-subj-ico">&#129514;</span>' +
+         '<span class="rv-subj-main"><span class="rv-subj-name">Chemistry</span>' +
+         '<span class="rv-subj-sub">Class 11 &middot; Compounds &amp; formulae</span>' +
+         '<span class="rv-subj-meta">' + topicCount + ' topics &middot; ' + ALLP.length + ' cards</span></span>' +
+         '<span class="rv-pill rv-pill-ready">Ready</span>' +
+         '<span class="rv-subj-go">' + ICON.arrow + '</span></button>';
+    h += '<button type="button" class="rv-subj rv-subj-soon rv-stag" style="--i:3" data-rv="soon" data-s="Physics">' +
+         '<span class="rv-subj-ico">&#9883;</span>' +
+         '<span class="rv-subj-main"><span class="rv-subj-name">Physics</span><span class="rv-subj-sub">Revision cards &amp; exam</span></span>' +
+         '<span class="rv-pill rv-pill-soon">' + ICON.lock + 'Coming soon</span></button>';
+    h += '<button type="button" class="rv-subj rv-subj-soon rv-stag" style="--i:4" data-rv="soon" data-s="Mathematics">' +
+         '<span class="rv-subj-ico">&#128208;</span>' +
+         '<span class="rv-subj-main"><span class="rv-subj-name">Mathematics</span><span class="rv-subj-sub">Revision cards &amp; exam</span></span>' +
+         '<span class="rv-pill rv-pill-soon">' + ICON.lock + 'Coming soon</span></button>';
+    h += '<p class="rv-note rv-stag" style="--i:5">Revision is ready for <b>Chemistry</b> now. <b>Physics</b> and <b>Mathematics</b> are not ready yet &mdash; they are being prepared and will appear here soon.</p>';
+    setView('home', h);
+  }
+
+  /* ================= TOPICS ================= */
+  function tileHTML(t, i){
+    var total = t.items.length, kn = knownCount(t.items), pct = total ? Math.round(kn * 100 / total) : 0;
+    var best = store.best[t.id];
+    var pool = poolOf(t.id).length;
+    var meta = kn + ' / ' + total + ' learned' + (best !== undefined ? ' &middot; Best ' + best + '%' : '');
+    var cls = t.icon.length > 5 ? ' rv-badge-s' : '';
+    return '<div class="rv-tile rv-stag" style="--i:' + Math.min(i, 12) + '">' +
+      '<div class="rv-tile-top"><span class="rv-badge' + cls + '">' + fmt(t.icon) + '</span>' +
+      '<span class="rv-tile-main"><span class="rv-tile-title">' + esc(t.title) + '</span>' +
+      '<span class="rv-tile-sub">' + total + ' cards &middot; ' + esc(t.sub) + '</span></span></div>' +
+      '<div class="rv-bar"><span style="width:' + pct + '%"></span></div>' +
+      '<p class="rv-tile-meta">' + meta + '</p>' +
+      '<div class="rv-tile-btns">' +
+      '<button type="button" class="rv-btn rv-btn-gold" data-rv="learn" data-t="' + t.id + '">Revise</button>' +
+      '<button type="button" class="rv-btn rv-btn-line" data-rv="exam" data-t="' + t.id + '"' + (pool < 4 ? ' disabled' : '') + '>Exam</button>' +
+      '</div></div>';
+  }
+  function renderTopics(){
+    var h = '';
+    h += '<div class="rv-top rv-stag" style="--i:0"><button type="button" class="rv-bk" data-rv="home">' + ICON.back + 'Subjects</button></div>';
+    h += '<p class="rv-eyebrow rv-stag" style="--i:1">Chemistry &middot; Class 11</p>';
+    h += '<h2 class="rv-title rv-stag" style="--i:1">Compounds <em>&amp; formulae</em></h2>';
+    var all = getTopic('all');
+    var akn = knownCount(ALLP), apct = Math.round(akn * 100 / ALLP.length);
+    var abest = store.best.all;
+    h += '<div class="rv-all rv-stag" style="--i:2"><span class="rv-hero-glow" aria-hidden="true"></span>' +
+         '<p class="rv-eyebrow" style="margin-bottom:4px">All topics</p>' +
+         '<p class="rv-all-title">Full mixed revision</p>' +
+         '<p class="rv-tile-sub">' + ALLP.length + ' cards across ' + TOPICS.length + ' topics</p>' +
+         '<div class="rv-bar"><span style="width:' + apct + '%"></span></div>' +
+         '<p class="rv-tile-meta">' + akn + ' / ' + ALLP.length + ' learned' + (abest !== undefined ? ' &middot; Best ' + abest + '%' : '') + '</p>' +
+         '<div class="rv-tile-btns"><button type="button" class="rv-btn rv-btn-gold" data-rv="learn" data-t="all">Revise all</button>' +
+         '<button type="button" class="rv-btn rv-btn-line" data-rv="exam" data-t="all">Mixed exam</button></div></div>';
+    var idx = 3;
+    ['Inorganic', 'Organic'].forEach(function(g){
+      h += '<p class="rv-label rv-stag" style="--i:' + Math.min(idx, 12) + '">' + g + ' chemistry</p>';
+      TOPICS.forEach(function(t){ if(t.grp === g){ h += tileHTML(t, idx); idx++; } });
+    });
+    h += '<p class="rv-note rv-stag" style="--i:12">A comprehensive revision list, not a verified list of every compound asked in previous-year questions. Exact frequency depends on the paper and syllabus year.</p>';
+    h += '<button type="button" class="rv-reset" data-rv="reset" id="rv-reset-btn">Reset revision progress</button>';
+    setView('topics', h);
+  }
+
+  /* ================= LEARN ================= */
+  function newLearn(tid, everything){
+    var t = getTopic(tid), items = t.items.slice();
+    var queue = items.filter(function(it){ return !knownSet[it.key]; });
+    var revisit = false;
+    if(everything || !queue.length){ queue = items.slice(); revisit = !everything; }
+    S.L = { tid:tid, queue:queue, total:queue.length, done:0, again:0, mode:'cards', intro:(t.tips && t.tips.length > 0), revisit:revisit };
+  }
+  function renderLearn(){
+    var L = S.L, t = getTopic(L.tid);
+    var h = '';
+    h += '<div class="rv-top"><button type="button" class="rv-bk" data-rv="topics">' + ICON.back + 'Topics</button>' +
+         '<button type="button" class="rv-skip" data-rv="exam" data-t="' + L.tid + '">Skip to exam</button></div>';
+    h += '<p class="rv-eyebrow">' + esc(t.title) + '</p>';
+    h += '<div class="rv-seg" id="rv-seg" data-m="' + L.mode + '"><span class="rv-seg-pill"></span>' +
+         '<button type="button" data-rv="seg" data-m="cards" class="' + (L.mode === 'cards' ? 'on' : '') + '">Flip cards</button>' +
+         '<button type="button" data-rv="seg" data-m="sheet" class="' + (L.mode === 'sheet' ? 'on' : '') + '">Study sheet</button></div>';
+    h += '<div id="rv-learn-body"></div>';
+    setView('learn', h);
+    renderLearnBody(false);
+  }
+  function tipsHTML(t){
+    if(!t.tips || !t.tips.length) return '';
+    return '<div class="rv-tips">' + t.tips.map(function(x){ return '<p>' + fmt(x) + '</p>'; }).join('') + '</div>';
+  }
+  function cardHTML(it, t){
+    var big = it.f, len = big.length;
+    var fs = len <= 8 ? 'xl' : len <= 14 ? 'l' : len <= 22 ? 'm' : 's';
+    var extra = '';
+    if(it.c) extra += '<span class="rv-chip">Common name &middot; ' + esc(it.c) + '</span>';
+    if(it.s && it.s !== it.f) extra += '<span class="rv-chip">Condensed &middot; ' + fmt(it.s) + '</span>';
+    var note = (it.t && it.t !== it.c) ? '<p class="rv-card-note">' + fmt(it.t) + '</p>' : '';
+    return '<div class="rv-card" id="rv-card">' +
+      '<div class="rv-flip">' +
+      '<div class="rv-face rv-face-f"><span class="rv-tag">' + esc(t.id === 'all' ? getTopic(it.tid).title : t.title) + '</span>' +
+      '<p class="rv-q">What is the formula of</p><h3 class="rv-name">' + esc(it.n) + '</h3>' +
+      '<p class="rv-hint">Tap to flip &middot; swipe right if you know it</p></div>' +
+      '<div class="rv-face rv-face-b"><span class="rv-tag">' + esc(it.n) + '</span>' +
+      '<h3 class="rv-formula rv-fs-' + fs + '">' + fmt(big) + '</h3>' + note + extra +
+      '<p class="rv-hint">Tap to flip back</p></div>' +
+      '</div>' +
+      '<span class="rv-stamp rv-stamp-yes">Got it</span><span class="rv-stamp rv-stamp-no">Practise</span></div>';
+  }
+  function renderLearnBody(animate){
+    var L = S.L, t = getTopic(L.tid), body = document.getElementById('rv-learn-body');
+    if(!body) return;
+    var h = '';
+    if(L.mode === 'sheet'){
+      h += tipsHTML(t);
+      h += '<div class="rv-sheet">';
+      L.sheetItems = t.items;
+      t.items.forEach(function(it, i){
+        h += '<div class="rv-row rv-stag" style="--i:' + Math.min(i, 14) + '"><div class="rv-row-l"><span class="rv-row-n">' + esc(it.n) + '</span>' +
+             ((it.t || it.c) ? '<span class="rv-row-t">' + fmt(it.t || it.c) + '</span>' : '') +
+             ((it.s && it.s !== it.f) ? '<span class="rv-row-t">Condensed: ' + fmt(it.s) + '</span>' : '') + '</div>' +
+             '<span class="rv-row-f">' + fmt(it.f) + '</span></div>';
+      });
+      h += '</div>';
+      body.innerHTML = '<div class="rv-fade">' + h + '</div>';
+      return;
+    }
+    if(L.intro){
+      h += '<div class="rv-intro rv-fade"><span class="rv-intro-ico">&#10022;</span><p class="rv-eyebrow">Before you begin</p>' +
+           '<h3 class="rv-intro-title">Remember this first</h3>' + tipsHTML(t) +
+           '<button type="button" class="rv-btn rv-btn-gold rv-wide" data-rv="intro">Start revising ' + ICON.arrow + '</button></div>';
+      body.innerHTML = h; return;
+    }
+    var pct = L.total ? Math.round(L.done * 100 / L.total) : 100;
+    if(!L.queue.length){
+      var perfect = L.again === 0;
+      h += '<div class="rv-done rv-fade"><span class="rv-done-ring">' + ICON.check + '</span>' +
+           '<h3 class="rv-done-title">' + (perfect ? 'Beautifully revised' : 'Topic revised') + '</h3>' +
+           '<p class="rv-done-sub">You went through all ' + L.total + ' cards in <b>' + esc(t.title) + '</b>' +
+           (L.again ? ' and gave ' + L.again + ' card' + (L.again > 1 ? 's' : '') + ' extra practice' : '') + '. Ready to test yourself?</p>' +
+           '<button type="button" class="rv-btn rv-btn-gold rv-wide" data-rv="exam" data-t="' + L.tid + '">Start flashcard exam ' + ICON.arrow + '</button>' +
+           '<button type="button" class="rv-btn rv-btn-line rv-wide" data-rv="again-learn">Revise again</button>' +
+           '<button type="button" class="rv-btn rv-btn-ghost rv-wide" data-rv="topics">Back to topics</button></div>';
+      body.innerHTML = h; return;
+    }
+    h += '<div class="rv-prog"><span class="rv-prog-t"><b>' + L.done + '</b> / ' + L.total + ' learned' + (L.revisit ? ' &middot; revisiting' : '') + '</span>' +
+         '<button type="button" class="rv-mini" data-rv="shuf">' + ICON.shuffle + 'Shuffle</button></div>';
+    h += '<div class="rv-bar rv-bar-lg"><span style="width:' + pct + '%"></span></div>';
+    h += '<div class="rv-deck">' + (L.queue.length > 2 ? '<span class="rv-ghost rv-ghost-2"></span>' : '') + (L.queue.length > 1 ? '<span class="rv-ghost rv-ghost-1"></span>' : '') +
+         cardHTML(L.queue[0], t) + '</div>';
+    h += '<div class="rv-actions"><button type="button" class="rv-act rv-act-no" data-rv="no">' + ICON.redo + 'Need practice</button>' +
+         '<button type="button" class="rv-act rv-act-yes" data-rv="yes">' + ICON.check + 'Got it</button></div>';
+    h += '<p class="rv-left">' + L.queue.length + ' card' + (L.queue.length > 1 ? 's' : '') + ' left in this round</p>';
+    body.innerHTML = h;
+    if(animate){
+      var c = document.getElementById('rv-card');
+      if(c) c.classList.add('rv-enter');
+    }
+  }
+
+  function markKnown(it){
+    if(!knownSet[it.key]){ knownSet[it.key] = 1; store.known = Object.keys(knownSet); save(); }
+  }
+  function decide(ok){
+    var L = S.L;
+    if(busy || !L || !L.queue.length) return;
+    var el = document.getElementById('rv-card');
+    if(!el) return;
+    busy = true;
+    var st = el.querySelector(ok ? '.rv-stamp-yes' : '.rv-stamp-no'); if(st) st.style.opacity = '1';
+    el.classList.remove('rv-dragging');
+    el.style.transition = 'transform .4s cubic-bezier(.5,0,.75,0), opacity .4s ease';
+    var w = (window.innerWidth || 400) * 0.95;
+    el.style.transform = 'translateX(' + (ok ? w : -w) + 'px) rotate(' + (ok ? 16 : -16) + 'deg)';
+    el.style.opacity = '0';
+    setTimeout(function(){
+      var it = L.queue.shift();
+      if(ok){ markKnown(it); L.done++; } else { L.queue.push(it); L.again++; }
+      busy = false;
+      if(S.view === 'learn' && S.L === L) renderLearnBody(true);
+    }, 320);
+  }
+
+  /* ---- swipe + tap-to-flip ---- */
+  var drag = null;
+  root.addEventListener('pointerdown', function(e){
+    var c = e.target.closest ? e.target.closest('#rv-card') : null;
+    if(!c || busy) return;
+    drag = { x:e.clientX, dx:0, el:c, moved:false, id:e.pointerId };
+    try{ c.setPointerCapture(e.pointerId); }catch(x){}
+    c.classList.add('rv-dragging');
+  });
+  root.addEventListener('pointermove', function(e){
+    if(!drag) return;
+    var dx = e.clientX - drag.x; drag.dx = dx;
+    if(Math.abs(dx) > 9) drag.moved = true;
+    if(!drag.moved) return;
+    drag.el.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx / 20) + 'deg)';
+    var y = drag.el.querySelector('.rv-stamp-yes'), n = drag.el.querySelector('.rv-stamp-no');
+    var a = Math.min(Math.abs(dx) / 90, 1);
+    if(y) y.style.opacity = dx > 0 ? a : 0;
+    if(n) n.style.opacity = dx < 0 ? a : 0;
+  });
+  function endDrag(e){
+    if(!drag) return;
+    var d = drag; drag = null;
+    d.el.classList.remove('rv-dragging');
+    var cancelled = e && e.type === 'pointercancel';
+    if(!d.moved){
+      if(cancelled) return;
+      d.el.classList.toggle('flipped');
+      return;
+    }
+    if(d.dx > 95){ decide(true); }
+    else if(d.dx < -95){ decide(false); }
+    else {
+      d.el.style.transform = '';
+      var y = d.el.querySelector('.rv-stamp-yes'), n = d.el.querySelector('.rv-stamp-no');
+      if(y) y.style.opacity = 0; if(n) n.style.opacity = 0;
+    }
+  }
+  root.addEventListener('pointerup', endDrag);
+  root.addEventListener('pointercancel', endDrag);
+
+  /* ================= EXAM ================= */
+  function bigrams(s){ s = s.toLowerCase(); var r = {}; for(var i = 0; i < s.length - 1; i++) r[s.substr(i, 2)] = 1; return r; }
+  function sim(a, b){
+    var A = bigrams(a), B = bigrams(b), i = 0, u = 0, k;
+    for(k in A){ u++; if(B[k]) i++; }
+    for(k in B){ if(!A[k]) u++; }
+    return u ? i / u : 0;
+  }
+  function pickOpts(correct, it, getter, filt, keyFn){
+    var seen = {}; seen[keyFn(correct)] = 1;
+    var sc = [];
+    ALLP.forEach(function(c){
+      if(c === it || c.m || c.n === it.n || normF(c.f) === normF(it.f)) return;
+      if(!filt(c)) return;
+      var s = getter(c); if(!s) return;
+      var k = keyFn(s); if(seen[k]) return;
+      seen[k] = 1;
+      sc.push({ s:s, v: sim(correct, s) + (c.tid === it.tid ? 0.25 : 0) + Math.random() * 0.3 });
+    });
+    sc.sort(function(a, b){ return b.v - a.v; });
+    return sc.slice(0, 3).map(function(o){ return o.s; });
+  }
+  var TAGS = { nf:'Name \u2192 Formula', cf:'Common name \u2192 Formula', fn:'Formula \u2192 Name', ns:'Name \u2192 Structure' };
+
+  function makeQ(it, plain){
+    var types = ['nf'];
+    if(!plain){
+      if(it.c){ types.push('cf'); types.push('cf'); }
+      if(FMAP[normF(it.f)] === 1 && it.n.indexOf(it.f) === -1) types.push('fn');
+      if(it.s && it.s !== it.f) types.push('ns');
+    }
+    var ty = types[rnd(types.length)];
+    var q = { type:ty, it:it, tag:TAGS[ty] };
+    var fnorm = function(s){ return normF(s); }, lnorm = function(s){ return s.toLowerCase(); };
+    var correct, wrong;
+    if(ty === 'nf' || ty === 'cf'){
+      correct = it.f;
+      wrong = pickOpts(correct, it, function(c){ return c.f; }, function(){ return true; }, fnorm);
+      q.big = ty === 'cf' ? it.c : it.n;
+      q.prompt = ty === 'cf' ? 'Which formula does this common name stand for?' : 'Choose the correct formula';
+      q.mathBig = false;
+    } else if(ty === 'fn'){
+      correct = it.n;
+      wrong = pickOpts(correct, it, function(c){ return c.n; }, function(){ return true; }, lnorm);
+      q.big = it.f; q.mathBig = true;
+      q.prompt = 'Name this ' + (it.k || 'compound');
+    } else {
+      correct = it.s;
+      wrong = pickOpts(correct, it, function(c){ return c.s; }, function(c){ return c.s && c.s !== c.f; }, fnorm);
+      q.big = it.n; q.mathBig = false;
+      q.prompt = 'Choose the condensed structural formula';
+    }
+    if(wrong.length < 3 && !plain){ return makeQ(it, true); }
+    q.opts = shuffle([correct].concat(wrong));
+    q.ans = q.opts.indexOf(correct);
+    q.correct = correct;
+    q.mathOpts = (ty !== 'fn');
+    return q;
+  }
+  function reopt(q){
+    var c = q.opts[q.ans];
+    var n = {}; for(var k in q) n[k] = q[k];
+    n.opts = shuffle(q.opts.slice()); n.ans = n.opts.indexOf(c);
+    return n;
+  }
+  function buildExam(pool, n){
+    return shuffle(pool.slice()).slice(0, n).map(function(it){ return makeQ(it); });
+  }
+
+  function renderExamSetup(tid){
+    var t = getTopic(tid), pool = poolOf(tid), N = pool.length;
+    var opts = [10, 20, 30].filter(function(c){ return c < N; });
+    opts.push(N);
+    var sel = S.lastCount[tid];
+    if(!sel || opts.indexOf(sel) === -1) sel = N > 10 ? 10 : N;
+    S.E = { tid:tid, count:sel, reqCount:sel, opts:opts, pool:pool };
+    var h = '';
+    h += '<div class="rv-top rv-stag" style="--i:0"><button type="button" class="rv-bk" data-rv="topics">' + ICON.back + 'Topics</button></div>';
+    h += '<div class="rv-setup rv-stag" style="--i:1"><span class="rv-hero-glow" aria-hidden="true"></span>' +
+         '<p class="rv-eyebrow">Flashcard exam</p><h2 class="rv-title" style="margin-bottom:6px">' + esc(t.title) + '</h2>' +
+         '<p class="rv-hero-sub" style="margin-bottom:18px">Four options for every question. Name to formula, formula to name, and common names where they exist. You will see your result at the end.</p>' +
+         '<p class="rv-label" style="margin-top:0">How many questions?</p><div class="rv-chips" id="rv-count-chips">' +
+         opts.map(function(c){ return '<button type="button" data-rv="cnt" data-n="' + c + '" class="rv-cc' + (c === sel ? ' on' : '') + '">' + (c === N ? 'All &middot; ' + c : c) + '</button>'; }).join('') +
+         '</div>' +
+         '<button type="button" class="rv-btn rv-btn-gold rv-wide" data-rv="start" id="rv-start-btn">Begin exam &middot; <span id="rv-start-n">' + sel + '</span> questions ' + ICON.arrow + '</button>' +
+         '<button type="button" class="rv-btn rv-btn-ghost rv-wide" data-rv="learn" data-t="' + tid + '">Revise this topic first</button></div>';
+    setView('examsetup', h);
+  }
+  function startExam(qs){
+    var tid = S.E.tid;
+    S.E = { tid:tid, reqCount:S.E.reqCount || S.E.count, qs:qs, i:0, score:0, streak:0, bestStreak:0, answered:false, picks:[], start:Date.now(), opts:S.E.opts, count:qs.length, pool:S.E.pool };
+    S.leaveArm = false;
+    renderQ();
+  }
+  function renderQ(){
+    var E = S.E, q = E.qs[E.i], n = E.qs.length;
+    var big = q.mathBig ? fmt(q.big) : esc(q.big);
+    var bl = q.mathBig ? (q.big.length > 14 ? 'm' : 'xl') : (q.big.length > 26 ? 's' : 'm');
+    var h = '';
+    h += '<div class="rv-top"><button type="button" class="rv-bk" data-rv="leave" id="rv-leave">' + ICON.back + 'Leave exam</button>' +
+         '<span class="rv-qn"><b>' + (E.i + 1) + '</b> / ' + n + '</span></div>';
+    h += '<div class="rv-bar rv-bar-lg"><span style="width:' + Math.round(E.i * 100 / n) + '%"></span></div>';
+    h += '<div class="rv-qcard rv-qin"><span class="rv-tag">' + q.tag + '</span>' +
+         '<h3 class="rv-qbig rv-qb-' + bl + (q.mathBig ? ' rv-qb-math' : '') + '">' + big + '</h3>' +
+         '<p class="rv-qprompt">' + esc(q.prompt) + '</p></div>';
+    h += '<div class="rv-opts">';
+    q.opts.forEach(function(o, i){
+      h += '<button type="button" class="rv-opt rv-stag" style="--i:' + i + '" data-rv="opt" data-k="' + i + '"><span class="rv-opt-l">' + 'ABCD'.charAt(i) + '</span>' +
+           '<span class="rv-opt-t' + ((q.mathOpts && o.length > 18) || (!q.mathOpts && o.length > 30) ? ' rv-opt-sm' : '') + '">' + fmt(o) + '</span>' +
+           '<span class="rv-opt-m"></span></button>';
+    });
+    h += '</div><div class="rv-fb" id="rv-fb"></div>';
+    h += '<button type="button" class="rv-btn rv-btn-gold rv-wide rv-next" id="rv-next" data-rv="next" style="display:none">' + (E.i + 1 === n ? 'See my result' : 'Next question') + ' ' + ICON.arrow + '</button>';
+    setView('exam', h);
+    E.answered = false;
+  }
+  function answer(k){
+    var E = S.E; if(!E || E.answered) return;
+    var q = E.qs[E.i]; E.answered = true;
+    var ok = (k === q.ans);
+    E.picks.push({ q:q, k:k, ok:ok });
+    if(ok){ E.score++; E.streak++; if(E.streak > E.bestStreak) E.bestStreak = E.streak; } else { E.streak = 0; }
+    var btns = root.querySelectorAll('.rv-opt');
+    Array.prototype.forEach.call(btns, function(b, i){
+      b.disabled = true;
+      var m = b.querySelector('.rv-opt-m');
+      if(i === q.ans){ b.classList.add('right'); if(m) m.innerHTML = ICON.check; }
+      else if(i === k){ b.classList.add('wrong'); if(m) m.innerHTML = ICON.cross; }
+      else b.classList.add('dim');
+    });
+    var it = q.it;
+    var fb = document.getElementById('rv-fb');
+    if(fb){
+      var note = it.t ? '<span class="rv-fb-n">' + fmt(it.t) + '</span>' : (it.c && q.type !== 'cf' ? '<span class="rv-fb-n">Common name: ' + esc(it.c) + '</span>' : '');
+      var line = (q.type === 'cf') ? esc(it.c) + ' = ' + fmt(it.n) + ' &rarr; ' + fmt(it.f)
+               : (q.type === 'ns') ? esc(it.n) + ' &rarr; ' + fmt(it.s)
+               : esc(it.n) + ' &rarr; ' + fmt(it.f);
+      fb.className = 'rv-fb show ' + (ok ? 'ok' : 'bad');
+      fb.innerHTML = '<span class="rv-fb-h">' + (ok ? ICON.check + 'Correct' : ICON.cross + 'Not quite') + '</span>' +
+                     '<span class="rv-fb-l">' + line + '</span>' + note;
+    }
+    var nx = document.getElementById('rv-next');
+    if(nx){ nx.style.display = 'flex'; nx.classList.add('rv-pop'); }
+    if(!ok && fb){ var qc = root.querySelector('.rv-qcard'); if(qc){ qc.classList.remove('rv-qin'); void qc.offsetWidth; qc.classList.add('rv-shake'); } }
+    else { var qc2 = root.querySelector('.rv-qcard'); if(qc2){ qc2.classList.remove('rv-qin'); void qc2.offsetWidth; qc2.classList.add('rv-glow'); } }
+  }
+  function nextQ(){
+    var E = S.E; if(!E || !E.answered) return;
+    if(E.i + 1 >= E.qs.length){ renderResult(); return; }
+    E.i++; renderQ();
+  }
+
+  /* ================= RESULT ================= */
+  function fmtTime(ms){
+    var s = Math.max(1, Math.round(ms / 1000)), m = Math.floor(s / 60), r = s % 60;
+    return m + ':' + (r < 10 ? '0' : '') + r;
+  }
+  function renderResult(){
+    var E = S.E, n = E.qs.length, sc = E.score, pct = Math.round(sc * 100 / n);
+    var prev = store.best[E.tid];
+    var isBest = (prev === undefined) || pct > prev;
+    if(isBest) store.best[E.tid] = pct;
+    store.tries[E.tid] = (store.tries[E.tid] || 0) + 1;
+    save();
+    E.pct = pct;
+    var elapsed = Date.now() - E.start;
+    var verdict, sub;
+    if(pct === 100){ verdict = 'Flawless'; sub = 'Every single answer was right. You are exam ready.'; }
+    else if(pct >= 90){ verdict = 'Outstanding'; sub = 'Almost perfect. Just a polish on the few you missed.'; }
+    else if(pct >= 75){ verdict = 'Strong work'; sub = 'You know most of it well. Review the misses and go again.'; }
+    else if(pct >= 50){ verdict = 'Getting there'; sub = 'A solid base. Revise the missed cards and try again.'; }
+    else { verdict = 'Keep revising'; sub = 'Every expert started here. Revise the topic, then retake the exam.'; }
+    var missed = E.picks.filter(function(p){ return !p.ok; });
+    var t = getTopic(E.tid);
+    var C = 2 * Math.PI * 62;
+    var h = '';
+    h += '<div class="rv-res"><span class="rv-hero-glow" aria-hidden="true"></span><div class="rv-sparks" id="rv-sparks"></div>' +
+         '<p class="rv-eyebrow">Exam result &middot; ' + esc(t.title) + '</p>' +
+         '<div class="rv-ring"><svg viewBox="0 0 150 150"><circle class="rv-ring-bg" cx="75" cy="75" r="62"/>' +
+         '<circle class="rv-ring-fg" id="rv-ring-fg" cx="75" cy="75" r="62" stroke-dasharray="' + C.toFixed(2) + '" stroke-dashoffset="' + C.toFixed(2) + '"/></svg>' +
+         '<div class="rv-ring-c"><span class="rv-ring-n" id="rv-ring-n">0</span><span class="rv-ring-p">%</span></div></div>' +
+         '<h2 class="rv-verdict">' + verdict + '</h2><p class="rv-hero-sub" style="margin:0 auto 16px">' + sub + '</p>' +
+         '<div class="rv-stats"><div><b>' + sc + ' / ' + n + '</b><span>Correct</span></div><div><b>' + (n - sc) + '</b><span>Missed</span></div>' +
+         '<div><b>' + E.bestStreak + '</b><span>Best streak</span></div><div><b>' + fmtTime(elapsed) + '</b><span>Time</span></div></div>' +
+         '<p class="rv-bestline">' + (prev === undefined ? 'First attempt saved' : (pct > prev ? 'New personal best &middot; was ' + prev + '%' : 'Personal best &middot; ' + prev + '%')) + '</p></div>';
+    h += '<div class="rv-res-btns">' +
+         '<button type="button" class="rv-btn rv-btn-gold rv-wide" data-rv="retry">' + ICON.redo + 'Try again</button>' +
+         (missed.length ? '<button type="button" class="rv-btn rv-btn-line rv-wide" data-rv="retrymiss">Retry only the ' + missed.length + ' missed</button>' : '') +
+         '<button type="button" class="rv-btn rv-btn-line rv-wide" data-rv="learn" data-t="' + E.tid + '">Revise this topic</button>' +
+         '<button type="button" class="rv-btn rv-btn-ghost rv-wide" data-rv="topics">All topics</button></div>';
+    if(missed.length){
+      h += '<p class="rv-label">Review your misses</p>';
+      missed.forEach(function(p, i){
+        var q = p.q, it = q.it;
+        var big = q.mathBig ? fmt(q.big) : esc(q.big);
+        h += '<div class="rv-miss rv-stag" style="--i:' + Math.min(i, 10) + '"><span class="rv-tag">' + q.tag + '</span>' +
+             '<p class="rv-miss-q">' + big + '</p>' +
+             '<p class="rv-miss-a ok">' + ICON.check + '<span>' + fmt(q.correct) + '</span></p>' +
+             '<p class="rv-miss-a bad">' + ICON.cross + '<span>' + fmt(q.opts[p.k]) + '</span></p>' +
+             (it.t ? '<p class="rv-miss-n">' + fmt(it.t) + '</p>' : '') + '</div>';
+      });
+    } else {
+      h += '<p class="rv-note">No mistakes to review. Lovely.</p>';
+    }
+    setView('result', h);
+    // animate ring + counter
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      var fg = document.getElementById('rv-ring-fg');
+      if(fg){ fg.style.transition = 'stroke-dashoffset 1.3s cubic-bezier(.22,1,.36,1)'; fg.style.strokeDashoffset = (C * (1 - pct / 100)).toFixed(2); }
+      var numEl = document.getElementById('rv-ring-n');
+      var t0 = null, dur = 1200;
+      function step(ts){
+        if(t0 === null) t0 = ts;
+        var p = Math.min((ts - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+        if(numEl) numEl.textContent = Math.round(pct * e);
+        if(p < 1 && S.view === 'result') requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }); });
+    if(pct >= 75){
+      var sp = document.getElementById('rv-sparks');
+      if(sp){
+        var s = '';
+        for(var i = 0; i < 18; i++){
+          var a = (i / 18) * Math.PI * 2, d = 90 + rnd(70);
+          s += '<span style="--x:' + Math.round(Math.cos(a) * d) + 'px;--y:' + Math.round(Math.sin(a) * d) + 'px;--d:' + (rnd(250)) + 'ms"></span>';
+        }
+        sp.innerHTML = s;
+      }
+    }
+  }
+
+  /* ================= CLICK ROUTER ================= */
+  root.addEventListener('click', function(e){
+    var el = e.target.closest ? e.target.closest('[data-rv]') : null;
+    if(!el || el.disabled) return;
+    var a = el.getAttribute('data-rv');
+    switch(a){
+      case 'subject': renderTopics(); break;
+      case 'soon':
+        var nm = el.getAttribute('data-s');
+        el.classList.remove('rv-nudge'); void el.offsetWidth; el.classList.add('rv-nudge');
+        toast(nm + ' revision is not ready yet. It is coming soon \u2014 Chemistry is ready now.');
+        break;
+      case 'home': renderHome(); break;
+      case 'topics': S.leaveArm = false; renderTopics(); break;
+      case 'learn': newLearn(el.getAttribute('data-t'), false); renderLearn(); break;
+      case 'again-learn': newLearn(S.L.tid, true); S.L.intro = false; renderLearn(); break;
+      case 'intro': S.L.intro = false; renderLearnBody(false); break;
+      case 'seg':
+        var m = el.getAttribute('data-m');
+        if(S.L.mode !== m){
+          S.L.mode = m;
+          var seg = document.getElementById('rv-seg');
+          if(seg){ seg.setAttribute('data-m', m); Array.prototype.forEach.call(seg.querySelectorAll('button'), function(b){ b.classList.toggle('on', b.getAttribute('data-m') === m); }); }
+          renderLearnBody(false);
+        }
+        break;
+      case 'shuf': if(!busy){ shuffle(S.L.queue); renderLearnBody(true); } break;
+      case 'yes': decide(true); break;
+      case 'no': decide(false); break;
+      case 'exam': renderExamSetup(el.getAttribute('data-t')); break;
+      case 'cnt':
+        var c = parseInt(el.getAttribute('data-n'), 10);
+        S.E.count = c; S.E.reqCount = c; S.lastCount[S.E.tid] = c;
+        Array.prototype.forEach.call(root.querySelectorAll('.rv-cc'), function(b){ b.classList.toggle('on', b === el); });
+        var sn = document.getElementById('rv-start-n'); if(sn) sn.textContent = c;
+        break;
+      case 'start': startExam(buildExam(S.E.pool, S.E.count)); break;
+      case 'opt': answer(parseInt(el.getAttribute('data-k'), 10)); break;
+      case 'next': nextQ(); break;
+      case 'leave':
+        if(S.leaveArm){ S.leaveArm = false; renderTopics(); }
+        else {
+          S.leaveArm = true;
+          el.classList.add('arm'); el.innerHTML = ICON.back + 'Tap again to leave';
+          setTimeout(function(){ S.leaveArm = false; var b = document.getElementById('rv-leave'); if(b){ b.classList.remove('arm'); b.innerHTML = ICON.back + 'Leave exam'; } }, 2600);
+        }
+        break;
+      case 'retry':
+        startExam(buildExam(S.E.pool, S.E.reqCount));
+        break;
+      case 'retrymiss':
+        var ms = S.E.picks.filter(function(p){ return !p.ok; }).map(function(p){ return reopt(p.q); });
+        startExam(shuffle(ms));
+        break;
+      case 'reset':
+        if(S.resetArm){
+          S.resetArm = false; knownSet = {}; store = { known:[], best:{}, tries:{} }; save(); renderTopics(); toast('Revision progress has been reset.');
+        } else {
+          S.resetArm = true; el.textContent = 'Tap again to confirm reset'; el.classList.add('arm');
+          setTimeout(function(){ S.resetArm = false; var b = document.getElementById('rv-reset-btn'); if(b){ b.textContent = 'Reset revision progress'; b.classList.remove('arm'); } }, 3000);
+        }
+        break;
+    }
+  });
+
+  window.rvInit = function(){ if(!S.view) renderHome(); };
+  window.__rv = { TOPICS:TOPICS, ALLP:ALLP, FMAP:FMAP, buildExam:buildExam, poolOf:poolOf, makeQ:makeQ, fmt:fmt, normF:normF };
 })();
 </script>
 </body>
