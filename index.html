@@ -7228,6 +7228,14 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
     <div class="menu-sep" id="tracklec-menu-sep" data-apk-promo></div>
+    <button class="menu-row" id="transfer-data-btn" type="button">
+      <span class="menu-row-label">
+        <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h12l-3-3M17 17H5l3 3"></path></svg>
+        <span>Transfer Data</span>
+      </span>
+      <span class="menu-row-arrow">&rsaquo;</span>
+    </button>
+    <div class="menu-sep"></div>
     <button class="menu-row menu-row-games" id="open-games-btn" type="button">
       <span class="menu-row-label">
         <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="11" rx="5"></rect><path d="M7.5 12h3M9 10.5v3"></path><circle cx="15" cy="11" r="1"></circle><circle cx="17.5" cy="13.5" r="1"></circle></svg>
@@ -27268,5 +27276,122 @@ document.addEventListener("DOMContentLoaded",function(){
   window.__rv = { TOPICS:TOPICS, ALLP:ALLP, FMAP:FMAP, buildExam:buildExam, poolOf:poolOf, makeQ:makeQ, fmt:fmt, normF:normF };
 })();
 </script>
+<style id="tl-transfer-css">
+#tl-xfer{display:none}
+#tl-xfer .tlx-box{max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px}
+#tl-xfer .tlx-box .cm-icon{background:rgba(var(--gold-rgb),0.14);color:var(--gold)}
+#tl-xfer .cm-message{margin-bottom:14px}
+#tl-xfer .tlx-label{font-family:'Playfair Display','Lora',serif;font-weight:700;font-size:15px;color:var(--ink);margin:16px 0 4px;letter-spacing:.2px;display:flex;align-items:center;gap:8px}
+#tl-xfer .tlx-label::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--gold)}
+#tl-xfer .tlx-hint{font-size:13px;line-height:1.5;color:var(--ink-soft);margin:0 0 10px}
+#tl-xfer .tlx-actions{display:flex;gap:10px;margin:0 0 10px}
+#tl-xfer .tlx-actions .cm-btn{flex:1 1 0;text-align:center;font-family:'Lora',serif;padding:11px 12px}
+#tl-xfer .tlx-code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.45;min-height:76px;max-height:120px;margin:0 0 4px;resize:none;word-break:break-all}
+#tl-xfer .tlx-status{min-height:18px;font-size:13px;line-height:1.4;color:var(--ink-soft);margin:6px 0 12px}
+#tl-xfer .tlx-status.ok{color:var(--success)}
+#tl-xfer .tlx-status.err{color:var(--danger)}
+#tl-xfer .tlx-sep{height:1px;background:rgba(var(--ink-rgb),0.1);margin:16px 0 0}
+#tl-xfer .tlx-close{width:100%;text-align:center;font-family:'Lora',serif}
+#tl-xfer .tlx-confirm{background:var(--danger)!important;color:var(--paper)!important;box-shadow:0 8px 18px -8px rgba(var(--danger-rgb),.55)}
+</style>
+<div class="cm-overlay" id="tl-xfer" role="dialog" aria-modal="true" aria-labelledby="tlx-title">
+  <div class="cm-box tlx-box">
+    <div class="cm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h12l-3-3M17 17H5l3 3"></path></svg></div>
+    <p class="cm-title" id="tlx-title">Transfer Data</p>
+    <p class="cm-message">Move everything saved on this device (accounts, attendance, homework, syllabus, notes) to another device or to the TrackLec app.</p>
+    <p class="tlx-label">Send from this device</p>
+    <div class="tlx-actions">
+      <button type="button" class="cm-btn cm-btn-gold" id="tlx-make">Create transfer code</button>
+      <button type="button" class="cm-btn cm-btn-cancel" id="tlx-save">Save as file</button>
+    </div>
+    <textarea class="cm-input tlx-code" id="tlx-out" readonly placeholder="Your transfer code appears here"></textarea>
+    <p class="tlx-label">Receive on this device</p>
+    <p class="tlx-hint">Paste a code from the other device, then tap Import.</p>
+    <textarea class="cm-input tlx-code" id="tlx-in" placeholder="Paste transfer code here"></textarea>
+    <div class="tlx-actions">
+      <button type="button" class="cm-btn cm-btn-cancel" id="tlx-file">Open file…</button>
+      <button type="button" class="cm-btn cm-btn-gold" id="tlx-import">Import</button>
+    </div>
+    <div class="tlx-status" id="tlx-msg" aria-live="polite"></div>
+    <button type="button" class="cm-btn cm-btn-cancel tlx-close" id="tlx-close">Close</button>
+  </div>
+</div>
+<script id="tl-transfer-js">
+(function(){
+  var DB='cbsh-tasks-db', armed=false, armTimer=null;
+  function $(id){return document.getElementById(id);}
+  function say(t,c){var m=$('tlx-msg');if(!m)return;m.textContent=t||'';m.className='tlx-status'+(c?' '+c:'');}
+  function b64(u8){var s='',i,c=0x8000;for(i=0;i<u8.length;i+=c)s+=String.fromCharCode.apply(null,u8.subarray(i,i+c));return btoa(s);}
+  function unb64(b){var s=atob(b),u=new Uint8Array(s.length),i;for(i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u;}
+  async function gz(u8,S){var st=new S('gzip'),w=st.writable.getWriter();w.write(u8);w.close();return new Uint8Array(await new Response(st.readable).arrayBuffer());}
+  function snapshot(){var d={},i,k;for(i=0;i<localStorage.length;i++){k=localStorage.key(i);d[k]=localStorage.getItem(k);}return d;}
+  async function buildCode(){
+    var raw=new TextEncoder().encode(JSON.stringify({app:'tracklec-transfer',v:1,ts:Date.now(),data:snapshot()}));
+    if(window.CompressionStream){try{return 'TL1:'+b64(await gz(raw,CompressionStream));}catch(e){}}
+    return 'TL0:'+b64(raw);
+  }
+  async function readCode(text){
+    text=String(text||'').replace(/\s+/g,'');
+    var tag=text.slice(0,4),u8;
+    if(tag!=='TL1:'&&tag!=='TL0:')throw new Error('format');
+    u8=unb64(text.slice(4));
+    if(tag==='TL1:'){if(!window.DecompressionStream)throw new Error('decompress');u8=await gz(u8,DecompressionStream);}
+    var o=JSON.parse(new TextDecoder().decode(u8));
+    if(!o||o.app!=='tracklec-transfer'||!o.data||typeof o.data!=='object')throw new Error('format');
+    return o;
+  }
+  function closeMenuNow(){var dd=$('menu-dropdown'),mt=$('menu-toggle');if(dd)dd.classList.remove('open');if(mt){mt.classList.remove('menu-open');mt.setAttribute('aria-expanded','false');}}
+  function openModal(){closeMenuNow();say('');var o=$('tl-xfer');o.classList.remove('cm-closing');o.style.display='flex';}
+  function closeModal(){var o=$('tl-xfer');disarm();o.classList.add('cm-closing');setTimeout(function(){o.style.display='none';o.classList.remove('cm-closing');},190);}
+  function disarm(){armed=false;clearTimeout(armTimer);var b=$('tlx-import');if(b){b.textContent='Import';b.classList.remove('tlx-confirm');}}
+  async function copyText(t){
+    try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(t);return true;}}catch(e){}
+    try{var o=$('tlx-out');o.focus();o.select();return document.execCommand('copy');}catch(e){return false;}
+  }
+  async function make(){
+    say('Preparing…');
+    try{
+      var code=await buildCode();$('tlx-out').value=code;
+      var ok=await copyText(code);
+      say(ok?'Code copied. Paste it into the other device.':'Code ready. Tap and hold the box to copy it.','ok');
+      return code;
+    }catch(e){say('Could not create the code.','err');}
+  }
+  async function save(){
+    var code=$('tlx-out').value||await make();if(!code)return;
+    var a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(code);a.download='tracklec-data.txt';
+    document.body.appendChild(a);a.click();a.remove();
+  }
+  async function doImport(){
+    var txt=$('tlx-in').value;
+    if(!txt.trim()){say('Paste a transfer code first.','err');return;}
+    var o;
+    try{o=await readCode(txt);}catch(e){say(e&&e.message==='decompress'?'This device cannot read compressed codes. Update the app or browser.':'That does not look like a valid transfer code.','err');disarm();return;}
+    if(!armed){armed=true;var b=$('tlx-import');b.textContent='Tap again to replace data';b.classList.add('tlx-confirm');say('This replaces matching data on this device.');armTimer=setTimeout(function(){disarm();say('');},6000);return;}
+    disarm();
+    var n=0;Object.keys(o.data).forEach(function(k){if(typeof o.data[k]==='string'){try{localStorage.setItem(k,o.data[k]);n++;}catch(e){}}});
+    try{indexedDB.deleteDatabase(DB);}catch(e){}
+    try{Storage.prototype.setItem=function(){};Storage.prototype.removeItem=function(){};Storage.prototype.clear=function(){};}catch(e){}
+    say('Imported '+n+' items. Reloading…','ok');
+    setTimeout(function(){location.reload();},700);
+  }
+  function init(){
+    var btn=$('transfer-data-btn');if(!btn||!$('tl-xfer'))return;
+    btn.addEventListener('click',openModal);
+    $('tlx-make').addEventListener('click',make);
+    $('tlx-save').addEventListener('click',save);
+    $('tlx-import').addEventListener('click',doImport);
+    $('tlx-close').addEventListener('click',closeModal);
+    $('tl-xfer').addEventListener('click',function(e){if(e.target===this)closeModal();});
+    $('tlx-in').addEventListener('input',disarm);
+    var fi=$('tlx-filein'),fb=$('tlx-file');
+    if(!fi){fi=document.createElement('input');fi.type='file';fi.id='tlx-filein';fi.accept='.txt,text/plain';fi.hidden=true;document.body.appendChild(fi);}
+    if(window.AndroidApp){fb.style.display='none';}
+    else{fb.addEventListener('click',function(){fi.click();});fi.addEventListener('change',async function(){var f=fi.files&&fi.files[0];if(!f)return;try{$('tlx-in').value=await f.text();disarm();say('File loaded. Tap Import.');}catch(e){say('Could not read that file.','err');}fi.value='';});}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
 </body>
 </html>
