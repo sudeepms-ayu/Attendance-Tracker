@@ -4902,6 +4902,30 @@
   .profile-contact-icon svg{ width:19px; height:19px; }
   .profile-contact-arrow{ color: var(--ink-soft); font-size:17px; line-height:1; flex-shrink:0; }
 
+  /* ---- Android app (APK) promo banner ---- */
+  .apk-promo{
+    display:flex; align-items:center; gap:12px;
+    margin: 0 0 16px 0; padding: 12px 14px;
+    border:1px solid rgba(var(--gold-rgb),0.4); border-radius:14px;
+    background: rgba(var(--gold-rgb),0.08);
+    color: var(--ink); text-decoration:none;
+    font-family:'Lora', serif;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.12s ease;
+  }
+  .apk-promo:hover{ border-color: var(--gold); background: rgba(var(--gold-rgb),0.13); }
+  .apk-promo:active{ transform: scale(0.985); }
+  .apk-promo:focus-visible{ outline:none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--gold-rgb),0.22); }
+  .apk-promo-ic{ flex:none; width:38px; height:38px; border-radius:11px; display:grid; place-items:center; color: var(--gold); background: rgba(var(--gold-rgb),0.14); }
+  .apk-promo-ic svg{ width:20px; height:20px; }
+  .apk-promo-tx{ display:flex; flex-direction:column; gap:1px; min-width:0; flex:1; }
+  .apk-promo-tx b{ font-size:13.5px; font-weight:700; line-height:1.3; }
+  .apk-promo-tx span{ font-size:12px; line-height:1.45; color: var(--ink-soft); }
+  .apk-promo-go{ flex:none; font-size:12.5px; font-weight:700; color: var(--gold); white-space:nowrap; }
+  .apk-promo[hidden], .menu-row[hidden], .menu-sep[hidden]{ display:none !important; }
+  .menu-row .tracklec-menu-logo{ width:22px; height:22px; flex-shrink:0; border-radius:6px; object-fit:cover; display:block; }
+  .apk-promo-home{ margin: 0 auto 18px; max-width: 520px; }
+
   .profile-install-row{
     width:100%;
     font-family:'Lora', serif;
@@ -7196,6 +7220,14 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
     <div class="menu-sep"></div>
+    <button class="menu-row" id="open-tracklec-btn" type="button" data-apk-promo>
+      <span class="menu-row-label">
+        <img class="tracklec-menu-logo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwMDAgQDAwMEBAQFBgoGBgUFBgwICQcKDgwPDg4MDQ0PERYTDxAVEQ0NExoTFRcYGRkZDxIbHRsYHRYYGRj/2wBDAQQEBAYFBgsGBgsYEA0QGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBj/wAARCAFAAUADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD4looornNAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoopmOTQA+im9KWgBcGigE4pc+1K4CUYPpTgcHFKT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3f8ABKhonJ/1cwhS5popa2MwY0ynGm00JhRRRTEFFFFABTe9Opn8RoAeOaUHnFNzSj9akZID2o6jFM5zmlBoAeD6UmcUnPWnYzSGL9aM9qT2o70gFOe1MOadScZpgNJ716N8OviveeE400bVvNu9Gz8m3mS1J67PVfVfy9D503NRsPpWNfD08RDkqK6NKVadKXPB2Z9jad4hs9XsIr/Tb2K5tZB8ssTZH0PofY81oR6ltP3uK+NdJ13WNAvftWj6hPaSH73lt8r+zKeG/EV6PpHxuuUCx69pIl7GeyfaT7lG4/IivmsRkdSDvS95fie5RzWnPSpo/wAD6Lj1XJ5bitC31vAwr814jZ/FnwhcoS2qSWrf3bmF1/UAj9avw/EXw2SGj8Rad+MwH868+WAqreD+5nYsTSe0l952/wAZAfEv7P3iWziy09pFFqKj1EMql/8AxxnP4V8VqcHA5xX1SnxI8PQyqx1vSZo2BSSGS4UpKjAqyMM8gqSD7GvGPEXg/wAP2eoT3fhDxJ4bvtNcl47K9vEjuoAf4DuIWQDoGU5PcA17uS1HQg6NRNa3R5OZU1UkqkHfucKmTUoU9asx6iIjtOl6YxBxzET/AOzVZj1lAedE0g/WBv8A4qvdcn2PJSXcoKD6U4A56VqLrsSt/wAi9oZ+tu3/AMXUq+IYgP8AkWfDx+tq/wD8XUuUv5SuWPcxiD6Uc56Gtv8A4SSL/oV/Dn/gI/8A8cp3/CTRAf8AIqeGv/AR/wD45Rzz/lHyx7mFtPpSgMe1bn/CSQnp4V8N/wDgI/8A8co/4SWLp/wi3hv/AMBH/wDjlLnn/KHLHuYmGz0rQ0rRtT1qdo9Ms5J1TmWUfLHEPV3OFUe5Iq2PFUkQP2fw74bgf++NPDkfTezD9Kpaj4g1rV4Fg1HUZpYFOVtxhIl+kagKPypN1Hskv67f8ELQW7v/AF/XQ1pb/TvDlq9tod0t5qsimObU48iOBSMMlvnkkjIMnHHC9c1zIFA9aUVcIKPmxSlzDaWk/ipWHHFWQIeeabTj0xTaaEFFFFMAooooAKaetOooAYDTh1paKAFHIoWkopWAfmlBweajoosO48+1Lk1HRRYLkhI/GgGo6KVguSHpmm4yKbk0U7BcaVqMr7VNRgUWEVytJsOM1ZwPSjA9KYFXZmnhcVPgelGB6UARBakUUtFKwBjmnCm0UWAdR0ptFFh3H0UyiiwXH45pSPao8n1oyfWiwXH0mabRRYLjxzS1Hk+tFFhDjTaKKYBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQB/9k=" alt="" width="22" height="22" decoding="async">
+        <span>TrackLec.</span>
+      </span>
+      <span class="menu-row-arrow">&rsaquo;</span>
+    </button>
+    <div class="menu-sep" id="tracklec-menu-sep" data-apk-promo></div>
     <button class="menu-row menu-row-games" id="open-games-btn" type="button">
       <span class="menu-row-label">
         <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="11" rx="5"></rect><path d="M7.5 12h3M9 10.5v3"></path><circle cx="15" cy="11" r="1"></circle><circle cx="17.5" cy="13.5" r="1"></circle></svg>
@@ -7236,6 +7268,12 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
       </a>
     </div>
   </section>
+
+  <a class="apk-promo apk-promo-home" href="install.html" data-apk-promo>
+    <span class="apk-promo-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect><path d="M12 7v6m0 0-2.5-2.5M12 13l2.5-2.5"></path></svg></span>
+    <span class="apk-promo-tx"><b>Get the TrackLec. Android app</b><span>Install it to get instant updates, new features and fixes the moment they're ready.</span></span>
+    <span class="apk-promo-go">Install &rsaquo;</span>
+  </a>
 
   <div class="notify-prompt hm-notify-shortcut" data-notify-prompt data-default="" style="display:none;">
     <button type="button" class="np-pill notify-prompt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span>Turn on notifications</span></button>
@@ -7427,6 +7465,12 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
     <p class="hw-notify-status" id="hw-notify-status"></p>
   </div>
 
+  <a class="apk-promo" href="install.html" data-apk-promo>
+    <span class="apk-promo-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect><path d="M12 7v6m0 0-2.5-2.5M12 13l2.5-2.5"></path></svg></span>
+    <span class="apk-promo-tx"><b>Get instant homework updates</b><span>Install the TrackLec. Android app to see new homework and due-date changes instantly, even after a restart.</span></span>
+    <span class="apk-promo-go">Install &rsaquo;</span>
+  </a>
+
   <div id="hw-picker">
     <p class="broadcast-hint">Select your section — this is saved so you won't need to pick it again.</p>
     <div class="rc-section-pick" id="hw-section-pick"></div>
@@ -7488,6 +7532,12 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
     <button type="button" class="hw-notify-btn notify-prompt-btn">&#128276; Notify me on due dates</button>
     <p class="hw-notify-status notify-prompt-status"></p>
   </div>
+
+  <a class="apk-promo" href="install.html" data-apk-promo>
+    <span class="apk-promo-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect><path d="M12 7v6m0 0-2.5-2.5M12 13l2.5-2.5"></path></svg></span>
+    <span class="apk-promo-tx"><b>Get instant exam updates</b><span>Install the TrackLec. Android app for instant updates on exam dates, countdowns and changes.</span></span>
+    <span class="apk-promo-go">Install &rsaquo;</span>
+  </a>
 
   <div id="exam-picker">
     <p class="broadcast-hint">Select your section — this is saved so you won't need to pick it again.</p>
@@ -8462,6 +8512,11 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       <p class="nv-sub" id="nv-sub"></p>
     </div>
   </div>
+  <a class="apk-promo" href="install.html" data-apk-promo>
+    <span class="apk-promo-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect><path d="M12 7v6m0 0-2.5-2.5M12 13l2.5-2.5"></path></svg></span>
+    <span class="apk-promo-tx"><b>Get notifications instantly</b><span>Install the TrackLec. Android app so updates reach you the moment they happen, not when you next open the website.</span></span>
+    <span class="apk-promo-go">Install &rsaquo;</span>
+  </a>
   <div class="nv-cards" id="nv-cards" aria-label="Quick overview">
     <div class="nv-track" id="nv-track"></div>
     <div class="nv-dots" id="nv-dots" aria-hidden="true"></div>
@@ -9664,6 +9719,19 @@ window.contactChoiceModal = function(opts){
   }
 })();
 
+// ---- Android app promo: hide when already installed or on iOS ----
+(function initApkPromo(){
+  try{
+    var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+    var ios = /iphone|ipad|ipod/i.test(window.navigator.userAgent || '');
+    if(standalone || ios){
+      [].slice.call(document.querySelectorAll('[data-apk-promo]')).forEach(function(el){ el.hidden = true; });
+    }
+    var tl = document.getElementById('open-tracklec-btn');
+    if(tl) tl.addEventListener('click', function(){ window.location.href = 'install.html'; });
+  }catch(e){}
+})();
+
 // ---- Install App (Add to Home Screen) ----
 (function initInstallApp(){
   const group = document.getElementById('profile-install-group');
@@ -9683,6 +9751,7 @@ window.contactChoiceModal = function(opts){
   const isIOSSafari = isIOS && /safari/i.test(ua) && !/crios|fxios|edgios|opios/i.test(ua);
 
   let deferredPrompt = null;
+  const isAndroid = /android/i.test(ua);
 
   function showRow(){ group.style.display = ''; }
   function hideRow(){ group.style.display = 'none'; }
@@ -9701,6 +9770,12 @@ window.contactChoiceModal = function(opts){
     hideRow();
   });
 
+  if(isAndroid){
+    // Android: offer the TrackLec. APK install page
+    if(sub) sub.textContent = 'Get the Android app: offline use and reliable reminders';
+    showRow();
+  }
+
   if(isIOSSafari){
     // iOS Safari never fires beforeinstallprompt, so this is the only
     // path to installing the app there — walk the user through it.
@@ -9709,6 +9784,7 @@ window.contactChoiceModal = function(opts){
   }
 
   btn.addEventListener('click', async () => {
+    if(isAndroid){ window.location.href = 'install.html'; return; }
     if(deferredPrompt){
       hideTip();
       btn.disabled = true;
