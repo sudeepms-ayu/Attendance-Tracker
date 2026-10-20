@@ -27318,7 +27318,7 @@ document.addEventListener("DOMContentLoaded",function(){
     </div>
     <div class="tlx-status" id="tlx-msg" aria-live="polite"></div>
     <button type="button" class="cm-btn cm-btn-cancel tlx-close" id="tlx-close">Close</button>
-    <p class="tlx-hint" style="text-align:center;margin:12px 0 0;opacity:.55;font-size:11px">Transfer v3</p>
+    <p class="tlx-hint" style="text-align:center;margin:12px 0 0;opacity:.55;font-size:11px">Transfer v4</p>
   </div>
 </div>
 <script id="tl-transfer-js">
@@ -27425,7 +27425,7 @@ document.addEventListener("DOMContentLoaded",function(){
     return out.subarray(0,op);
   }
   /* Fast pure-JS gzip decoder (table based) - only used when the browser has no DecompressionStream */
-  function gunzipJS(u8){
+  async function gunzipJS(u8,prog){
     if(u8[0]!==0x1f||u8[1]!==0x8b)throw new Error('inflate');
     var flg=u8[3],p=10;
     if(flg&4){p+=2+(u8[p]|(u8[p+1]<<8));}
@@ -27453,7 +27453,7 @@ document.addEventListener("DOMContentLoaded",function(){
     }
     function dec(t){need(t.max);var idx=bb&((1<<t.max)-1),l=t.tlen[idx];if(!l)throw new Error('inflate');bb>>>=l;bc-=l;return t.tsym[idx];}
     var fl,fd;(function(){var l=new Uint8Array(288),j;for(j=0;j<144;j++)l[j]=8;for(;j<256;j++)l[j]=9;for(;j<280;j++)l[j]=7;for(;j<288;j++)l[j]=8;fl=build(l,288);var d=new Uint8Array(30);for(j=0;j<30;j++)d[j]=5;fd=build(d,30);})();
-    var last;
+    var last,ycnt=0,yt=Date.now();
     do{
       last=bits(1);var type=bits(2);
       if(type===0){bb=0;bc=0;var len=u8[p]|(u8[p+1]<<8);p+=4;for(i=0;i<len;i++)out[op++]=u8[p++];}
@@ -27470,6 +27470,7 @@ document.addEventListener("DOMContentLoaded",function(){
           tl=build(lens.subarray(0,hl),hl);td=build(lens.subarray(hl,hl+hd),hd);
         }else throw new Error('inflate');
         for(;;){
+          if(++ycnt>=20000){ycnt=0;if(Date.now()-yt>20){if(prog)prog(Math.floor(op*100/(isize||1)));await tick(0);yt=Date.now();}}
           var sy=dec(tl);
           if(sy<256)out[op++]=sy;
           else if(sy===256)break;
@@ -27480,12 +27481,27 @@ document.addEventListener("DOMContentLoaded",function(){
     }while(!last);
     return out;
   }
-  async function readCode(text){
+  async function readCode(text,prog){
+    prog=prog||function(){};
+    prog('Reading code… step 1 of 3 (decoding)');
+    await tick(0);
     text=String(text||'').replace(/\s+/g,'');
     var tag=text.slice(0,4),u8;
     if(tag!=='TL1:'&&tag!=='TL0:')throw new Error('format');
     u8=await unb64(text.slice(4));
-    if(tag==='TL1:'){var done=false;if(window.DecompressionStream){try{u8=await gz(u8,DecompressionStream);done=true;}catch(e){}}if(!done){try{u8=gunzipJS(u8);}catch(e){throw new Error('decompress');}}}
+    if(tag==='TL1:'){
+      prog('Reading code… step 2 of 3 (unpacking)');
+      var done=false;
+      if(window.DecompressionStream){
+        try{
+          u8=await Promise.race([gz(u8.slice(),DecompressionStream),new Promise(function(_,rej){setTimeout(function(){rej(new Error('slow'));},4000);})]);
+          done=true;
+        }catch(e){}
+      }
+      if(!done){try{u8=await gunzipJS(u8,function(p){prog('Reading code… step 2 of 3 (unpacking '+p+'%)');});}catch(e){throw new Error('decompress');}}
+    }
+    prog('Reading code… step 3 of 3 (checking)');
+    await tick(0);
     var o=JSON.parse(new TextDecoder().decode(u8));
     if(!o||o.app!=='tracklec-transfer'||!o.data||typeof o.data!=='object')throw new Error('format');
     return o;
@@ -27542,7 +27558,7 @@ document.addEventListener("DOMContentLoaded",function(){
     if(cache.txt===txt&&cache.o)return cache.o;
     say('Reading code… please wait.');
     await tick(60);
-    var o=await readCode(txt);cache={txt:txt,o:o};return o;
+    var o=await readCode(txt,function(m){say(m);});cache={txt:txt,o:o};return o;
   }
   function setIncoming(t){
     t=String(t||'');cache={txt:null,o:null};
