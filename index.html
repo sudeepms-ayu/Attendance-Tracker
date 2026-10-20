@@ -27318,7 +27318,7 @@ document.addEventListener("DOMContentLoaded",function(){
     </div>
     <div class="tlx-status" id="tlx-msg" aria-live="polite"></div>
     <button type="button" class="cm-btn cm-btn-cancel tlx-close" id="tlx-close">Close</button>
-    <p class="tlx-hint" style="text-align:center;margin:12px 0 0;opacity:.55;font-size:11px">Transfer v4</p>
+    <p class="tlx-hint" style="text-align:center;margin:12px 0 0;opacity:.55;font-size:11px">Transfer v5</p>
   </div>
 </div>
 <script id="tl-transfer-js">
@@ -27347,7 +27347,7 @@ document.addEventListener("DOMContentLoaded",function(){
     }
     return out.subarray(0,op);
   }
-  async function gz(u8,S){var st=new S('gzip'),w=st.writable.getWriter();w.write(u8);w.close();return new Uint8Array(await new Response(st.readable).arrayBuffer());}
+  async function gz(u8,S){var st=new S('gzip'),w=st.writable.getWriter();w.write(u8).catch(function(){});w.close().catch(function(){});return new Uint8Array(await new Response(st.readable).arrayBuffer());}
   /* skip bulky duplicates: undo-backups and the plain copy of task lists that also exist as ::mirror */
   function skipKey(k,v){
     if(k.indexOf('restore-backup-v1::')===0)return true;
@@ -27455,6 +27455,7 @@ document.addEventListener("DOMContentLoaded",function(){
     var fl,fd;(function(){var l=new Uint8Array(288),j;for(j=0;j<144;j++)l[j]=8;for(;j<256;j++)l[j]=9;for(;j<280;j++)l[j]=7;for(;j<288;j++)l[j]=8;fl=build(l,288);var d=new Uint8Array(30);for(j=0;j<30;j++)d[j]=5;fd=build(d,30);})();
     var last,ycnt=0,yt=Date.now();
     do{
+      if(p>n+8)throw new Error('inflate');
       last=bits(1);var type=bits(2);
       if(type===0){bb=0;bc=0;var len=u8[p]|(u8[p+1]<<8);p+=4;for(i=0;i<len;i++)out[op++]=u8[p++];}
       else{
@@ -27464,21 +27465,25 @@ document.addEventListener("DOMContentLoaded",function(){
           var hl=bits(5)+257,hd=bits(5)+1,hc=bits(4)+4,lens=new Uint8Array(320);
           for(i=0;i<hc;i++)lens[CL[i]]=bits(3);
           var ct=build(lens,19);lens=new Uint8Array(320);var m=0;
-          while(m<hl+hd){var s=dec(ct),pv,r;
+          while(m<hl+hd){if(p>n+8)throw new Error('inflate');var s=dec(ct),pv,r;
             if(s<16)lens[m++]=s;
             else{if(s===16){pv=lens[m-1];r=3+bits(2);}else if(s===17){pv=0;r=3+bits(3);}else{pv=0;r=11+bits(7);}while(r--)lens[m++]=pv;}}
           tl=build(lens.subarray(0,hl),hl);td=build(lens.subarray(hl,hl+hd),hd);
         }else throw new Error('inflate');
         for(;;){
-          if(++ycnt>=20000){ycnt=0;if(Date.now()-yt>20){if(prog)prog(Math.floor(op*100/(isize||1)));await tick(0);yt=Date.now();}}
+          if(op>isize||p>n+8)throw new Error('inflate');
+          if(++ycnt>=20000){ycnt=0;if(Date.now()-yt>20){if(prog)prog(Math.min(99,Math.floor(op*100/(isize||1))));await tick(0);yt=Date.now();}}
           var sy=dec(tl);
           if(sy<256)out[op++]=sy;
           else if(sy===256)break;
-          else{sy-=257;var ln=LB[sy]+bits(LE[sy]),ds=dec(td),d=DB[ds]+bits(DE[ds]),from=op-d;
+          else{sy-=257;if(sy>28)throw new Error('inflate');var ln=LB[sy]+bits(LE[sy]),ds=dec(td);if(ds>29)throw new Error('inflate');var d=DB[ds]+bits(DE[ds]),from=op-d;if(from<0||op+ln>isize)throw new Error('inflate');
             while(ln--)out[op++]=out[from++];}
         }
       }
     }while(!last);
+    if(op!==isize)throw new Error('inflate');
+    var tcrc=(u8[n-8]|(u8[n-7]<<8)|(u8[n-6]<<16)|(u8[n-5]<<24))>>>0;
+    if(crc32(out)!==tcrc)throw new Error('inflate');
     return out;
   }
   async function readCode(text,prog){
@@ -27488,7 +27493,7 @@ document.addEventListener("DOMContentLoaded",function(){
     text=String(text||'').replace(/\s+/g,'');
     var tag=text.slice(0,4),u8;
     if(tag!=='TL1:'&&tag!=='TL0:')throw new Error('format');
-    u8=await unb64(text.slice(4));
+    try{u8=await unb64(text.slice(4));}catch(e){throw new Error('decompress');}
     if(tag==='TL1:'){
       prog('Reading code… step 2 of 3 (unpacking)');
       var done=false;
@@ -27525,7 +27530,7 @@ document.addEventListener("DOMContentLoaded",function(){
       $('tlx-out').value=big?('Transfer code ready ('+mb(code.length)+').'):code;
       var ok=tooBig?false:await copyText(code);
       if(big)$('tlx-out').value='Transfer code ready ('+mb(code.length)+')'+(ok?' and copied. Paste it on the other device.':'. Tap Save as file to move it.');
-      if(ok)say('Code copied. Paste it into the other device.','ok');
+      if(ok)say(big?'Code copied. If the other device says it is cut off, use Save as file instead.':'Code copied. Paste it into the other device.','ok');
       else if(tooBig)say('This code is large ('+mb(code.length)+'). Tap Save as file, then use Open file… on the other device.','ok');
       else say(big?'Could not copy the code. Use Save as file.':'Code ready. Tap and hold the box to copy it.',big?'err':'ok');
       return code;
@@ -27570,7 +27575,7 @@ document.addEventListener("DOMContentLoaded",function(){
     var txt=pending||$('tlx-in').value;
     if(!txt.trim()){say('Paste a transfer code first.','err');return;}
     var o;
-try{o=await readCached(txt);}catch(e){say(e&&e.message==='decompress'?'Could not unpack this code. It may be cut off - copy or save it again.':'That does not look like a valid transfer code ('+((e&&e.message)||'unreadable')+'). Copy the whole code again.','err');disarm();return;}
+try{o=await readCached(txt);}catch(e){say(e&&e.message==='decompress'?'This code looks cut off or damaged - the copy was probably incomplete. Create it again and use Save as file, then Open file… on this device.':'That does not look like a valid transfer code ('+((e&&e.message)||'unreadable')+'). Copy the whole code again.','err');disarm();return;}
     if(!armed){armed=true;var b=$('tlx-import');b.textContent='Tap again to replace data';b.classList.add('tlx-confirm');say('This replaces ALL data on this device with the imported data.');armTimer=setTimeout(function(){disarm();say('');},6000);return;}
     disarm();
     say('Importing…');await tick(60);
