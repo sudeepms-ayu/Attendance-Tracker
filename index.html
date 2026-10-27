@@ -2384,6 +2384,81 @@
     .ct-section-arrow{ display:none; }
   }
 
+  .menu-sep.menu-sep-collapsed{ display:none !important; }
+
+  /* ---- Coaching picker + editable coaching timetables ---- */
+  .ct-change-coaching{ margin-top:26px; }
+  .ct-custom-table{ min-width:0; }
+  .ct-custom-table th{ white-space:normal; text-align:center; line-height:1.35; padding:0 6px 10px; }
+  .ct-custom-table th:first-child{ text-align:left; }
+  .ct-custom-table td{ white-space:normal; text-align:center; font-size:15px; padding:13px 6px; }
+  .ct-custom-table td:first-child{ text-align:left; font-size:14.5px; }
+  .ct-input{
+    width:100%; font-family:'Lora', serif; font-size:14px; text-align:center;
+    padding:8px 5px; color:var(--ink); background:rgba(var(--paper-rgb),0.6);
+    border:1.5px solid rgba(var(--ink-rgb),0.22); border-radius:6px; outline:none;
+  }
+  .ct-input:focus{ border-color:var(--gold); }
+  .ct-custom-table th .ct-input{ font-size:12px; font-weight:700; padding:7px 3px; }
+  .ct-period-input{ max-width:300px; margin:0 auto; display:block; text-transform:none; letter-spacing:0; }
+  .ct-edit-bar{ display:flex; gap:10px; justify-content:center; margin-top:20px; }
+  .ct-btn{
+    font-family:'Lora', serif; font-size:14px; font-weight:600; cursor:pointer;
+    padding:10px 20px; border-radius:10px; border:1.5px solid var(--gold);
+    background:transparent; color:var(--gold); transition:transform .12s ease, background .18s ease;
+  }
+  .ct-btn:active{ transform:scale(0.96); }
+  .ct-btn:hover{ background:rgba(var(--gold-rgb),0.1); }
+  .ct-btn-primary{ background:var(--gold); color:var(--paper); }
+  .ct-btn-primary:hover{ background:var(--gold); filter:brightness(1.06); }
+  .ct-saved-msg{ text-align:center; color:var(--gold); font-size:12.5px; min-height:16px; margin:10px 0 0; font-family:'Lora', serif; }
+
+  /* ---- Uday Odia planner (Odia / English / IT) ---- */
+  .ctp-tabs{ display:flex; gap:8px; margin:0 0 16px; }
+  .ctp-tab{
+    flex:1; font-family:'Lora', serif; font-size:13.5px; font-weight:600; cursor:pointer;
+    padding:10px 6px; border-radius:10px; border:1.5px solid rgba(var(--ink-rgb),0.22);
+    background:transparent; color:var(--ink-soft);
+    transition:transform .12s ease, background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .ctp-tab:active{ transform:scale(0.96); }
+  .ctp-tab.ctp-active{ border-color:var(--gold); color:var(--gold); background:rgba(var(--gold-rgb),0.1); }
+  .ctp-next{
+    border:1px solid rgba(var(--gold-rgb),0.55); background:rgba(var(--gold-rgb),0.08);
+    border-radius:10px; padding:12px 14px; margin:2px 0 18px;
+  }
+  .ctp-next-label{ font-size:10.5px; letter-spacing:0.09em; text-transform:uppercase; color:var(--gold); font-weight:700; margin:0 0 4px; }
+  .ctp-next-main{ font-size:15px; font-weight:700; color:var(--ink); margin:0; line-height:1.35; }
+  .ctp-next-sub{ font-size:12.5px; color:var(--ink-soft); margin:3px 0 0; line-height:1.4; }
+  .ctp-stats{ display:flex; gap:14px; font-size:11.5px; color:var(--ink-soft); letter-spacing:0.03em; margin:0 0 16px; flex-wrap:wrap; }
+  .ctp-chapter{ margin:0 0 18px; }
+  .ctp-ch-head{
+    display:flex; align-items:baseline; gap:10px; padding:0 0 7px; margin:0 0 2px;
+    border-bottom:1.5px solid rgba(var(--gold-rgb),0.55);
+  }
+  .ctp-ch-no{ font-size:11px; font-weight:700; color:var(--gold); letter-spacing:0.06em; flex-shrink:0; }
+  .ctp-ch-name{ font-size:15.5px; font-weight:700; color:var(--ink); flex:1; min-width:0; line-height:1.35; }
+  .ctp-ch-prog{ font-size:11px; color:var(--ink-soft); flex-shrink:0; }
+  .ctp-row{
+    display:flex; align-items:center; gap:11px; padding:10px 8px;
+    border-bottom:1px solid rgba(var(--ink-rgb),0.1); border-radius:6px;
+  }
+  .ctp-row:last-child{ border-bottom:none; }
+  .ctp-lec{
+    flex-shrink:0; width:26px; height:26px; border-radius:50%;
+    border:1.3px solid rgba(var(--ink-rgb),0.3); color:var(--ink-soft);
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;
+  }
+  .ctp-topic{ flex:1; min-width:0; font-size:14px; color:var(--ink); line-height:1.4; }
+  .ctp-date{ flex-shrink:0; text-align:right; font-size:13px; color:var(--ink); line-height:1.25; }
+  .ctp-date small{ display:block; font-size:10.5px; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-soft); }
+  .ctp-row.ctp-done .ctp-topic, .ctp-row.ctp-done .ctp-date{ opacity:0.5; }
+  .ctp-row.ctp-done .ctp-lec{ border-color:var(--gold); background:rgba(var(--gold-rgb),0.14); color:var(--gold); }
+  .ctp-row.ctp-next-row{ background:rgba(var(--gold-rgb),0.1); }
+  .ctp-row.ctp-next-row .ctp-lec{ border-color:var(--gold); background:var(--gold); color:var(--paper); }
+  .ctp-row.ctp-next-row .ctp-date small{ color:var(--gold); font-weight:700; }
+  .ctp-foot{ text-align:center; font-size:11px; color:var(--ink-soft); margin:6px 0 0; letter-spacing:0.02em; }
+
   /* ---- Homework page ---- */
   .hw-form{
     background: rgba(var(--paper-rgb),0.5);
@@ -7472,19 +7547,26 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
 <div class="wrap" id="coaching-timetable-view" style="display:none;">
   <button class="tt-back" id="ct-back-btn">&lsaquo; Back</button>
   <header class="cover tt-cover">
-    <div class="tt-logo ct-logo">SSC</div>
-    <p class="eyebrow tt-eyebrow">Success Study Circle</p>
+    <div class="tt-logo ct-logo" id="ct-logo">CT</div>
+    <p class="eyebrow tt-eyebrow" id="ct-eyebrow">Your Coaching</p>
     <h1 class="tt-title">Coaching Timetable</h1>
-    <p class="subtitle tt-subtitle">Discipline Today &middot; Success Tomorrow</p>
+    <p class="subtitle tt-subtitle" id="ct-subtitle">Choose a coaching to see its weekly schedule</p>
   </header>
 
+  <div id="ct-coaching-select">
+    <p class="tt-card-sub ct-select-label">Choose your coaching</p>
+    <div class="ct-section-grid" id="ct-coaching-grid"></div>
+  </div>
+
+  <div id="ct-coaching-body" style="display:none;">
+    <button class="ct-change-section ct-change-coaching" id="ct-change-coaching-btn">&lsaquo; Change coaching</button>
   <div id="ct-section-select">
     <p class="tt-card-sub ct-select-label">Choose your section</p>
     <div class="ct-section-grid" id="ct-section-grid"></div>
   </div>
 
   <div id="ct-section-detail" style="display:none;">
-    <button class="ct-change-section" id="ct-change-section-btn">&lsaquo; Change section</button>
+    <button class="ct-change-section" id="ct-change-section-btn" style="margin-top:10px;">&lsaquo; Change section</button>
     <p class="tt-today-label ct-section-tag" id="ct-section-tag">Section A</p>
     <div class="tt-card ct-card">
       <h2 class="tt-day-name" id="ct-section-name">Section A</h2>
@@ -7495,6 +7577,34 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
       <p class="ct-legend">P &mdash; Physics &middot; C &mdash; Chemistry &middot; M &mdash; Maths &middot; B &mdash; Biology (Sunday sessions)</p>
     </div>
   </div>
+
+    <div id="ct-custom-detail" style="display:none;">
+      <p class="tt-today-label ct-section-tag">&mdash; Weekly Schedule &mdash;</p>
+      <div class="tt-card ct-card" id="ct-custom-card">
+        <h2 class="tt-day-name" id="ct-custom-name"></h2>
+        <p class="tt-card-sub" id="ct-custom-period"></p>
+        <div class="tt-table-scroll">
+          <table class="tt-table ct-table ct-custom-table" id="ct-custom-table"></table>
+        </div>
+        <p class="ct-legend" id="ct-custom-note"></p>
+        <div class="ct-edit-bar" id="ct-edit-bar"></div>
+        <p class="ct-saved-msg" id="ct-saved-msg" role="status"></p>
+      </div>
+    </div>
+
+    <div id="ct-planner-detail" style="display:none;">
+      <p class="tt-today-label ct-section-tag">&mdash; Class 11th &middot; 2027 Planner &mdash;</p>
+      <div class="ctp-tabs" id="ctp-tabs" role="tablist"></div>
+      <div class="tt-card ct-card" id="ctp-card">
+        <h2 class="tt-day-name" id="ctp-title"></h2>
+        <p class="tt-card-sub" id="ctp-sub"></p>
+        <div id="ctp-next"></div>
+        <div id="ctp-body"></div>
+        <p class="ctp-foot">Lectures in the past are ticked automatically. Dates follow the official planner.</p>
+      </div>
+    </div>
+  </div>
+  <datalist id="ct-subject-list"><option value="Physics"><option value="Chemistry"><option value="Mathematics"><option value="Biology"><option value="English"><option value="Odia"><option value="Exam"><option value="Test"></datalist>
 </div>
 
 <div class="wrap" id="homework-view" style="display:none;">
@@ -9646,6 +9756,12 @@ window.confirmModal = function(opts){
       '</div>';
     overlay.querySelector('#cm-title').textContent = title;
     overlay.querySelector('#cm-message').textContent = message;
+    if(opts.tone === 'gold'){
+      const ic = overlay.querySelector('.cm-icon');
+      if(ic){ ic.style.background = 'rgba(var(--gold-rgb),0.14)'; ic.style.color = 'var(--gold)';
+        ic.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>'; }
+      overlay.querySelector('.cm-btn-confirm').classList.add('cm-btn-gold');
+    }
     document.body.appendChild(overlay);
 
     const cancelBtn = overlay.querySelector('.cm-btn-cancel');
@@ -10785,6 +10901,7 @@ window.contactChoiceModal = function(opts){
         frag.appendChild(byId[id]);
       });
       menuDropdown.appendChild(frag);
+      if(typeof normalizeSeps === 'function') normalizeSeps();
     }
 
     function loadSavedOrder(){
@@ -10801,7 +10918,30 @@ window.contactChoiceModal = function(opts){
         localStorage.setItem(STORE_KEY, JSON.stringify(ids));
       }catch(e){}
     }
+    // Keeps exactly ONE separator between any two visible rows (and none at the
+    // ends), no matter how rows were reordered or which rows are hidden.
+    function normalizeSeps(){
+      const pending = []; let seenRow = false;
+      const collapse = (a) => a.forEach(x => x.classList.add('menu-sep-collapsed'));
+      Array.prototype.slice.call(menuDropdown.children).forEach(el => {
+        if(el.classList.contains('menu-sep')){
+          el.classList.remove('menu-sep-collapsed');
+          if(getComputedStyle(el).display !== 'none') pending.push(el);
+        } else if(el.classList.contains('menu-row') && getComputedStyle(el).display !== 'none'){
+          collapse(seenRow ? pending.slice(1) : pending);
+          pending.length = 0; seenRow = true;
+        }
+      });
+      collapse(pending);
+    }
+    let sepRaf = 0;
+    function queueNormalize(){ if(sepRaf) return; sepRaf = requestAnimationFrame(() => { sepRaf = 0; normalizeSeps(); }); }
+    new MutationObserver(queueNormalize).observe(menuDropdown, { subtree:true, attributes:true, attributeFilter:['hidden','style'] });
+    const menuToggleBtn = document.getElementById('menu-toggle');
+    if(menuToggleBtn) menuToggleBtn.addEventListener('click', normalizeSeps);
+
     loadSavedOrder();
+    normalizeSeps();
 
     let liftedRow = null;
     let controlsEl = null;
@@ -12199,22 +12339,328 @@ function initPracticalGroupFinder(){
     hideAllPages();
     document.getElementById('coaching-timetable-view').style.display = 'block';
     document.body.classList.add('tt-mode');
-    const saved = ctSavedSection();
-    if(saved){
-      document.getElementById('ct-section-select').style.display = 'none';
-      const detail = document.getElementById('ct-section-detail');
-      detail.style.display = 'block';
-      ctSelectedSection = saved;
-      document.getElementById('ct-section-tag').textContent = '\u2014 Weekly Schedule \u2014';
-      document.getElementById('ct-section-name').textContent = 'Section ' + saved;
-      ctRenderTable(saved);
+    const saved = ctSavedCoaching();
+    if(saved) ctOpenCoaching(saved); else ctShowCoachingSelect();
+    window.scrollTo(0,0);
+  }
+
+  // ---- Coaching picker + editable timetables (Mission Jeet / Uday Odia / Arjuna JEE) ----
+  const CT_COACH_KEY = 'coaching-timetable-coaching-v1';
+  const CT_CUSTOM_KEY = 'coaching-timetable-custom-v1';
+  const ctBlankRows = () => { const r = {}; CT_DAYS.forEach(d => { r[d] = ['','']; }); return r; };
+  const CT_COACHINGS = {
+    ssc: { name:'Success Study Circle', badge:'SSC', tag:'Discipline Today \u00b7 Success Tomorrow', meta:'Sections A \u00b7 B \u00b7 C', sections:true },
+    mj: { name:'MISSION JEET', badge:'MJ', tag:'Drona JEE 2.0', meta:'Drona JEE 2.0 \u00b7 Editable',
+      defaults:{ period:'14 Sep 2026 \u2013 31 Oct 2026', slots:['04:00 PM \u2013 05:45 PM','06:15 PM \u2013 08:00 PM'],
+        rows:{ Mon:['Chemistry','Physics'], Tue:['Chemistry','Physics'], Wed:['Physics','Mathematics'], Thu:['Physics','Mathematics'], Fri:['Mathematics','Chemistry'], Sat:['Mathematics','Chemistry'] } } },
+    uo: { name:'UDAY ODIA', badge:'UO', tag:'Class 11th \u00b7 2027 Planner', meta:'Odia \u00b7 English \u00b7 IT Planner', planner:true },
+    aj: { name:'ARJUNA JEE', badge:'AJ', tag:'Arjuna JEE 2027 \u00b7 Class Schedule', meta:'Arjuna JEE 2027 \u00b7 Editable',
+      defaults:{ period:'', slots:['04:00 PM \u2013 05:45 PM','06:15 PM \u2013 08:00 PM'],
+        rows:{ Mon:['Physics','Mathematics'], Tue:['Chemistry','Mathematics'], Wed:['Physics','Mathematics'], Thu:['Chemistry','Mathematics'], Fri:['Physics','Chemistry'], Sat:['',''] } } }
+  };
+  let ctCoaching = null, ctEditing = false, ctDraft = null, ctMsgTimer = null;
+  const ctEl = (id) => document.getElementById(id);
+  const ctShowEl = (id, on) => { const e = ctEl(id); if(e) e.style.display = on ? 'block' : 'none'; };
+
+  function ctSavedCoaching(){
+    try{
+      const v = localStorage.getItem(CT_COACH_KEY);
+      if(v && CT_COACHINGS[v]) return v;
+    }catch(e){}
+    return ctSavedSection() ? 'ssc' : null; // older installs that already picked a section
+  }
+  function ctLoadCustom(id){
+    try{
+      const all = JSON.parse(localStorage.getItem(CT_CUSTOM_KEY) || '{}');
+      const d = all[id];
+      if(d && Array.isArray(d.slots) && d.slots.length === 2 && d.rows) return d;
+    }catch(e){}
+    return JSON.parse(JSON.stringify(CT_COACHINGS[id].defaults));
+  }
+  function ctStoreCustom(id, data){
+    try{
+      const all = JSON.parse(localStorage.getItem(CT_CUSTOM_KEY) || '{}');
+      all[id] = data;
+      localStorage.setItem(CT_CUSTOM_KEY, JSON.stringify(all));
+      return true;
+    }catch(e){ return false; }
+  }
+  function ctSetHeader(logo, eyebrow, subtitle){
+    ctEl('ct-logo').textContent = logo;
+    ctEl('ct-eyebrow').textContent = eyebrow;
+    ctEl('ct-subtitle').textContent = subtitle;
+  }
+
+  function ctRenderCoachingGrid(){
+    const grid = ctEl('ct-coaching-grid');
+    grid.innerHTML = '';
+    Object.keys(CT_COACHINGS).forEach((id, i) => {
+      const c = CT_COACHINGS[id];
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ct-section-card';
+      btn.style.setProperty('--ct-delay', (i * 0.08) + 's');
+      btn.innerHTML = '<span class="ct-section-badge" style="font-size:15px;"></span>' +
+        '<span class="ct-section-info"><span class="ct-section-name"></span><span class="ct-section-meta"></span></span>' +
+        '<span class="ct-section-arrow">&rsaquo;</span>';
+      btn.querySelector('.ct-section-badge').textContent = c.badge;
+      btn.querySelector('.ct-section-name').textContent = c.name;
+      btn.querySelector('.ct-section-meta').textContent = c.meta;
+      btn.addEventListener('click', () => ctOpenCoaching(id));
+      grid.appendChild(btn);
+    });
+  }
+
+  function ctShowCoachingSelect(){
+    ctEditing = false; ctDraft = null; ctCoaching = null;
+    try{ localStorage.removeItem(CT_COACH_KEY); }catch(e){}
+    ctShowEl('ct-coaching-body', false);
+    ctShowEl('ct-coaching-select', true);
+    ctSetHeader('CT', 'Your Coaching', 'Choose a coaching to see its weekly schedule');
+    ctRenderCoachingGrid();
+    window.scrollTo(0,0);
+  }
+
+  function ctOpenCoaching(id){
+    const c = CT_COACHINGS[id];
+    if(!c){ ctShowCoachingSelect(); return; }
+    ctEditing = false; ctDraft = null; ctCoaching = id;
+    try{ localStorage.setItem(CT_COACH_KEY, id); }catch(e){}
+    ctShowEl('ct-coaching-select', false);
+    ctShowEl('ct-coaching-body', true);
+    ctSetHeader(c.badge, c.name, c.tag);
+    ctShowEl('ct-planner-detail', false);
+    if(c.planner){
+      ctShowEl('ct-custom-detail', false);
+      ctShowEl('ct-section-select', false);
+      ctShowEl('ct-section-detail', false);
+      ctRenderPlanner(true);
+    } else if(c.sections){
+      ctShowEl('ct-custom-detail', false);
+      const sec = ctSavedSection();
+      if(sec) ctSelectSection(sec); else ctShowSectionSelect();
     } else {
-      ctShowSectionSelect();
+      ctShowEl('ct-section-select', false);
+      ctShowEl('ct-section-detail', false);
+      ctRenderCustom(true);
     }
     window.scrollTo(0,0);
   }
 
+  // ---- Uday Odia planner (Odia / English / IT lecture schedule) ----
+  const CT_PLAN = [{"id":"or","label":"Odia","title":"Odia","lang":"or","chapters":[{"n":"ସାହାଡ଼ା ବୃକ୍ଷ","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-06-25"},{"t":"କବିତାର ପୃଷ୍ଠଭୂମି","k":2,"d":"2026-07-02"}]},{"n":"ଶାପମୋଚନ","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-07-09"},{"t":"ସାରମର୍ମ","k":2,"d":"2026-07-23"}]},{"n":"ସର୍ସୂପଦର୍","l":[{"t":"ଲେଖକ ପରିଚୟ","k":1,"d":"2026-07-30"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-08-06"}]},{"n":"ଝେଲମ୍ ନଦୀର ସନ୍ଧ୍ୟା","l":[{"t":"ଲେଖକ ପରିଚୟ","k":1,"d":"2026-08-13"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-08-20"}]},{"n":"ବ୍ୟାକରଣ","l":[{"t":"ପଦପ୍ରକରଣ","k":1,"d":"2026-08-27"},{"t":"ବିଶେଷଣ, ବିଶେଷ୍ୟ","k":2,"d":"2026-09-03"}]},{"n":"ଅତ୍ୟାଚାରିତ","l":[{"t":"ନାଟ୍ୟକାର ପରିଚୟ","k":1,"d":"2026-09-10"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-09-17"},{"t":"ସାରମର୍ମ","k":3,"d":"2026-09-24"}]},{"n":"ହିମକାଳ","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-10-01"},{"t":"ପୃଷ୍ଠଭୂମି","k":2,"d":"2026-10-08"}]},{"n":"ମଧୁବାବୁ","l":[{"t":"ଲେଖକ ପରିଚୟ","k":1,"d":"2026-10-15"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-10-22"},{"t":"ସାରମର୍ମ","k":3,"d":"2026-10-29"}]},{"n":"ମିତ୍ରତା","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-11-05"},{"t":"ପୃଷ୍ଠପୋଷକତା","k":2,"d":"2026-11-12"}]},{"n":"ଭାଲୁ ଉପଦ୍ରବ","l":[{"t":"ନାଟ୍ୟକାର ପରିଚୟ","k":1,"d":"2026-11-19"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-11-26"}]},{"n":"ସେହି ସ୍ମରଣୀୟ ଦିବସ","l":[{"t":"ଲେଖକ ପରିଚୟ","k":1,"d":"2026-12-03"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-12-10"},{"t":"ସାରକଥା","k":3,"d":"2026-12-17"}]},{"n":"ପଥରେ ଦିଶୁଛି ଶରଣ","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-12-24"},{"t":"କବିତାର ପୃଷ୍ଠଭୂମି","k":2,"d":"2026-12-31"}]},{"n":"ସୀମିତ ସମ୍ପର୍କ","l":[{"t":"ନାଟ୍ୟକାର ପରିଚୟ","k":1,"d":"2027-01-07"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2027-01-14"},{"t":"ଶେଷକଥା","k":3,"d":"2027-01-21"}]},{"n":"ବ୍ୟାକରଣ","l":[{"t":"ସର୍ବନାମ","k":1,"d":"2027-01-28"},{"t":"ଅବ୍ୟୟ, କ୍ରିୟା","k":2,"d":"2027-02-04"}]}]},{"id":"en","label":"English","title":"English","lang":"en","chapters":[{"n":"Standing Up for Yourself","l":[{"t":"Units and comprehension","k":1,"d":"2026-07-01"},{"t":"Units and comprehension","k":2,"d":"2026-07-03"},{"t":"Units and comprehension","k":3,"d":"2026-07-07"}]},{"n":"Stopping by Woods on a Snowy Evening","l":[{"t":"Poem discussion","k":1,"d":"2026-07-10"},{"t":"Long questions and MCQs","k":2,"d":"2026-07-14"}]},{"n":"The Legend Behind a Legend","l":[{"t":"Units and comprehension","k":1,"d":"2026-07-17"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-07-21"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-07-24"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-07-28"}]},{"n":"Countable and Uncountable Nouns","l":[{"t":"Lecture 1","k":1,"d":"2026-07-31"}]},{"n":"Oft in the Stilly Night","l":[{"t":"Poem discussion","k":1,"d":"2026-08-04"},{"t":"Long questions and MCQs","k":2,"d":"2026-08-07"}]},{"n":"Application Writing","l":[{"t":"Lecture 1","k":1,"d":"2026-08-11"},{"t":"Lecture 2","k":2,"d":"2026-08-14"}]},{"n":"Three Questions","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-08-18"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-08-21"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-08-25"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-08-28"}]},{"n":"The Golden Touch","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-09-01"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-09-04"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-09-08"}]},{"n":"Tense Patterns","l":[{"t":"Lecture 1","k":1,"d":"2026-09-11"},{"t":"Lecture 2","k":2,"d":"2026-09-15"}]},{"n":"After Twenty Years","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-09-18"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-09-22"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-09-25"}]},{"n":"Prepositions","l":[{"t":"Lecture 1","k":1,"d":"2026-09-29"},{"t":"Lecture 2","k":2,"d":"2026-10-06"}]},{"n":"The Inchcape Rock","l":[{"t":"Poem discussion","k":1,"d":"2026-10-09"},{"t":"Poem discussion","k":2,"d":"2026-10-13"},{"t":"Long questions and MCQs","k":3,"d":"2026-10-16"}]},{"n":"To My True Friend","l":[{"t":"Poem discussion","k":1,"d":"2026-10-23"},{"t":"Long questions and MCQs","k":2,"d":"2026-10-27"}]},{"n":"Report Writing 1","l":[{"t":"Lecture 1","k":1,"d":"2026-10-30"},{"t":"Lecture 2","k":2,"d":"2026-11-03"}]},{"n":"In London in Minus Fours","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-11-06"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-11-10"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-11-13"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-11-17"}]},{"n":"Report Writing 2","l":[{"t":"Lecture 1","k":1,"d":"2026-11-20"}]},{"n":"The Open Window","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-11-24"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-11-27"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-12-01"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-12-04"}]},{"n":"Fishing","l":[{"t":"Poem discussion","k":1,"d":"2026-12-08"},{"t":"Long questions and MCQs","k":2,"d":"2026-12-11"}]},{"n":"The Cancer Fight","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-12-15"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-12-18"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-12-22"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-12-29"}]},{"n":"Imperatives","l":[{"t":"Lecture 1","k":1,"d":"2027-01-01"}]},{"n":"The One and Only Houdini","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2027-01-05"},{"t":"Units, comprehension and MCQs","k":2,"d":"2027-01-08"},{"t":"Units, comprehension and MCQs","k":3,"d":"2027-01-12"},{"t":"Units, comprehension and MCQs","k":4,"d":"2027-01-15"}]},{"n":"Report Writing 3","l":[{"t":"Lecture 1","k":1,"d":"2027-01-19"}]},{"n":"Childhood","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2027-01-22"},{"t":"Units, comprehension and MCQs","k":2,"d":"2027-01-26"},{"t":"Units, comprehension and MCQs","k":3,"d":"2027-01-29"},{"t":"Units, comprehension and MCQs","k":4,"d":"2027-02-02"},{"t":"Units, comprehension and MCQs","k":5,"d":"2027-02-05"},{"t":"Units, comprehension and MCQs","k":6,"d":"2027-02-09"}]}]},{"id":"it","label":"IT","title":"Information Technology","lang":"en","chapters":[{"n":"Hardware Concepts","l":[{"t":"Computer organisation","k":1,"d":"2026-06-24"},{"t":"Input","k":2,"d":"2026-07-06"},{"t":"Output","k":3,"d":"2026-07-13"},{"t":"Memory unit","k":4,"d":"2026-07-20"},{"t":"Communication bus, ports","k":5,"d":"2026-07-27"}]},{"n":"Types of Software","l":[{"t":"System software","k":1,"d":"2026-08-03"},{"t":"Language processors","k":2,"d":"2026-08-10"},{"t":"Utility software","k":3,"d":"2026-08-17"},{"t":"Application software, specific purpose application software","k":4,"d":"2026-08-24"}]},{"n":"Open Source Concepts","l":[{"t":"Open source software","k":1,"d":"2026-08-31"},{"t":"Common open standards","k":2,"d":"2026-09-07"},{"t":"Indian language computing","k":3,"d":"2026-09-21"}]},{"n":"Introduction to Programming","l":[{"t":"Programming fundamentals","k":1,"d":"2026-09-28"},{"t":"Variables","k":2,"d":"2026-10-05"},{"t":"Declaring variables","k":3,"d":"2026-10-12"},{"t":"Control structure","k":4,"d":"2026-10-26"},{"t":"Basic programming","k":5,"d":"2026-11-02"},{"t":"Data types","k":6,"d":"2026-11-09"},{"t":"Looping structure","k":7,"d":"2026-11-16"},{"t":"While loop","k":8,"d":"2026-11-23"}]},{"n":"DBMS","l":[{"t":"Introduction to database concepts","k":1,"d":"2026-11-30"},{"t":"Data types","k":2,"d":"2026-12-07"},{"t":"Keys","k":3,"d":"2026-12-14"}]},{"n":"Introduction to MySQL","l":[{"t":"Classification of SQL commands","k":1,"d":"2026-12-21"},{"t":"Creating & using a database","k":2,"d":"2026-12-28"},{"t":"INSERT command for inserting new rows","k":3,"d":"2027-01-04"},{"t":"Selecting specific columns using arithmetic operators","k":4,"d":"2027-01-11"},{"t":"Logical operators","k":5,"d":"2027-01-18"},{"t":"INSERT command","k":6,"d":"2027-01-25"},{"t":"Displaying table data","k":7,"d":"2027-02-01"},{"t":"Defining & using column alias","k":8,"d":"2027-02-08"},{"t":"WHERE clause, ORDER BY clause","k":9,"d":"2027-02-15"}]},{"n":"E-Governance","l":[{"t":"Definition","k":1,"d":"2027-02-22"},{"t":"E-governance challenges","k":2,"d":"2027-03-01"}]},{"n":"E-Learning","l":[{"t":"Definition","k":1,"d":"2027-03-08"},{"t":"E-learning websites & its social impact","k":2,"d":"2027-03-15"}]}]}];
+  const CT_PLAN_KEY = 'coaching-timetable-uo-subject-v1';
+  let ctpSubject = null;
+  const CTP_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const CTP_DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  function ctpDate(iso){ const p = iso.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function ctpFmt(d){ return d.getDate() + ' ' + CTP_MON[d.getMonth()] + ' ' + d.getFullYear(); }
+  function ctpSavedSubject(){
+    try{ const v = localStorage.getItem(CT_PLAN_KEY); if(CT_PLAN.some(s => s.id === v)) return v; }catch(e){}
+    return CT_PLAN[0].id;
+  }
+  function ctpMk(tag, cls, text){
+    const e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(text != null) e.textContent = text;
+    return e;
+  }
+  function ctRenderPlanner(animate){
+    ctShowEl('ct-planner-detail', true);
+    if(!ctpSubject) ctpSubject = ctpSavedSubject();
+    const subj = CT_PLAN.find(s => s.id === ctpSubject) || CT_PLAN[0];
+    const card = ctEl('ctp-card');
+    if(animate !== false && card){ card.classList.remove('ct-card'); void card.offsetWidth; card.classList.add('ct-card'); }
+
+    const tabs = ctEl('ctp-tabs'); tabs.innerHTML = '';
+    CT_PLAN.forEach(s => {
+      const b = ctpMk('button', 'ctp-tab' + (s.id === subj.id ? ' ctp-active' : ''), s.label);
+      b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', s.id === subj.id ? 'true' : 'false');
+      b.addEventListener('click', () => {
+        if(s.id === ctpSubject) return;
+        ctpSubject = s.id;
+        try{ localStorage.setItem(CT_PLAN_KEY, s.id); }catch(e){}
+        ctRenderPlanner(true);
+      });
+      tabs.appendChild(b);
+    });
+
+    const now = new Date(); const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    let total = 0, done = 0, nextLec = null, nextCh = null;
+    subj.chapters.forEach(c => c.l.forEach(l => {
+      total++;
+      const dt = ctpDate(l.d);
+      if(dt < today) done++;
+      else if(!nextLec){ nextLec = l; nextCh = c; }
+    }));
+
+    const titleEl = ctEl('ctp-title');
+    titleEl.textContent = subj.title;
+    if(subj.lang === 'or') titleEl.setAttribute('lang', 'or'); else titleEl.removeAttribute('lang');
+    ctEl('ctp-sub').textContent = 'Uday Odia \u00b7 Class 11th \u00b7 ' + subj.chapters.length + ' chapters \u00b7 ' + total + ' lectures';
+
+    const nextBox = ctEl('ctp-next'); nextBox.innerHTML = '';
+    if(nextLec){
+      const dt = ctpDate(nextLec.d);
+      const isToday = dt.getTime() === today.getTime();
+      const box = ctpMk('div', 'ctp-next');
+      box.appendChild(ctpMk('p', 'ctp-next-label', isToday ? 'Today\u2019s lecture' : 'Next lecture'));
+      const main = ctpMk('p', 'ctp-next-main', nextCh.n);
+      if(subj.lang === 'or') main.setAttribute('lang', 'or');
+      box.appendChild(main);
+      const sub = ctpMk('p', 'ctp-next-sub', nextLec.t + ' \u00b7 ' + CTP_DOW[dt.getDay()] + ', ' + ctpFmt(dt));
+      if(subj.lang === 'or') sub.setAttribute('lang', 'or');
+      box.appendChild(sub);
+      nextBox.appendChild(box);
+    } else {
+      const box = ctpMk('div', 'ctp-next');
+      box.appendChild(ctpMk('p', 'ctp-next-label', 'All done'));
+      box.appendChild(ctpMk('p', 'ctp-next-main', 'Every ' + subj.label + ' lecture on the planner is complete.'));
+      nextBox.appendChild(box);
+    }
+
+    const body = ctEl('ctp-body'); body.innerHTML = '';
+    body.appendChild(ctpMk('div', 'ctp-stats', '')).innerHTML = '';
+    const stats = body.lastChild;
+    stats.appendChild(ctpMk('span', '', done + ' of ' + total + ' lectures done'));
+    stats.appendChild(ctpMk('span', '', (total - done) + ' to go'));
+
+    subj.chapters.forEach((c, ci) => {
+      const wrap = ctpMk('div', 'ctp-chapter');
+      const head = ctpMk('div', 'ctp-ch-head');
+      head.appendChild(ctpMk('span', 'ctp-ch-no', 'CH ' + (ci + 1)));
+      const nm = ctpMk('span', 'ctp-ch-name', c.n);
+      if(subj.lang === 'or') nm.setAttribute('lang', 'or');
+      head.appendChild(nm);
+      const cd = c.l.filter(l => ctpDate(l.d) < today).length;
+      head.appendChild(ctpMk('span', 'ctp-ch-prog', cd + '/' + c.l.length));
+      wrap.appendChild(head);
+      c.l.forEach(l => {
+        const dt = ctpDate(l.d);
+        const past = dt < today;
+        const isNext = l === nextLec;
+        const row = ctpMk('div', 'ctp-row' + (past ? ' ctp-done' : '') + (isNext ? ' ctp-next-row' : ''));
+        row.appendChild(ctpMk('span', 'ctp-lec', past ? '\u2713' : String(l.k)));
+        const tp = ctpMk('span', 'ctp-topic', l.t);
+        if(subj.lang === 'or') tp.setAttribute('lang', 'or');
+        row.appendChild(tp);
+        const dEl = ctpMk('span', 'ctp-date', ctpFmt(dt));
+        const dow = ctpMk('small', '', isNext ? (dt.getTime() === today.getTime() ? 'Today' : 'Next \u00b7 ' + CTP_DOW[dt.getDay()]) : CTP_DOW[dt.getDay()]);
+        dEl.insertBefore(dow, dEl.firstChild);
+        row.appendChild(dEl);
+        wrap.appendChild(row);
+      });
+      body.appendChild(wrap);
+    });
+  }
+
+  function ctSetSavedMsg(t){
+    const m = ctEl('ct-saved-msg'); if(!m) return;
+    m.textContent = t || '';
+    clearTimeout(ctMsgTimer);
+    if(t) ctMsgTimer = setTimeout(() => { m.textContent = ''; }, 2800);
+  }
+  function ctMakeInput(val, ph, onInput, extraClass){
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.className = 'ct-input' + (extraClass ? ' ' + extraClass : '');
+    inp.value = val || ''; inp.placeholder = ph || ''; inp.maxLength = 40;
+    inp.addEventListener('input', () => onInput(inp.value));
+    return inp;
+  }
+
+  function ctRenderCustom(animate){
+    const c = CT_COACHINGS[ctCoaching];
+    if(!c || c.sections || c.planner) return;
+    ctShowEl('ct-custom-detail', true);
+    const card = ctEl('ct-custom-card');
+    if(animate && card){ card.classList.remove('ct-card'); void card.offsetWidth; card.classList.add('ct-card'); }
+    const data = ctEditing ? ctDraft : ctLoadCustom(ctCoaching);
+    ctEl('ct-custom-name').textContent = c.name;
+
+    const periodEl = ctEl('ct-custom-period');
+    periodEl.innerHTML = '';
+    if(ctEditing){
+      periodEl.appendChild(ctMakeInput(data.period, 'Schedule period (optional)', v => { data.period = v; }, 'ct-period-input'));
+    } else {
+      periodEl.textContent = data.period || c.tag;
+    }
+
+    const table = ctEl('ct-custom-table');
+    table.innerHTML = '';
+    const thead = document.createElement('thead');
+    const hr = document.createElement('tr');
+    const dayTh = document.createElement('th'); dayTh.textContent = 'Day'; hr.appendChild(dayTh);
+    data.slots.forEach((t, i) => {
+      const th = document.createElement('th');
+      if(ctEditing) th.appendChild(ctMakeInput(t, 'Time', v => { data.slots[i] = v; }));
+      else th.textContent = t || ('Slot ' + (i + 1));
+      hr.appendChild(th);
+    });
+    thead.appendChild(hr); table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    let filled = 0;
+    CT_DAYS.forEach(d => {
+      const tr = document.createElement('tr');
+      const dTd = document.createElement('td'); dTd.textContent = CT_DAY_FULL[d]; tr.appendChild(dTd);
+      for(let i = 0; i < data.slots.length; i++){
+        const td = document.createElement('td');
+        const val = (data.rows[d] && data.rows[d][i]) || '';
+        if(val) filled++;
+        if(ctEditing){
+          const inp = ctMakeInput(val, 'Subject', v => { if(!data.rows[d]) data.rows[d] = ['','']; data.rows[d][i] = v; });
+          inp.setAttribute('list', 'ct-subject-list');
+          td.appendChild(inp);
+        } else if(val){ td.textContent = val; }
+        else { td.textContent = '\u2014'; td.className = 'ct-blank'; }
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    ctEl('ct-custom-note').textContent = ctEditing
+      ? 'Type a subject in each box, then tap Save.'
+      : (filled ? 'Timetable changed? Tap Edit to update the subjects.' : 'No timetable added yet \u2014 tap Edit to add your classes.');
+
+    const bar = ctEl('ct-edit-bar');
+    bar.innerHTML = '';
+    const mk = (label, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'ct-btn' + (cls ? ' ' + cls : ''); b.textContent = label; b.addEventListener('click', fn); bar.appendChild(b); };
+    if(ctEditing){ mk('Cancel', '', ctCancelEdit); mk('Save', 'ct-btn-primary', ctSaveEdit); }
+    else { mk('\u270E Edit timetable', '', ctStartEdit); }
+  }
+
+  function ctStartEdit(){
+    ctDraft = JSON.parse(JSON.stringify(ctLoadCustom(ctCoaching)));
+    ctEditing = true; ctSetSavedMsg('');
+    ctRenderCustom(false);
+  }
+  async function ctCancelEdit(){
+    if(JSON.stringify(ctDraft) !== JSON.stringify(ctLoadCustom(ctCoaching))){
+      const ok = await window.confirmModal({ title:'Discard changes?', message:'Your edits to this timetable have not been saved.', confirmText:'Discard', cancelText:'Keep editing' });
+      if(!ok) return;
+    }
+    ctEditing = false; ctDraft = null;
+    ctRenderCustom(false);
+  }
+  async function ctSaveEdit(){
+    const c = CT_COACHINGS[ctCoaching];
+    const ok = await window.confirmModal({ title:'Save timetable?', message:'Do you want to save these changes to the ' + c.name + ' timetable?', confirmText:'Yes, save', cancelText:'Not yet', tone:'gold' });
+    if(!ok) return;
+    const clean = {
+      period: (ctDraft.period || '').trim(),
+      slots: ctDraft.slots.map(t => (t || '').trim()),
+      rows: {}
+    };
+    CT_DAYS.forEach(d => { clean.rows[d] = [0,1].map(i => ((ctDraft.rows[d] && ctDraft.rows[d][i]) || '').trim()); });
+    const saved = ctStoreCustom(ctCoaching, clean);
+    ctEditing = false; ctDraft = null;
+    ctRenderCustom(false);
+    ctSetSavedMsg(saved ? 'Timetable saved \u2713' : 'Could not save \u2014 storage is unavailable.');
+  }
+
   function ctHide(){
+    ctEditing = false; ctDraft = null;
     pageHide('coaching-timetable-view');
     document.body.classList.remove('tt-mode');
     backToAppOrAuth();
@@ -12224,6 +12670,8 @@ function initPracticalGroupFinder(){
   if(ctOpenBtn) ctOpenBtn.addEventListener('click', ctShow);
   const ctBackBtn = document.getElementById('ct-back-btn');
   if(ctBackBtn) ctBackBtn.addEventListener('click', ctHide);
+  const ctChangeCoachingBtn = document.getElementById('ct-change-coaching-btn');
+  if(ctChangeCoachingBtn) ctChangeCoachingBtn.addEventListener('click', ctShowCoachingSelect);
   const ctChangeSectionBtn = document.getElementById('ct-change-section-btn');
   if(ctChangeSectionBtn) ctChangeSectionBtn.addEventListener('click', ctShowSectionSelect);
 
