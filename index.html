@@ -81,6 +81,19 @@
   body{ padding-top:env(safe-area-inset-top,0px); padding-bottom:calc(60px + env(safe-area-inset-bottom,0px)); }
 }
 </style>
+<style id="nav-edge-fix">
+/* Paint the whole viewport (incl. the area under the gesture/nav bar) in the page colour - no gold edge. */
+html{ background-color:#FAF6ED; min-height:100%; }
+html.dark-edge, html:has(body.dark){ background-color:#1B1912; color-scheme:dark; }
+body{ min-height:100vh; min-height:100dvh; }
+body.dark{ background-color:#1B1912; }
+html::after{
+  content:""; position:fixed; left:0; right:0; bottom:0; z-index:2147483000; pointer-events:none;
+  height:max(env(safe-area-inset-bottom,0px),28px);
+  background:#FAF6ED;
+}
+html:has(body.dark)::after{ background:#1B1912; }
+</style>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
