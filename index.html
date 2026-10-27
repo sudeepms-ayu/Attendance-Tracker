@@ -6458,6 +6458,154 @@
 
   .syl-enter{ animation: sylRise .62s cubic-bezier(.16,1,.3,1) both; animation-delay: calc(var(--i,0) * 55ms); }
 
+  /* ================================================================
+     PLANNER — Mission JEET · Drona JEE 2.0 (inside the Syllabus page)
+     ================================================================ */
+  .pl-mode{
+    position:relative; display:grid; grid-template-columns:1fr 1fr; padding:4px; margin:0 0 20px; border-radius:999px;
+    background: rgba(var(--ink-rgb),.07); border:1px solid rgba(var(--ink-rgb),.12);
+  }
+  .pl-mode::before{
+    content:''; position:absolute; top:4px; bottom:4px; left:4px; width:calc((100% - 8px) / 2); border-radius:999px;
+    background: var(--gold); box-shadow: 0 6px 16px -6px rgba(var(--gold-rgb),.75);
+    transform: translateX(calc(var(--idx,0) * 100%)); transition: transform .42s cubic-bezier(.3,1.25,.5,1);
+  }
+  .pl-mode button{
+    position:relative; z-index:1; background:none; border:none; padding:11px 8px; border-radius:999px; cursor:pointer;
+    font-family:'Lora',serif; font-size:15px; font-weight:600; letter-spacing:.02em; color: var(--ink-soft); transition: color .25s;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .pl-mode button svg{ width:17px; height:17px; flex:none; }
+  .pl-mode button.on{ color: var(--syl-tick); }
+
+  #pl-root{ --ac-rgb: var(--gold-rgb); }
+  #pl-root p, #pl-root ul{ margin:0; }
+  #pl-root button{ font-family:inherit; -webkit-tap-highlight-color: transparent; }
+  #pl-root .pl-in{ animation: sylRise .55s cubic-bezier(.16,1,.3,1) both; animation-delay: calc(var(--i,0) * 45ms); }
+
+  .pl-hero{
+    position:relative; overflow:hidden; padding:20px 18px 18px; border-radius:16px; margin-bottom:12px;
+    border:1px solid rgba(var(--gold-rgb),.38);
+    background: linear-gradient(155deg, rgba(var(--gold-rgb),.16), rgba(var(--paper-rgb),.55) 62%);
+    box-shadow: var(--card-shadow);
+  }
+  .pl-hero .pl-brand{ font-family:'Lora',serif; font-style:italic; font-size:12.5px; letter-spacing:.06em; color: var(--gold); }
+  .pl-hero h2{ font-family:'Lora',serif; font-weight:600; font-size:24px; line-height:1.15; margin:4px 0 2px; color:var(--ink); }
+  .pl-hero .pl-range{ font-family:'Lora',serif; font-size:13.5px; color: var(--ink-soft); }
+  .pl-bar{ height:7px; border-radius:99px; background: rgba(var(--ink-rgb),.1); margin:14px 0 6px; overflow:hidden; }
+  .pl-bar i{ display:block; height:100%; border-radius:99px; background: linear-gradient(90deg, rgba(var(--gold-rgb),.65), var(--gold)); width:0; transition: width 1s cubic-bezier(.16,1,.3,1); }
+  .pl-barl{ display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:12px; color: var(--ink-soft); }
+  .pl-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:0 0 12px; }
+  .pl-stat{
+    background: rgba(var(--paper-rgb),.5); border:1px solid rgba(var(--ink-rgb),.13); border-radius:12px; padding:11px 6px;
+    text-align:center; box-shadow: var(--card-shadow);
+  }
+  .pl-stat b{ display:block; font-family:'Lora',serif; font-size:22px; font-weight:600; color:var(--ink); line-height:1.1; }
+  .pl-stat span{ font-family:'Lora',serif; font-size:11.5px; color: var(--ink-soft); letter-spacing:.02em; }
+
+  .pl-glance{ display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:18px; }
+  .pl-card{
+    position:relative; border:1px solid rgba(var(--ink-rgb),.13); border-radius:14px; padding:14px 14px 13px;
+    background: rgba(var(--paper-rgb),.5); box-shadow: var(--card-shadow);
+  }
+  .pl-card .pl-k{ font-family:'Lora',serif; font-style:italic; font-size:12px; letter-spacing:.05em; color: var(--gold); margin-bottom:6px; }
+  .pl-card .pl-big{ font-family:'Lora',serif; font-weight:600; font-size:17px; color:var(--ink); line-height:1.25; }
+  .pl-card .pl-mut{ font-family:'Lora',serif; font-size:13px; color: var(--ink-soft); margin-top:3px; }
+  .pl-card .pl-go{
+    margin-top:10px; border:1px solid rgba(var(--gold-rgb),.5); background: rgba(var(--gold-rgb),.1); color: var(--gold);
+    border-radius:999px; padding:7px 14px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Lora',serif;
+  }
+  .pl-mini{ display:flex; flex-direction:column; gap:6px; margin-top:2px; }
+  .pl-mini div{ display:flex; gap:8px; align-items:baseline; font-family:'Lora',serif; font-size:13.5px; color:var(--ink); line-height:1.3; }
+  .pl-mini em{ font-style:normal; font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color: rgb(var(--ac-rgb)); flex:none; width:46px; }
+
+  .pl-seg{
+    position:relative; display:grid; grid-template-columns:1fr 1fr; padding:3px; border-radius:999px; margin-bottom:12px;
+    background: rgba(var(--ink-rgb),.07); border:1px solid rgba(var(--ink-rgb),.1);
+  }
+  .pl-seg::before{
+    content:''; position:absolute; top:3px; bottom:3px; left:3px; width:calc((100% - 6px) / 2); border-radius:999px;
+    background: rgba(var(--ink-rgb),.88); transform: translateX(calc(var(--idx,0) * 100%)); transition: transform .4s cubic-bezier(.3,1.25,.5,1);
+  }
+  body.dark .pl-seg::before{ background: rgba(var(--ink-rgb),.92); }
+  .pl-seg button{
+    position:relative; z-index:1; background:none; border:none; padding:9px 4px; border-radius:999px; cursor:pointer;
+    font-family:'Lora',serif; font-size:13.5px; font-weight:500; color: var(--ink-soft); transition: color .25s;
+  }
+  .pl-seg button.on{ color: var(--paper); }
+  body.dark .pl-seg button.on{ color:#15130d; }
+
+  .pl-tools{ display:flex; flex-direction:column; gap:10px; margin-bottom:6px; }
+  .pl-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .pl-chip{
+    border:1px solid rgba(var(--ink-rgb),.16); background: rgba(var(--paper-rgb),.5); color: var(--ink-soft);
+    border-radius:999px; padding:6px 12px; font-family:'Lora',serif; font-size:13px; cursor:pointer; transition: all .2s;
+  }
+  .pl-chip.on{ color: var(--syl-tick); background: rgb(var(--ac-rgb)); border-color: rgb(var(--ac-rgb)); box-shadow: 0 4px 12px -5px rgba(var(--ac-rgb),.7); }
+  .pl-chip.pl-today-btn{ margin-left:auto; color: var(--gold); border-color: rgba(var(--gold-rgb),.5); background: rgba(var(--gold-rgb),.09); font-weight:600; }
+  .pl-count{ font-family:'Lora',serif; font-size:12.5px; color: var(--ink-soft); font-style:italic; margin:2px 2px 0; }
+
+  .pl-month{
+    font-family:'Lora',serif; font-weight:600; font-size:18px; color:var(--ink); margin:26px 0 12px; display:flex; align-items:baseline; gap:10px;
+  }
+  .pl-month small{ font-size:12px; font-weight:400; font-style:italic; color: var(--ink-soft); white-space:nowrap; }
+  .pl-month::after{ content:''; flex:1; height:1px; order:1; background: linear-gradient(90deg, rgba(var(--ink-rgb),.2), transparent); }
+  .pl-month small{ order:2; } .pl-month span{ order:0; }
+
+  .pl-day{
+    display:grid; grid-template-columns:52px 1fr; gap:12px; margin:0 0 10px; padding:12px 12px 12px 10px;
+    border:1px solid rgba(var(--ink-rgb),.13); border-radius:14px; background: rgba(var(--paper-rgb),.5); box-shadow: var(--card-shadow);
+    scroll-margin-top:76px;
+  }
+  .pl-day.pl-past{ opacity:.74; }
+  .pl-day.pl-now{ border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--gold-rgb),.16), var(--card-shadow); opacity:1; }
+  .pl-date{ text-align:center; padding-top:2px; }
+  .pl-date b{ display:block; font-family:'Lora',serif; font-size:25px; font-weight:600; line-height:1; color:var(--ink); }
+  .pl-date span{ display:block; margin-top:4px; font-family:'Lora',serif; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color: var(--ink-soft); }
+  .pl-date i{ display:inline-block; margin-top:6px; font-style:normal; font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color: var(--syl-tick); background: var(--gold); padding:2px 6px; border-radius:99px; }
+  .pl-subs{ display:flex; flex-direction:column; gap:9px; min-width:0; }
+  .pl-sub{ border-left:3px solid rgb(var(--ac-rgb)); padding:1px 0 1px 10px; min-width:0; }
+  .pl-sl{ font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color: rgb(var(--ac-rgb)); font-family:'Lora',serif; }
+  .pl-ch{ font-family:'Lora',serif; font-weight:600; font-size:15px; line-height:1.3; color:var(--ink); margin-top:1px; overflow-wrap:anywhere; }
+  .pl-tp{ font-family:'Lora',serif; font-size:13.5px; line-height:1.45; color: var(--ink-soft); margin-top:2px; overflow-wrap:anywhere; }
+  .pl-ul{ list-style:none; padding:0; margin:3px 0 0 !important; }
+  .pl-ul li{ position:relative; padding-left:13px; font-family:'Lora',serif; font-size:13.5px; line-height:1.45; color: var(--ink-soft); margin:2px 0; overflow-wrap:anywhere; }
+  .pl-ul li::before{ content:''; position:absolute; left:2px; top:.62em; width:5px; height:5px; border-radius:50%; background: rgba(var(--ac-rgb),.7); }
+  .pl-none{ font-family:'Lora',serif; font-size:13.5px; font-style:italic; color: var(--ink-soft); padding:4px 0; }
+
+  .pl-day.pl-rev{ background: rgba(var(--ink-rgb),.045); }
+  .pl-day.pl-rev .pl-subs{ justify-content:center; }
+  .pl-revt{ font-family:'Lora',serif; font-weight:600; font-size:15px; color:var(--ink); }
+  .pl-revs{ font-family:'Lora',serif; font-size:13px; color: var(--ink-soft); margin-top:2px; }
+
+  .pl-day.pl-test, .pl-tcard{ border-color: rgba(var(--gold-rgb),.55); background: linear-gradient(160deg, rgba(var(--gold-rgb),.13), rgba(var(--paper-rgb),.5) 70%); }
+  .pl-day.pl-test .pl-date b{ color: var(--gold); }
+  .pl-th{ display:flex; align-items:flex-start; gap:10px; width:100%; text-align:left; background:none; border:none; padding:0; cursor:pointer; color:inherit; }
+  .pl-tn{ flex:none; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; background: var(--gold); color: var(--syl-tick); font-family:'Lora',serif; font-weight:700; font-size:13px; }
+  .pl-tt{ flex:1; min-width:0; }
+  .pl-tname{ font-family:'Lora',serif; font-weight:600; font-size:17px; color:var(--ink); line-height:1.2; }
+  .pl-tdate{ font-family:'Lora',serif; font-size:13px; color: var(--ink-soft); margin-top:2px; }
+  .pl-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .pl-tag{ font-family:'Lora',serif; font-size:11.5px; padding:3px 9px; border-radius:99px; border:1px solid rgba(var(--ink-rgb),.16); color: var(--ink-soft); background: rgba(var(--paper-rgb),.55); }
+  .pl-tag.g{ color: var(--gold); border-color: rgba(var(--gold-rgb),.5); background: rgba(var(--gold-rgb),.1); font-weight:600; }
+  .pl-tag.ok{ color: var(--success); border-color: rgba(60,107,76,.4); }
+  .pl-caret{ flex:none; width:22px; height:22px; color: var(--ink-soft); transition: transform .3s; margin-top:4px; }
+  .pl-open > .pl-th .pl-caret, .pl-open .pl-th .pl-caret{ transform: rotate(180deg); }
+  .pl-tbody{ display:grid; grid-template-rows:0fr; transition: grid-template-rows .4s cubic-bezier(.16,1,.3,1); }
+  .pl-open > .pl-tbody, .pl-open .pl-tbody{ grid-template-rows:1fr; }
+  .pl-tbody > div{ overflow:hidden; min-height:0; }
+  .pl-tin{ display:flex; flex-direction:column; gap:12px; padding-top:14px; }
+  .pl-grp{ margin-top:6px; }
+  .pl-gh{ display:flex; align-items:center; flex-wrap:wrap; gap:7px; font-family:'Lora',serif; font-weight:600; font-size:14.5px; color:var(--ink); line-height:1.3; }
+  .pl-cc{ font-size:10.5px; font-weight:600; letter-spacing:.04em; padding:2px 8px; border-radius:99px; color: rgb(var(--ac-rgb)); background: rgba(var(--ac-rgb),.12); border:1px solid rgba(var(--ac-rgb),.3); white-space:nowrap; }
+
+  .pl-tcard{ scroll-margin-top:76px; border-width:1px; border-style:solid; border-radius:14px; padding:14px; margin:0 0 10px; box-shadow: var(--card-shadow); }
+  .pl-tcard.pl-pastt{ border-color: rgba(var(--ink-rgb),.14); background: rgba(var(--paper-rgb),.5); }
+  .pl-tcard.pl-nextt{ box-shadow: 0 0 0 3px rgba(var(--gold-rgb),.16), var(--card-shadow); }
+  .pl-empty{ text-align:center; font-family:'Lora',serif; font-style:italic; color: var(--ink-soft); padding:34px 10px; }
+  .pl-foot{ margin:22px 0 4px; text-align:center; font-family:'Lora',serif; font-style:italic; font-size:12px; color: var(--ink-soft); line-height:1.5; }
+  @media (min-width:700px){ .pl-glance{ grid-template-columns:1fr 1fr; } }
+
   .syl-k{
     font-family:'Lora',serif; font-style:italic; font-size:12.5px; letter-spacing:.05em;
     color: var(--gold); margin:0 0 6px 0;
@@ -8012,11 +8160,16 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
 <div class="wrap syl-wrap" id="syllabus-view" style="display:none;">
   <button class="tt-back" id="syllabus-back-btn">&lsaquo; Back</button>
   <header class="cover">
-    <p class="eyebrow">Session 2020-21 &middot; +2 First Year</p>
-    <h1>Syllabus</h1>
-    <p class="subtitle">Your complete syllabus, subject by subject. Tick topics as you finish them, flag the ones to revise, and watch the ring fill.</p>
+    <p class="eyebrow" id="syl-eyebrow">Session 2020-21 &middot; +2 First Year</p>
+    <h1 id="syl-title">Syllabus</h1>
+    <p class="subtitle" id="syl-subtitle">Your complete syllabus, subject by subject. Tick topics as you finish them, flag the ones to revise, and watch the ring fill.</p>
   </header>
+  <div class="pl-mode" id="pl-mode" role="group" aria-label="Choose Syllabus or Planner" style="--idx:0">
+    <button type="button" data-mode="syl" class="on" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="m9 10 2 2 3.5-4"></path></svg>Syllabus</button>
+    <button type="button" data-mode="plan" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M8 3v4M16 3v4M3.5 10h17"></path><path d="M8 14.5h3M13 14.5h3M8 17.5h3"></path></svg>Planner</button>
+  </div>
   <div id="syl-root"></div>
+  <div id="pl-root" style="display:none;"></div>
 </div>
 
 <div class="wrap magic-wrap" id="magic-view" style="display:none;">
@@ -12449,6 +12602,7 @@ function initPracticalGroupFinder(){
 
   // ---- Uday Odia planner (Odia / English / IT lecture schedule) ----
   const CT_PLAN = [{"id":"or","label":"Odia","title":"Odia","lang":"or","chapters":[{"n":"ସାହାଡ଼ା ବୃକ୍ଷ","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-06-25"},{"t":"କବିତାର ପୃଷ୍ଠଭୂମି","k":2,"d":"2026-07-02"}]},{"n":"ଶାପମୋଚନ","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-07-09"},{"t":"ସାରମର୍ମ","k":2,"d":"2026-07-23"}]},{"n":"ସର୍ସୂପଦର୍","l":[{"t":"ଲେଖକ ପରିଚୟ","k":1,"d":"2026-07-30"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-08-06"}]},{"n":"ଝେଲମ୍ ନଦୀର ସନ୍ଧ୍ୟା","l":[{"t":"ଲେଖକ ପରିଚୟ","k":1,"d":"2026-08-13"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-08-20"}]},{"n":"ବ୍ୟାକରଣ","l":[{"t":"ପଦପ୍ରକରଣ","k":1,"d":"2026-08-27"},{"t":"ବିଶେଷଣ, ବିଶେଷ୍ୟ","k":2,"d":"2026-09-03"}]},{"n":"ଅତ୍ୟାଚାରିତ","l":[{"t":"ନାଟ୍ୟକାର ପରିଚୟ","k":1,"d":"2026-09-10"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-09-17"},{"t":"ସାରମର୍ମ","k":3,"d":"2026-09-24"}]},{"n":"ହିମକାଳ","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-10-01"},{"t":"ପୃଷ୍ଠଭୂମି","k":2,"d":"2026-10-08"}]},{"n":"ମଧୁବାବୁ","l":[{"t":"ଲେଖକ ପରିଚୟ","k":1,"d":"2026-10-15"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-10-22"},{"t":"ସାରମର୍ମ","k":3,"d":"2026-10-29"}]},{"n":"ମିତ୍ରତା","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-11-05"},{"t":"ପୃଷ୍ଠପୋଷକତା","k":2,"d":"2026-11-12"}]},{"n":"ଭାଲୁ ଉପଦ୍ରବ","l":[{"t":"ନାଟ୍ୟକାର ପରିଚୟ","k":1,"d":"2026-11-19"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-11-26"}]},{"n":"ସେହି ସ୍ମରଣୀୟ ଦିବସ","l":[{"t":"ଲେଖକ ପରିଚୟ","k":1,"d":"2026-12-03"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2026-12-10"},{"t":"ସାରକଥା","k":3,"d":"2026-12-17"}]},{"n":"ପଥରେ ଦିଶୁଛି ଶରଣ","l":[{"t":"କବି ପରିଚୟ","k":1,"d":"2026-12-24"},{"t":"କବିତାର ପୃଷ୍ଠଭୂମି","k":2,"d":"2026-12-31"}]},{"n":"ସୀମିତ ସମ୍ପର୍କ","l":[{"t":"ନାଟ୍ୟକାର ପରିଚୟ","k":1,"d":"2027-01-07"},{"t":"ବିଷୟବସ୍ତୁ","k":2,"d":"2027-01-14"},{"t":"ଶେଷକଥା","k":3,"d":"2027-01-21"}]},{"n":"ବ୍ୟାକରଣ","l":[{"t":"ସର୍ବନାମ","k":1,"d":"2027-01-28"},{"t":"ଅବ୍ୟୟ, କ୍ରିୟା","k":2,"d":"2027-02-04"}]}]},{"id":"en","label":"English","title":"English","lang":"en","chapters":[{"n":"Standing Up for Yourself","l":[{"t":"Units and comprehension","k":1,"d":"2026-07-01"},{"t":"Units and comprehension","k":2,"d":"2026-07-03"},{"t":"Units and comprehension","k":3,"d":"2026-07-07"}]},{"n":"Stopping by Woods on a Snowy Evening","l":[{"t":"Poem discussion","k":1,"d":"2026-07-10"},{"t":"Long questions and MCQs","k":2,"d":"2026-07-14"}]},{"n":"The Legend Behind a Legend","l":[{"t":"Units and comprehension","k":1,"d":"2026-07-17"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-07-21"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-07-24"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-07-28"}]},{"n":"Countable and Uncountable Nouns","l":[{"t":"Lecture 1","k":1,"d":"2026-07-31"}]},{"n":"Oft in the Stilly Night","l":[{"t":"Poem discussion","k":1,"d":"2026-08-04"},{"t":"Long questions and MCQs","k":2,"d":"2026-08-07"}]},{"n":"Application Writing","l":[{"t":"Lecture 1","k":1,"d":"2026-08-11"},{"t":"Lecture 2","k":2,"d":"2026-08-14"}]},{"n":"Three Questions","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-08-18"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-08-21"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-08-25"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-08-28"}]},{"n":"The Golden Touch","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-09-01"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-09-04"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-09-08"}]},{"n":"Tense Patterns","l":[{"t":"Lecture 1","k":1,"d":"2026-09-11"},{"t":"Lecture 2","k":2,"d":"2026-09-15"}]},{"n":"After Twenty Years","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-09-18"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-09-22"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-09-25"}]},{"n":"Prepositions","l":[{"t":"Lecture 1","k":1,"d":"2026-09-29"},{"t":"Lecture 2","k":2,"d":"2026-10-06"}]},{"n":"The Inchcape Rock","l":[{"t":"Poem discussion","k":1,"d":"2026-10-09"},{"t":"Poem discussion","k":2,"d":"2026-10-13"},{"t":"Long questions and MCQs","k":3,"d":"2026-10-16"}]},{"n":"To My True Friend","l":[{"t":"Poem discussion","k":1,"d":"2026-10-23"},{"t":"Long questions and MCQs","k":2,"d":"2026-10-27"}]},{"n":"Report Writing 1","l":[{"t":"Lecture 1","k":1,"d":"2026-10-30"},{"t":"Lecture 2","k":2,"d":"2026-11-03"}]},{"n":"In London in Minus Fours","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-11-06"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-11-10"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-11-13"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-11-17"}]},{"n":"Report Writing 2","l":[{"t":"Lecture 1","k":1,"d":"2026-11-20"}]},{"n":"The Open Window","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-11-24"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-11-27"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-12-01"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-12-04"}]},{"n":"Fishing","l":[{"t":"Poem discussion","k":1,"d":"2026-12-08"},{"t":"Long questions and MCQs","k":2,"d":"2026-12-11"}]},{"n":"The Cancer Fight","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2026-12-15"},{"t":"Units, comprehension and MCQs","k":2,"d":"2026-12-18"},{"t":"Units, comprehension and MCQs","k":3,"d":"2026-12-22"},{"t":"Units, comprehension and MCQs","k":4,"d":"2026-12-29"}]},{"n":"Imperatives","l":[{"t":"Lecture 1","k":1,"d":"2027-01-01"}]},{"n":"The One and Only Houdini","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2027-01-05"},{"t":"Units, comprehension and MCQs","k":2,"d":"2027-01-08"},{"t":"Units, comprehension and MCQs","k":3,"d":"2027-01-12"},{"t":"Units, comprehension and MCQs","k":4,"d":"2027-01-15"}]},{"n":"Report Writing 3","l":[{"t":"Lecture 1","k":1,"d":"2027-01-19"}]},{"n":"Childhood","l":[{"t":"Units, comprehension and MCQs","k":1,"d":"2027-01-22"},{"t":"Units, comprehension and MCQs","k":2,"d":"2027-01-26"},{"t":"Units, comprehension and MCQs","k":3,"d":"2027-01-29"},{"t":"Units, comprehension and MCQs","k":4,"d":"2027-02-02"},{"t":"Units, comprehension and MCQs","k":5,"d":"2027-02-05"},{"t":"Units, comprehension and MCQs","k":6,"d":"2027-02-09"}]}]},{"id":"it","label":"IT","title":"Information Technology","lang":"en","chapters":[{"n":"Hardware Concepts","l":[{"t":"Computer organisation","k":1,"d":"2026-06-24"},{"t":"Input","k":2,"d":"2026-07-06"},{"t":"Output","k":3,"d":"2026-07-13"},{"t":"Memory unit","k":4,"d":"2026-07-20"},{"t":"Communication bus, ports","k":5,"d":"2026-07-27"}]},{"n":"Types of Software","l":[{"t":"System software","k":1,"d":"2026-08-03"},{"t":"Language processors","k":2,"d":"2026-08-10"},{"t":"Utility software","k":3,"d":"2026-08-17"},{"t":"Application software, specific purpose application software","k":4,"d":"2026-08-24"}]},{"n":"Open Source Concepts","l":[{"t":"Open source software","k":1,"d":"2026-08-31"},{"t":"Common open standards","k":2,"d":"2026-09-07"},{"t":"Indian language computing","k":3,"d":"2026-09-21"}]},{"n":"Introduction to Programming","l":[{"t":"Programming fundamentals","k":1,"d":"2026-09-28"},{"t":"Variables","k":2,"d":"2026-10-05"},{"t":"Declaring variables","k":3,"d":"2026-10-12"},{"t":"Control structure","k":4,"d":"2026-10-26"},{"t":"Basic programming","k":5,"d":"2026-11-02"},{"t":"Data types","k":6,"d":"2026-11-09"},{"t":"Looping structure","k":7,"d":"2026-11-16"},{"t":"While loop","k":8,"d":"2026-11-23"}]},{"n":"DBMS","l":[{"t":"Introduction to database concepts","k":1,"d":"2026-11-30"},{"t":"Data types","k":2,"d":"2026-12-07"},{"t":"Keys","k":3,"d":"2026-12-14"}]},{"n":"Introduction to MySQL","l":[{"t":"Classification of SQL commands","k":1,"d":"2026-12-21"},{"t":"Creating & using a database","k":2,"d":"2026-12-28"},{"t":"INSERT command for inserting new rows","k":3,"d":"2027-01-04"},{"t":"Selecting specific columns using arithmetic operators","k":4,"d":"2027-01-11"},{"t":"Logical operators","k":5,"d":"2027-01-18"},{"t":"INSERT command","k":6,"d":"2027-01-25"},{"t":"Displaying table data","k":7,"d":"2027-02-01"},{"t":"Defining & using column alias","k":8,"d":"2027-02-08"},{"t":"WHERE clause, ORDER BY clause","k":9,"d":"2027-02-15"}]},{"n":"E-Governance","l":[{"t":"Definition","k":1,"d":"2027-02-22"},{"t":"E-governance challenges","k":2,"d":"2027-03-01"}]},{"n":"E-Learning","l":[{"t":"Definition","k":1,"d":"2027-03-08"},{"t":"E-learning websites & its social impact","k":2,"d":"2027-03-15"}]}]}];
+  window.__ctPlanData = CT_PLAN;
   const CT_PLAN_KEY = 'coaching-timetable-uo-subject-v1';
   let ctpSubject = null;
   const CTP_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -13212,7 +13366,9 @@ function initPracticalGroupFinder(){
     streak:   { theme:'ink',   head:'Attendance Streak' },
     attLow:   { theme:'ink',   head:'Attendance Alert' },
     attUp:    { theme:'green', head:'Back On Track' },
-    welcome:  { theme:'green', head:'Notifications Are On' }
+    welcome:  { theme:'green', head:'Notifications Are On' },
+    uoClass:  { theme:'cream', head:'Class Today' },
+    testSoon: { theme:'green', head:'Test Coming Up' }
   };
   const _notifBannerCache = {};
   const NOTIF_HEAD_FONT = '"Playfair Display", Georgia, "Times New Roman", serif';
@@ -13512,6 +13668,79 @@ function initPracticalGroupFinder(){
     });
     return out.join(', ');
   }
+  // ---- Coaching reminders: Uday Odia classes + Mission Jeet tests ----
+  // Uday Odia: one morning message, only on days a lecture is scheduled.
+  // Mission Jeet: every morning for the 3 days before a JEE Main test and
+  // the 5 days before a JEE Advanced test.
+  function ntfScheduledEvents(){
+    const out = [];
+    const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const WD = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const parse = iso => { const p = String(iso).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); };
+    const plan = window.__ctPlanData;
+    if(Array.isArray(plan)){
+      const byDay = {}, subjByDay = {};
+      plan.forEach(sj => (sj.chapters || []).forEach(c => (c.l || []).forEach(l => {
+        (byDay[l.d] = byDay[l.d] || []).push(sj.label + ': ' + c.n + ' \u2014 ' + l.t);
+        (subjByDay[l.d] = subjByDay[l.d] || []);
+        if(subjByDay[l.d].indexOf(sj.label) === -1) subjByDay[l.d].push(sj.label);
+      })));
+      Object.keys(byDay).forEach(d => out.push({
+        day: d, kind: 'uo', tag: 'tt-uo-' + d,
+        title: 'Uday Odia \u00b7 Class today', body: byDay[d].join('\n'),
+        label: 'Today', tone: 'gold', style: 'uoClass', head: 'Class Today', sub: 'Uday Odia \u00b7 ' + subjByDay[d].join(' \u00b7 ')
+      }));
+    }
+    const tests = window.__mjTests;
+    if(Array.isArray(tests)){
+      tests.forEach(t => {
+        const pat = String(t.pattern || '');
+        const span = /Advanced/i.test(pat) ? 5 : (/JEE Main/i.test(pat) ? 3 : 0);
+        if(!span) return;
+        const td = parse(t.date);
+        const dateTxt = WD[td.getDay()] + ', ' + td.getDate() + ' ' + MON[td.getMonth()] + ' ' + td.getFullYear();
+        const syl = [['p','Physics'],['c','Chemistry'],['m','Mathematics']].map(([k, nm]) => {
+          const names = (t[k] || []).map(x => x && x[0]).filter(Boolean);
+          if(!names.length) return '';
+          return nm + ': ' + names.slice(0, 4).join(', ') + (names.length > 4 ? ' +' + (names.length - 4) : '');
+        }).filter(Boolean);
+        for(let left = span; left >= 1; left--){
+          const dd = new Date(td.getFullYear(), td.getMonth(), td.getDate() - left);
+          const day = localDateKey(dd);
+          out.push({
+            day, kind: 'test', tag: 'exam-mj-' + t.n + '-' + day,
+            title: left === 1 ? t.name + ' is tomorrow' : t.name + ' in ' + left + ' days',
+            body: ['Mission Jeet \u00b7 ' + dateTxt].concat(syl).join('\n'),
+            label: left === 1 ? 'Tomorrow' : left + ' days left', tone: left <= 1 ? 'danger' : 'gold',
+            style: 'testSoon', head: left === 1 ? 'Test Tomorrow' : 'Test Coming Up', sub: t.name + ' \u00b7 ' + td.getDate() + ' ' + MON[td.getMonth()]
+          });
+        }
+      });
+    }
+    return out;
+  }
+
+  // Hands the same list to the service worker so the morning message can
+  // also show when the app is closed (Chrome on Android, installed app).
+  async function ntfSyncSchedToWorker(){
+    try{
+      if(!('caches' in window)) return;
+      const todayKey = localDateKey(new Date());
+      const on = typeof hwNotifyOn === 'function' && hwNotifyOn();
+      const events = on ? ntfScheduledEvents().filter(e => e.day >= todayKey).map(e => ({ day:e.day, title:e.title, body:e.body, tag:e.tag })) : [];
+      const snap = { events };
+      try{ snap.icon = notifLogoUrl(); snap.badge = NOTIF_BADGE_URL; }catch(e){}
+      const cache = await caches.open('cbsh-task-reminder-v1');
+      await cache.put('./__sched-events.json', new Response(JSON.stringify(snap), { headers:{ 'Content-Type':'application/json' } }));
+      if('serviceWorker' in navigator){
+        const reg = await navigator.serviceWorker.getRegistration();
+        if(reg && reg.periodicSync && events.length){
+          try{ await reg.periodicSync.register('sched-daily', { minInterval: 12 * 60 * 60 * 1000 }); }catch(e){}
+        }
+      }
+    }catch(e){}
+  }
+
   function ntfDailyChecks(){
     if(typeof window.ntfAdd !== 'function') return;
     if(typeof currentUser === 'undefined' || !currentUser) return;
@@ -13559,6 +13788,20 @@ function initPracticalGroupFinder(){
         window.ntfPush(title, body, 'hw-tmrw-' + tmrKey, { cat:'hw', label:'Tomorrow', tone:'gold' }, { style:'hw', head:'Homework Due Tomorrow' });
       });
     }
+    // Uday Odia class today / Mission Jeet test countdown: from 6 am, once a day each.
+    if(hour >= 6){
+      try{
+        ntfScheduledEvents().filter(e => e.day === today).forEach(e => {
+          once('sched-' + e.tag, () => {
+            window.ntfPush(e.title, e.body, e.tag, { cat: e.kind === 'uo' ? 'tt' : 'exam', label: e.label, tone: e.tone }, { style: e.style, head: e.head, sub: e.sub });
+          });
+        });
+      }catch(e){}
+    }
+    try{
+      const syncKey = 'ntf-sched-synced-v1', syncVal = today + (hwNotifyOn() ? ':on' : ':off');
+      if(localStorage.getItem(syncKey) !== syncVal){ localStorage.setItem(syncKey, syncVal); ntfSyncSchedToWorker(); }
+    }catch(e){}
     if(changed){ try{ localStorage.setItem(NTF_GEN_KEY, JSON.stringify(sent)); }catch(e){} }
   }
 
@@ -16173,6 +16416,7 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
     document.body.classList.add('syl-active');
     sylLoad();
     SYLV.q = ''; SYLV.filter = 'all'; SYLV.view = 'home';
+    if(window.plReset) window.plReset();
     sylRender(false);
     window.scrollTo(0, 0);
   }
@@ -16188,8 +16432,305 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
     const openBtn = document.getElementById('open-syllabus-btn');
     if(openBtn) openBtn.addEventListener('click', syllabusShow);
     const backBtn = document.getElementById('syllabus-back-btn');
-    if(backBtn) backBtn.addEventListener('click', () => { if(!sylBack()) syllabusHide(); });
+    if(backBtn) backBtn.addEventListener('click', () => { if(window.plBack && window.plBack()) return; if(!sylBack()) syllabusHide(); });
   })();
+
+  /* ================================================================
+     PLANNER — Mission JEET · Drona JEE 2.0 2027 (Lecture + Test planner)
+     Lives inside the Syllabus page, behind the Syllabus | Planner switch.
+     ================================================================ */
+  (function plannerModule(){
+    const PL_DATA = {"lec":[{"d":"2026-06-04","p":["Basic Mathematics",["Algebra"]]},{"d":"2026-06-05","m":["Basic Mathematics",["Number System"]]},{"d":"2026-06-06","c":["Some Basic Concepts of Chemistry (Mole Concept)",["Introduction, Matter and its Classification, amu,RAM, 1st 30th elements","Introduction to Mole, Mole Calculation Using No. of Particles, Molar Mass (Gram Atomic Mass and Gram Molecular Mass), Average Molar Mass, Worked Examples: Mole, Molar Mass, and No. of Particles."]]},{"d":"2026-06-08","p":["Basic Mathematics",["Trigonometry"]],"m":["Basic Mathematics",["Number System"]]},{"d":"2026-06-09","p":["Basic Mathematics",["Trigonometry"]],"m":["Basic Mathematics",["Wavy Curve Method"]]},{"d":"2026-06-10","m":["Basic Mathematics",["Wavy Curve Method"]]},{"d":"2026-06-11","p":["Basic Mathematics",["Coordinate Geometry","Binomial Expression"]],"m":["Basic Mathematics",["Wavy Curve Method"]]},{"d":"2026-06-12","p":["Basic Mathematics",["Functions","Logarithms"]]},{"d":"2026-06-13","c":["Some Basic Concepts of Chemistry (Mole Concept)",["Basics of Ideal Gas Equation: PV = nRT (Units of Pressure, Volume, Temperature and Their Interconversion). STP/NTP. ‘Y-Map,’ Worked Examples: Y Map."]]},{"d":"2026-06-15","p":["Basic Mathematics",["Differentiation"]],"c":["Some Basic Concepts of Chemistry (Mole Concept)",["Law of Chemical Combination: Conservation of Mass, Law of Constant Proportion, Law of Multiple Proportions, Law of Reciprocal Proportions. Worked Examples: Laws of Chemical Combination."]]},{"d":"2026-06-16","p":["Basic Mathematics",["Differentiation"]],"c":["Some Basic Concepts of Chemistry (Mole Concept)",["Percentage Composition,Empirical and Molecular formula","Determination of Empirical Formula. Worked Examples: Empirical and Molecular Formula."]]},{"d":"2026-06-17","p":["Basic Mathematics",["Integration"]],"m":["Basic Mathematics",["Wavy Curve Method"]]},{"d":"2026-06-18","p":["Basic Mathematics",["Integration"]],"m":["Basic Mathematics",["Modulus Functions"]]},{"d":"2026-06-19","m":["Basic Mathematics",["Modulus Functions"]]},{"d":"2026-06-20","c":["Some Basic Concepts of Chemistry (Mole Concept)",["Laws of Chemical Combinations","Mole,Vapour density,Atomicity","Mole Concept"]]},{"d":"2026-06-22","p":["Vectors",["Definition & type of vector, Angle between vectors"]],"m":["Basic Mathematics",["Modulus Inequalities"]]},{"d":"2026-06-23","p":["Vectors",["Addition of vectors, including both laws"]],"m":["Basic Mathematics",["Modulus Inequalities"]]},{"d":"2026-06-24","p":["Vectors",["Subtraction of vector & question Practice"]],"m":["Basic Mathematics",["Logarithms & their Properties"]]},{"d":"2026-06-25","p":["Vectors",["Polygon rule of vector addition"]],"m":["Basic Mathematics",["Logarithms & their Properties"]]},{"d":"2026-06-26","p":["Vectors",["Component of vector, definition of unit vector & representation of a vector in form"]],"c":["Some Basic Concepts of Chemistry (Mole Concept)",["Molecular Mass,Gram Molecular Mass","Average Molecular Mass","Formula Mass"]]},{"d":"2026-06-27","c":["Some Basic Concepts of Chemistry (Mole Concept)",["Percentage Composition,Empirical and Molecular formula","Mole,Vapour density,Atomicity","Mole Concept"]]},{"d":"2026-06-28","t":1},{"d":"2026-06-29","p":["Vectors",["General representation of a vector in 2-D & 3D, Position"]],"m":["Basic Mathematics",["Logarithms & their Properties"]]},{"d":"2026-06-30","p":["Vectors",["vector,displacement, average velocity"]],"m":["Basic Mathematics",["Logarithmic Equations"]]},{"d":"2026-07-01","p":["Vectors",["Scalar product and its application"]],"m":["Basic Mathematics",["Logarithmic Inequalities"]]},{"d":"2026-07-02","p":["Vectors",["Scalar product and its application"]],"m":["Basic Mathematics",["Logarithmic Inequalities"]]},{"d":"2026-07-03","p":["Units and Dimension",["Introduction"]],"c":["Some Basic Concepts of Chemistry (Mole Concept)",["Y Map, Stoichiometry: Interpretation of Balanced Chemical Equation. Equation-Based Calculation. Worked Examples: Equation-Based Calculation."]]},{"d":"2026-07-04","c":["Some Basic Concepts of Chemistry (Mole Concept)",["Stoichiometry and Stoichiometric Calculations (Mass– Mass, Mass–Volume and Mole–Mole Analysis). Worked Examples: Stoichiometry."]]},{"d":"2026-07-06","p":["Units and Dimension",["Physical Quantities","System of Units"]],"m":["Set Theory",["Types of Sets"]]},{"d":"2026-07-07","p":["Units and Dimension",["Dimensions of Physical Quantities"]],"m":["Set Theory",["Operations on Sets"]]},{"d":"2026-07-08","p":["Units and Dimension",["Dimensional Constants","Dimensional Variables"]],"m":["Set Theory",["Algebra of sets"]]},{"d":"2026-07-09","p":["Units and Dimension",["Dimensional Analysis and its Applications","Application Of Dimension"]],"m":["Set Theory",["Algebra of sets"]]},{"d":"2026-07-10","p":["Motion in a Straight Line",["Introduction"]],"c":["Some Basic Concepts of Chemistry (Mole Concept)",["Worked Examples on Stoichiometry and Limiting Reagent. How to Find Limiting Reagent and Excess Reagent. Worked Examples: Limiting Reagent.","Percentage Yield and Percentage Purity Concept and Its Numericals. Principle of Atomic Conservation (POAC).","Concentration Terms & Application","Mixture Analysis Concept and Its Numericals, Problems on Sequential Reaction."]]},{"d":"2026-07-11","c":["Structure of Atom",["Introduction","Atomic Structure – Discovery of Subatomic Particles."]]},{"d":"2026-07-12","t":2},{"d":"2026-07-13","p":["Motion in a Straight Line",["Concept of position, path length (distance), displacement"]],"m":["Set Theory",["Geometrical Practical Problems on Union and Intersection of Two Sets"]]},{"d":"2026-07-14","p":["Motion in a Straight Line",["Speed"]],"m":["Set Theory",["Geometrical Practical Problems on Union and Intersection of Two Sets"]]},{"d":"2026-07-15","p":["Motion in a Straight Line",["Velocity"]],"m":["Trigonometric Ratios & Identities",["Introduction","Trigonometric Ratios for Acute Angle","Basic identities","Sign Convention of the Trigonometric Functions"]]},{"d":"2026-07-16","p":["Motion in a Straight Line",["Velocity"]],"m":["Trigonometric Ratios & Identities",["Domain/Range of Trigonometric Functions"]]},{"d":"2026-07-17","p":["Motion in a Straight Line",["Acceleration"]],"c":["Structure of Atom",["Atomic Models","Some Important Atomic Terms,Nature of Light and Electromagnetic Spectrum,Particle Nature of Electromagnetic Radiation: Planck’s Quantum, Application of Planck’s Quantum Theory"]]},{"d":"2026-07-18","c":["Structure of Atom",["Photoelectric Effect.","Bohr Model (Derivation of Radius, Velocity, Energy (Total, KE, PE)","Bohr Model: Energy Level Diagram, Time Period of Revolution, Frequency, Its Drawbacks and Limitations."]]},{"d":"2026-07-20","p":["Motion in a Straight Line",["Acceleration"]],"m":["Trigonometric Ratios & Identities",["Domain/Range of Trigonometric Functions"]]},{"d":"2026-07-21","p":["Motion in a Straight Line",["Graphs"]],"m":["Trigonometric Ratios & Identities",["Allied Angles","Sum and Difference Formulae"]]},{"d":"2026-07-22","p":["Motion in a Straight Line",["Graphs"]],"m":["Trigonometric Ratios & Identities",["Multiple and Submultiple Angles Trigonometric Ratios of Standard Angles"]]},{"d":"2026-07-23","p":["Motion in a Straight Line",["Motion with constant acceleration (uniformly acceleration motion)"]],"m":["Trigonometric Ratios & Identities",["Transformation Formulae","Identities"]]},{"d":"2026-07-24","p":["Motion in a Straight Line",["Motion with variable acceleration"]],"c":["Structure of Atom",["Definition of Ionization Energy/Potential, Excitation Energy/Potential, Binding/Separation Energy, Spectrum and Its Classification."]]},{"d":"2026-07-25","c":["Structure of Atom",["Hydrogen Spectrum, Derivation and Application of Rydberg Equation, Number of Spectral Lines Calculations.","De Broglie Wavelength, Heisenberg Uncertainty Principle."]]},{"d":"2026-07-26","t":3},{"d":"2026-07-27","p":["Motion in a Straight Line",["Motion with variable acceleration"]],"m":["Trigonometric Ratios & Identities",["Maximum/Minimum Value Some Series"]]},{"d":"2026-07-28","p":["Motion in a Plane",["Projectile Motion"]],"m":["Trigonometric Ratios & Identities",["Maximum/Minimum Value Some Series"]]},{"d":"2026-07-29","p":["Motion in a Plane",["Projectile Motion"]],"m":["Trigonometric Ratios & Identities",["Maximum/Minimum Value Some Series"]]},{"d":"2026-07-30","p":["Motion in a Plane",["Projectile Motion"]],"m":["Trigonometric Ratios & Identities",["Maximum/Minimum Value Some Series"]]},{"d":"2026-07-31","p":["Motion in a Plane",["Projectile Motion"]],"c":["Structure of Atom",["Wave Mechanical Model of Atom (11.1–11.4): Concept of Orbit and Orbital, Wave Function, Schrödinger Equation and Function, Quantum Numbers."]]},{"d":"2026-08-01","c":["Structure of Atom",["Aufbau Principle, Pauli Principle, Hund’s Rule, Electronic Configuration of Atoms and Ions, Exceptions of Aufbau Principle, Magnetic Properties, Magnetic Moment, Orbital Angular Momentum."]]},{"d":"2026-08-03","p":["Motion in a Plane",["Realtive Motion"]],"m":["Trigonometric Ratios & Identities",["Maximum/Minimum Value Some Series"]]},{"d":"2026-08-04","p":["Motion in a Plane",["Realtive Motion"]],"m":["Trigonometric Equations",["Introduction","Solution"]]},{"d":"2026-08-05","p":["Motion in a Plane",["Realtive Motion"]],"m":["Trigonometric Equations",["Solution"]]},{"d":"2026-08-06","p":["Motion in a Plane",["Rain-River Boat"]],"m":["Trigonometric Equations",["Type of Trigonometric Equation"]]},{"d":"2026-08-07","p":["Motion in a Plane",["Rain-River Boat"]],"c":["Structure of Atom",["Radial Probability and Angular Probability Distribution Function, Types of Nodes, Number of Nodes Calculation, Distance of Radial Node from Nucleus, Graphs of r vs r, r² vs r, RPDF vs r."]]},{"d":"2026-08-08","c":["Classification of Elements and Periodicity in Properties",["Need for Classification of Elements,Historical Development of Classification of Elements,Magic Numbers"]]},{"d":"2026-08-10","p":["Motion in a Plane",["Rain-River Boat"]],"m":["Trigonometric Equations",["Type of Trigonometric Equation"]]},{"d":"2026-08-11","p":["Laws of Motion",["laws & types of force"]],"m":["Trigonometric Equations",["Type of Trigonometric Equation"]]},{"d":"2026-08-12","p":["Laws of Motion",["F.B.D. & Application of NLM"]],"m":["Trigonometric Equations",["Type of Trigonometric Equation"]]},{"d":"2026-08-13","p":["Laws of Motion",["F.B.D. & Application of NLM"]],"m":["Trigonometric Equations",["Type of Trigonometric Equation"]]},{"d":"2026-08-14","p":["Laws of Motion",["Atwood machine (pulley related), two or more blocks in contact"]],"c":["Classification of Elements and Periodicity in Properties",["Modern Periodic Law and Present Form of the Periodic Table,Merits of Long Form of Periodic Table Over Mendeleev's Periodic Table"]]},{"d":"2026-08-16","t":4},{"d":"2026-08-17","p":["Laws of Motion",["Elevator problems & spring problem/simple"]],"m":["Trigonometric Equations",["Type of Trigonometric Equation"]]},{"d":"2026-08-18","p":["Laws of Motion",["Cutting of spring"]],"m":["Quadratic Equations",["Introduction"]]},{"d":"2026-08-19","p":["Laws of Motion",["pseudo force"]],"m":["Quadratic Equations",["Introduction"]]},{"d":"2026-08-20","p":["Laws of Motion",["Constraint motion"]],"m":["Quadratic Equations",["Common roots"]]},{"d":"2026-08-21","p":["Friction",["Introduction static & kinetic friction"]],"c":["Classification of Elements and Periodicity in Properties",["Electronic Configuration of Elements and The Periodic Table"]]},{"d":"2026-08-22","c":["Classification of Elements and Periodicity in Properties",["Division of Elements into s, p, d and f Blocks, and Their Characteristics","Determintaion of period Block and Groups"]]},{"d":"2026-08-23","t":5},{"d":"2026-08-24","p":["Friction",["Single block horizontal surface & inclined plan"]],"m":["Quadratic Equations",["Theory of equation"]]},{"d":"2026-08-25","p":["Friction",["Angle of repose, Net contact force & angle of friction"]],"m":["Quadratic Equations",["Graph of ax2+bx+c"]]},{"d":"2026-08-26","c":["Classification of Elements and Periodicity in Properties",["Classification of Elements as Metals, Nonmetals and Metalloids","Anomalous Properties of Second Period Elements","Diagonal Relationship","Bridge Elements","Typical Elements","Nomenclature of Elements With Atomic Number > 100"]],"m":["Quadratic Equations",["Sign of ax2+bx+c"]]},{"d":"2026-08-27","c":["Classification of Elements and Periodicity in Properties",["Periodic Properties,Screening Effect,Effective Nuclear Charge"]],"m":["Quadratic Equations",["Location of roots"]]},{"d":"2026-08-29","p":["Friction",["Two block problems"]],"c":["Classification of Elements and Periodicity in Properties",["Periodic Trends in Physical Properties,Periodic Properties"]]},{"d":"2026-08-31","p":["Circular Motion",["Centripetal Acceleration"]],"m":["Quadratic Equations",["Some results"]]},{"d":"2026-09-01","p":["Circular Motion",["Tangential Acceleration"]],"m":["Quadratic Equations",["Descartes rule of signs"]]},{"d":"2026-09-02","c":["Classification of Elements and Periodicity in Properties",["Scales of Electronegativity,Factors affecting the magnitude of electronegativity"]],"m":["Sequence and Series",["Introduction"]]},{"d":"2026-09-03","c":["Classification of Elements and Periodicity in Properties",["Periodicity in Electronegativity","Oxides"]],"m":["Sequence and Series",["Arithmetic Progression (AP)"]]},{"d":"2026-09-04","p":["Circular Motion",["Dynamics of Circular Motion"]],"c":["Chemical Bonding and Molecular Structure",["Introduction,Ionic or Electrovalent Bond,Lattice Energy"]]},{"d":"2026-09-05","p":["Circular Motion",["Banking of Road","Conical pendulum"]],"c":["Chemical Bonding and Molecular Structure",["Factors Favouring Ionic Bonding, Properties of Ionic Compounds. Factors Affecting Solubility (Solubility Trend of Alkali Metal and Alkaline Earth Metal Carbonates, Nitrates, Sulphates, Bicarbonates, Hydroxides, Oxides and Halides)."]]},{"d":"2026-09-06","t":6},{"d":"2026-09-07","p":["Circular Motion",["Banking of Road","Conical pendulum"]],"m":["Sequence and Series",["Geometric Progression (GP)"]]},{"d":"2026-09-08","p":["Circular Motion",["Banking of Road","Conical pendulum"]],"m":["Sequence and Series",["Harmonic Progression (HP)"]]},{"d":"2026-09-09","c":["Chemical Bonding and Molecular Structure",["Kössel - Lewis Approach to Chemical Bonding"]],"m":["Sequence and Series",["Insertion of means between Two numbers"]]},{"d":"2026-09-10","c":["Chemical Bonding and Molecular Structure",["Resonating Structure, Resonance Energy"]],"m":["Sequence and Series",["Properties of Means"]]},{"d":"2026-09-11","p":["Work, Energy and Power",["Work Basics"]],"c":["Chemical Bonding and Molecular Structure",["Valence Shell Electron Pair Repulsion (VSEPR) Theory"]]},{"d":"2026-09-12","p":["Work, Energy and Power",["Work Done by Variable Force"]],"c":["Chemical Bonding and Molecular Structure",["Valence Bond Theory (VBT)"]]},{"d":"2026-09-14","p":["Work, Energy and Power",["Kinetic Energy & Work Energy Theorem"]],"m":["Sequence and Series",["Arithmetical Geometric Series (AGS)"]]},{"d":"2026-09-15","p":["Work, Energy and Power",["Potential Energy"]],"m":["Sequence and Series",["Summation","Method of difference"]]},{"d":"2026-09-16","c":["Chemical Bonding and Molecular Structure",["VSEPR Theory"]],"m":["Sequence and Series",["Telescopic series"]]},{"d":"2026-09-17","c":["Chemical Bonding and Molecular Structure",["Hybridisation"]],"m":["Relation Function",["Introduction"]]},{"d":"2026-09-18","p":["Work, Energy and Power",["Conservative Forces & Energy"]],"c":["Chemical Bonding and Molecular Structure",["Determination of Number of [p(pi) - p(pi)] Bonds"]]},{"d":"2026-09-19","p":["Work, Energy and Power",["Applications of Energy Conservation"]],"c":["Chemical Bonding and Molecular Structure",["Dipole Moment","Polarisability and Fajan's Rule","Polarity of Covalent Bonds"]]},{"d":"2026-09-20","t":7},{"d":"2026-09-21","p":["Work, Energy and Power",["Power"]],"m":["Relation Function",["Cartesian Products of Sets"]]},{"d":"2026-09-22","p":["Work, Energy and Power",["Collisions"]],"m":["Relation Function",["Relation"]]},{"d":"2026-09-23","c":["Chemical Bonding and Molecular Structure",["Linear Combination of Atomic Orbitals (LCAO)"]],"m":["Relation Function",["Relation"]]},{"d":"2026-09-24","c":["Chemical Bonding and Molecular Structure",["Molecular Orbital Theory (MOT)"]],"m":["Relation Function",["Functions"]]},{"d":"2026-09-25","p":["Work, Energy and Power",["Vertical Circular Motion"]],"c":["Chemical Bonding and Molecular Structure",["Shapes of the Molecular Orbitals","Bond Enthalpy or Bond Dissociation Enthalpy"]]},{"d":"2026-09-26","p":["Centre of Mass & System of Particles",["System of Particles Basics"]],"c":["Chemical Bonding and Molecular Structure",["Bond Parameters","Hydrogen Bonds,Intermolecular Forces","Back Bonding, Bridge bonding"]]},{"d":"2026-09-28","p":["Centre of Mass & System of Particles",["Centre of Mass Basics"]],"m":["Relation Function",["Functions"]]},{"d":"2026-09-29","p":["Centre of Mass & System of Particles",["COM Calculation (Discrete System)"]],"m":["Permutations and Combinations",["Introduction"]]},{"d":"2026-09-30","c":["Some Basic principles and Techniques (IUPAC Naming)",["Tetravalency of carbon: Shapes of Simple molecules - hybridization (s and p): sigma & pi bonds"]],"m":["Permutations and Combinations",["Counting"]]},{"d":"2026-10-01","c":["Some Basic principles and Techniques (IUPAC Naming)",["Classification of organic compounds based on functional groups: and those containing halogens, oxygen, nitrogen, and sulphur; Homologous series"]],"m":["Permutations and Combinations",["Permutation"]]},{"d":"2026-10-03","p":["Centre of Mass & System of Particles",["COM of Continuous Body"]],"c":["Some Basic principles and Techniques (IUPAC Naming)",["Degree of Carbon, Hydrogen, Alcohol, Amine, Degree of Unsaturation, Functional Group"]]},{"d":"2026-10-04","t":8},{"d":"2026-10-05","p":["Centre of Mass & System of Particles",["Standard COM Results"]],"m":["Permutations and Combinations",["Circular Permutation"]]},{"d":"2026-10-06","p":["Centre of Mass & System of Particles",["COM by Integration"]],"m":["Permutations and Combinations",["Combination"]]},{"d":"2026-10-07","c":["Some Basic principles and Techniques (IUPAC Naming)",["IUPAC of Hydrocarbons & Cycloalkanes"]],"m":["Permutations and Combinations",["Divisors"]]},{"d":"2026-10-08","c":["Some Basic principles and Techniques (IUPAC Naming)",["IUPAC of Functional Group and Polyfunctional Group","IUPAC of Aromatic Compound"]],"m":["Permutations and Combinations",["Exponent"]]},{"d":"2026-10-09","p":["Centre of Mass & System of Particles",["Motion of Centre of Mass"]],"c":["Some Basic principles and Techniques (IUPAC Naming)",["IUPAC Naming of Bicyclo & Spiro Compounds","Common Naming","PYQ'S"]]},{"d":"2026-10-10","p":["Centre of Mass & System of Particles",["Momentum of System"]],"c":["State of matter",["The Gaseous State"]]},{"d":"2026-10-12","p":["Centre of Mass & System of Particles",["Impulse"]],"m":["Permutations and Combinations",["Division and distribution"]]},{"d":"2026-10-13","p":["Centre of Mass & System of Particles",["Collision Basics"]],"m":["Permutations and Combinations",["Derangement"]]},{"d":"2026-10-14","c":["State of matter",["The Gas Laws"]],"m":["Permutations and Combinations",["Some rules"]]},{"d":"2026-10-15","c":["State of matter",["The Gas Laws,Ideal Gas Equation","Dalton's Law of Partial Pressures","Graham's Law of Diffusion/effusion"]],"m":["Binomial theorem",["Introduction","Expansion of (x+a)n"]]},{"d":"2026-10-16","p":["Centre of Mass & System of Particles",["1D Collision"]],"c":["State of matter",["Kinetic Molecular Theory of Gases","Kinetic Gas Equation","Explanation of Gas Law from Kinetic Theory","Kinetic Energy and Molecular Speeds"]]},{"d":"2026-10-17","p":["Centre of Mass & System of Particles",["Coefficient of Restitution"]],"c":["State of matter",["Maxwell-Boltzmann Distribution of Molecular Speeds","Behaviour of Real Gases : Deviation from Ideal Gas Behaviour"]]},{"d":"2026-10-18","t":9},{"d":"2026-10-19","p":["Centre of Mass & System of Particles",["2D Collision"]],"m":["Binomial theorem",["General terms","Middle terms"]]},{"d":"2026-10-21","c":["State of matter",["Equation of State for Real Gases (Van der Waals Equation)","Liquefaction of Gases","Eudiometry"]],"m":["Binomial theorem",["Numerically greatest term of binomial expansion","Form (A + )n"]]},{"d":"2026-10-22","c":["Thermodynamics",["Introduction,Basic terms,Classification of system on the basis of nature,State of system"]],"m":["Binomial theorem",["Sum of coefficients in binomial expansion"]]},{"d":"2026-10-23","p":["Centre of Mass & System of Particles",["Advanced COM Applications"]],"c":["Thermodynamics",["Types of Properties, Types of Thermodynamic Processes on the Basis of the Way the Processes Are Carried Out."]]},{"d":"2026-10-24","p":["Rotational Motion",["Rotational Kinematics"]],"c":["Thermodynamics",["Work, heat and internal energy,First Law of Thermodynamics","Enthalpy","Heat Capacity"]]},{"d":"2026-10-26","p":["Rotational Motion",["Rotational Kinematics"]],"m":["Binomial theorem",["Summation of series"]]},{"d":"2026-10-27","p":["Rotational Motion",["Moment of Inertia"]],"m":["Binomial theorem",["Multinomial theorem"]]},{"d":"2026-10-28","c":["Thermodynamics",["Calculation of q, w, ΔU and ΔH in Various Processes.","Thermochemistry","Enthalpy of a substance","Standard state of substance","Enthalpy of reaction","Factor affecting heat of reaction","Laws of Thermochemistry"]],"m":["Binomial theorem",["Binomial theorem for any index"]]},{"d":"2026-10-29","c":["Thermodynamics",["Enthalpy change for different type of reaction","Limitation of Ist law of thermodynamics","Spontaneous process","Entropy","Second law of Thermodynamics","Entropy Change of an Ideal Gas."]],"m":["Binomial theorem",["Binomial theorem for any index"]]},{"d":"2026-10-30","p":["Rotational Motion",["Moment of Inertia"]],"c":["Thermodynamics",["Entropy Change of Solids and liquids Upon Heating","Entropy Calculation for solid or liquid systems"]]},{"d":"2026-10-31","p":["Rotational Motion",["Moment of Inertia"]],"c":["Thermodynamics",["Standard absolute molar entropy","Comparing absolute entropies of substance"]]},{"d":"2026-11-01","t":10},{"d":"2026-11-02","p":["Rotational Motion",["Moment of Inertia"]],"m":["Straight Lines",["Introduction","Section formula"]]},{"d":"2026-11-03","p":["Rotational Motion",["Torque"]],"m":["Straight Lines",["Different Centre of Triangle"]]},{"d":"2026-11-04","c":["Thermodynamics",["Entropy Change (ΔS) of a Chemical Reaction, Gibbs Free Energy."]],"m":["Straight Lines",["Area","Locus"]]},{"d":"2026-11-05","c":["Redox Reaction",["Introduction"]],"m":["Straight Lines",["Straight line","Slope"]]},{"d":"2026-11-10","p":["Rotational Motion",["Kinetic Energy"]],"m":["Straight Lines",["Standard form of straight line"]]},{"d":"2026-11-12","c":["Redox Reaction",["Balancing of Redox Reaction Types of Redox Reaction"]],"m":["Straight Lines",["Position of point w.r.t straight line"]]},{"d":"2026-11-13","p":["Rotational Motion",["Fixed axis rotation"]],"c":["Redox Reaction",["Concept of n-Factor.","Valency Factor","Law of Equivalence"]]},{"d":"2026-11-14","p":["Rotational Motion",["Angular momentum"]],"c":["Chemical Equilibrium",["Types of Chemical Reactions, Active Mass, Chemical Equilibrium & Its Characteristics"]]},{"d":"2026-11-17","p":["Rotational Motion",["Combined rotation and translation"]],"m":["Straight Lines",["Angle between two straight lines"]]},{"d":"2026-11-18","c":["Chemical Equilibrium",["Types of Equilibria, Law of Mass Action, Relation Between Kp & Kc, Some General Equilibrium Expressions"]],"m":["Straight Lines",["Perpendicular distance","Transformation of Axis"]]},{"d":"2026-11-19","c":["Chemical Equilibrium",["Factors Affecting Equilibrium Constant and Its Application"]],"m":["Straight Lines",["Concurrent lines"]]},{"d":"2026-11-20","p":["Rotational Motion",["Combined rotation and translation"]],"c":["Chemical Equilibrium",["Degree of Dissociation, Mixed Concept Numericals"]]},{"d":"2026-11-21","p":["Rotational Motion",["Impulsive torque"]],"c":["Chemical Equilibrium",["Le Chatelier's Principle & Its Applications","Thermodynamics of Equilibrium, Simultaneous Equilibrium"]]},{"d":"2026-11-22","t":11},{"d":"2026-11-23","p":["Rotational Motion",["Toppling"]],"m":["Straight Lines",["Family of lines"]]},{"d":"2026-11-24","p":["Rotational Motion",["Toppling"]],"m":["Straight Lines",["Pair Straight Line"]]},{"d":"2026-11-25","c":["Ionic Equilibrium",["Type of electrolytes"]],"m":["Straight Lines",["Angle bisector"]]},{"d":"2026-11-26","c":["Ionic Equilibrium",["Different theory for acid and base,The autoionization of water"]],"m":["Circles",["Introduction","General equation"]]},{"d":"2026-11-27","p":["Gravitation",["Force/Field/Potential/Energy. Variation of g"]],"c":["Ionic Equilibrium",["The pH–Scale","Ionisation of weak electrolyte"]]},{"d":"2026-11-28","p":["Gravitation",["Force/Field,'PotentiaL Energy, Variation of g"]],"c":["Ionic Equilibrium",["Common ion effect and levelling effect"]]},{"d":"2026-11-30","p":["Gravitation",["Escape velocity"]],"m":["Circles",["Diameter form","Parametric form"]]},{"d":"2026-12-01","p":["Gravitation",["circular orbits, Kepler's laws (Brief only statements"]],"m":["Circles",["Intercept made on axis","Position of point w.r.t circle"]]},{"d":"2026-12-02","c":["Ionic Equilibrium",["pH–Calculation"]],"m":["Circles",["Position of straight lines w.r.t circles","Tangent"]]},{"d":"2026-12-03","c":["Ionic Equilibrium",["Buffer Solution","Salt hydrolysis"]],"m":["Circles",["Chord of contact","Chord of mid point form"]]},{"d":"2026-12-04","p":["Gravitation",["circular orbits. Kepler's laws (Brief only statements"]],"c":["Ionic Equilibrium",["Indicator","Acid-base titration","Solubility and Solubility product"]]},{"d":"2026-12-05","p":["Thermal Properties of Matter",["Thermal Expansion"]],"c":["Some Basic principles and Techniques (Isomerism)",["Isomerism & Type of Isomerism Classification and Structural Isomerism (Chain and Position)"]]},{"d":"2026-12-06","t":12},{"d":"2026-12-07","p":["Thermal Properties of Matter",["Thermal Expansion"]],"m":["Circles",["Position of two Circles"]]},{"d":"2026-12-08","p":["Thermal Properties of Matter",["calorimetry"]],"m":["Circles",["Position of two circles (touching, intersecting, separate)"]]},{"d":"2026-12-09","c":["Some Basic principles and Techniques (Isomerism)",["Structural Isomerism (Metamers,Functional)"]],"m":["Circles",["Circle circumscribing a triangle"]]},{"d":"2026-12-10","c":["Some Basic principles and Techniques (Isomerism)",["Tautomerism"]],"m":["Conic Sections: Parabola",["Introduction","Standard form","Parametric form","Types of parabola"]]},{"d":"2026-12-11","p":["Thermal Properties of Matter",["calorimetry"]],"c":["Some Basic principles and Techniques (Isomerism)",["Calculation of Structural Isomerism-1"]]},{"d":"2026-12-12","p":["Thermal Properties of Matter",["Heat Transfer"]],"c":["Some Basic principles and Techniques (Isomerism)",["Calculation of Structural Isomerism-2"]]},{"d":"2026-12-14","p":["Thermal Properties of Matter",["(Conduction)"]],"m":["Conic Sections: Parabola",["General equation","Focal distance"]]},{"d":"2026-12-15","p":["Thermal Properties of Matter",["Heat Transfer"]],"m":["Conic Sections: Parabola",["Some result"]]},{"d":"2026-12-16","c":["Some Basic principles and Techniques (Isomerism)",["Geometrical isomerism & Exhibition"]],"m":["Conic Sections: Parabola",["Position of point w.r.t. parabola","Position of straight lines w.r.t parabola"]]},{"d":"2026-12-17","c":["Some Basic principles and Techniques (Isomerism)",["Cis trans & physical property Z/E CIP rule"]],"m":["Conic Sections: Parabola",["Tangent","Normal","Properties of Tangent & Normal"]]},{"d":"2026-12-18","p":["Thermal Properties of Matter",["(Conduction)"]],"c":["Some Basic principles and Techniques (Isomerism)",["Special cases of G.I and Calculation of G.I"]]},{"d":"2026-12-19","p":["Thermal Properties of Matter",["Heat Transfer (Radiation)"]],"c":["Some Basic principles and Techniques (Isomerism)",["Conformations: Sawhorse and Newman projections (of ethane,butane cyclohexane )","Optical isomerism: Basics Polarimeter experiment and Chiral Centre,Stereo Centre","PYQ'S"]]},{"d":"2026-12-20","t":13},{"d":"2026-12-21","p":["Thermal Properties of Matter",["Heat Transfer (Radiation)"]],"m":["Conic Sections: Parabola",["Focal chord","Chord of contact"]]},{"d":"2026-12-22","p":["Mechanical Properties of Solids",["Introduction","Stress And Strain","Hooke'S Law","Stress-strain Curve","Types of Elasticity Coefficients (Elastic Moduli)"]],"m":["Conic Sections: Parabola",["Chord in mid points form","Pair of tangents"]]},{"d":"2026-12-23","c":["Some Basic principles and Techniques (GOC)",["Covalent bond fission - Homolytic and heterolytic & Inductive Effect-Basic introduction"]],"m":["Conic Sections: Parabola",["Director circle","Properties"]]},{"d":"2026-12-24","c":["Some Basic principles and Techniques (GOC)",["Positive and negative inductive effect and its application"]],"m":["Conic Sections:Ellipse",["Introduction","Standard form","Auxiliary circle"]]},{"d":"2026-12-26","p":["Mechanical Properties of Solids",["Elastic Moduli","Types of Elasticity Coefficients (Elastic Moduli)","Elastic Moduli"]],"c":["Some Basic principles and Techniques (GOC)",["Hyperconjugation","Application of Hyperconjugation"]]},{"d":"2026-12-28","p":["Mechanical Properties of Fluids",["Applications Of Elastic Behaviour Of Materials, Introduction, Pressure, Variation of pressure with height"]],"m":["Conic Sections:Ellipse",["General equation","Another definition","Focal distance"]]},{"d":"2026-12-29","p":["Mechanical Properties of Fluids",["Applications Of Elastic Behaviour Of Materials, Introduction, Pressure, Variation of pressure with height"]],"m":["Conic Sections:Ellipse",["Position of point w.r.t. ellipse","Position of straight line w.r.t. ellipse"]]},{"d":"2026-12-30","c":["Some Basic principles and Techniques (GOC)",["Resonance (Part-1)"]],"m":["Conic Sections:Ellipse",["Tangent","Normal"]]},{"d":"2026-12-31","c":["Some Basic principles and Techniques (GOC)",["Resonance (Part-2), Stability of resonating Structures"]],"m":["Conic Sections:Ellipse",["Equation of chord joining the P(a) and Q(b)","Director circle","Properties"]]},{"d":"2027-01-02","p":["Mechanical Properties of Fluids",["toricelli;s experiment","Pascal Law","Archimedes Principle"]],"c":["Some Basic principles and Techniques (GOC)",["Aromaticity, Annulene"]]},{"d":"2027-01-03","t":14},{"d":"2027-01-04","p":["Mechanical Properties of Fluids",["applications Of Elastic Behaviour Of Materials, Introduction, Pressure, Variation of pressure with height"]],"m":["Conic Sections:Ellipse",["Director circle","Properties"]]},{"d":"2027-01-05","p":["Mechanical Properties of Fluids",["variation of pressure inside liquid in accelerated containers"]],"m":["Conic Sections: Hyperbola",["Introduction Standard form","Auxiliary circle","General equation","Another definition"]]},{"d":"2027-01-06","c":["Some Basic principles and Techniques (GOC)",["Mesomeric Effect","Stability of Intermediates, Bond Length and Bond Strength"]],"m":["Conic Sections: Hyperbola",["Focal distance","Position of point w.r.t. hyperbola","Position of straight lines w.r.t. hyperbola"]]},{"d":"2027-01-07","c":["Some Basic principles and Techniques (GOC)",["Acidic Strength","Basic Strength"]],"m":["Conic Sections: Hyperbola",["Tangent","Normal","Properties Related to Tangent & normal","Chord of contact","Chord in mid point form","Pair of tangents"]]},{"d":"2027-01-08","p":["Mechanical Properties of Fluids",["shape of free surface of liquid present in rotating container"]],"c":["Some Basic principles and Techniques (GOC)",["Tautomerism ( Enol Content) electrophiles, and nucleophiles & Type of reactions Substitution, addition, elimination, and rearrangement."]]},{"d":"2027-01-09","p":["Mechanical Properties of Fluids",["torricelli's experiment"]],"c":["Some Basic principles and Techniques (GOC)",["Purification","Crystallization, sublimation, distillation, differential extraction, and chromatography - principles and their applications."]]},{"d":"2027-01-11","p":["Mechanical Properties of Fluids",["Pascal Law"]],"m":["Conic Sections: Hyperbola",["Director circle","Asymptotes","Rectangular hyperbola","Properties"]]},{"d":"2027-01-12","p":["Mechanical Properties of Fluids",["Archimedes Principle"]],"m":["Complex Number",["Introduction, Complex Numbers"]]},{"d":"2027-01-13","c":["Some Basic principles and Techniques (GOC)",["Qualitative analysis"]],"m":["Complex Number",["Algebraic operations"]]},{"d":"2027-01-15","p":["Mechanical Properties of Fluids",["Streamline Flow"]],"c":["Some Basic principles and Techniques (GOC)",["PYQ'S"]]},{"d":"2027-01-16","p":["Mechanical Properties of Fluids",["Bernoulli's Principle(Applications Of Bernoulli's Theorem)","SURFACE TENSION"]],"c":["Hydrocarbon",["Method of Preparation of Alkane"]]},{"d":"2027-01-17","t":15},{"d":"2027-01-18","p":["Thermodynamics",["Thermodynamic System"]],"c":["Hydrocarbon",["Chemical Properties of Alkane : Mechanism of halogenation of alkanes, Physical Properties of Alkane"]],"m":["Complex Number",["Argand Plane or complex plane"]]},{"d":"2027-01-19","p":["Thermodynamics",["Reversible and irreversible Process"]],"c":["Hydrocarbon",["Method of Preparation of Alkene (Part-1)","Method of Preparation of Alkene (Part-2), Mechanism of electrophilic addition: addition of hydrogen, halogens"]],"m":["Complex Number",["Conjugate of Complex"]]},{"d":"2027-01-20","p":["Thermodynamics",["First Law of Thermodynamics","Second Law of Thermodynamics"]],"c":["Hydrocarbon",["Mechanism of electrophilic addition: Water, hydrogen halides (Markownikoff's and peroxide effect)"]],"m":["Complex Number",["Modulus of complex no"]]},{"d":"2027-01-21","p":["Thermodynamics",["First Law of Thermodynamics","Second Law of Thermodynamics"]],"c":["Hydrocarbon",["Ozonolysis and polymerization."]],"m":["Complex Number",["Argument of Complex numbers"]]},{"d":"2027-01-22","p":["Thermodynamics",["First Law of Thermodynamics","Second Law of Thermodynamics"]],"c":["Hydrocarbon",["Method of Preparation of Alkyne"]],"m":["Complex Number",["Form of complex numbers"]]},{"d":"2027-01-23","p":["Thermodynamics",["First Law of Thermodynamics","Second Law of Thermodynamics"]],"c":["Hydrocarbon",["Chemical Properties of Alkyne : Acidic character: Addition of hydrogen, halogens, water, and hydrogen halides: Polymerization."]],"m":["Complex Number",["De moivre's theorem"]]},{"d":"2027-01-25","p":["Oscillations",["Definitions"]],"c":["Hydrocarbon",["MOP of benzene - Properties of Benzene Mechanism of electrophilic substitution: halogenation, nitration.","Friedel - Crafts alkylation and acylation, directive influence of the functional group in mono substituted benzene.","PYQs"]],"m":["Complex Number",["Cube roots of unity","nth root of unity"]]},{"d":"2027-01-27","p":["Oscillations",["Equation of S.H.M. & Introduction of Planar"]],"c":["Purification and Analysis of Organic Compound",["Methods of Purification of Organic Compounds","Qualitative Analysis of Organic Compounds","Detection of Other Elements","Quantitative Analysis","Estimatiom Of Carbon and Hydrogen","Nitrogen","Halogens","Sulphur","Phosphorus","Oxygen"]],"m":["Complex Number",["Geometry of complex"]]},{"d":"2027-01-28","p":["Oscillations",["Energy in S.H.M. & Application of planar"]],"c":["Environmental Chemistry",["Introduction","Environmental Pollution, Atmospheric Pollution","Tropospheric Pollution","Acid rain","Particulate Pollutants","Smog"]],"m":["Limits and Derivatives",["Introduction","Limit"]]},{"d":"2027-01-29","p":["Oscillations",["Dynamics of S.H.M. & find time period"]],"c":["Environmental Chemistry",["Stratospheric Pollution","Water pollution","International Standards for Drinking Water","Soil pollution","Industrial waste","Strategies to control environmental pollution","Green chemistry","Green Chemistry in day-to-day Life"]],"m":["Limits and Derivatives",["Derivative"]]},{"d":"2027-01-30","p":["Oscillations",["Spring block system & incomplete S.H.M"]],"c":["P-block Elements (Group 13 and 14)",["Group 13 elements","Physical Properties"]],"m":["Statistics",["Introduction","Variable (Variate)","Relative and cumulative frequency"]]},{"d":"2027-01-31","t":16},{"d":"2027-02-01","p":["Oscillations",["Simple pendulum & Compound pendulum"]],"c":["P-block Elements (Group 13 and 14)",["Chemical Properties","Important trends and anomalous properties of boron","Some important compounds of boron"]],"m":["Statistics",["Mean","Median"]]},{"d":"2027-02-02","p":["Oscillations",["Torsional pendulum & Coupled oscillation"]],"c":["P-block Elements (Group 13 and 14)",["Uses of boron and aluminium and their compounds","Group 14 elements","Physical Properties of Group 14"]],"m":["Statistics",["Mode","Relation among mean median and mode","Measure of Dispersion","Variance"]]},{"d":"2027-02-03","p":["Waves",["Travelling Waves"]],"c":["P-block Elements (Group 13 and 14)",["Chemical Properties","Important trends and anomalous behaviour of carbon"]],"m":["Probability",["Introduction","Event"]]},{"d":"2027-02-04","p":["Waves",["Wave function"]],"c":["P-block Elements (Group 13 and 14)",["Allotropes of carbon","Uses of Carbon","Some important compounds of carbon and silicon"]],"m":["Probability",["Types of events","Algebra of events","Complementary event"]]},{"d":"2027-02-05","p":["Waves",["Superposition and interference"]],"c":["S-block Element",["Group 1 Elements","Physical Properties of Group 1 Elements","Chemical Properties of Group 1 Elements","Uses of Group 1 elements"]],"m":["Probability",["Mutually exclusive event","Exhaustive event","Axiomatic approach to probability","Variance"]]},{"d":"2027-02-06","p":["Waves",["Superposition & Reflection"]],"c":["S-block Element",["General characteristics of the compounds of the alkali metals","Anomalous properties of lithium"]],"m":["Introduction to Three Dimensional Geometry",["Introduction","Coordinate Axes and coordinate plane","Coordinate of point is space","Distance between two points","Section Formula"]]},{"d":"2027-02-08","p":["Waves",["Standing Waves"]],"c":["S-block Element",["Some important compounds of sodium","Biological importance of sodium and potassium","Group 2 elements","Physical properties of group 2 elements"]],"m":["Linear Inequalities",["Introduction, Basic Concepts & Terminologies","Solving Linear Inequalities in One Variable","Solving Linear Inequalities in Two Variables","Graphical Method & Shaded Regions","Word Problems & Real-life Application"]]},{"d":"2027-02-09","p":["Waves",["Standing Waves"]],"c":["Hydrogen and its Compound",["Position of Hydrogen in the Periodic Table","Hydrogen","Isotopes of Hydrogen","Preparation of Dihydrogen, H2"]],"m":["Solution of Triangle",["Introduction","Sine rule","Cosine rule","Projection Formulae","Napier's Analogy","Auxiliary formulas"]]},{"d":"2027-02-10","p":["Errors and Measurements",["Vernier Calliper","Screw gauge"]],"c":["Hydrogen and its Compound",["Physical properties of Dihydrogen","Chemical properties of Dihydrogen","Uses of Dihydrogen","Hydrides","Water & Permanent Hardness"]],"m":["Solution of Triangle",["Area of triangle","Centres of Triangle","Regular Polygon","Solution of Triangle","Excentral triangle","Some Results"]]},{"d":"2027-02-14","t":17},{"d":"2027-02-15","r":1},{"d":"2027-02-16","r":1},{"d":"2027-02-17","r":1},{"d":"2027-02-18","r":1},{"d":"2027-02-19","r":1},{"d":"2027-02-20","r":1},{"d":"2027-02-22","r":1},{"d":"2027-02-23","r":1},{"d":"2027-02-24","r":1},{"d":"2027-02-25","r":1},{"d":"2027-02-26","r":1},{"d":"2027-02-27","r":1},{"d":"2027-02-28","t":18},{"d":"2027-03-14","t":19}],"tests":[{"n":1,"name":"Short Test-1","date":"2026-06-28","type":"Part Test","pattern":"Short Test","p":[["Basic Mathematics",1,[]]],"c":[["Some Basic Concepts of Chemistry (Mole Concept)",0,["Introduction, Matter and its Classification, amu,RAM, 1st 30th elements","Introduction to Mole, Mole Calculation Using No. of Particles, Molar Mass (Gram Atomic Mass and Gram Molecular Mass), Average Molar Mass, Worked Examples: Mole, Molar Mass, and No. of Particles.","Basics of Ideal Gas Equation: PV = nRT (Units of Pressure, Volume, Temperature and Their Interconversion). STP/NTP. ‘Y-Map,’ Worked Examples: Y Map.","Law of Chemical Combination: Conservation of Mass, Law of Constant Proportion, Law of Multiple Proportions, Law of Reciprocal Proportions. Worked Examples: Laws of Chemical Combination.","Percentage Composition,Empirical and Molecular formula","Determination of Empirical Formula. Worked Examples: Empirical and Molecular Formula.","Laws of Chemical Combinations","Mole,Vapour density,Atomicity","Mole Concept"]]],"m":[["Basic Mathematics",0,["Number System","Number System","Wavy Curve Method","Modulus Functions","Modulus Inequalities"]]]},{"n":2,"name":"JEE Main -1","date":"2026-07-12","type":"Part Test","pattern":"JEE Main","p":[["Basic Mathematics",1,[]],["Vectors",0,["Definition & type of vector, Angle between vectors","Addition of vectors, including both laws","Subtraction of vector & question Practice","Polygon rule of vector addition","Component of vector, definition of unit vector & representation of a vector in form"]]],"c":[["Some Basic Concepts of Chemistry (Mole Concept)",0,["Introduction, Matter and its Classification, amu,RAM, 1st 30th elements","Introduction to Mole, Mole Calculation Using No. of Particles, Molar Mass (Gram Atomic Mass and Gram Molecular Mass), Average Molar Mass, Worked Examples: Mole, Molar Mass, and No. of Particles.","Basics of Ideal Gas Equation: PV = nRT (Units of Pressure, Volume, Temperature and Their Interconversion). STP/NTP. ‘Y-Map,’ Worked Examples: Y Map.","Law of Chemical Combination: Conservation of Mass, Law of Constant Proportion, Law of Multiple Proportions, Law of Reciprocal Proportions. Worked Examples: Laws of Chemical Combination.","Percentage Composition,Empirical and Molecular formula","Determination of Empirical Formula. Worked Examples: Empirical and Molecular Formula.","Laws of Chemical Combinations","Mole,Vapour density,Atomicity","Mole Concept","Molecular Mass,Gram Molecular Mass","Average Molecular Mass","Formula Mass","Percentage Composition,Empirical and Molecular formula","Mole,Vapour density,Atomicity","Mole Concept"]]],"m":[["Basic Mathematics",0,["Number System","Number System","Wavy Curve Method","Modulus Functions","Modulus Inequalities","Logarithms & their Properties"]]]},{"n":3,"name":"JEE Main -2","date":"2026-07-26","type":"Part Test","pattern":"JEE Main","p":[["Vectors",1,[]],["Units and Dimension",1,[]]],"c":[["Some Basic Concepts of Chemistry (Mole Concept)",1,[]]],"m":[["Basic Mathematics",1,[]],["Set Theory",0,["Types of Sets","Operations on Sets","Algebra of sets"]]]},{"n":4,"name":"JEE Advance-1","date":"2026-08-16","type":"Cumulative Test","pattern":"JEE Advanced","p":[["Basic Mathematics",1,[]],["Vectors",1,[]],["Units and Dimension",1,[]]],"c":[["Some Basic Concepts of Chemistry (Mole Concept)",1,[]]],"m":[["Basic Mathematics",1,[]],["Set Theory",1,[]]]},{"n":5,"name":"JEE Main -3","date":"2026-08-23","type":"Part Test","pattern":"JEE Main","p":[["Motion in a Straight Line",1,[]],["Motion in a Plane",0,["Projectile Motion","Projectile Motion","Realtive Motion","Rain-River Boat"]]],"c":[["Structure of Atom",1,[]]],"m":[["Trigonometric Ratios & Identities",1,[]]]},{"n":6,"name":"JEE Main -4","date":"2026-09-06","type":"Part Test","pattern":"JEE Main","p":[["Motion in a Plane",1,[]],["Laws of Motion",1,[]]],"c":[["Classification of Elements and Periodicity in Properties",0,["Need for Classification of Elements,Historical Development of Classification of Elements,Magic Numbers","Modern Periodic Law and Present Form of the Periodic Table,Merits of Long Form of Periodic Table Over Mendeleev's Periodic Table","Electronic Configuration of Elements and The Periodic Table","Division of Elements into s, p, d and f Blocks, and Their Characteristics","Determintaion of period Block and Groups"]]],"m":[["Trigonometric Equations",1,[]]]},{"n":7,"name":"JEE Advance-2","date":"2026-09-20","type":"Cumulative Test","pattern":"JEE Advanced","p":[["Motion in a Straight Line",1,[]],["Motion in a Plane",1,[]],["Laws of Motion",1,[]],["Friction",1,[]]],"c":[["Structure of Atom",1,[]],["Classification of Elements and Periodicity in Properties",1,[]]],"m":[["Trigonometric Ratios & Identities",1,[]],["Trigonometric Equations",1,[]],["Quadratic Equations",1,[]]]},{"n":8,"name":"JEE Main -5","date":"2026-10-04","type":"Part Test","pattern":"JEE Main","p":[["Circular Motion",1,[]],["Work, Energy and Power",0,["Work Basics","Work Done by Variable Force","Kinetic Energy & Work Energy Theorem","Potential Energy","Conservative Forces & Energy","Applications of Energy Conservation"]]],"c":[["Chemical Bonding and Molecular Structure",0,["Introduction,Ionic or Electrovalent Bond,Lattice Energy","Factors Favouring Ionic Bonding, Properties of Ionic Compounds. Factors Affecting Solubility (Solubility Trend of Alkali Metal and Alkaline Earth Metal Carbonates, Nitrates, Sulphates, Bicarbonates, Hydroxides, Oxides and Halides).","Kössel - Lewis Approach to Chemical Bonding","Resonating Structure, Resonance Energy","Valence Shell Electron Pair Repulsion (VSEPR) Theory","Valence Bond Theory (VBT)","VSEPR Theory","Hybridisation","Determination of Number of [p(pi) - p(pi)] Bonds","Dipole Moment","Polarisability and Fajan's Rule","Polarity of Covalent Bonds"]]],"m":[["Sequence and Series",1,[]]]},{"n":9,"name":"JEE Main -6","date":"2026-10-18","type":"Part Test","pattern":"JEE Main","p":[["Work, Energy and Power",1,[]]],"c":[["Chemical Bonding and Molecular Structure",1,[]],["Some Basic principles and Techniques (IUPAC Naming)",0,["Tetravalency of carbon: Shapes of Simple molecules - hybridization (s and p): sigma & pi bonds","Classification of organic compounds based on functional groups: and those containing halogens, oxygen, nitrogen, and sulphur; Homologous series","Degree of Carbon, Hydrogen, Alcohol, Amine, Degree of Unsaturation, Functional Group"]]],"m":[["Relation Function",1,[]],["Permutations and Combinations",0,["Introduction","Counting","Permutation","Circular Permutation"]]]},{"n":10,"name":"JEE Advance-3","date":"2026-11-01","type":"Cumulative Test","pattern":"JEE Advanced","p":[["Circular Motion",1,[]],["Work, Energy and Power",1,[]]],"c":[["Chemical Bonding and Molecular Structure",1,[]],["Some Basic principles and Techniques (IUPAC Naming)",1,[]]],"m":[["Sequence and Series",1,[]],["Relation Function",1,[]],["Permutations and Combinations",1,[]]]},{"n":11,"name":"JEE Main -7","date":"2026-11-22","type":"Part Test","pattern":"JEE Main","p":[["Rotational Motion",0,["Rotational Kinematics","Rotational Kinematics","Moment of Inertia","Torque","Kinetic Energy","Fixed axis rotation"]]],"c":[["Thermodynamics",1,[]],["Redox Reaction",1,[]]],"m":[["Binomial theorem",1,[]],["Straight Lines",0,["Introduction","Section formula","Different Centre of Triangle","Area","Locus","Straight line","Slope","Standard form of straight line","Position of point w.r.t straight line"]]]},{"n":12,"name":"JEE Main -8","date":"2026-12-06","type":"Part Test","pattern":"JEE Main","p":[["Rotational Motion",1,[]],["Gravitation",0,["Force/Field,'PotentiaL Energy, Variation of g","Escape velocity"]]],"c":[["Chemical Equilibrium",1,[]],["Ionic Equilibrium",0,["Type of electrolytes","Different theory for acid and base,The autoionization of water","The pH–Scale","Ionisation of weak electrolyte","Common ion effect and levelling effect"]]],"m":[["Straight Lines",1,[]]]},{"n":13,"name":"JEE Advance-4","date":"2026-12-20","type":"Cumulative Test","pattern":"JEE Advanced","p":[["Rotational Motion",1,[]],["Gravitation",1,[]]],"c":[["State of matter",1,[]],["Thermodynamics",1,[]],["Redox Reaction",1,[]],["Chemical Equilibrium",1,[]],["Ionic Equilibrium",1,[]]],"m":[["Binomial theorem",1,[]],["Straight Lines",1,[]],["Circles",1,[]]]},{"n":14,"name":"JEE-9","date":"2027-01-03","type":"Part Test","pattern":"JEE Main","p":[["Thermal Properties of Matter",1,[]],["Mechanical Properties of Solids",1,[]]],"c":[["Some Basic principles and Techniques (Isomerism)",1,[]],["Some Basic principles and Techniques (GOC)",0,["Covalent bond fission - Homolytic and heterolytic & Inductive Effect-Basic introduction","Positive and negative inductive effect and its application","Hyperconjugation","Application of Hyperconjugation","Resonance (Part-1)"]]],"m":[["Conic Sections:Parabola",1,[]]]},{"n":15,"name":"JEE-10","date":"2027-01-17","type":"Part Test","pattern":"JEE Main","p":[["Mechanical Properties of Fluids",0,["Applications Of Elastic Behaviour Of Materials, Introduction, Pressure, Variation of pressure with height","Applications Of Elastic Behaviour Of Materials, Introduction, Pressure, Variation of pressure with height","toricelli;s experiment","Pascal Law","Archimedes Principle","applications Of Elastic Behaviour Of Materials, Introduction, Pressure, Variation of pressure with height","variation of pressure inside liquid in accelerated containers","shape of free surface of liquid present in rotating container","torricelli's experiment"]]],"c":[["Some Basic principles and Techniques (GOC)",0,["Covalent bond fission - Homolytic and heterolytic & Inductive Effect-Basic introduction","Positive and negative inductive effect and its application","Hyperconjugation","Application of Hyperconjugation","Resonance (Part-1)","Resonance (Part-2), Stability of resonating Structures","Aromaticity, Annulene","Mesomeric Effect","Stability of Intermediates, Bond Length and Bond Strength","Acidic Strength","Basic Strength","Tautomerism ( Enol Content) electrophiles, and nucleophiles & Type of reactions Substitution, addition, elimination, and rearrangement.","Purification","Crystallization, sublimation, distillation, differential extraction, and chromatography - principles and their applications."]]],"m":[["Conic Sections:Ellipse",1,[]],["Conic Sections:Hyperbola",1,[]]]},{"n":16,"name":"JEE Advance-5","date":"2027-01-31","type":"Cumulative Test","pattern":"JEE Advanced","p":[["Thermal Properties of Matter",1,[]],["Mechanical Properties of Solids",1,[]],["Mechanical Properties of Fluids",1,[]],["Thermodynamics",1,[]]],"c":[["Some Basic principles and Techniques (Isomerism)",1,[]],["Some Basic principles and Techniques (GOC)",1,[]]],"m":[["Conic Sections:Parabola",1,[]],["Conic Sections:Ellipse",1,[]],["Conic Sections:Hyperbola",1,[]]]},{"n":17,"name":"JEE-11","date":"2027-02-14","type":"Part Test","pattern":"JEE Main","p":[["Oscillations",1,[]],["Waves",0,["Travelling Waves","Wave function","Superposition and interference","Superposition & Reflection"]]],"c":[["Hydrocarbon",1,[]],["P-block Elements (Group 13 and 14)",1,[]]],"m":[["Complex Number",1,[]],["Limits and Derivatives",1,[]],["Statistics",1,[]],["Probability",1,[]],["Introduction to Three Dimensional Geometry",1,[]]]},{"n":18,"name":"JEE-12","date":"2027-02-28","type":"Full Test","pattern":"JEE Main","p":[["Full Syllabus * As per NTA",0,[]]],"c":[["Full Syllabus * As per NTA",0,[]]],"m":[["Full Syllabus * As per NTA",0,[]]]},{"n":19,"name":"JEE Advance-6","date":"2027-03-14","type":"Full Test","pattern":"JEE Advanced","p":[["Full Syllabus * As per NTA",0,[]]],"c":[["Full Syllabus * As per NTA",0,[]]],"m":[["Full Syllabus * As per NTA",0,[]]]}]};
+    const LEC = PL_DATA.lec, TESTS = PL_DATA.tests;
+    window.__mjTests = TESTS;
+    const TBY = {}; TESTS.forEach(t => { TBY[t.n] = t; });
+    const SUBJ = [
+      { k:'p', n:'Physics',     cls:'syl-s-phy'  },
+      { k:'c', n:'Chemistry',   cls:'syl-s-chem' },
+      { k:'m', n:'Mathematics', cls:'syl-s-math' }
+    ];
+    const MON_F = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const MON_S = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const WD_F = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const WD_S = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const PL = { mode:'syl', tab:'lec', subj:'all', ttype:'all', up:false, q:'', open:{} };
+    const CARET = '<svg class="pl-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>';
+
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+    const pd = s => { const a = s.split('-'); return new Date(+a[0], +a[1] - 1, +a[2]); };
+    const ymd = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const todayStr = () => ymd(new Date());
+    const diffDays = s => Math.round((pd(s) - pd(todayStr())) / 864e5);
+    const fmtShort = s => { const d = pd(s); return d.getDate() + ' ' + MON_S[d.getMonth()] + ' ' + d.getFullYear(); };
+    const fmtLong = s => { const d = pd(s); return WD_F[d.getDay()] + ', ' + d.getDate() + ' ' + MON_F[d.getMonth()] + ' ' + d.getFullYear(); };
+    const $ = id => document.getElementById(id);
+    const root = () => $('pl-root');
+
+    /* ---------- derived numbers ---------- */
+    const FIRST = LEC[0].d, LAST = LEC[LEC.length - 1].d;
+    const N_LEC = LEC.filter(r => r.p || r.c || r.m).length;
+    const N_REV = LEC.filter(r => r.r).length;
+
+    function statusOf(s){
+      const n = diffDays(s);
+      if(n < 0)  return { t:'Completed', cls:'ok', past:true };
+      if(n === 0) return { t:'Today', cls:'g', past:false };
+      if(n === 1) return { t:'Tomorrow', cls:'g', past:false };
+      return { t:'In ' + n + ' days', cls:'g', past:false };
+    }
+    function nextTest(){ return TESTS.filter(t => diffDays(t.date) >= 0).sort((a, b) => a.date < b.date ? -1 : 1)[0] || null; }
+
+    /* ---------- text search index ---------- */
+    function groupsText(gs){ return gs.map(g => g[0] + ' ' + g[2].join(' ')).join(' '); }
+    function rowText(r){
+      if(r._s) return r._s;
+      let s = '';
+      if(r.t){ const t = TBY[r.t]; s = t.name + ' test ' + groupsText(t.p) + ' ' + groupsText(t.c) + ' ' + groupsText(t.m); }
+      else if(r.r){ s = 'revision classes'; }
+      else { SUBJ.forEach(x => { if(r[x.k]) s += ' ' + r[x.k][0] + ' ' + r[x.k][1].join(' '); }); }
+      s += ' ' + fmtLong(r.d);
+      return (r._s = s.toLowerCase());
+    }
+    function testText(t){ return (t._s = t._s || (t.name + ' ' + t.type + ' ' + t.pattern + ' ' + groupsText(t.p) + ' ' + groupsText(t.c) + ' ' + groupsText(t.m) + ' ' + fmtLong(t.date)).toLowerCase()); }
+    const qOK = txt => { const q = PL.q.trim().toLowerCase(); return !q || q.split(/\s+/).every(w => txt.indexOf(w) > -1); };
+
+    /* ---------- renderers ---------- */
+    function subBlock(s, ch, subs){
+      let h = '<div class="pl-sub ' + s.cls + '"><span class="pl-sl">' + s.n + '</span><p class="pl-ch">' + esc(ch) + '</p>';
+      if(subs && subs.length === 1) h += '<p class="pl-tp">' + esc(subs[0]) + '</p>';
+      else if(subs && subs.length) h += '<ul class="pl-ul">' + subs.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>';
+      return h + '</div>';
+    }
+    function groupsHTML(gs){
+      return gs.map(g => {
+        let h = '<div class="pl-grp"><div class="pl-gh"><span>' + esc(g[0]) + '</span>' + (g[1] ? '<span class="pl-cc">Complete chapter</span>' : '') + '</div>';
+        if(g[2].length) h += '<ul class="pl-ul">' + g[2].map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>';
+        return h + '</div>';
+      }).join('');
+    }
+    function testBody(t){
+      const parts = SUBJ.filter(x => PL.subj === 'all' || PL.subj === x.k).map(x =>
+        '<div class="pl-sub ' + x.cls + '"><span class="pl-sl">' + x.n + '</span>' + groupsHTML(t[x.k]) + '</div>');
+      return '<div class="pl-tbody"><div><div class="pl-tin">' + parts.join('') + '</div></div></div>';
+    }
+    function testTags(t, withStatus){
+      const st = statusOf(t.date);
+      return '<div class="pl-tags"><span class="pl-tag">' + esc(t.type) + '</span><span class="pl-tag">' + esc(t.pattern) + '</span>'
+        + (withStatus ? '<span class="pl-tag ' + st.cls + '">' + st.t + '</span>' : '') + '</div>';
+    }
+
+    function dayHTML(r, i){
+      const dt = pd(r.d), n = diffDays(r.d), now = n === 0, past = n < 0;
+      const idx = Math.min(i, 8);
+      let cls = 'pl-day pl-in' + (past ? ' pl-past' : '') + (now ? ' pl-now' : '');
+      const dateBox = '<div class="pl-date"><b>' + dt.getDate() + '</b><span>' + WD_S[dt.getDay()] + '</span>' + (now ? '<i>Today</i>' : '') + '</div>';
+      let body;
+      if(r.t){
+        const t = TBY[r.t], open = PL.open[t.n];
+        cls += ' pl-test' + (open ? ' pl-open' : '');
+        body = '<div class="pl-subs"><button class="pl-th" type="button" data-act="tog" data-t="' + t.n + '" aria-expanded="' + (open ? 'true' : 'false') + '">'
+          + '<div class="pl-tt"><div class="pl-tname">' + esc(t.name) + '</div>' + testTags(t, true) + '</div>' + CARET + '</button>' + testBody(t) + '</div>';
+      } else if(r.r){
+        cls += ' pl-rev';
+        body = '<div class="pl-subs">' + SUBJ.filter(x => PL.subj === 'all' || PL.subj === x.k).map(x => subBlock(x, 'Revision Classes', [])).join('') + '</div>';
+      } else {
+        const parts = SUBJ.filter(x => r[x.k] && (PL.subj === 'all' || PL.subj === x.k)).map(x => subBlock(x, r[x.k][0], r[x.k][1]));
+        body = '<div class="pl-subs">' + parts.join('') + '</div>';
+      }
+      return '<article class="' + cls + '" data-d="' + r.d + '" style="--i:' + idx + '">' + dateBox + body + '</article>';
+    }
+
+    function lecturesHTML(){
+      const rows = LEC.filter(r => {
+        if(PL.up && diffDays(r.d) < 0) return false;
+        if(PL.subj !== 'all' && !r.t && !r.r && !r[PL.subj]) return false;
+        return qOK(rowText(r));
+      });
+      if(!rows.length) return { n:0, html:'<p class="pl-empty">No days match. Try a different search or filter.</p>' };
+      let html = '', cur = '', i = 0;
+      const months = {};
+      rows.forEach(r => { const k = r.d.slice(0, 7); (months[k] = months[k] || []).push(r); });
+      Object.keys(months).forEach(k => {
+        const rs = months[k], d = pd(rs[0].d);
+        const nl = rs.filter(r => !r.t && !r.r).length, nt = rs.filter(r => r.t).length, nr = rs.filter(r => r.r).length;
+        const bits = [];
+        if(nl) bits.push(nl + (nl === 1 ? ' lecture' : ' lectures'));
+        if(nt) bits.push(nt + (nt === 1 ? ' test' : ' tests'));
+        if(nr) bits.push(nr + ' revision');
+        html += '<h3 class="pl-month"><span>' + MON_F[d.getMonth()] + ' ' + d.getFullYear() + '</span><small>' + bits.join(' · ') + '</small></h3>';
+        rs.forEach(r => { html += dayHTML(r, i++ % 9); });
+      });
+      return { n:rows.length, html:html };
+    }
+
+    function testsHTML(){
+      const rows = TESTS.filter(t => {
+        if(PL.up && diffDays(t.date) < 0) return false;
+        if(PL.ttype !== 'all' && t.type !== PL.ttype) return false;
+        return qOK(testText(t));
+      });
+      if(!rows.length) return { n:0, html:'<p class="pl-empty">No tests match. Try a different search or filter.</p>' };
+      const nx = nextTest();
+      const html = rows.map((t, i) => {
+        const st = statusOf(t.date), open = PL.open[t.n];
+        return '<article class="pl-tcard pl-in' + (st.past ? ' pl-pastt' : '') + (nx && nx.n === t.n ? ' pl-nextt' : '') + (open ? ' pl-open' : '') + '" data-tn="' + t.n + '" style="--i:' + Math.min(i, 8) + '">'
+          + '<button class="pl-th" type="button" data-act="tog" data-t="' + t.n + '" aria-expanded="' + (open ? 'true' : 'false') + '">'
+          + '<span class="pl-tn">' + t.n + '</span><div class="pl-tt"><div class="pl-tname">' + esc(t.name) + '</div><div class="pl-tdate">' + fmtLong(t.date) + '</div>'
+          + testTags(t, true) + '</div>' + CARET + '</button>' + testBody(t) + '</article>';
+      }).join('');
+      return { n:rows.length, html:html };
+    }
+
+    function heroHTML(){
+      const total = Math.max(1, diffDaysBetween(FIRST, LAST)), done = Math.min(total, Math.max(0, -diffDays(FIRST)));
+      const pct = Math.round(done / total * 100), left = Math.max(0, diffDays(LAST));
+      return '<section class="pl-hero pl-in" style="--i:0"><p class="pl-brand">Mission JEET</p><h2>Drona JEE 2.0 &middot; 2027</h2>'
+        + '<p class="pl-range">Batch planner &middot; ' + fmtShort(FIRST) + ' &rarr; ' + fmtShort(LAST) + '</p>'
+        + '<div class="pl-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i data-w="' + pct + '"></i></div>'
+        + '<div class="pl-barl"><span>' + pct + '% of the timeline done</span><span>' + left + ' days to go</span></div></section>'
+        + '<div class="pl-stats pl-in" style="--i:1"><div class="pl-stat"><b>' + N_LEC + '</b><span>Lecture days</span></div><div class="pl-stat"><b>' + TESTS.length + '</b><span>Tests</span></div><div class="pl-stat"><b>' + N_REV + '</b><span>Revision days</span></div></div>';
+    }
+    function diffDaysBetween(a, b){ return Math.round((pd(b) - pd(a)) / 864e5); }
+
+    function glanceHTML(){
+      const ts = todayStr(), row = LEC.find(r => r.d === ts);
+      let today = '<div class="pl-card pl-in" style="--i:2"><p class="pl-k">Today &middot; ' + fmtLong(ts) + '</p>';
+      if(!row){
+        today += '<p class="pl-big">No class scheduled</p><p class="pl-mut">Nothing is planned for today in the lecture planner.</p>';
+      } else if(row.t){
+        today += '<p class="pl-big">' + esc(TBY[row.t].name) + '</p><p class="pl-mut">Test day &middot; ' + esc(TBY[row.t].type) + ' &middot; ' + esc(TBY[row.t].pattern) + '</p>';
+      } else if(row.r){
+        today += '<p class="pl-big">Revision classes</p><p class="pl-mut">Physics &middot; Chemistry &middot; Mathematics</p>';
+      } else {
+        today += '<div class="pl-mini">' + SUBJ.filter(x => row[x.k]).map(x => '<div class="' + x.cls + '"><em>' + x.n.slice(0, 4) + '</em><span>' + esc(row[x.k][0]) + '</span></div>').join('') + '</div>';
+      }
+      today += '</div>';
+      const nx = nextTest();
+      let next = '<div class="pl-card pl-in" style="--i:3"><p class="pl-k">Next test</p>';
+      if(nx){
+        const st = statusOf(nx.date);
+        next += '<p class="pl-big">' + esc(nx.name) + '</p><p class="pl-mut">' + fmtLong(nx.date) + ' &middot; ' + st.t.toLowerCase() + '</p>'
+          + '<button class="pl-go" type="button" data-act="gotest" data-t="' + nx.n + '">View syllabus</button>';
+      } else next += '<p class="pl-big">All tests completed</p>';
+      next += '</div>';
+      return '<div class="pl-glance">' + today + next + '</div>';
+    }
+
+    function toolbarHTML(){
+      const subjChips = [{ k:'all', n:'All' }].concat(SUBJ.map(x => ({ k:x.k, n:x.k === 'm' ? 'Maths' : x.n }))).map(x => {
+        const cls = SUBJ.filter(s => s.k === x.k)[0];
+        return '<button class="pl-chip ' + (cls ? cls.cls : '') + (PL.subj === x.k ? ' on' : '') + '" type="button" data-act="subj" data-v="' + x.k + '" aria-pressed="' + (PL.subj === x.k) + '">' + x.n + '</button>';
+      }).join('');
+      let row2 = '<button class="pl-chip' + (PL.up ? ' on' : '') + '" type="button" data-act="up" aria-pressed="' + PL.up + '">Upcoming only</button>';
+      let row3 = '';
+      if(PL.tab === 'test'){
+        row3 = '<div class="pl-chips">' + [['all', 'All'], ['Part Test', 'Part tests'], ['Cumulative Test', 'Cumulative'], ['Full Test', 'Full tests']].map(x =>
+          '<button class="pl-chip' + (PL.ttype === x[0] ? ' on' : '') + '" type="button" data-act="ttype" data-v="' + x[0] + '" aria-pressed="' + (PL.ttype === x[0]) + '">' + x[1] + '</button>').join('') + '</div>';
+      } else {
+        row2 += '<button class="pl-chip pl-today-btn" type="button" data-act="today">Jump to today</button>';
+      }
+      return '<div class="pl-tools"><label class="syl-search" style="margin-bottom:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>'
+        + '<input id="pl-q" type="search" autocomplete="off" placeholder="' + (PL.tab === 'test' ? 'Search tests or topics' : 'Search a topic, chapter or date') + '" value="' + esc(PL.q) + '" aria-label="Search the planner">'
+        + '<button class="syl-search-x" id="pl-qx" type="button" aria-label="Clear search" style="' + (PL.q ? '' : 'display:none') + '">&times;</button></label>'
+        + '<div class="pl-chips">' + subjChips + '</div><div class="pl-chips" id="pl-row2">' + row2 + '</div>' + row3 + '</div><p class="pl-count" id="pl-count" aria-live="polite"></p>';
+    }
+
+    /* ---------- shell ---------- */
+    function renderShell(){
+      const r = root(); if(!r) return;
+      r.innerHTML = heroHTML() + glanceHTML()
+        + '<div class="pl-seg pl-in" style="--i:4;--idx:' + (PL.tab === 'test' ? 1 : 0) + '" id="pl-seg"><button type="button" data-act="tab" data-v="lec" class="' + (PL.tab === 'lec' ? 'on' : '') + '">Lecture planner</button><button type="button" data-act="tab" data-v="test" class="' + (PL.tab === 'test' ? 'on' : '') + '">Test planner</button></div>'
+        + '<div id="pl-toolwrap">' + toolbarHTML() + '</div><div id="pl-list"></div>'
+        + '<p class="pl-foot">Built from the Drona JEE 2.0 2027 Lecture Planner and Test Planner.</p>';
+      renderList();
+      requestAnimationFrame(() => requestAnimationFrame(() => { r.querySelectorAll('.pl-bar i').forEach(b => { b.style.width = b.getAttribute('data-w') + '%'; }); }));
+    }
+    function renderList(){
+      const out = PL.tab === 'test' ? testsHTML() : lecturesHTML();
+      const list = $('pl-list'); if(list) list.innerHTML = out.html;
+      const c = $('pl-count'); if(c) c.textContent = out.n + (PL.tab === 'test' ? (out.n === 1 ? ' test' : ' tests') : (out.n === 1 ? ' day' : ' days'));
+    }
+    function renderTools(){ const w = $('pl-toolwrap'); if(w) w.innerHTML = toolbarHTML(); const s = $('pl-seg'); if(s){ s.style.setProperty('--idx', PL.tab === 'test' ? 1 : 0); s.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.getAttribute('data-v') === PL.tab)); } }
+    function syncChips(){
+      const r = root(); if(!r) return;
+      r.querySelectorAll('[data-act="subj"]').forEach(b => { const on = b.getAttribute('data-v') === PL.subj; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      r.querySelectorAll('[data-act="ttype"]').forEach(b => { const on = b.getAttribute('data-v') === PL.ttype; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      const u = r.querySelector('[data-act="up"]'); if(u){ u.classList.toggle('on', PL.up); u.setAttribute('aria-pressed', PL.up); }
+    }
+
+    function jumpToday(){
+      const ts = todayStr();
+      const days = Array.prototype.slice.call(document.querySelectorAll('#pl-list .pl-day'));
+      const el = days.filter(d => d.getAttribute('data-d') >= ts)[0] || days[days.length - 1];
+      if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+    function goTest(n){
+      PL.tab = 'test'; PL.q = ''; PL.ttype = 'all'; PL.up = false; PL.open[n] = true;
+      renderTools(); renderList();
+      const el = document.querySelector('#pl-list [data-tn="' + n + '"]');
+      if(el) setTimeout(() => el.scrollIntoView({ behavior:'smooth', block:'start' }), 60);
+    }
+
+    /* ---------- events ---------- */
+    function onClick(e){
+      const b = e.target.closest('[data-act],#pl-qx'); if(!b || !root().contains(b)) return;
+      if(b.id === 'pl-qx'){ PL.q = ''; const i = $('pl-q'); if(i){ i.value = ''; i.focus(); } b.style.display = 'none'; renderList(); return; }
+      const a = b.getAttribute('data-act'), v = b.getAttribute('data-v');
+      if(a === 'tab'){ if(PL.tab !== v){ PL.tab = v; renderTools(); renderList(); } }
+      else if(a === 'subj'){ PL.subj = v; syncChips(); renderList(); }
+      else if(a === 'ttype'){ PL.ttype = v; syncChips(); renderList(); }
+      else if(a === 'up'){ PL.up = !PL.up; syncChips(); renderList(); }
+      else if(a === 'today'){ jumpToday(); }
+      else if(a === 'gotest'){ goTest(+b.getAttribute('data-t')); }
+      else if(a === 'tog'){
+        const n = +b.getAttribute('data-t'), card = b.closest('.pl-day,.pl-tcard'), open = !PL.open[n];
+        PL.open[n] = open; if(card) card.classList.toggle('pl-open', open); b.setAttribute('aria-expanded', open);
+        const other = document.querySelectorAll('#pl-list [data-t="' + n + '"]');
+        other.forEach(o => { const c = o.closest('.pl-day,.pl-tcard'); if(c){ c.classList.toggle('pl-open', open); o.setAttribute('aria-expanded', open); } });
+      }
+    }
+    let qTimer = 0;
+    function onInput(e){
+      if(e.target.id !== 'pl-q') return;
+      PL.q = e.target.value; const x = $('pl-qx'); if(x) x.style.display = PL.q ? '' : 'none';
+      clearTimeout(qTimer); qTimer = setTimeout(renderList, 120);
+    }
+
+    /* ---------- Syllabus | Planner switch ---------- */
+    const COVER = {};
+    function setMode(m, noScroll){
+      PL.mode = m;
+      const view = $('syllabus-view'), sw = $('pl-mode'), sr = $('syl-root'), pr = root();
+      if(!view || !sw || !sr || !pr) return;
+      sw.style.setProperty('--idx', m === 'plan' ? 1 : 0);
+      sw.querySelectorAll('button').forEach(b => { const on = b.getAttribute('data-mode') === m; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      const ey = $('syl-eyebrow'), h1 = $('syl-title'), sub = $('syl-subtitle');
+      if(!COVER.ey && ey){ COVER.ey = ey.innerHTML; COVER.h1 = h1.innerHTML; COVER.sub = sub.innerHTML; }
+      if(m === 'plan'){
+        ey.textContent = 'Mission JEET · Drona JEE 2.0 2027';
+        h1.textContent = 'Planner';
+        sub.textContent = 'Your coaching schedule — every lecture, revision day and test, with the topics for each.';
+        sr.classList.add('syl-hidden'); pr.style.display = '';
+        renderShell();
+      } else {
+        if(COVER.ey){ ey.innerHTML = COVER.ey; h1.innerHTML = COVER.h1; sub.innerHTML = COVER.sub; }
+        pr.style.display = 'none'; sr.classList.remove('syl-hidden');
+      }
+      if(!noScroll) window.scrollTo(0, 0);
+    }
+    window.plReset = function(){ PL.q = ''; PL.tab = 'lec'; PL.subj = 'all'; PL.ttype = 'all'; PL.up = false; setMode('syl', true); };
+    window.plBack = function(){
+      if(PL.mode !== 'plan') return false;
+      if(PL.q){ PL.q = ''; const i = $('pl-q'); if(i) i.value = ''; const x = $('pl-qx'); if(x) x.style.display = 'none'; renderList(); window.scrollTo(0, 0); return true; }
+      return false;
+    };
+    (function wire(){
+      const r = root(); if(r){ r.addEventListener('click', onClick); r.addEventListener('input', onInput); }
+      const sw = $('pl-mode');
+      if(sw) sw.addEventListener('click', e => { const b = e.target.closest('button[data-mode]'); if(b && b.getAttribute('data-mode') !== PL.mode) setMode(b.getAttribute('data-mode')); });
+    })();
+  })();
+
 
 
   /* ---- Wanna See Magic (pendulum wave) ---- */
@@ -17033,6 +17574,7 @@ if(existing){
     renderRollcall();
     renderStreaks();
     if(typeof renderRcRemindBanner === 'function') renderRcRemindBanner();
+    if(rcTodayFullyMarked()) rcClearReminderNotifs();
   }
 
   async function rcUndoMark(subjectFullName){
@@ -17075,6 +17617,8 @@ if(existing){
     ntfStreakCheck(result, subjectFullName, status);
     renderRollcall();
     renderStreaks();
+    if(typeof renderRcRemindBanner === 'function') renderRcRemindBanner();
+    if(rcTodayFullyMarked()) rcClearReminderNotifs();
   }
 
   async function rcUndoPracticalMark(subjectFullName){
@@ -18372,20 +18916,39 @@ if(existing){
       return out;
     }
     const mergedSessions = mergeOptionalSessions(filteredSessions);
-    if(!day || sessions.length === 0) return true;
+    if(!day || mergedSessions.length === 0) return true;
     const dayMarks = rollcall.marks[today] || {};
     const dayPracticalMarks = rollcall.practicalMarks[today] || {};
-    // Extra/manual cards are optional by design — only today's real
-    // scheduled sessions are required for "fully marked".
-    return sessions.every(s => {
-      const fullName = RC_SUBJECT_NAMES[s.code] || s.code;
-      return s.type === 'practical' ? !!dayPracticalMarks[fullName] : !!dayMarks[fullName];
-    });
+    // Only the periods that actually appear on the roll call page count
+    // (your group's subjects, one card for each optional pair). Extra /
+    // manual cards are optional by design. A card is done once its
+    // subject has any mark.
+    const isMarked = (bucket, code) => {
+      let codes = [code];
+      if(code === 'OD' || code === 'AE') codes = ['OD', 'AE'];
+      if(code === 'IT' || code === 'EL') codes = ['IT', 'EL'];
+      return codes.some(c => !!bucket[RC_SUBJECT_NAMES[c] || c]);
+    };
+    return mergedSessions.every(s => isMarked(s.type === 'practical' ? dayPracticalMarks : dayMarks, s.code));
+  }
+
+  // Takes down any roll-call reminder that is still sitting in the phone's
+  // notification shade once today's roll call is done.
+  async function rcClearReminderNotifs(){
+    try{
+      if('serviceWorker' in navigator){
+        const reg = await navigator.serviceWorker.getRegistration();
+        if(reg && reg.getNotifications){
+          const list = await reg.getNotifications();
+          list.forEach(n => { if(n.tag && n.tag.indexOf('rc-remind-') === 0) n.close(); });
+        }
+      }
+    }catch(e){}
   }
 
   async function rcCheckReminderNotifications(){
     if(!appNotifyOn() || typeof currentUser === 'undefined' || !currentUser) return;
-    if(rcTodayFullyMarked()) return;
+    if(rcTodayFullyMarked()){ rcClearReminderNotifs(); return; }
     const today = localDateKey();
     const now = new Date();
     const nowMin = now.getHours() * 60 + now.getMinutes();
@@ -19686,7 +20249,7 @@ if(existing){
         mode: stTimer.mode, subject: stTimer.subject,
         presetWork: stTimer.presetWork, presetRest: stTimer.presetRest, presetLabel: stTimer.presetLabel,
         phase: stTimer.phase, phaseRemaining: stTimer.phaseRemaining,
-        elapsed: stTimer.elapsed, paused: stTimer.paused, savedAt: Date.now(), startHour: stTimer.startHour
+        elapsed: stTimer.elapsed, paused: stTimer.paused, savedAt: Date.now(), startHour: stTimer.startHour, startedAt: stTimer.startedAt
       };
       try{ await window.storage.set(activeKeyFor(currentUser.id), JSON.stringify(payload), true); }catch(e){}
     }
@@ -20064,6 +20627,46 @@ if(existing){
       presetWork:1500, presetRest:300, presetLabel:'Classic · 25/5', phase:'work', phaseRemaining:0, startHour:null };
     let stTimerRunningFlag = false;
     let stTickCount = 0;
+
+    // ---- Run log + external sessions (used by Smart Study Tracker) ----
+    // Remembers when this timer was actually counting, so time the Smart
+    // Study Tracker spent at the same moment is never counted twice.
+    const stRuns = [];
+    function stRunMark(on, at){
+      const now = at || Date.now();
+      const open = stRuns.length && stRuns[stRuns.length - 1].e == null;
+      if(on && !open) stRuns.push({ s: now, e: null });
+      else if(!on && open) stRuns[stRuns.length - 1].e = now;
+      if(stRuns.length > 200) stRuns.splice(0, stRuns.length - 200);
+    }
+    window.stTmsOverlapMs = function(a, b){
+      let t = 0;
+      stRuns.forEach(r => {
+        const s0 = Math.max(a, r.s), e0 = Math.min(b, r.e == null ? Date.now() : r.e);
+        if(e0 > s0) t += e0 - s0;
+      });
+      return t;
+    };
+    // Adds (or updates, by id) a study session coming from another tool.
+    window.stUpsertExternalSession = async function(id, seconds, startedAt){
+      if(!currentUser) return false;
+      await loadStudyState();
+      const idx = studyState.sessions.findIndex(x => x.id === id);
+      if(seconds < 5){
+        if(idx < 0) return false;
+        studyState.sessions.splice(idx, 1);
+      } else {
+        const d = new Date(startedAt);
+        const rec = { id, date: stDateKey(d), subject: 'Self Study', seconds, mode: 'stopwatch', hour: d.getHours(), source: 'smart' };
+        if(idx >= 0) studyState.sessions[idx] = rec; else studyState.sessions.push(rec);
+      }
+      await saveStudyState();
+      try{
+        const v = document.getElementById('study-tracker-view');
+        if(v && v.style.display === 'block') await stRender();
+      }catch(e){}
+      return true;
+    };
     let stActiveTab = 'study';
     const ST_TABS = ['study','stats','task','track','flash','revise'];
 
@@ -20191,7 +20794,7 @@ if(existing){
       if(stTickCount % 10 === 0) saveActiveSession();
       // Keep the background notification fresh even if the page's own
       // timers are being throttled while hidden.
-      if(document.hidden && Date.now() - stLastBgNotif > 15000) stUpdateBgNotification();
+      // (The background notification is posted once and never refreshed.)
     }
 
     function stRefreshTabDot(){
@@ -20241,7 +20844,7 @@ if(existing){
       stStopTicker();
       stTimer = { running:true, paused:false, mode, subject, elapsed:0, intervalId:null, lastTs:Date.now(),
         presetWork, presetRest, presetLabel, phase:'work', phaseRemaining: mode === 'pomodoro' ? presetWork : 0,
-        startHour: new Date().getHours() };
+        startHour: new Date().getHours(), startedAt: Date.now() };
       stTickCount = 0;
 
       const hero = document.getElementById('st-hero-card');
@@ -20254,6 +20857,7 @@ if(existing){
       stUpdateTimerVisual();
       stStartTicker();
       stSetLiveDots(true);
+      stRunMark(true);
       saveActiveSession();
     }
 
@@ -20261,6 +20865,7 @@ if(existing){
       if(!stTimer.running) return;
       stSyncTimer(); // bank the time up to this exact moment first
       stTimer.paused = !stTimer.paused;
+      stRunMark(!stTimer.paused);
       const btn = document.getElementById('st-timer-pause');
       if(btn){
         btn.innerHTML = stTimer.paused
@@ -20279,6 +20884,7 @@ if(existing){
       const subject = stTimer.subject, mode = stTimer.mode;
       const hour = typeof stTimer.startHour === 'number' ? stTimer.startHour : new Date().getHours();
       stTimer.running = false;
+      stRunMark(false);
       if(typeof stExitFullscreen === 'function') stExitFullscreen();
       stSetLiveDots(false);
       stUpdateFloatingWidget();
@@ -20304,25 +20910,27 @@ if(existing){
     // the moment the page is visible again, or the session is stopped.
     let stBgInterval = null;
     let stBgPlainNotif = null;
+    let stBgShown = false;
 
-    async function stSendBgNotification(title, body){
+    async function stSendBgNotification(title, body, extra){
       try{
         if('serviceWorker' in navigator){
           const reg = await navigator.serviceWorker.getRegistration();
           if(reg && reg.showNotification){
-            await reg.showNotification(title, Object.assign({ body, tag: 'study-timer-bg', silent: true, renotify: false }, (typeof notifOptions === 'function' ? notifOptions('roll') : {})));
+            await reg.showNotification(title, Object.assign({ body, tag: 'study-timer-bg', silent: true, renotify: false }, extra || {}, (typeof notifOptions === 'function' ? notifOptions('roll') : {})));
             return;
           }
         }
       }catch(e){ /* fall through to the plain Notification */ }
       try{
         if(stBgPlainNotif) stBgPlainNotif.close();
-        stBgPlainNotif = new Notification(title, Object.assign({ body, tag: 'study-timer-bg', silent: true }, (typeof notifOptions === 'function' ? notifOptions('roll') : {})));
+        stBgPlainNotif = new Notification(title, Object.assign({ body, tag: 'study-timer-bg', silent: true }, extra || {}, (typeof notifOptions === 'function' ? notifOptions('roll') : {})));
       }catch(e){}
     }
 
     async function stCloseBgNotification(){
       if(stBgInterval){ clearInterval(stBgInterval); stBgInterval = null; }
+      stBgShown = false;
       try{
         if('serviceWorker' in navigator){
           const reg = await navigator.serviceWorker.getRegistration();
@@ -20335,15 +20943,19 @@ if(existing){
       if(stBgPlainNotif){ try{ stBgPlainNotif.close(); }catch(e){} stBgPlainNotif = null; }
     }
 
+    // Posted ONCE when the page goes into the background (screen lock / app
+    // switch). It only says when the session started and is never
+    // refreshed, so the screen can lock normally. The timer itself keeps
+    // running off the real clock and is fully caught up when you return.
     function stUpdateBgNotification(){
       if(!stTimer.running){ stCloseBgNotification(); return; }
-      stSyncTimer();
-      stLastBgNotif = Date.now();
-      const timeText = stTimer.mode === 'pomodoro' ? stFormatHMS(stTimer.phaseRemaining) : stFormatHMS(stTimer.elapsed);
-      const phasePrefix = stTimer.mode === 'pomodoro' ? ((stTimer.phase === 'work' ? 'Focus' : 'Break') + ' \u00b7 ') : '';
-      const title = stTimer.paused ? '\u23f8\ufe0f Study timer paused' : '\u23f1\ufe0f Studying \u00b7 ' + stTimer.subject;
-      const body = phasePrefix + timeText + (stTimer.paused ? ' \u2014 open the app to resume' : ' \u2014 still running in the background');
-      stSendBgNotification(title, body);
+      if(stBgShown) return;
+      stBgShown = true;
+      const startedAt = stTimer.startedAt || Date.now();
+      const startText = new Date(startedAt).toLocaleTimeString(undefined, { hour:'numeric', minute:'2-digit' });
+      const title = stTimer.paused ? '\u23f8\ufe0f Study timer paused \u00b7 ' + stTimer.subject : '\u23f1\ufe0f Studying \u00b7 ' + stTimer.subject;
+      const body = stTimer.paused ? 'Open the app to resume' : 'Started at ' + startText + ' \u2014 still running in the background';
+      stSendBgNotification(title, body, { timestamp: startedAt });
     }
 
     function stHandleVisibilityForTimer(){
@@ -20351,8 +20963,6 @@ if(existing){
         stSyncTimer(); saveActiveSession();
         if(stTimer.running && typeof appNotifyOn === 'function' && appNotifyOn()){
           stUpdateBgNotification();
-          if(stBgInterval) clearInterval(stBgInterval);
-          stBgInterval = setInterval(stUpdateBgNotification, 20000);
         }
       } else {
         stCloseBgNotification();
@@ -20407,8 +21017,10 @@ if(existing){
       stTimer = {
         running:true, paused: !!saved.paused, mode: saved.mode, subject: saved.subject, elapsed,
         intervalId:null, lastTs:Date.now(), presetWork: saved.presetWork, presetRest: saved.presetRest, presetLabel: saved.presetLabel,
-        phase, phaseRemaining, startHour: typeof saved.startHour === 'number' ? saved.startHour : new Date().getHours()
+        phase, phaseRemaining, startHour: typeof saved.startHour === 'number' ? saved.startHour : new Date().getHours(),
+        startedAt: saved.startedAt || (Date.now() - Math.round(elapsed * 1000))
       };
+      stRunMark(!stTimer.paused);
       stTickCount = 0;
 
       const hero = document.getElementById('st-hero-card');
@@ -28809,13 +29421,28 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     S.faceLostSince = 0; S.phoneHits = 0; S.lastPhoneSeen = 0; S.phoneBoxes = [];
     S.faceSeen = false; S.ear = null; S.closedNow = false; S.lastVideoTime = -1; S.lastObj = 0;
     S.startedAt = Date.now(); S.endedAt = 0;
+    S.syncId = 'smart-' + S.startedAt;
     startCalibration();
     S.clockId = setInterval(tickClock, 1000);
+    clearInterval(S.syncTimerId); S.syncTimerId = setInterval(syncToTracker, 60000);
     takeWake();
     if(!S.objOk) showMsg('Phone detection could not be loaded, so only eyes and face are being tracked.');
     render();
     loop();
   }
+  /* Keeps Track My Studies in step: one session record (by id) is updated
+     every minute while tracking and once more on stop. Any moment the
+     Track My Studies timer was also running is left out, so the same
+     time is never counted twice. */
+  function syncToTracker(){
+    if(!S.startedAt || !S.syncId || !window.stUpsertExternalSession) return;
+    var end = S.running ? Date.now() : (S.endedAt || Date.now());
+    var overlap = window.stTmsOverlapMs ? window.stTmsOverlapMs(S.startedAt, end) : 0;
+    var secs = Math.round(Math.max(0, end - S.startedAt - overlap) / 1000);
+    var id = S.syncId, t0 = S.startedAt;
+    S.syncChain = (S.syncChain || Promise.resolve()).then(function(){ return window.stUpsertExternalSession(id, secs, t0); }).catch(function(){});
+  }
+  window.addEventListener('pagehide', function(){ if(S.running) syncToTracker(); });
   function stop(){
     var wasRunning = S.running;
     S.running = false; S.loading = false;
@@ -28823,7 +29450,7 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     stopSound(); stopLight(); S.current = null;
     S.cond = {eyes:false, phone:false, face:false}; S.muted = {eyes:false, phone:false, face:false};
     closeCamera(); dropWake();
-    if(wasRunning) S.endedAt = Date.now();
+    if(wasRunning){ S.endedAt = Date.now(); clearInterval(S.syncTimerId); S.syncTimerId = 0; syncToTracker(); }
     render();
   }
   window.smartStudyLeave = function(){ if(S.running || S.loading) stop(); };

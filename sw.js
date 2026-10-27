@@ -47,10 +47,37 @@ async function showPendingTaskReminder(){
   await cache.put('./__task-last.json', new Response(JSON.stringify({ day: today }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
+// ---- Morning messages: Uday Odia classes + Mission Jeet test countdown ----
+// The app saves the dated list of messages; from 6 am on the day itself the
+// worker shows each one once (same tag as the in-app message, so the phone
+// never ends up with two copies).
+async function showScheduledMessages(){
+  const cache = await caches.open(TASK_CACHE);
+  const snap = await readJson(cache, './__sched-events.json');
+  if(!snap || !Array.isArray(snap.events) || !snap.events.length) return;
+  const now = new Date();
+  if(now.getHours() < 6) return;
+  const today = localDateKey(now);
+  let last = await readJson(cache, './__sched-last.json');
+  if(!last || last.day !== today || !Array.isArray(last.tags)) last = { day: today, tags: [] };
+  let changed = false;
+  for(const ev of snap.events){
+    if(!ev || ev.day !== today || last.tags.indexOf(ev.tag) !== -1) continue;
+    const opts = { body: ev.body, tag: ev.tag };
+    if(snap.icon) opts.icon = snap.icon;
+    if(snap.badge) opts.badge = snap.badge;
+    await self.registration.showNotification(ev.title, opts);
+    last.tags.push(ev.tag); changed = true;
+  }
+  if(changed) await cache.put('./__sched-last.json', new Response(JSON.stringify(last), { headers: { 'Content-Type': 'application/json' } }));
+}
+
 self.addEventListener('periodicsync', e => {
   if(e.tag === 'task-pending-daily') e.waitUntil(showPendingTaskReminder());
+  if(e.tag === 'sched-daily') e.waitUntil(showScheduledMessages());
 });
 // Also lets the app ask the worker to check right now.
 self.addEventListener('message', e => {
   if(e.data && e.data.type === 'task-reminder-check') e.waitUntil(showPendingTaskReminder());
+  if(e.data && e.data.type === 'sched-check') e.waitUntil(showScheduledMessages());
 });
