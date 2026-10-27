@@ -28604,10 +28604,13 @@ document.addEventListener("DOMContentLoaded",function(){
 })();
 </script>
 <style id="tl-transfer-css">
-#tl-xfer{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(var(--ink-rgb),0.74)!important;animation:none!important;opacity:1!important}
-#tl-xfer .tlx-box{animation:none!important;opacity:1!important;transform:none!important;box-shadow:0 10px 24px -14px rgba(var(--ink-rgb),0.55)!important;contain:content}
+#tl-xfer{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(var(--ink-rgb),0.74)!important;animation:none!important;display:flex;opacity:0!important;visibility:hidden;pointer-events:none;transition:opacity .28s ease,visibility 0s linear .28s}
+#tl-xfer.tlx-open{opacity:1!important;visibility:visible;pointer-events:auto;transition:opacity .28s ease,visibility 0s}
+#tl-xfer .tlx-box{animation:none!important;opacity:0!important;transform:translateY(24px) scale(.95)!important;box-shadow:0 10px 24px -14px rgba(var(--ink-rgb),0.55)!important;contain:content;will-change:transform,opacity;transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .26s ease}
+#tl-xfer.tlx-open .tlx-box{opacity:1!important;transform:translateY(0) scale(1)!important}
+#tl-xfer:not(.tlx-open) .tlx-box{transition:transform .22s cubic-bezier(.4,0,1,1),opacity .2s ease}
+@media (prefers-reduced-motion:reduce){#tl-xfer,#tl-xfer .tlx-box{transition-duration:.01s!important}}
 
-#tl-xfer{display:none}
 #tl-xfer .tlx-box{max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px}
 #tl-xfer .tlx-box .cm-icon{background:rgba(var(--gold-rgb),0.14);color:var(--gold)}
 #tl-xfer .cm-message{margin-bottom:14px}
@@ -28838,8 +28841,8 @@ document.addEventListener("DOMContentLoaded",function(){
     return o;
   }
   function closeMenuNow(){var dd=$('menu-dropdown'),mt=$('menu-toggle');if(dd)dd.classList.remove('open');if(mt){mt.classList.remove('menu-open');mt.setAttribute('aria-expanded','false');}}
-  function openModal(){closeMenuNow();say('');var o=$('tl-xfer');o.classList.remove('cm-closing');o.style.display='flex';}
-  function closeModal(){var o=$('tl-xfer');disarm();o.classList.add('cm-closing');setTimeout(function(){o.style.display='none';o.classList.remove('cm-closing');},190);}
+  function openModal(){closeMenuNow();say('');var o=$('tl-xfer');o.classList.remove('cm-closing');o.style.display='flex';void o.offsetWidth;requestAnimationFrame(function(){o.classList.add('tlx-open');});}
+  function closeModal(){var o=$('tl-xfer');disarm();o.classList.remove('tlx-open');}
   function disarm(){armed=false;clearTimeout(armTimer);var b=$('tlx-import');if(b){b.textContent='Import';b.classList.remove('tlx-confirm');}}
   async function copyText(t){
     try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(t);return true;}}catch(e){}
