@@ -2423,6 +2423,16 @@
   }
   .ctp-tab:active{ transform:scale(0.96); }
   .ctp-tab.ctp-active{ border-color:var(--gold); color:var(--gold); background:rgba(var(--gold-rgb),0.1); }
+  /* Manual on/off notification switch (Uday Odia classes / Test planner). Off by default. */
+  .sn-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin:0 0 14px; padding:12px 14px; border-radius:12px; border:1.5px solid rgba(var(--ink-rgb),0.18); background:rgba(var(--gold-rgb),0.06); }
+  .sn-copy{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .sn-copy strong{ font-family:'Lora', serif; font-size:14px; font-weight:700; color:var(--ink); }
+  .sn-copy span{ font-family:'Lora', serif; font-size:12px; font-style:italic; color:var(--ink-soft); line-height:1.35; }
+  .sn-switch{ flex:0 0 auto; width:46px; height:26px; border-radius:14px; border:none; padding:0; background:rgba(var(--ink-rgb),0.2); position:relative; cursor:pointer; transition:background .25s ease; -webkit-tap-highlight-color:transparent; }
+  .sn-switch::after{ content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.3); transition:transform .25s cubic-bezier(.22,1,.36,1); }
+  .sn-switch.on{ background:var(--gold); }
+  .sn-switch.on::after{ transform:translateX(20px); }
+  .sn-switch:disabled{ opacity:.6; cursor:default; }
   .ctp-next{
     border:1px solid rgba(var(--gold-rgb),0.55); background:rgba(var(--gold-rgb),0.08);
     border-radius:10px; padding:12px 14px; margin:2px 0 18px;
@@ -7409,7 +7419,7 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
     <button class="menu-row" id="open-syllabus-btn" type="button">
       <span class="menu-row-label">
         <svg class="menu-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17.5" rx="2"></rect><path d="M9 3.5h6v3H9z"></path><path d="m8.8 12.3 1.7 1.7 3-3.2"></path><path d="M8.8 17.5h6.4"></path></svg>
-        <span>Syllabus</span>
+        <span>Syllabus &amp; Planner</span>
       </span>
       <span class="menu-row-arrow">&rsaquo;</span>
     </button>
@@ -7742,6 +7752,7 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
 
     <div id="ct-planner-detail" style="display:none;">
       <p class="tt-today-label ct-section-tag">&mdash; Class 11th &middot; 2027 Planner &mdash;</p>
+      <div id="uo-notify-slot"></div>
       <div class="ctp-tabs" id="ctp-tabs" role="tablist"></div>
       <div class="tt-card ct-card" id="ctp-card">
         <h2 class="tt-day-name" id="ctp-title"></h2>
@@ -12621,6 +12632,7 @@ function initPracticalGroupFinder(){
   }
   function ctRenderPlanner(animate){
     ctShowEl('ct-planner-detail', true);
+    try{ if(window.snRenderToggles) window.snRenderToggles(); }catch(e){}
     if(!ctpSubject) ctpSubject = ctpSavedSubject();
     const subj = CT_PLAN.find(s => s.id === ctpSubject) || CT_PLAN[0];
     const card = ctEl('ctp-card');
@@ -13668,6 +13680,60 @@ function initPracticalGroupFinder(){
     });
     return out.join(', ');
   }
+  // ---- Manual on/off switches for the scheduled reminders ----
+  // 'uo'   = Uday Odia class-day reminders (switch is on the Uday Odia planner page)
+  // 'test' = Mission Jeet test countdown reminders (switch is on Syllabus & Planner > Test planner)
+  // Both stay OFF until the user switches them on, and can be switched off again any time.
+  var SN_KEYS = { uo: 'uday-odia-notify-v1', test: 'planner-test-notify-v1' };
+  var SN_TEXT = {
+    uo:   { title: 'Uday Odia class reminders', on: 'On \u2014 you\u2019ll get a message on every day a lecture is scheduled.', off: 'Off \u2014 switch on to get a morning message on Uday Odia class days.' },
+    test: { title: 'Test planner notifications', on: 'On \u2014 you\u2019ll be reminded every morning for 3 days before a JEE Main test and 5 days before a JEE Advanced test.', off: 'Off \u2014 switch on to get test countdown reminders.' }
+  };
+  var SN_NOTE = {};
+  function snOn(kind){ try{ return localStorage.getItem(SN_KEYS[kind]) === '1'; }catch(e){ return false; } }
+  function snRowHTML(kind){
+    const on = snOn(kind), t = SN_TEXT[kind];
+    return '<div class="sn-row" data-sn-row="' + kind + '"><div class="sn-copy"><strong>' + t.title + '</strong><span>' + (SN_NOTE[kind] || (on ? t.on : t.off)) + '</span></div>'
+      + '<button type="button" class="sn-switch' + (on ? ' on' : '') + '" role="switch" aria-checked="' + (on ? 'true' : 'false') + '" aria-label="' + t.title + '" data-sn-kind="' + kind + '"></button></div>';
+  }
+  function snRenderToggles(){
+    const slot = document.getElementById('uo-notify-slot');
+    if(slot && !slot.firstChild) slot.innerHTML = snRowHTML('uo');
+    document.querySelectorAll('[data-sn-row]').forEach(r => {
+      const kind = r.getAttribute('data-sn-row'), t = SN_TEXT[kind]; if(!t) return;
+      const on = snOn(kind), b = r.querySelector('.sn-switch'), sp = r.querySelector('.sn-copy span');
+      if(b){ b.classList.toggle('on', on); b.setAttribute('aria-checked', on ? 'true' : 'false'); }
+      if(sp) sp.textContent = SN_NOTE[kind] || (on ? t.on : t.off);
+    });
+  }
+  async function snSet(kind, want){
+    delete SN_NOTE[kind];
+    if(want){
+      if(!hwNotifySupported()){ SN_NOTE[kind] = 'Notifications aren\u2019t supported in this browser.'; snRenderToggles(); return false; }
+      if(!hwNotifyOn()){
+        const ok = await hwTurnOnNotifications();
+        if(!ok){
+          SN_NOTE[kind] = (typeof Notification !== 'undefined' && Notification.permission === 'denied')
+            ? 'Notifications are blocked for this site \u2014 allow them in your browser settings, then try again.'
+            : 'Allow notifications when your browser asks, then switch this on.';
+          snRenderToggles(); return false;
+        }
+      }
+    }
+    try{ localStorage.setItem(SN_KEYS[kind], want ? '1' : '0'); }catch(e){}
+    snRenderToggles();
+    try{ ntfSyncSchedToWorker(); }catch(e){}
+    try{ ntfDailyChecks(); }catch(e){}
+    return true;
+  }
+  document.addEventListener('click', e => {
+    const b = e.target && e.target.closest ? e.target.closest('[data-sn-kind]') : null; if(!b) return;
+    e.preventDefault();
+    const kind = b.getAttribute('data-sn-kind'); b.disabled = true;
+    snSet(kind, !snOn(kind)).then(() => { b.disabled = false; }, () => { b.disabled = false; });
+  });
+  window.snOn = snOn; window.snRowHTML = snRowHTML; window.snRenderToggles = snRenderToggles;
+
   // ---- Coaching reminders: Uday Odia classes + Mission Jeet tests ----
   // Uday Odia: one morning message, only on days a lecture is scheduled.
   // Mission Jeet: every morning for the 3 days before a JEE Main test and
@@ -13678,7 +13744,7 @@ function initPracticalGroupFinder(){
     const WD = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const parse = iso => { const p = String(iso).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); };
     const plan = window.__ctPlanData;
-    if(Array.isArray(plan)){
+    if(Array.isArray(plan) && snOn('uo')){
       const byDay = {}, subjByDay = {};
       plan.forEach(sj => (sj.chapters || []).forEach(c => (c.l || []).forEach(l => {
         (byDay[l.d] = byDay[l.d] || []).push(sj.label + ': ' + c.n + ' \u2014 ' + l.t);
@@ -13692,7 +13758,7 @@ function initPracticalGroupFinder(){
       }));
     }
     const tests = window.__mjTests;
-    if(Array.isArray(tests)){
+    if(Array.isArray(tests) && snOn('test')){
       tests.forEach(t => {
         const pat = String(t.pattern || '');
         const span = /Advanced/i.test(pat) ? 5 : (/JEE Main/i.test(pat) ? 3 : 0);
@@ -13799,7 +13865,7 @@ function initPracticalGroupFinder(){
       }catch(e){}
     }
     try{
-      const syncKey = 'ntf-sched-synced-v1', syncVal = today + (hwNotifyOn() ? ':on' : ':off');
+      const syncKey = 'ntf-sched-synced-v1', syncVal = today + (hwNotifyOn() ? ':on' : ':off') + ':' + (snOn('uo') ? 1 : 0) + (snOn('test') ? 1 : 0);
       if(localStorage.getItem(syncKey) !== syncVal){ localStorage.setItem(syncKey, syncVal); ntfSyncSchedToWorker(); }
     }catch(e){}
     if(changed){ try{ localStorage.setItem(NTF_GEN_KEY, JSON.stringify(sent)); }catch(e){} }
@@ -16632,7 +16698,7 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
       return '<div class="pl-tools"><label class="syl-search" style="margin-bottom:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>'
         + '<input id="pl-q" type="search" autocomplete="off" placeholder="' + (PL.tab === 'test' ? 'Search tests or topics' : 'Search a topic, chapter or date') + '" value="' + esc(PL.q) + '" aria-label="Search the planner">'
         + '<button class="syl-search-x" id="pl-qx" type="button" aria-label="Clear search" style="' + (PL.q ? '' : 'display:none') + '">&times;</button></label>'
-        + '<div class="pl-chips">' + subjChips + '</div><div class="pl-chips" id="pl-row2">' + row2 + '</div>' + row3 + '</div><p class="pl-count" id="pl-count" aria-live="polite"></p>';
+        + '<div class="pl-chips">' + subjChips + '</div><div class="pl-chips" id="pl-row2">' + row2 + '</div>' + row3 + (PL.tab === 'test' && window.snRowHTML ? window.snRowHTML('test') : '') + '</div><p class="pl-count" id="pl-count" aria-live="polite"></p>';
     }
 
     /* ---------- shell ---------- */
