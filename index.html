@@ -7824,15 +7824,40 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
     </div>
   </div>
 
-  <div class="ss-panel">
+  <div class="ss-panel" id="ss-alert-panel" data-alert="sound" data-lmode="auto">
     <h3>Alert settings</h3>
     <div class="ss-set">
+      <div>Alert type<small>Sound, a glowing light, or both together</small></div>
+      <div class="ss-seg" id="ss-alert-seg"><button type="button" data-alert="sound">Sound</button><button type="button" data-alert="light">Light</button><button type="button" data-alert="both">Both</button></div>
+    </div>
+    <div class="ss-set ss-sound-row">
       <div>Alert sound<small>Voice reminders or a plain beep alarm</small></div>
       <div class="ss-seg" id="ss-mode-seg"><button type="button" data-mode="voice">Voice</button><button type="button" data-mode="beep">Beep</button></div>
     </div>
-    <div class="ss-set">
+    <div class="ss-set ss-sound-row">
       <div>Volume</div>
       <input type="range" id="ss-volume" min="0.1" max="1" step="0.05" value="1">
+    </div>
+    <div class="ss-set ss-light-row">
+      <div>Light colour<small>Pick a colour that grabs your eye</small></div>
+      <div class="ss-swatches" id="ss-color-seg">
+        <button type="button" data-color="red" style="background:#ff2a2a" aria-label="Red"></button>
+        <button type="button" data-color="violet" style="background:#9d4dff" aria-label="Violet"></button>
+        <button type="button" data-color="amber" style="background:#ffb000" aria-label="Amber"></button>
+        <button type="button" data-color="white" style="background:#ffffff" aria-label="White"></button>
+      </div>
+    </div>
+    <div class="ss-set ss-light-row">
+      <div>Light brightness<small>Auto-brighten grows to maximum. Steady glows at your phone&rsquo;s own brightness.</small></div>
+      <div class="ss-seg" id="ss-lmode-seg"><button type="button" data-lmode="auto">Auto-brighten</button><button type="button" data-lmode="phone">Steady</button></div>
+    </div>
+    <div class="ss-set ss-light-row ss-ramp-row">
+      <div>Brightening speed<small>Time to reach full brightness</small></div>
+      <select id="ss-ramp"><option value="2">Fast (2 s)</option><option value="5">Medium (5 s)</option><option value="10">Slow (10 s)</option></select>
+    </div>
+    <div class="ss-set ss-light-row">
+      <div>Test light<small>Tap the glow to dismiss it</small></div>
+      <button class="ss-btn ss-btn-small" id="ss-testlight-btn" type="button">Preview</button>
     </div>
     <div class="ss-set">
       <div>Eyes-closed delay<small>Normal blinks are ignored</small></div>
@@ -7842,7 +7867,7 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
       <div>Eye calibration<small>Look at the camera with eyes open</small></div>
       <button class="ss-btn ss-btn-small" id="ss-recalib-btn" type="button">Recalibrate</button>
     </div>
-    <div class="ss-set">
+    <div class="ss-set ss-sound-row">
       <div>Test sounds</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
         <button class="ss-btn ss-btn-small" type="button" data-test="eyes">Wake up</button>
@@ -27890,6 +27915,34 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
 #smart-study-view .ss-msg.show{ display:block; }
 #smart-study-view .ss-note{ font-size:12px; color:var(--ink-soft); line-height:1.55; margin:0 2px 18px 2px; }
 @media (max-width:380px){ #smart-study-view .ss-stats{ grid-template-columns:repeat(2,1fr); } }
+
+/* ---- Glow light alert ---- */
+#ss-alert-panel[data-alert="light"] .ss-sound-row{ display:none; }
+#ss-alert-panel[data-alert="sound"] .ss-light-row{ display:none; }
+#ss-alert-panel[data-lmode="phone"] .ss-ramp-row{ display:none; }
+#smart-study-view .ss-swatches{ display:flex; gap:10px; flex:0 0 auto; }
+#smart-study-view .ss-swatches button{ width:28px; height:28px; border-radius:50%; padding:0; cursor:pointer; border:1px solid rgba(var(--ink-rgb),.3); }
+#smart-study-view .ss-swatches button.active{ outline:2px solid var(--gold); outline-offset:2px; }
+#smart-study-view .ss-set select{ flex:0 0 auto; }
+#ss-light{
+  position:fixed; inset:0; z-index:2147483000; display:none; opacity:0; cursor:pointer;
+  flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:24px; text-align:center;
+  -webkit-tap-highlight-color:transparent; touch-action:manipulation; user-select:none; -webkit-user-select:none;
+  --ssl-core:#ff6a5c; --ssl-mid:#ff1f1f; --ssl-edge:#c40000; --ssl-text:#fff;
+}
+#ss-light.on{ display:flex; }
+#ss-light[data-color="violet"]{ --ssl-core:#d39bff; --ssl-mid:#9d4dff; --ssl-edge:#6a1bff; }
+#ss-light[data-color="amber"]{ --ssl-core:#ffe08a; --ssl-mid:#ffb000; --ssl-edge:#ff8c00; --ssl-text:#2b1a00; }
+#ss-light[data-color="white"]{ --ssl-core:#ffffff; --ssl-mid:#ffffff; --ssl-edge:#f1f1f1; --ssl-text:#1b1b1b; }
+#ss-light .ss-light-glow{
+  position:absolute; inset:0;
+  background:radial-gradient(circle at 50% 50%, var(--ssl-core) 0%, var(--ssl-mid) 55%, var(--ssl-edge) 100%);
+  animation:ssLightPulse 1.1s ease-in-out infinite alternate;
+}
+#ss-light .ss-light-msg{ position:relative; font-size:26px; font-weight:800; color:var(--ssl-text); text-shadow:0 1px 12px rgba(0,0,0,.25); line-height:1.25; }
+#ss-light .ss-light-hint{ position:relative; font-size:13px; color:var(--ssl-text); opacity:.85; }
+@keyframes ssLightPulse{ from{ filter:brightness(.88); } to{ filter:brightness(1.3); } }
+@media (prefers-reduced-motion:reduce){ #ss-light .ss-light-glow{ animation:none; } }
 </style>
 <script id="smart-study-script">
 (function(){
@@ -27919,8 +27972,12 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
   if(!view) return;
   var video = $('ss-video'), overlay = $('ss-overlay');
 
-  var cfg = { mode:'voice', volume:1, delay:1500 };
+  var cfg = { mode:'voice', volume:1, delay:1500, alert:'sound', lightColor:'red', lightMode:'auto', rampSecs:5 };
   try{ var saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null'); if(saved) cfg = Object.assign(cfg, saved); }catch(e){}
+  if(['sound','light','both'].indexOf(cfg.alert) < 0) cfg.alert = 'sound';
+  if(['red','violet','amber','white'].indexOf(cfg.lightColor) < 0) cfg.lightColor = 'red';
+  if(['auto','phone'].indexOf(cfg.lightMode) < 0) cfg.lightMode = 'auto';
+  if([2,5,10].indexOf(Number(cfg.rampSecs)) < 0) cfg.rampSecs = 5;
   function saveCfg(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(cfg)); }catch(e){} }
 
   var S = {
@@ -27987,6 +28044,7 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     stopBeep();
   }
   function startSound(k){
+    if(cfg.alert === 'light') return;
     if(cfg.mode === 'beep'){ startBeep(k); return; }
     var a = getAudio(k);
     a.volume = cfg.volume; a.loop = false;
@@ -28002,15 +28060,59 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     }, 1200);
   }
 
+  /* ---------------- glowing light alert ---------------- */
+  var lightEl = null, lightTimer = 0;
+  function ensureLight(){
+    if(lightEl) return lightEl;
+    lightEl = document.createElement('div');
+    lightEl.id = 'ss-light';
+    lightEl.setAttribute('aria-hidden', 'true');
+    lightEl.innerHTML = '<div class="ss-light-glow"></div><div class="ss-light-msg"></div><div class="ss-light-hint">Tap anywhere to silence</div>';
+    lightEl.addEventListener('click', function(){ if(S.current) stopAlert(); else stopLight(); });
+    document.body.appendChild(lightEl);
+    return lightEl;
+  }
+  function stopLight(){
+    clearTimeout(lightTimer);
+    if(!lightEl) return;
+    lightEl.style.transition = 'none';
+    lightEl.style.opacity = '0';
+    lightEl.classList.remove('on');
+  }
+  function showLight(text){
+    var el = ensureLight();
+    clearTimeout(lightTimer);
+    el.setAttribute('data-color', cfg.lightColor);
+    el.querySelector('.ss-light-msg').textContent = text || '';
+    el.classList.add('on');
+    var auto = cfg.lightMode !== 'phone';
+    el.style.transition = 'none';
+    el.style.opacity = auto ? '0.12' : '1';
+    void el.offsetWidth;
+    if(auto){ el.style.transition = 'opacity ' + (cfg.rampSecs || 5) + 's linear'; el.style.opacity = '1'; }
+  }
+  function startLight(k){ if(cfg.alert === 'sound') return; showLight(BANNER[k]); }
+  function testLight(){
+    stopSound();
+    showLight('Light preview');
+    var ms = (cfg.lightMode === 'phone' ? 2.5 : (cfg.rampSecs || 5) + 1.5) * 1000;
+    lightTimer = setTimeout(stopLight, ms);
+  }
+  function refreshOutputs(){
+    var k = S.current;
+    stopSound(); stopLight();
+    if(k){ startSound(k); startLight(k); }
+  }
+
   /* ---------------- alert logic ---------------- */
   function evaluate(){
     var want = null;
     for(var i = 0; i < PRIORITY.length; i++){ var k = PRIORITY[i]; if(S.cond[k] && !S.muted[k]){ want = k; break; } }
     if(want !== S.current){
-      stopSound();
+      stopSound(); stopLight();
       S.current = want;
       if(want){
-        startSound(want);
+        startSound(want); startLight(want);
         try{ if(navigator.vibrate) navigator.vibrate([200,100,200]); }catch(e){}
       }
     }
@@ -28082,6 +28184,13 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     for(var j = 0; j < segs.length; j++) segs[j].classList.toggle('active', segs[j].dataset.mode === cfg.mode);
     $('ss-delay').value = String(cfg.delay);
     $('ss-volume').value = String(cfg.volume);
+    var pn = $('ss-alert-panel');
+    pn.setAttribute('data-alert', cfg.alert); pn.setAttribute('data-lmode', cfg.lightMode);
+    function mark(id, attr, val){ var bs = $(id).querySelectorAll('button'); for(var q = 0; q < bs.length; q++) bs[q].classList.toggle('active', bs[q].getAttribute(attr) === val); }
+    mark('ss-alert-seg', 'data-alert', cfg.alert);
+    mark('ss-color-seg', 'data-color', cfg.lightColor);
+    mark('ss-lmode-seg', 'data-lmode', cfg.lightMode);
+    $('ss-ramp').value = String(cfg.rampSecs);
   }
   function tickClock(){
     var ms = S.running ? Date.now() - S.startedAt : (S.endedAt ? S.endedAt - S.startedAt : 0);
@@ -28263,7 +28372,7 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     var wasRunning = S.running;
     S.running = false; S.loading = false;
     clearTimeout(S.loopId); clearInterval(S.clockId); S.clockId = 0;
-    stopSound(); S.current = null;
+    stopSound(); stopLight(); S.current = null;
     S.cond = {eyes:false, phone:false, face:false}; S.muted = {eyes:false, phone:false, face:false};
     closeCamera(); dropWake();
     if(wasRunning) S.endedAt = Date.now();
@@ -28281,6 +28390,25 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     if(S.current){ var k = S.current; stopSound(); startSound(k); }
     render();
   });
+  $('ss-alert-seg').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    cfg.alert = b.dataset.alert; saveCfg();
+    refreshOutputs(); render();
+  });
+  $('ss-color-seg').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    cfg.lightColor = b.dataset.color; saveCfg();
+    if(lightEl) lightEl.setAttribute('data-color', cfg.lightColor);
+    render();
+  });
+  $('ss-lmode-seg').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    cfg.lightMode = b.dataset.lmode; saveCfg();
+    if(S.current) refreshOutputs();
+    render();
+  });
+  $('ss-ramp').addEventListener('change', function(e){ cfg.rampSecs = parseInt(e.target.value, 10) || 5; saveCfg(); });
+  $('ss-testlight-btn').addEventListener('click', testLight);
   $('ss-delay').addEventListener('change', function(e){ cfg.delay = parseInt(e.target.value, 10) || 1500; saveCfg(); });
   $('ss-volume').addEventListener('input', function(e){
     cfg.volume = parseFloat(e.target.value) || 1; saveCfg();
