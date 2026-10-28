@@ -5486,6 +5486,42 @@
   }
   .st-bars-labels span.st-bar-today{ color: var(--gold); font-weight:700; }
 
+  /* ---- Tap-a-day: selectable bars + detail panel ---- */
+  #st-bars{ height:116px; padding-top:20px; }
+  .st-bar-col{ cursor:pointer; position:relative; outline:none; -webkit-tap-highlight-color:transparent; }
+  .st-bar{ position:relative; }
+  .st-bar-val{
+    position:absolute; left:50%; top:-16px; transform:translateX(-50%); white-space:nowrap;
+    font-family:'Lora', serif; font-size:10px; font-weight:700; color: var(--ink-soft); pointer-events:none;
+  }
+  .st-bars.st-has-sel .st-bar-col:not(.st-bar-sel) .st-bar{ opacity:0.55; }
+  .st-bar-col.st-bar-sel .st-bar{ box-shadow:0 0 0 2px rgba(var(--gold-rgb),0.65); }
+  .st-bar-col:focus-visible .st-bar{ box-shadow:0 0 0 2px var(--gold); }
+  .st-bars-labels span{ cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .st-bars-labels span.st-bar-sel{ color: var(--gold); font-weight:700; }
+  .st-day-detail{
+    margin-top:14px; padding:14px 14px 12px 14px; border-radius:14px;
+    background: rgba(var(--ink-rgb),0.04); border:1px solid rgba(var(--ink-rgb),0.09);
+    font-family:'Lora', serif; color: var(--ink);
+  }
+  .st-dd-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px; }
+  .st-dd-title{ margin:0; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; font-weight:700; color: var(--ink-soft); }
+  .st-dd-total{ margin:2px 0 0 0; font-size:26px; font-weight:700; line-height:1.1; color: var(--ink); }
+  .st-dd-cmp{ font-size:11.5px; font-weight:700; text-align:right; color: var(--ink-soft); white-space:nowrap; }
+  .st-dd-cmp.up{ color: var(--success); }
+  .st-dd-cmp.down{ color: var(--danger); }
+  .st-dd-goal{ margin:12px 0 4px 0; height:6px; border-radius:99px; background: rgba(var(--ink-rgb),0.10); overflow:hidden; }
+  .st-dd-goal > div{ height:100%; border-radius:99px; background: linear-gradient(90deg, var(--gold), rgba(var(--gold-rgb),0.7)); }
+  .st-dd-goal-txt{ margin:0 0 10px 0; font-size:11px; color: var(--ink-soft); }
+  .st-dd-sec{ margin:12px 0 6px 0; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; font-weight:700; color: var(--ink-soft); }
+  .st-dd-row{ display:flex; align-items:center; gap:8px; padding:6px 0; font-size:12.5px; border-top:1px solid rgba(var(--ink-rgb),0.07); }
+  .st-dd-row:first-of-type{ border-top:0; }
+  .st-dd-dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+  .st-dd-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .st-dd-meta{ color: var(--ink-soft); font-size:11px; white-space:nowrap; }
+  .st-dd-val{ font-weight:700; white-space:nowrap; }
+  .st-dd-empty{ margin:10px 0 2px 0; font-size:12.5px; color: var(--ink-soft); }
+
   /* ---- Goals ---- */
   .st-goal-row{ margin-bottom:14px; }
   .st-goal-row:last-child{ margin-bottom:0; }
@@ -9196,6 +9232,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       </div>
       <div class="st-bars" id="st-bars"></div>
       <div class="st-bars-labels" id="st-bars-labels"></div>
+      <div class="st-day-detail" id="st-day-detail"></div>
     </div>
 
     <div class="st-card">
@@ -9284,6 +9321,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
         </div>
       </div>
       <div class="st-bars-labels" id="st-an-bars-labels" style="margin-left:34px;"></div>
+      <div class="st-day-detail" id="st-an-day-detail"></div>
     </div>
 
     <div class="st-an-insight">
@@ -20292,6 +20330,7 @@ if(existing){
           const parsed = JSON.parse(res.value);
           st = Object.assign(defaultStudyState(), parsed);
           if(!Array.isArray(st.sessions)) st.sessions = [];
+          if(!st.midnightFixV1){ stRepairMidnight(st); studyState = st; studyStateUserId = currentUser.id; await saveStudyState(); }
         }
       }catch(e){}
       studyState = st;
@@ -20395,6 +20434,190 @@ if(existing){
     const ST_MIX_COLORS = { 'Self Study':'#9C8E6D', 'Chemistry':'#3C6B4C', 'Physics':'#4A4030', 'Mathematics':'#A2751F' };
     const ST_MIX_FALLBACK = ['#A2751F','#3C6B4C','#726A58','#A0442F','#4A4030'];
 
+
+    // ---- Midnight-safe session recording ----
+    // A session that runs past midnight is split across the days it really
+    // covered (using the time the timer was actually running), instead of
+    // dumping the whole duration on the day it happened to be finished.
+    function stBuildSegments(startedAt, endMs, seconds){
+      const segs = [];
+      let cursor = startedAt, guard = 0;
+      while(cursor < endMs && guard++ < 40){
+        const c = new Date(cursor);
+        const next = new Date(c.getFullYear(), c.getMonth(), c.getDate() + 1).getTime();
+        const e = Math.min(next, endMs);
+        segs.push({ date: stDateKey(c), hour: c.getHours(), s: cursor, e: e });
+        cursor = e;
+      }
+      if(segs.length <= 1) return null;
+      let w = segs.map(g => (typeof window.stTmsOverlapMs === 'function') ? window.stTmsOverlapMs(g.s, g.e) : 0);
+      let sum = w.reduce((a,b) => a + b, 0);
+      if(sum < 1000){ w = segs.map(g => g.e - g.s); sum = w.reduce((a,b) => a + b, 0); }
+      const out = [];
+      let used = 0;
+      segs.forEach((g, i) => {
+        let sec = i === segs.length - 1 ? seconds - used : Math.round(seconds * w[i] / sum);
+        sec = Math.max(0, sec); used += sec;
+        if(sec >= 1) out.push({ date: g.date, hour: i === 0 ? g.hour : 0, seconds: sec, cont: i > 0 });
+      });
+      return out.length ? out : null;
+    }
+    function stRecordSession(base, startedAt, endMs){
+      const segs = (startedAt && endMs > startedAt) ? stBuildSegments(startedAt, endMs, base.seconds) : null;
+      if(!segs){ studyState.sessions.push(Object.assign({ id: cryptoId() }, base)); return; }
+      const gid = cryptoId();
+      segs.forEach((g, i) => {
+        studyState.sessions.push(Object.assign({}, base, {
+          id: i === 0 ? gid : gid + '#' + i, date: g.date, seconds: g.seconds, hour: g.hour, cont: g.cont || undefined, split: true
+        }));
+      });
+    }
+    // One-time repair for sessions saved by the older version, which put the
+    // whole duration on the day the session was finished. If a session's
+    // start hour + length provably crossed midnight, move the part before
+    // midnight back onto the earlier day(s).
+    function stRepairMidnight(st){
+      if(!st || st.midnightFixV1) return;
+      const out = [];
+      (st.sessions || []).forEach(x => {
+        if(x.split || typeof x.hour !== 'number' || !x.date || !(x.seconds > 0)){ out.push(x); return; }
+        const startSec = x.hour * 3600;
+        if(startSec + x.seconds <= 86400){ out.push(x); return; }
+        const est = startSec + 1800;                        // assume mid-hour start
+        const lastDay = new Date(x.date + 'T00:00:00');
+        const smart = x.source === 'smart';                 // smart sessions are dated by start, others by finish
+        let remain = x.seconds, offset = 0, first = true, parts = [];
+        let cursorStart = est;
+        while(remain > 0 && offset < 40){
+          const room = Math.max(0, 86400 - cursorStart);
+          const take = Math.min(remain, room || remain);
+          parts.push({ sec: take, off: offset, hour: first ? x.hour : 0 });
+          remain -= take; cursorStart = 0; offset++; first = false;
+        }
+        if(parts.length < 2){ out.push(x); return; }
+        parts.forEach((p, i) => {
+          const d = new Date(lastDay);
+          d.setDate(d.getDate() + (smart ? p.off : p.off - (parts.length - 1)));
+          out.push(Object.assign({}, x, {
+            id: i === 0 ? x.id : x.id + '#' + i, date: stDateKey(d), seconds: p.sec, hour: p.hour,
+            cont: i > 0 || undefined, split: true
+          }));
+        });
+      });
+      st.sessions = out;
+      st.midnightFixV1 = true;
+    }
+
+    // ---- Tap-a-day detail (shared by the Study and Stats charts) ----
+    const ST_DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const ST_MON_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const stSelDay = { study: null, stats: null };
+    function stDateFromKey(k){ return new Date(k + 'T00:00:00'); }
+    function stEscHtml(t){ return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function stFmtDur(sec){
+      sec = Math.max(0, Math.round(sec));
+      if(sec < 60) return sec > 0 ? sec + 's' : '0m';
+      const mins = Math.round(sec / 60), h = Math.floor(mins / 60), m = mins % 60;
+      return h > 0 ? (h + 'h' + (m ? ' ' + m + 'm' : '')) : (m + 'm');
+    }
+    function stDayTitle(key){
+      const d = stDateFromKey(key);
+      const t = new Date(); t.setHours(0,0,0,0);
+      const diff = Math.round((t.getTime() - d.getTime()) / 86400000);
+      const name = diff === 0 ? 'Today' : diff === 1 ? 'Yesterday' : ST_DAY_NAMES[d.getDay()];
+      return name + ' · ' + d.getDate() + ' ' + ST_MON_NAMES[d.getMonth()];
+    }
+    function stDayDetailHTML(key){
+      const secs = stSecondsForDate(key);
+      const d = stDateFromKey(key);
+      const prev = new Date(d); prev.setDate(prev.getDate() - 1);
+      const prevSec = stSecondsForDate(stDateKey(prev));
+      const list = studyState.sessions.filter(x => x.date === key).slice().sort((a,b) => (a.hour||0) - (b.hour||0));
+      let h = '<div class="st-dd-head"><div><p class="st-dd-title">' + stEscHtml(stDayTitle(key)) + '</p>' +
+              '<p class="st-dd-total">' + stFmtDur(secs) + '</p></div>';
+      if(secs > 0 || prevSec > 0){
+        const diff = secs - prevSec;
+        const cls = diff > 0 ? 'up' : diff < 0 ? 'down' : '';
+        const arrow = diff > 0 ? '▲ ' : diff < 0 ? '▼ ' : '';
+        const txt = diff === 0 ? 'Same as ' + ST_DAY_NAMES[prev.getDay()] : arrow + stFmtDur(Math.abs(diff)) + ' vs ' + ST_DAY_NAMES[prev.getDay()];
+        h += '<div class="st-dd-cmp ' + cls + '">' + txt + '</div>';
+      }
+      h += '</div>';
+      const goal = studyState.dailyGoalHours || 0;
+      if(goal > 0){
+        const pct = Math.min(100, Math.round(secs / 3600 / goal * 100));
+        h += '<div class="st-dd-goal"><div style="width:' + pct + '%"></div></div>' +
+             '<p class="st-dd-goal-txt">' + pct + '% of ' + goal + 'h daily goal</p>';
+      }
+      if(!list.length){
+        return h + '<p class="st-dd-empty">No study logged this day.</p>';
+      }
+      const totals = {};
+      list.forEach(x => { totals[x.subject] = (totals[x.subject] || 0) + x.seconds; });
+      h += '<p class="st-dd-sec">By subject</p>';
+      Object.keys(totals).sort((a,b) => totals[b] - totals[a]).forEach((subj, idx) => {
+        const color = ST_MIX_COLORS[subj] || ST_MIX_FALLBACK[idx % ST_MIX_FALLBACK.length];
+        h += '<div class="st-dd-row"><span class="st-dd-dot" style="background:' + color + '"></span>' +
+             '<span class="st-dd-name">' + stEscHtml(subj) + '</span>' +
+             '<span class="st-dd-meta">' + Math.round(totals[subj] / secs * 100) + '%</span>' +
+             '<span class="st-dd-val">' + stFmtDur(totals[subj]) + '</span></div>';
+      });
+      h += '<p class="st-dd-sec">' + list.length + (list.length === 1 ? ' session' : ' sessions') + '</p>';
+      list.forEach(x => {
+        const when = x.cont ? 'Past midnight' : 'From ' + stPad(x.hour || 0) + ':00';
+        const mode = x.source === 'smart' ? 'Smart Tracker' : (x.mode === 'pomodoro' ? 'Pomodoro' : 'Stopwatch');
+        h += '<div class="st-dd-row"><span class="st-dd-name">' + stEscHtml(x.subject) +
+             ' <span class="st-dd-meta">· ' + when + ' · ' + mode + '</span></span>' +
+             '<span class="st-dd-val">' + stFmtDur(x.seconds) + '</span></div>';
+      });
+      return h;
+    }
+    // days: [{ key, sec, label, title, isToday }]  scaleSec: seconds that equal a full-height bar
+    function stBuildDayChart(o){
+      const { barsEl, labelsEl, detailEl, days, scaleSec, group } = o;
+      barsEl.innerHTML = ''; labelsEl.innerHTML = '';
+      let sel = stSelDay[group];
+      if(!days.some(d => d.key === sel)){
+        const t = days.find(d => d.isToday);
+        sel = (t || days[days.length - 1]).key;
+      }
+      stSelDay[group] = sel;
+      const cols = [], labs = [];
+      const select = key => {
+        stSelDay[group] = key;
+        days.forEach((d, i) => {
+          cols[i].classList.toggle('st-bar-sel', d.key === key);
+          labs[i].classList.toggle('st-bar-sel', d.key === key);
+        });
+        barsEl.classList.add('st-has-sel');
+        detailEl.innerHTML = stDayDetailHTML(key);
+      };
+      days.forEach((dy, i) => {
+        const col = document.createElement('div');
+        col.className = 'st-bar-col' + (dy.isToday ? ' st-bar-today' : '');
+        col.setAttribute('role', 'button'); col.tabIndex = 0;
+        col.setAttribute('aria-label', dy.title + ': ' + stFmtDur(dy.sec));
+        const bar = document.createElement('div');
+        bar.className = 'st-bar';
+        bar.style.height = (dy.sec > 0 ? Math.min(100, Math.max(3, Math.round(dy.sec / scaleSec * 100))) : 0) + '%';
+        if(o.valueLabels && dy.sec > 0){
+          const v = document.createElement('span');
+          v.className = 'st-bar-val'; v.textContent = (dy.sec / 3600).toFixed(1) + 'h';
+          bar.appendChild(v);
+        }
+        col.appendChild(bar);
+        col.addEventListener('click', () => select(dy.key));
+        col.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); select(dy.key); } });
+        barsEl.appendChild(col); cols.push(col);
+        const lab = document.createElement('span');
+        lab.textContent = dy.label;
+        if(dy.isToday) lab.className = 'st-bar-today';
+        lab.addEventListener('click', () => select(dy.key));
+        labelsEl.appendChild(lab); labs.push(lab);
+      });
+      select(sel);
+    }
+
     async function stRender(){
       await loadStudyState();
       const todaySec = stSecondsForDate(stTodayKey());
@@ -20423,34 +20646,21 @@ if(existing){
 
       const barsEl = document.getElementById('st-bars');
       const labelsEl = document.getElementById('st-bars-labels');
-      if(barsEl && labelsEl){
-        barsEl.innerHTML = ''; labelsEl.innerHTML = '';
+      const detailEl = document.getElementById('st-day-detail');
+      if(barsEl && labelsEl && detailEl){
+        // True rolling "Last 7 days" ending today, so yesterday always sits
+        // right next to today (even on a Sunday) and heights are comparable.
         const dayLetters = ['S','M','T','W','T','F','S'];
-        const start = stStartOfWeek(new Date());
-        const daySecs = [];
+        const days = [];
         let maxSec = 1;
-        for(let i=0;i<7;i++){
-          const d = new Date(start); d.setDate(d.getDate() + i);
-          const sec = stSecondsForDate(stDateKey(d));
-          daySecs.push(sec);
+        for(let i = 6; i >= 0; i--){
+          const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
+          const key = stDateKey(d);
+          const sec = stSecondsForDate(key);
           if(sec > maxSec) maxSec = sec;
+          days.push({ key, sec, label: dayLetters[d.getDay()], title: stDayTitle(key), isToday: i === 0 });
         }
-        const todayIdx = new Date().getDay();
-        for(let i=0;i<7;i++){
-          const isToday = i === todayIdx;
-          const col = document.createElement('div');
-          col.className = 'st-bar-col' + (isToday ? ' st-bar-today' : '');
-          const bar = document.createElement('div');
-          bar.className = 'st-bar';
-          const pct = daySecs[i] > 0 ? Math.max(4, Math.round((daySecs[i]/maxSec) * 100)) : 0;
-          bar.style.height = pct + '%';
-          col.appendChild(bar);
-          barsEl.appendChild(col);
-          const lab = document.createElement('span');
-          lab.textContent = dayLetters[i];
-          if(isToday) lab.className = 'st-bar-today';
-          labelsEl.appendChild(lab);
-        }
+        stBuildDayChart({ barsEl, labelsEl, detailEl, days, scaleSec: maxSec, group: 'study', valueLabels: true });
       }
 
       const mixBar = document.getElementById('st-mix-bar');
@@ -20552,26 +20762,16 @@ if(existing){
       }
       const barsEl = document.getElementById('st-an-bars');
       const labelsEl = document.getElementById('st-an-bars-labels');
-      if(barsEl && labelsEl){
-        barsEl.innerHTML = ''; labelsEl.innerHTML = '';
+      const detailEl = document.getElementById('st-an-day-detail');
+      if(barsEl && labelsEl && detailEl){
         const dayLetters = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        const todayIdx = now.getDay();
+        const days = [];
         for(let i=0;i<7;i++){
-          const isToday = i === todayIdx;
-          const col = document.createElement('div');
-          col.className = 'st-bar-col' + (isToday ? ' st-bar-today' : '');
-          const bar = document.createElement('div');
-          bar.className = 'st-bar';
-          const h = daySecs[i]/3600;
-          const pct = h > 0 ? Math.max(3, Math.round((h/axisMax) * 100)) : 0;
-          bar.style.height = pct + '%';
-          col.appendChild(bar);
-          barsEl.appendChild(col);
-          const lab = document.createElement('span');
-          lab.textContent = dayLetters[i];
-          if(isToday) lab.className = 'st-bar-today';
-          labelsEl.appendChild(lab);
+          const d = new Date(start); d.setDate(d.getDate() + i);
+          const key = stDateKey(d);
+          days.push({ key, sec: daySecs[i], label: dayLetters[i], title: stDayTitle(key), isToday: i === now.getDay() });
         }
+        stBuildDayChart({ barsEl, labelsEl, detailEl, days, scaleSec: axisMax * 3600, group: 'stats', valueLabels: false });
       }
 
       // Best day — the weekday with the most time this week; ties (including
@@ -20717,14 +20917,21 @@ if(existing){
     window.stUpsertExternalSession = async function(id, seconds, startedAt){
       if(!currentUser) return false;
       await loadStudyState();
-      const idx = studyState.sessions.findIndex(x => x.id === id);
+      const had = studyState.sessions.some(x => x.id === id || String(x.id).indexOf(id + '#') === 0);
+      studyState.sessions = studyState.sessions.filter(x => !(x.id === id || String(x.id).indexOf(id + '#') === 0));
       if(seconds < 5){
-        if(idx < 0) return false;
-        studyState.sessions.splice(idx, 1);
+        if(!had) return false;
       } else {
         const d = new Date(startedAt);
-        const rec = { id, date: stDateKey(d), subject: 'Self Study', seconds, mode: 'stopwatch', hour: d.getHours(), source: 'smart' };
-        if(idx >= 0) studyState.sessions[idx] = rec; else studyState.sessions.push(rec);
+        const base = { subject: 'Self Study', mode: 'stopwatch', source: 'smart' };
+        const segs = stBuildSegments(startedAt, startedAt + seconds * 1000, seconds);
+        if(!segs){
+          studyState.sessions.push(Object.assign({ id, date: stDateKey(d), seconds, hour: d.getHours() }, base));
+        } else {
+          segs.forEach((g, i) => studyState.sessions.push(Object.assign({}, base, {
+            id: i === 0 ? id : id + '#' + i, date: g.date, seconds: g.seconds, hour: g.hour, cont: g.cont || undefined, split: true
+          })));
+        }
       }
       await saveStudyState();
       try{
@@ -20949,6 +21156,7 @@ if(existing){
       const seconds = Math.round(stTimer.elapsed);
       const subject = stTimer.subject, mode = stTimer.mode;
       const hour = typeof stTimer.startHour === 'number' ? stTimer.startHour : new Date().getHours();
+      const startedAtMs = stTimer.startedAt || null;
       stTimer.running = false;
       stRunMark(false);
       if(typeof stExitFullscreen === 'function') stExitFullscreen();
@@ -20961,7 +21169,7 @@ if(existing){
       if(hero) hero.style.display = 'block';
       if(seconds >= 5 && currentUser){
         await loadStudyState();
-        studyState.sessions.push({ id: cryptoId(), date: stTodayKey(), subject, seconds, mode, hour });
+        stRecordSession({ date: stTodayKey(), subject, seconds, mode, hour }, startedAtMs, Date.now());
         await saveStudyState();
       }
       await stRender();
