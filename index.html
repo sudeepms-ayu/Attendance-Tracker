@@ -5520,6 +5520,30 @@
   .st-dd-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .st-dd-meta{ color: var(--ink-soft); font-size:11px; white-space:nowrap; }
   .st-dd-val{ font-weight:700; white-space:nowrap; }
+  .st-dd-row.st-dd-srow{ flex-wrap:wrap; }
+  .st-dd-sname{ flex:1; min-width:0; }
+  .st-dd-ic{
+    width:28px; height:28px; flex:none; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer;
+    background:none; color: var(--ink-soft); border:1px solid rgba(var(--ink-rgb),0.18); border-radius:8px; -webkit-tap-highlight-color:transparent;
+  }
+  .st-dd-ic svg{ width:14px; height:14px; }
+  .st-dd-ic:hover{ color: var(--gold); border-color: rgba(var(--gold-rgb),0.5); }
+  .st-dd-ic.del:hover{ color: var(--danger); border-color: rgba(var(--danger-rgb),0.5); }
+  .st-dd-form{ width:100%; display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:4px 0 2px 0; }
+  .st-dd-in{
+    font-family:'Lora', serif; font-size:13px; color: var(--ink); background: rgba(var(--ink-rgb),0.07);
+    border:1px solid rgba(var(--ink-rgb),0.18); border-radius:8px; padding:6px 8px; min-width:0;
+  }
+  .st-dd-form input.st-dd-in{ width:56px; text-align:center; }
+  .st-dd-form select.st-dd-in{ flex:1 1 120px; }
+  .st-dd-unit{ font-size:12px; color: var(--ink-soft); }
+  .st-dd-btn{
+    font-family:'Lora', serif; font-size:12px; font-weight:700; padding:7px 12px; border-radius:8px; cursor:pointer;
+    border:1px solid rgba(var(--ink-rgb),0.2); background:none; color: var(--ink);
+  }
+  .st-dd-btn.pri{ background: rgba(var(--gold-rgb),0.22); border-color: rgba(var(--gold-rgb),0.6); color: var(--gold); }
+  .st-dd-btn.dng{ background: rgba(var(--danger-rgb),0.18); border-color: rgba(var(--danger-rgb),0.55); color: var(--danger); }
+  .st-dd-err{ width:100%; font-size:11px; color: var(--danger); min-height:0; }
   .st-dd-empty{ margin:10px 0 2px 0; font-size:12.5px; color: var(--ink-soft); }
 
   /* ---- Goals ---- */
@@ -20531,7 +20555,8 @@ if(existing){
       const name = diff === 0 ? 'Today' : diff === 1 ? 'Yesterday' : ST_DAY_NAMES[d.getDay()];
       return name + ' · ' + d.getDate() + ' ' + ST_MON_NAMES[d.getMonth()];
     }
-    function stDayDetailHTML(key){
+    let stEdit = null; // { id, mode:'edit'|'del' } — only used for today's sessions in the Study tab
+    function stDayDetailHTML(key, editable){
       const secs = stSecondsForDate(key);
       const d = stDateFromKey(key);
       const prev = new Date(d); prev.setDate(prev.getDate() - 1);
@@ -20567,12 +20592,35 @@ if(existing){
              '<span class="st-dd-val">' + stFmtDur(totals[subj]) + '</span></div>';
       });
       h += '<p class="st-dd-sec">' + list.length + (list.length === 1 ? ' session' : ' sessions') + '</p>';
+      const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>';
+      const ICON_DEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path></svg>';
       list.forEach(x => {
         const when = x.cont ? 'Past midnight' : 'From ' + stPad(x.hour || 0) + ':00';
         const mode = x.source === 'smart' ? 'Smart Tracker' : (x.mode === 'pomodoro' ? 'Pomodoro' : 'Stopwatch');
-        h += '<div class="st-dd-row"><span class="st-dd-name">' + stEscHtml(x.subject) +
-             ' <span class="st-dd-meta">· ' + when + ' · ' + mode + '</span></span>' +
-             '<span class="st-dd-val">' + stFmtDur(x.seconds) + '</span></div>';
+        const sid = stEscHtml(x.id);
+        if(editable && stEdit && stEdit.id === x.id && stEdit.mode === 'edit'){
+          const subs = ['Self Study','Physics','Mathematics','Chemistry'];
+          if(subs.indexOf(x.subject) === -1) subs.push(x.subject);
+          const hh = Math.floor(x.seconds / 3600), mm = Math.round((x.seconds % 3600) / 60);
+          h += '<div class="st-dd-row st-dd-srow"><div class="st-dd-form" data-sid="' + sid + '">' +
+               '<select class="st-dd-in" data-f="subject">' + subs.map(n => '<option value="' + stEscHtml(n) + '"' + (n === x.subject ? ' selected' : '') + '>' + stEscHtml(n) + '</option>').join('') + '</select>' +
+               '<input class="st-dd-in" data-f="h" type="number" inputmode="numeric" min="0" max="24" value="' + (mm === 60 ? hh + 1 : hh) + '"><span class="st-dd-unit">h</span>' +
+               '<input class="st-dd-in" data-f="m" type="number" inputmode="numeric" min="0" max="59" value="' + (mm === 60 ? 0 : mm) + '"><span class="st-dd-unit">m</span>' +
+               '<button type="button" class="st-dd-btn pri" data-act="save" data-sid="' + sid + '">Save</button>' +
+               '<button type="button" class="st-dd-btn" data-act="cancel">Cancel</button>' +
+               '<div class="st-dd-err" data-err></div></div></div>';
+        } else if(editable && stEdit && stEdit.id === x.id && stEdit.mode === 'del'){
+          h += '<div class="st-dd-row st-dd-srow"><span class="st-dd-sname">Delete ' + stEscHtml(x.subject) + ' (' + stFmtDur(x.seconds) + ')?</span>' +
+               '<button type="button" class="st-dd-btn dng" data-act="delok" data-sid="' + sid + '">Delete</button>' +
+               '<button type="button" class="st-dd-btn" data-act="cancel">Cancel</button></div>';
+        } else {
+          h += '<div class="st-dd-row st-dd-srow"><span class="st-dd-sname">' + stEscHtml(x.subject) +
+               ' <span class="st-dd-meta">· ' + when + ' · ' + mode + '</span></span>' +
+               '<span class="st-dd-val">' + stFmtDur(x.seconds) + '</span>' +
+               (editable ? '<button type="button" class="st-dd-ic" data-act="edit" data-sid="' + sid + '" aria-label="Edit session">' + ICON_EDIT + '</button>' +
+                           '<button type="button" class="st-dd-ic del" data-act="del" data-sid="' + sid + '" aria-label="Delete session">' + ICON_DEL + '</button>' : '') +
+               '</div>';
+        }
       });
       return h;
     }
@@ -20594,8 +20642,38 @@ if(existing){
           labs[i].classList.toggle('st-bar-sel', d.key === key);
         });
         barsEl.classList.add('st-has-sel');
-        detailEl.innerHTML = stDayDetailHTML(key);
+        detailEl.innerHTML = stDayDetailHTML(key, group === 'study' && key === stTodayKey());
       };
+      if(group === 'study' && !detailEl._ddBound){
+        detailEl._ddBound = true;
+        detailEl.addEventListener('click', async ev => {
+          const btn = ev.target.closest('[data-act]'); if(!btn) return;
+          const act = btn.dataset.act, sid = btn.dataset.sid;
+          const redraw = () => { detailEl.innerHTML = stDayDetailHTML(stSelDay.study, stSelDay.study === stTodayKey()); };
+          if(stSelDay.study !== stTodayKey()) return; // only today's sessions are editable
+          if(act === 'edit' || act === 'del'){ stEdit = { id: sid, mode: act === 'edit' ? 'edit' : 'del' }; redraw(); return; }
+          if(act === 'cancel'){ stEdit = null; redraw(); return; }
+          if(act === 'delok'){
+            const i = studyState.sessions.findIndex(x => x.id === sid && x.date === stTodayKey());
+            if(i >= 0) studyState.sessions.splice(i, 1);
+            stEdit = null; await saveStudyState(); await stRender(); return;
+          }
+          if(act === 'save'){
+            const form = btn.closest('.st-dd-form'); if(!form) return;
+            const hv = parseInt(form.querySelector('[data-f="h"]').value, 10) || 0;
+            const mv = parseInt(form.querySelector('[data-f="m"]').value, 10) || 0;
+            const subj = form.querySelector('[data-f="subject"]').value;
+            const secs = hv * 3600 + mv * 60;
+            const err = form.querySelector('[data-err]');
+            if(hv < 0 || mv < 0 || mv > 59){ err.textContent = 'Minutes must be 0–59.'; return; }
+            if(secs < 60){ err.textContent = 'Enter at least 1 minute (or delete the session).'; return; }
+            if(secs > 86400){ err.textContent = 'A session can\'t be longer than 24 hours.'; return; }
+            const sess = studyState.sessions.find(x => x.id === sid && x.date === stTodayKey());
+            if(sess){ sess.seconds = secs; sess.subject = subj; sess.edited = true; }
+            stEdit = null; await saveStudyState(); await stRender();
+          }
+        });
+      }
       days.forEach((dy, i) => {
         const col = document.createElement('div');
         col.className = 'st-bar-col' + (dy.isToday ? ' st-bar-today' : '');
