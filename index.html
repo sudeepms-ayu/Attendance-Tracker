@@ -5630,6 +5630,9 @@
   .st-an-cal-cell.st-an-cal-has-data{ background: rgba(var(--gold-rgb),0.1); }
   .st-an-cal-cell.st-an-cal-today{ background: rgba(var(--gold-rgb),0.2); box-shadow: 0 0 0 2px var(--gold) inset; }
   .st-an-cal-cell.st-an-cal-today .st-an-cal-num{ color: var(--gold); font-weight:700; }
+  .st-an-cal-cell:not(.st-an-cal-empty){ cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .st-an-cal-cell.st-an-cal-sel{ background: rgba(var(--gold-rgb),0.38); outline:2px solid var(--gold); outline-offset:-2px; }
+  .st-an-cal-cell.st-an-cal-sel .st-an-cal-num{ color: var(--gold); font-weight:700; }
 
   /* ================= Tasks panel ================= */
   /* ---- Smart Tasks: due badges, dots, smooth motion ---- */
@@ -9366,6 +9369,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
         <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
       </div>
       <div class="st-an-cal-grid" id="st-an-cal-grid"></div>
+      <div class="st-day-detail" id="st-an-cal-detail"></div>
     </div>
 
   </section>
@@ -20511,7 +20515,7 @@ if(existing){
     // ---- Tap-a-day detail (shared by the Study and Stats charts) ----
     const ST_DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const ST_MON_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const stSelDay = { study: null, stats: null };
+    const stSelDay = { study: null, stats: null, cal: null };
     function stDateFromKey(k){ return new Date(k + 'T00:00:00'); }
     function stEscHtml(t){ return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
     function stFmtDur(sec){
@@ -20882,7 +20886,26 @@ if(existing){
             hrs.textContent = (sec/3600).toFixed(1) + 'h';
             cell.appendChild(hrs);
           }
+          cell.dataset.key = dateKey;
+          cell.setAttribute('role', 'button'); cell.tabIndex = 0;
+          cell.setAttribute('aria-label', stDayTitle(dateKey) + ': ' + stFmtDur(sec));
           calGrid.appendChild(cell);
+        }
+        // Tap any date to see that day's full stats (month overview)
+        const calDetail = document.getElementById('st-an-cal-detail');
+        if(calDetail){
+          const monthPrefix = y + '-' + stPad(m+1) + '-';
+          const selectCal = key => {
+            stSelDay.cal = key;
+            calGrid.querySelectorAll('.st-an-cal-cell[data-key]').forEach(c => c.classList.toggle('st-an-cal-sel', c.dataset.key === key));
+            calDetail.innerHTML = stDayDetailHTML(key);
+          };
+          calGrid.querySelectorAll('.st-an-cal-cell[data-key]').forEach(c => {
+            c.addEventListener('click', () => selectCal(c.dataset.key));
+            c.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectCal(c.dataset.key); } });
+          });
+          const keep = stSelDay.cal && stSelDay.cal.indexOf(monthPrefix) === 0 ? stSelDay.cal : stTodayKey();
+          selectCal(keep);
         }
       }
     }
