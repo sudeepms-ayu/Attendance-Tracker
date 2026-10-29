@@ -5759,6 +5759,50 @@
   .st-shortcut:hover{ border-color: rgba(var(--gold-rgb),0.45); color: var(--gold); transform: translateY(-2px); box-shadow: 0 10px 20px -14px rgba(var(--ink-rgb),0.5); }
   .st-shortcut:active{ transform: translateY(0) scale(0.97); }
 
+
+  /* ---- Set Alarm (Study tab) ---- */
+  .st-alarm-row{ display:flex; gap:10px; align-items:stretch; margin-bottom:10px; }
+  .st-alarm-time, .st-alarm-label{
+    font-family:'Lora', serif; font-size:15px; color: var(--ink); background: rgba(var(--ink-rgb),0.06);
+    border:1px solid rgba(var(--ink-rgb),0.14); border-radius:12px; padding:11px 12px; min-width:0; color-scheme: light dark;
+  }
+  .st-alarm-time{ flex:0 0 118px; font-weight:700; }
+  .st-alarm-label{ flex:1; }
+  .st-alarm-app{ width:100%; margin-bottom:10px; font-family:'Lora', serif; font-size:14px; color: var(--ink); background: rgba(var(--ink-rgb),0.06);
+    border:1px solid rgba(var(--ink-rgb),0.14); border-radius:12px; padding:11px 12px; color-scheme: light dark; }
+  .st-alarm-app:focus{ outline:none; border-color: rgba(var(--gold-rgb),0.6); }
+  .st-alarm-app-lbl{ display:block; font-family:'Lora', serif; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color: var(--ink-soft); margin:0 0 6px 2px; font-weight:700; }
+  .st-alarm-time:focus, .st-alarm-label:focus{ outline:none; border-color: rgba(var(--gold-rgb),0.6); }
+  .st-alarm-btn{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;
+    font-family:'Lora', serif; font-weight:700; font-size:14px; padding:12px; border-radius:12px;
+    background: linear-gradient(90deg, var(--gold) 0%, #c98f2e 100%); color:#1b1710; border:0;
+    transition: transform 0.18s ease, filter 0.18s ease;
+  }
+  .st-alarm-btn svg{ width:17px; height:17px; }
+  .st-alarm-btn:active{ transform: scale(0.98); filter: brightness(0.95); }
+  .st-alarm-note{ font-family:'Lora', serif; font-size:11.5px; color: var(--ink-soft); margin:10px 0 0 0; line-height:1.45; }
+  .st-alarm-list{ display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+  .st-alarm-item{
+    display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px;
+    background: rgba(var(--ink-rgb),0.05); border:1px solid rgba(var(--ink-rgb),0.1);
+  }
+  .st-alarm-item-time{ font-family:'Lora', serif; font-weight:700; font-size:17px; color: var(--ink); }
+  .st-alarm-item-label{ flex:1; min-width:0; font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .st-alarm-item button{
+    width:32px; height:32px; border-radius:9px; cursor:pointer; flex:none; display:inline-flex; align-items:center; justify-content:center;
+    background: rgba(var(--ink-rgb),0.06); border:1px solid rgba(var(--ink-rgb),0.12); color: var(--ink-soft);
+  }
+  .st-alarm-item button svg{ width:14px; height:14px; }
+  .st-alarm-item button:hover{ color: var(--gold); border-color: rgba(var(--gold-rgb),0.4); }
+  .st-alarm-toast{
+    position:fixed; left:50%; bottom:96px; transform:translate(-50%,12px); opacity:0; pointer-events:none; z-index:99999;
+    background: var(--tt-card, #2a251b); color: var(--ink, #fff); border:1px solid rgba(var(--gold-rgb),0.45);
+    font-family:'Lora', serif; font-size:13px; padding:10px 16px; border-radius:999px; max-width:86vw; text-align:center;
+    transition: opacity 0.25s ease, transform 0.25s ease; box-shadow:0 12px 28px -12px rgba(0,0,0,0.6);
+  }
+  .st-alarm-toast.show{ opacity:1; transform:translate(-50%,0); }
+
   /* ---- Placeholder panels for Task / Track / Flashcards ---- */
   .st-soon-card{
     text-align:center; background: var(--tt-card); border:1px dashed rgba(var(--ink-rgb),0.22); border-radius:20px;
@@ -9284,6 +9328,150 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       <div class="st-mix-bar" id="st-mix-bar"></div>
       <div class="st-mix-legend" id="st-mix-legend"></div>
     </div>
+
+    <div class="st-card" id="st-alarm-card">
+      <div class="st-card-head">
+        <h3 class="st-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2"></path><path d="M5 3 2 6"></path><path d="m22 6-3-3"></path></svg>
+          Set Alarm
+        </h3>
+      </div>
+      <div class="st-alarm-row">
+        <input type="time" class="st-alarm-time" id="st-alarm-time" value="06:00" aria-label="Alarm time">
+        <input type="text" class="st-alarm-label" id="st-alarm-label" maxlength="40" placeholder="Label (e.g. Physics revision)" aria-label="Alarm label">
+      </div>
+      <div id="st-alarm-app-wrap">
+        <label class="st-alarm-app-lbl" for="st-alarm-app">Set in app</label>
+        <select class="st-alarm-app" id="st-alarm-app" aria-label="Clock app to use">
+          <option value="">Let me choose each time (shows installed apps)</option>
+          <option value="com.google.android.deskclock">Google Clock</option>
+          <option value="com.sec.android.app.clockpackage">Samsung Clock</option>
+          <option value="com.android.deskclock">Clock (Xiaomi / Realme / Huawei / Stock)</option>
+          <option value="com.coloros.alarmclock">Clock (Oppo / ColorOS)</option>
+          <option value="com.oneplus.deskclock">Clock (OnePlus)</option>
+          <option value="com.android.BBKClock">Clock (Vivo)</option>
+          <option value="droom.sleepIfUCan">Alarmy</option>
+          <option value="com.urbandroid.sleep">Sleep as Android</option>
+          <option value="ch.bitspin.timely">Timely</option>
+        </select>
+      </div>
+      <button type="button" class="st-alarm-btn" id="st-alarm-set">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2"></path></svg>
+        Set Alarm on Phone
+      </button>
+      <div class="st-alarm-list" id="st-alarm-list"></div>
+      <p class="st-alarm-note" id="st-alarm-note"></p>
+    </div>
+    <div class="st-alarm-toast" id="st-alarm-toast" role="status" aria-live="polite"></div>
+
+    <script>
+    (function initStudyAlarm(){
+      var KEY = 'study-alarms-v1';
+      var timeEl = document.getElementById('st-alarm-time');
+      var labelEl = document.getElementById('st-alarm-label');
+      var setBtn = document.getElementById('st-alarm-set');
+      var listEl = document.getElementById('st-alarm-list');
+      var noteEl = document.getElementById('st-alarm-note');
+      var toastEl = document.getElementById('st-alarm-toast');
+      if(!timeEl || !setBtn) return;
+
+      var isAndroid = /Android/i.test(navigator.userAgent);
+      var APP_KEY = 'study-alarm-app-v1';
+      var appEl = document.getElementById('st-alarm-app');
+      var appWrap = document.getElementById('st-alarm-app-wrap');
+      if(!isAndroid && appWrap) appWrap.style.display = 'none';
+      try{ var savedApp = localStorage.getItem(APP_KEY) || ''; if(appEl) appEl.value = savedApp; if(appEl && appEl.value !== savedApp) appEl.value = ''; }catch(e){}
+      if(appEl) appEl.addEventListener('change', function(){ try{ localStorage.setItem(APP_KEY, appEl.value); }catch(e){} });
+      noteEl.textContent = isAndroid
+        ? 'Opens the selected clock app with this alarm filled in. Tap Save there to confirm. Websites can\u2019t see which apps are installed, so pick \u201cLet me choose each time\u201d to get your phone\u2019s own list of installed alarm apps.'
+        : 'Direct alarm sync works on Android. On this device, a calendar file with a reminder alert will be downloaded instead.';
+
+      function load(){ try{ var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
+      function save(a){ try{ localStorage.setItem(KEY, JSON.stringify(a)); }catch(e){} }
+      function toast(msg){
+        toastEl.textContent = msg; toastEl.classList.add('show');
+        clearTimeout(toast._t); toast._t = setTimeout(function(){ toastEl.classList.remove('show'); }, 2800);
+      }
+      function esc(t){ return String(t).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+      function fmt(h, m){ var ap = h >= 12 ? 'PM' : 'AM'; var hh = h % 12 || 12; return hh + ':' + (m < 10 ? '0' : '') + m + ' ' + ap; }
+
+      function sendToPhone(h, m, label){
+        var msg = label || 'Study time';
+        var pkg = (appEl && appEl.value) || '';
+        if(isAndroid){
+          var intent = 'intent:#Intent;action=android.intent.action.SET_ALARM;'
+            + 'i.android.intent.extra.alarm.HOUR=' + h + ';'
+            + 'i.android.intent.extra.alarm.MINUTES=' + m + ';'
+            + 'S.android.intent.extra.alarm.MESSAGE=' + encodeURIComponent(msg) + ';'
+            + (pkg ? 'package=' + pkg + ';' : '')
+            + 'end';
+          var left = false;
+          var onLeave = function(){ left = true; };
+          document.addEventListener('visibilitychange', onLeave, {once:true});
+          window.addEventListener('pagehide', onLeave, {once:true});
+          window.addEventListener('blur', onLeave, {once:true});
+          window.location.href = intent;
+          toast('Opening ' + (pkg ? 'selected clock app' : 'alarm app') + ' for ' + fmt(h, m) + '\u2026');
+          if(pkg){
+            setTimeout(function(){
+              if(!left && document.visibilityState === 'visible'){
+                toast('Couldn\u2019t open that app \u2014 it may not be installed. Try \u201cLet me choose each time\u201d.');
+              }
+            }, 2000);
+          }
+        } else {
+          // Fallback for iPhone / desktop: .ics with a built-in alarm
+          var d = new Date(); d.setHours(h, m, 0, 0);
+          if(d <= new Date()) d.setDate(d.getDate() + 1);
+          var p = function(n){ return (n < 10 ? '0' : '') + n; };
+          var stamp = d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + 'T' + p(h) + p(m) + '00';
+          var ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Study Alarm//EN','BEGIN:VEVENT',
+            'UID:study-alarm-' + Date.now() + '@local','DTSTAMP:' + stamp,'DTSTART:' + stamp,'DURATION:PT15M',
+            'SUMMARY:\u23F0 ' + msg.replace(/[,;\n]/g, ' '),
+            'BEGIN:VALARM','TRIGGER:PT0S','ACTION:DISPLAY','DESCRIPTION:' + msg.replace(/[,;\n]/g, ' '),'END:VALARM',
+            'END:VEVENT','END:VCALENDAR'].join('\r\n');
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
+          a.download = 'study-alarm.ics';
+          document.body.appendChild(a); a.click();
+          setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+          toast('Alarm file downloaded \u2014 open it to add the alert');
+        }
+      }
+
+      function render(){
+        var items = load();
+        listEl.innerHTML = items.map(function(it, i){
+          return '<div class="st-alarm-item"><span class="st-alarm-item-time">' + fmt(it.h, it.m) + '</span>'
+            + '<span class="st-alarm-item-label">' + esc(it.label || 'Study time') + '</span>'
+            + '<button type="button" data-act="set" data-i="' + i + '" aria-label="Set again"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2"></path></svg></button>'
+            + '<button type="button" data-act="del" data-i="' + i + '" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>';
+        }).join('');
+      }
+
+      setBtn.addEventListener('click', function(){
+        var v = timeEl.value;
+        if(!v){ toast('Pick a time first'); return; }
+        var parts = v.split(':'), h = parseInt(parts[0], 10), m = parseInt(parts[1], 10);
+        var label = labelEl.value.trim();
+        var items = load();
+        items.unshift({ h:h, m:m, label:label });
+        save(items.slice(0, 8));
+        render();
+        sendToPhone(h, m, label);
+      });
+
+      listEl.addEventListener('click', function(e){
+        var b = e.target.closest('button'); if(!b) return;
+        var items = load(), i = parseInt(b.getAttribute('data-i'), 10), it = items[i];
+        if(!it) return;
+        if(b.getAttribute('data-act') === 'del'){ items.splice(i, 1); save(items); render(); }
+        else sendToPhone(it.h, it.m, it.label);
+      });
+
+      render();
+    })();
+    </script>
 
     <div class="st-shortcuts" id="st-shortcuts">
       <button type="button" class="st-shortcut" data-goto="study">
