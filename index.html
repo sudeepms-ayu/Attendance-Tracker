@@ -5802,6 +5802,7 @@
     transition: opacity 0.25s ease, transform 0.25s ease; box-shadow:0 12px 28px -12px rgba(0,0,0,0.6);
   }
   .st-alarm-toast.show{ opacity:1; transform:translate(-50%,0); }
+  .st-alarm-toast.multi{ white-space:pre-line; border-radius:16px; line-height:1.5; text-align:left; padding:12px 18px; }
 
 
   .st-alarm-seg{ display:flex; gap:6px; margin-bottom:12px; padding:4px; border-radius:12px; background: rgba(var(--ink-rgb),0.06); border:1px solid rgba(var(--ink-rgb),0.12); }
@@ -9835,7 +9836,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       function fmt(h, m){ var ap = h >= 12 ? 'PM' : 'AM'; var hh = h % 12 || 12; return hh + ':' + (m < 10 ? '0' : '') + m + ' ' + ap; }
       function pad(n){ return (n < 10 ? '0' : '') + n; }
       var toastEl = $('st-alarm-toast');
-      function toast(msg){ toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(function(){ toastEl.classList.remove('show'); }, 2800); }
+      function toast(msg){ toastEl.classList.remove('multi'); toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(function(){ toastEl.classList.remove('show'); }, 2800); }
       function nextOccurrence(h, m){ var d = new Date(); d.setHours(h, m, 0, 0); if(d.getTime() <= Date.now()) d.setDate(d.getDate() + 1); return d.getTime(); }
 
       /* =============== settings =============== */
@@ -10715,6 +10716,30 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       else if(T.status !== 'idle' && SW.status === 'idle') curTab = 'timer';
       switchTab(curTab);
       timerTick();
+
+      /* ---- reminder when the app is opened/returned to with something still active ---- */
+      function activeSummary(){
+        var L = [];
+        if(T.status === 'running') L.push('⌛ Timer running · ' + clock(timerLeft()) + ' left');
+        else if(T.status === 'paused') L.push('⌛ Timer paused · ' + clock(timerLeft()) + ' left');
+        if(SW && SW.status === 'running') L.push('⏱ Stopwatch running · ' + fmtSW(swElapsed()).slice(0, -3));
+        else if(SW && SW.status === 'paused') L.push('⏱ Stopwatch paused · ' + fmtSW(swElapsed()).slice(0, -3));
+        var on = loadAlarms().filter(function(a){ return a.enabled; }).sort(function(x, y){ return x.nextAt - y.nextAt; });
+        if(on.length) L.push('⏰ ' + on.length + (on.length === 1 ? ' alarm' : ' alarms') + ' set · next ' + fmt(on[0].h, on[0].m));
+        return L;
+      }
+      var lastReminder = 0;
+      function remindActive(){
+        var now = Date.now(); if(now - lastReminder < 1500) return;
+        var L = activeSummary(); if(!L.length) return;
+        lastReminder = now;
+        toastEl.textContent = L.join('\n'); toastEl.classList.add('multi', 'show');
+        clearTimeout(toast._t); toast._t = setTimeout(function(){ toastEl.classList.remove('show'); setTimeout(function(){ toastEl.classList.remove('multi'); }, 300); }, 6000);
+      }
+      var wasHidden = false;
+      document.addEventListener('visibilitychange', function(){ if(document.hidden) wasHidden = true; else if(wasHidden){ wasHidden = false; remindActive(); } });
+      window.addEventListener('pageshow', function(){ setTimeout(remindActive, 600); });
+      setTimeout(remindActive, 900);
 
       /* =============== alarm & timer pages (open / close) =============== */
       var pages = { alarm:$('st-page-alarm'), timer:$('st-page-timer') };
