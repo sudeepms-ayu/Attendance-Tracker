@@ -81,3 +81,48 @@ self.addEventListener('message', e => {
   if(e.data && e.data.type === 'task-reminder-check') e.waitUntil(showPendingTaskReminder());
   if(e.data && e.data.type === 'sched-check') e.waitUntil(showScheduledMessages());
 });
+
+
+// ---- Alarm & timer notifications ----
+// The app sends the upcoming alarm / timer moments ("clock-sync"). While this
+// worker is awake it waits for each moment and shows the notification at that
+// exact time (vibrating, stays until tapped). The app re-sends every few
+// seconds, which keeps re-arming the worker. If the app itself is on screen it
+// rings by itself, so nothing is shown twice.
+const CLOCK_URL = './__clock.json', CLOCK_FIRED = './__clock-fired.json';
+let clockRun = 0;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const jsonRes = o => new Response(JSON.stringify(o), { headers: { 'Content-Type': 'application/json' } });
+
+async function armClock(){
+  const run = ++clockRun, cache = await caches.open(TASK_CACHE), stop = Date.now() + 270000;
+  while(Date.now() < stop && run === clockRun){
+    const snap = await readJson(cache, CLOCK_URL);
+    let fired = (await readJson(cache, CLOCK_FIRED)) || {};
+    const evs = ((snap && snap.events) || []).filter(e => e && !fired[e.id]);
+    if(!evs.length) return;
+    const wait = Math.min.apply(null, evs.map(e => e.at)) - Date.now();
+    if(wait > 0){ await sleep(Math.min(wait, 15000)); continue; }
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const onScreen = wins.some(c => c.visibilityState === 'visible');
+    for(const e of evs){
+      if(e.at > Date.now()) continue;
+      fired[e.id] = Date.now();
+      if(onScreen || Date.now() - e.at > 30 * 60000) continue; // app rings itself / too late to matter
+      await self.registration.showNotification(e.title, {
+        body: e.body, tag: 'clk-' + e.id, requireInteraction: true, renotify: false,
+        vibrate: [400, 200, 400, 200, 400, 200, 400], data: { clock: true }
+      });
+    }
+    Object.keys(fired).forEach(k => { if(Date.now() - fired[k] > 2 * 86400000) delete fired[k]; });
+    await cache.put(CLOCK_FIRED, jsonRes(fired));
+  }
+}
+self.addEventListener('message', e => {
+  if(!e.data || e.data.type !== 'clock-sync') return;
+  e.waitUntil((async () => {
+    const cache = await caches.open(TASK_CACHE);
+    await cache.put(CLOCK_URL, jsonRes({ events: e.data.events || [] }));
+    await armClock();
+  })());
+});
