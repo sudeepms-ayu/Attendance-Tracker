@@ -9343,16 +9343,8 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       <div id="st-alarm-app-wrap">
         <label class="st-alarm-app-lbl" for="st-alarm-app">Set in app</label>
         <select class="st-alarm-app" id="st-alarm-app" aria-label="Clock app to use">
-          <option value="">Let me choose each time (shows installed apps)</option>
-          <option value="com.google.android.deskclock">Google Clock</option>
-          <option value="com.sec.android.app.clockpackage">Samsung Clock</option>
-          <option value="com.android.deskclock">Clock (Xiaomi / Realme / Huawei / Stock)</option>
-          <option value="com.coloros.alarmclock">Clock (Oppo / ColorOS)</option>
-          <option value="com.oneplus.deskclock">Clock (OnePlus)</option>
-          <option value="com.android.BBKClock">Clock (Vivo)</option>
-          <option value="droom.sleepIfUCan">Alarmy</option>
-          <option value="com.urbandroid.sleep">Sleep as Android</option>
-          <option value="ch.bitspin.timely">Timely</option>
+          <option value="">Phone's default Clock app</option>
+          <option value="com.alarm.clock.smart.alarmy">Alarmy: Smart Alarm Clock</option>
         </select>
       </div>
       <button type="button" class="st-alarm-btn" id="st-alarm-set">
@@ -9383,7 +9375,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       try{ var savedApp = localStorage.getItem(APP_KEY) || ''; if(appEl) appEl.value = savedApp; if(appEl && appEl.value !== savedApp) appEl.value = ''; }catch(e){}
       if(appEl) appEl.addEventListener('change', function(){ try{ localStorage.setItem(APP_KEY, appEl.value); }catch(e){} });
       noteEl.textContent = isAndroid
-        ? 'Opens the selected clock app with this alarm filled in. Tap Save there to confirm. Websites can\u2019t see which apps are installed, so pick \u201cLet me choose each time\u201d to get your phone\u2019s own list of installed alarm apps.'
+        ? 'Opens the selected app with this alarm filled in. Tap Save there to confirm.'
         : 'Direct alarm sync works on Android. On this device, a calendar file with a reminder alert will be downloaded instead.';
 
       function load(){ try{ var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
@@ -9411,11 +9403,11 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
           window.addEventListener('pagehide', onLeave, {once:true});
           window.addEventListener('blur', onLeave, {once:true});
           window.location.href = intent;
-          toast('Opening ' + (pkg ? 'selected clock app' : 'alarm app') + ' for ' + fmt(h, m) + '\u2026');
+          toast('Opening ' + (pkg ? 'Alarmy' : 'Clock app') + ' for ' + fmt(h, m) + '\u2026');
           if(pkg){
             setTimeout(function(){
               if(!left && document.visibilityState === 'visible'){
-                toast('Couldn\u2019t open that app \u2014 it may not be installed. Try \u201cLet me choose each time\u201d.');
+                toast('Couldn\u2019t open Alarmy \u2014 make sure it\u2019s installed, or switch to the phone\u2019s default Clock app.');
               }
             }, 2000);
           }
