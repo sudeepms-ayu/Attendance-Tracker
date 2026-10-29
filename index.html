@@ -9737,7 +9737,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
           <div class="wh-sep">:</div>
           <div class="wh-slot" id="st-tw-s"></div>
         </div>
-        <input type="text" class="st-alarm-label st-alarm-label-full" id="st-timer-label" maxlength="40" placeholder="What are you working on? (optional)" aria-label="Timer label" style="margin-top:2px;">
+        <input type="text" class="st-alarm-label st-alarm-label-full" id="st-tmr-label" maxlength="40" placeholder="What are you working on? (optional)" aria-label="Timer label" style="margin-top:2px;">
         <div class="tsw-recent" id="st-timer-recent"></div>
         <div class="st-chips" id="st-timer-chips">
           <button type="button" class="st-chip" data-sec="300">5 min</button>
@@ -10324,7 +10324,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
         settings.timerLast = [h, m, s]; saveSettings();
         var wantSync = $('st-timer-sync').checked;
         try{ localStorage.setItem(SYNC_PREF, wantSync ? '1' : '0'); }catch(e){}
-        startTimer(sec, wantSync, $('st-timer-label').value.trim());
+        startTimer(sec, wantSync, $('st-tmr-label').value.trim());
       });
       $('st-timer-chips').addEventListener('click', function(e){
         var b = e.target.closest('.st-chip'); if(!b) return;
@@ -10416,7 +10416,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
         box.addEventListener('click', function(e){
           var b = e.target.closest('[data-lbl]'); if(!b) return;
           var v = b.getAttribute('data-lbl');
-          if(box.id === 'sw-recent'){ SW.label = v; $('sw-label').value = v; saveSW(); } else { $('st-timer-label').value = v; }
+          if(box.id === 'sw-recent'){ SW.label = v; $('sw-label').value = v; saveSW(); } else { $('st-tmr-label').value = v; }
         });
       });
 
@@ -10457,7 +10457,7 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
           if(T.status !== 'idle'){ toast('Finish the running timer first'); return; }
           var sec = it.plan;
           tH.set(Math.floor(sec / 3600) % 24, true); tM.set(Math.floor((sec % 3600) / 60), true); tS.set(sec % 60, true);
-          $('st-timer-label').value = it.label || '';
+          $('st-tmr-label').value = it.label || '';
           var pg = $('st-page-timer'); if(pg && pg.scrollTo) pg.scrollTo({ top:0, behavior:'smooth' });
           toast('Timer set to ' + durText(sec) + ' \u00B7 tap Start');
         }
