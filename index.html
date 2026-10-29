@@ -10741,6 +10741,39 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
       window.addEventListener('pageshow', function(){ setTimeout(remindActive, 600); });
       setTimeout(remindActive, 900);
 
+      /* ---- phone notification when you leave the app with something still active ---- */
+      var ACTIVE_TAG = 'study-active', swReg = null;
+      try{ if(navigator.serviceWorker && navigator.serviceWorker.ready) navigator.serviceWorker.ready.then(function(r){ swReg = r; }).catch(function(){}); }catch(e){}
+      function showSys(title, body, tag, opts){
+        try{
+          if(!('Notification' in window) || Notification.permission !== 'granted') return;
+          var o = Object.assign({ body:body, tag:tag, renotify:false }, opts || {});
+          if(swReg) swReg.showNotification(title, o);       // synchronous: works even as the page is being frozen
+          else { try{ new Notification(title, o); }catch(e){} }
+        }catch(e){}
+      }
+      function closeActiveNote(){
+        try{ if(swReg && swReg.getNotifications) swReg.getNotifications({ tag:ACTIVE_TAG }).then(function(l){ l.forEach(function(n){ n.close(); }); }).catch(function(){}); }catch(e){}
+      }
+      function bgNote(){
+        if(!document.hidden) return;
+        var L = activeSummary();
+        if(L.length) showSys('Still running in Track My Studies', L.join('\n'), ACTIVE_TAG, { silent:true, requireInteraction:false, icon:'', badge:'' });
+        else closeActiveNote();
+      }
+      document.addEventListener('visibilitychange', function(){ if(document.hidden) bgNote(); else closeActiveNote(); });
+      window.addEventListener('pagehide', bgNote);
+      setInterval(bgNote, 20000);   // keep the time in the notification fresh while in the background
+      // after Start / Set Alarm / stopwatch start, make sure notifications are allowed
+      document.addEventListener('click', function(e){
+        if(!e.target.closest('#st-timer-start, #st-alarm-set, #sw-actions button')) return;
+        setTimeout(function(){
+          if(!('Notification' in window)) return;
+          if(Notification.permission === 'denied') toast('Notifications are blocked — enable them in site settings for background reminders');
+          else if(Notification.permission === 'default'){ try{ Notification.requestPermission(); }catch(er){} }
+        }, 400);
+      }, true);
+
       /* =============== alarm & timer pages (open / close) =============== */
       var pages = { alarm:$('st-page-alarm'), timer:$('st-page-timer') };
       var openKey = null, pushed = false, swallowPop = false;
