@@ -4580,6 +4580,114 @@
   .rc-add-card-confirm:active{ transform: scale(0.96); }
 
   .rc-card-extra{ border-style: dashed; }
+
+  /* ---- Yesterday's attendance (inside Today's Roll Call) ---- */
+  .rc-yday{ margin:0 0 16px 0; }
+  .rc-yday-toggle{
+    display:flex; align-items:center; gap:12px; width:100%;
+    appearance:none; cursor:pointer; text-align:left;
+    font-family:'Lora', serif; color: var(--ink);
+    background: rgba(var(--ink-rgb),0.05);
+    border:1px solid rgba(var(--ink-rgb),0.18);
+    border-radius:12px; padding:12px 14px;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .3s ease, border-color .3s ease, box-shadow .35s ease, transform .18s cubic-bezier(.22,1,.36,1);
+  }
+  .rc-yday-toggle:active{ transform: scale(.985); }
+  @media (hover:hover){ .rc-yday-toggle:hover{ background: rgba(var(--ink-rgb),0.09); border-color: rgba(var(--ink-rgb),0.3); } }
+  .rc-yday.is-open .rc-yday-toggle{ background: rgba(var(--gold-rgb),0.09); border-color: rgba(var(--gold-rgb),0.55); }
+  .rc-yday-ico{ display:flex; flex:none; color: var(--gold); transition: transform .7s cubic-bezier(.22,1,.36,1); }
+  .rc-yday.is-open .rc-yday-ico{ transform: rotate(-360deg); }
+  .rc-yday-text{ display:flex; flex-direction:column; gap:2px; flex:1 1 auto; min-width:0; }
+  .rc-yday-title{ font-size:13.5px; font-weight:700; }
+  .rc-yday-sub{ font-size:11.5px; font-style:italic; color: var(--ink-soft); }
+  .rc-yday-badge{
+    flex:none; font-family:'Lora', serif; font-size:10.5px; font-weight:700; letter-spacing:.03em;
+    padding:3px 9px; border-radius:999px; white-space:nowrap;
+    border:1px solid transparent; color: var(--ink-soft); background: rgba(var(--ink-rgb),0.07);
+    transition: background-color .35s ease, color .35s ease, border-color .35s ease, transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .rc-yday-badge:empty{ display:none; }
+  .rc-yday-badge.is-warn{ color: var(--gold); background: rgba(var(--gold-rgb),0.14); border-color: rgba(var(--gold-rgb),0.5); animation: rcYdPulse 2.4s ease-in-out infinite; }
+  .rc-yday-badge.is-done{ color: var(--success); background: rgba(60,107,76,0.15); border-color: rgba(60,107,76,0.35); }
+  .rc-yday-badge.is-off{ color: var(--ink-soft); }
+  .rc-yday-badge.rc-yd-badge-pop{ animation: rcYdBadgePop .5s cubic-bezier(.22,1,.36,1); }
+  .rc-yday-chev{ flex:none; color: var(--ink-soft); transition: transform .55s cubic-bezier(.22,1,.36,1), color .3s ease; }
+  .rc-yday.is-open .rc-yday-chev{ transform: rotate(180deg); color: var(--gold); }
+  @keyframes rcYdPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(var(--gold-rgb),0.35); } 50%{ box-shadow:0 0 0 5px rgba(var(--gold-rgb),0); } }
+  @keyframes rcYdBadgePop{ 0%{ transform: scale(.8); opacity:.2; } 60%{ transform: scale(1.1); } 100%{ transform:none; opacity:1; } }
+
+  /* ---- Today / Yesterday switcher ---- */
+  .rc-tabs{
+    position:relative; display:flex; gap:0; padding:4px; margin:0 0 16px 0;
+    background: rgba(var(--ink-rgb),0.05); border:1px solid rgba(var(--ink-rgb),0.18); border-radius:16px;
+    isolation:isolate;
+  }
+  .rc-tab-ind{
+    position:absolute; z-index:0; top:4px; bottom:4px; left:4px; width: calc(50% - 4px);
+    border-radius:12px; background: rgba(var(--gold-rgb),0.14); border:1px solid rgba(var(--gold-rgb),0.55);
+    box-shadow: 0 4px 16px rgba(var(--gold-rgb),0.16);
+    transform: translateX(0); transition: transform .26s cubic-bezier(.3,.9,.3,1);
+    pointer-events:none;
+  }
+  .rc-tabs[data-day="yday"] .rc-tab-ind{ transform: translateX(100%); }
+  .rc-tab{
+    position:relative; z-index:1; flex:1 1 0; min-width:0;
+    appearance:none; background:transparent; border:0; cursor:pointer; text-align:center;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding:9px 8px; border-radius:12px; font-family:'Lora', serif; color: var(--ink-soft);
+    -webkit-tap-highlight-color: transparent;
+    transition: color .35s ease, transform .18s cubic-bezier(.22,1,.36,1);
+  }
+  .rc-tab:active{ transform: scale(.97); }
+  .rc-tab:focus-visible{ outline:2px solid rgba(var(--gold-rgb),0.7); outline-offset:1px; }
+  .rc-tab.is-active{ color: var(--ink); }
+  .rc-tab-row{ display:flex; align-items:center; justify-content:center; gap:7px; min-height:22px; }
+  .rc-tab-label{ font-size:14.5px; font-weight:700; transition: color .35s ease; }
+  .rc-tab.is-active .rc-tab-label{ color: var(--gold); }
+  .rc-tab-sub{ font-size:11.5px; font-style:italic; opacity:.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+  .rc-tab .rc-yday-badge{ padding:1px 7px; min-width:20px; text-align:center; }
+  .rc-panes{ position:relative; }
+  .rc-panes.is-resizing{ overflow:hidden; transition: height .24s cubic-bezier(.3,.9,.3,1); }
+  .rc-pane-hidden{ display:none !important; }
+  .rc-pane.is-leaving{ animation: rcPaneOut .1s ease-in forwards; pointer-events:none; }
+  .rc-pane.is-entering{ animation: rcPaneIn .26s cubic-bezier(.3,.9,.3,1) both; }
+  @keyframes rcPaneOut{ to{ opacity:0; transform: translateX(calc(var(--rc-dir, 1) * -16px)); } }
+  @keyframes rcPaneIn{ from{ opacity:0; transform: translateX(calc(var(--rc-dir, 1) * 16px)); } to{ opacity:1; transform:none; } }
+  .rc-yday{ margin:0; }
+  .rc-yday-head{ display:flex; align-items:center; gap:12px; margin:0 2px 12px 2px; }
+  @media (prefers-reduced-motion: reduce){
+    .rc-tab-ind, .rc-tab, .rc-tab-label, .rc-panes.is-resizing{ transition:none !important; }
+    .rc-pane.is-leaving, .rc-pane.is-entering{ animation:none !important; }
+  }
+  .rc-yday-help{ font-family:'Lora', serif; font-size:12.5px; font-style:italic; line-height:1.55; color: var(--ink-soft); margin:0 0 12px 0; }
+  .rc-yday-note{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    font-family:'Lora', serif; font-size:13px; line-height:1.5; color: var(--ink-soft);
+    background: rgba(var(--gold-rgb),0.09); border:1px solid rgba(var(--gold-rgb),0.35);
+    border-radius:10px; padding:11px 14px; margin-bottom:12px;
+  }
+  .rc-yday-note b{ color: var(--gold); display:block; font-size:14px; }
+  .rc-yday-note em{ font-size:12.5px; }
+  .rc-yday-note button{
+    appearance:none; cursor:pointer; background:transparent; border:1px solid var(--gold); color: var(--gold);
+    font-family:'Lora', serif; font-size:12px; font-weight:600; padding:7px 11px; border-radius:6px;
+    transition: background-color .2s ease, color .2s ease, transform .15s ease;
+  }
+  .rc-yday-note button:active{ transform: scale(.95); }
+  .rc-yday-note button.rc-yd-link{ border:none; padding:0; text-decoration:underline; }
+  .rc-yday-empty{ font-family:'Lora', serif; font-size:13.5px; line-height:1.5; padding:10px 14px; border-radius:6px; background: rgba(var(--ink-rgb),0.06); color: var(--ink-soft); animation: rcYdCardIn .45s cubic-bezier(.22,1,.36,1) both; }
+  .rc-yday-list .rc-card{ animation:none; border-left:3px solid rgba(var(--gold-rgb),0.5); }
+  .rc-yday-list .rc-card.rc-yd-new{ animation: rcYdCardIn .3s cubic-bezier(.3,.9,.3,1) both; animation-delay: calc(var(--i, 0) * 25ms); }
+  .rc-yday-list .rc-status{ display:inline-block; }
+  .rc-yday-list .rc-status.rc-status-pop{ animation: rcStatusPop .45s cubic-bezier(.22,1,.36,1); }
+  .rc-yday-note.rc-yd-fade{ animation: rcYdCardIn .45s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes rcYdCardIn{ from{ opacity:0; transform: translateY(14px) scale(.985); } to{ opacity:1; transform:none; } }
+  @keyframes rcStatusPop{ 0%{ opacity:0; transform: translateY(6px) scale(.88); } 60%{ transform: scale(1.07); } 100%{ opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce){
+    .rc-yday-toggle, .rc-yday-ico, .rc-yday-chev, .rc-yday-badge{ transition:none !important; }
+    .rc-yday-badge, .rc-yday-list .rc-card, .rc-yday-list .rc-status, .rc-yday-note, .rc-yday-empty{ animation:none !important; }
+  }
   .rc-card-badge{
     display:inline-block; margin-left:8px; font-family:'Lora', serif; font-size:10.5px; font-weight:700;
     letter-spacing:0.03em; text-transform:uppercase; color: var(--gold);
@@ -8382,6 +8490,19 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
     </div>
     <p class="rc-nudge" id="rc-nudge" style="display:none;"></p>
     <p class="rc-hours" id="rc-working-hours" style="display:none;"></p>
+    <div class="rc-tabs" id="rc-tabs" role="tablist" aria-label="Choose day" style="display:none;">
+      <span class="rc-tab-ind" id="rc-tab-ind" aria-hidden="true"></span>
+      <button type="button" class="rc-tab is-active" id="rc-tab-today" role="tab" aria-selected="true" aria-controls="rc-pane-today" data-day="today">
+        <span class="rc-tab-row"><span class="rc-tab-label">Today</span></span>
+        <span class="rc-tab-sub" id="rc-tab-today-sub"></span>
+      </button>
+      <button type="button" class="rc-tab" id="rc-tab-yday" role="tab" aria-selected="false" aria-controls="rc-yday" data-day="yday" tabindex="-1">
+        <span class="rc-tab-row"><span class="rc-tab-label">Yesterday</span><span class="rc-yday-badge" id="rc-yday-badge"></span></span>
+        <span class="rc-tab-sub" id="rc-tab-yday-sub"></span>
+      </button>
+    </div>
+    <div class="rc-panes" id="rc-panes">
+    <div class="rc-pane" id="rc-pane-today" role="tabpanel" aria-labelledby="rc-tab-today">
     <div class="rc-add-card-row" id="rc-add-card-row" style="display:none;">
       <button type="button" class="rc-add-card-btn" id="rc-add-card-btn">
         <span class="rc-add-card-icon">&#10133;</span>
@@ -8428,6 +8549,17 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
     </div>
     <div id="rc-list"></div>
     <div class="empty-state" id="rc-empty" style="display:none;"></div>
+    </div>
+    <div class="rc-pane rc-yday rc-pane-hidden" id="rc-yday" role="tabpanel" aria-labelledby="rc-tab-yday">
+      <div class="rc-yday-head">
+        <span class="rc-yday-ico"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7.5V12l3 2"/></svg></span>
+        <span class="rc-yday-text"><span class="rc-yday-title">Yesterday&rsquo;s Attendance</span><span class="rc-yday-sub" id="rc-yday-sub"></span></span>
+      </div>
+      <div id="rc-yday-note-wrap"></div>
+      <div class="rc-yday-list" id="rc-yday-list"></div>
+      <div class="rc-yday-empty" id="rc-yday-empty" style="display:none;"></div>
+    </div>
+    </div>
   </div>
 </div>
 
@@ -9563,13 +9695,12 @@ body.dark .game-card-soon-ribbon{ background: var(--gold); color:#1a1206; }
           <span class="st-clock-eyebrow">Local time</span>
           <span class="st-clock-date" id="st-clock-date"></span>
         </div>
-        <button type="button" class="st-clock-float" id="st-clock-float" aria-pressed="false" aria-label="Float clock on screen">
+        <div class="st-clock-actions"><button type="button" class="st-clock-fs" id="st-clock-fs" aria-label="Open full screen clock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5"></path><path d="M20 9V4h-5"></path><path d="M4 15v5h5"></path><path d="M20 15v5h-5"></path></svg></button><button type="button" class="st-clock-float" id="st-clock-float" aria-pressed="false" aria-label="Float clock on screen">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2.5"></rect><rect x="12" y="11" width="7" height="5" rx="1.2" fill="currentColor" stroke="none"></rect></svg>
           <span id="st-clock-float-label">Float</span>
-        </button>
+        </button></div>
       </div>
       <div class="st-clock-face" id="st-clock-face" aria-hidden="true"></div>
-      <div class="st-clock-bar" aria-hidden="true"><i id="st-clock-bar"></i></div>
       <p class="st-clock-note" id="st-clock-note" role="status" aria-live="polite"></p>
     </div>
 
@@ -18755,8 +18886,8 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
     return Array.isArray(list) ? new Set(list) : null;
   }
 
-  function rcScheduleForToday(section){
-    const day = ttTodayName();
+  function rcScheduleForToday(section, dayOverride){
+    const day = (dayOverride !== undefined) ? dayOverride : ttTodayName();
     if(!day || !TIMETABLE.days[day] || !TIMETABLE.days[day][section]) return { day, sessions: [] };
     const dayData = TIMETABLE.days[day][section];
     const theorySeen = new Set(), practicalSeen = new Set();
@@ -18890,6 +19021,7 @@ function applyXpOp(container, xpOp){
   if(xpOp){
     if(xpOp.type === 'present') container.xp = prevXp + 5;
     else if(xpOp.type === 'restore') container.xp = xpOp.value || 0;
+    else if(xpOp.type === 'add') container.xp = Math.max(0, prevXp + (xpOp.value || 0));
   }
   return prevXp;
 }
@@ -19244,7 +19376,8 @@ function rcXpOp(status){
     });
   });
 
-  async function rcSetMark(subjectFullName, status){
+  async function rcSetMark(subjectFullName, status, forDateKey){
+    if(forDateKey && forDateKey !== localDateKey()) return rcPastApply('theory', subjectFullName, status, forDateKey);
     const dateKey = localDateKey();
     if(!rollcall.marks[dateKey]) rollcall.marks[dateKey] = {};
     const existing = rollcall.marks[dateKey][subjectFullName];
@@ -19272,7 +19405,8 @@ if(existing){
     if(rcTodayFullyMarked()) rcClearReminderNotifs();
   }
 
-  async function rcUndoMark(subjectFullName){
+  async function rcUndoMark(subjectFullName, forDateKey){
+    if(forDateKey && forDateKey !== localDateKey()) return rcPastUndo('theory', subjectFullName, forDateKey);
     const dateKey = localDateKey();
     const existing = rollcall.marks[dateKey] && rollcall.marks[dateKey][subjectFullName];
     if(!existing) return;
@@ -19292,7 +19426,8 @@ if(existing){
   // Suspended) once it's switched on. These write to the same subject's
   // practicalAttended/practicalTotal, which folds into the combined
   // attended/total the rest of the app (and saved History) already reads.
-  async function rcSetPracticalMark(subjectFullName, status){
+  async function rcSetPracticalMark(subjectFullName, status, forDateKey){
+    if(forDateKey && forDateKey !== localDateKey()) return rcPastApply('practical', subjectFullName, status, forDateKey);
     const dateKey = localDateKey();
     if(!rollcall.practicalMarks[dateKey]) rollcall.practicalMarks[dateKey] = {};
     const existing = rollcall.practicalMarks[dateKey][subjectFullName];
@@ -19316,7 +19451,8 @@ if(existing){
     if(rcTodayFullyMarked()) rcClearReminderNotifs();
   }
 
-  async function rcUndoPracticalMark(subjectFullName){
+  async function rcUndoPracticalMark(subjectFullName, forDateKey){
+    if(forDateKey && forDateKey !== localDateKey()) return rcPastUndo('practical', subjectFullName, forDateKey);
     const dateKey = localDateKey();
     const existing = rollcall.practicalMarks[dateKey] && rollcall.practicalMarks[dateKey][subjectFullName];
     if(!existing) return;
@@ -19543,6 +19679,7 @@ if(existing){
     const electiveRow = document.getElementById('rc-elective-row');
     if(electiveRow) electiveRow.style.display = 'flex';
     renderRcPracGroupBox();
+    try{ rcRenderYesterday(); }catch(e){ console.error(e); }
 
     const { day, sessions, hiddenPractical } = rcScheduleForToday(rollcall.section);
     const visible = rcVisibleCodesFor(rollcall.section, rollcall.group);
@@ -19655,7 +19792,7 @@ if(existing){
 
   // Shared Present/Absent/Suspended/Not-held/Undo button row, used by both
   // auto-scheduled and user-added roll-call cards.
-  function rcBuildActions(fullName, isPractical, activeMark){
+  function rcBuildActions(fullName, isPractical, activeMark, dateKey){
     const actions = document.createElement('div');
     actions.className = 'rc-actions';
 
@@ -19663,21 +19800,21 @@ if(existing){
     presentBtn.className = 'btn btn-present';
     presentBtn.textContent = 'Present';
     presentBtn.addEventListener('click', () => {
-      isPractical ? rcSetPracticalMark(fullName, 'present') : rcSetMark(fullName, 'present');
+      isPractical ? rcSetPracticalMark(fullName, 'present', dateKey) : rcSetMark(fullName, 'present', dateKey);
     });
 
     const absentBtn = document.createElement('button');
     absentBtn.className = 'btn btn-absent';
     absentBtn.textContent = 'Absent';
     absentBtn.addEventListener('click', () => {
-      isPractical ? rcSetPracticalMark(fullName, 'absent') : rcSetMark(fullName, 'absent');
+      isPractical ? rcSetPracticalMark(fullName, 'absent', dateKey) : rcSetMark(fullName, 'absent', dateKey);
     });
 
     const suspendedBtn = document.createElement('button');
     suspendedBtn.className = 'btn btn-suspended';
     suspendedBtn.textContent = 'Suspended';
     suspendedBtn.addEventListener('click', () => {
-      isPractical ? rcSetPracticalMark(fullName, 'suspended') : rcSetMark(fullName, 'suspended');
+      isPractical ? rcSetPracticalMark(fullName, 'suspended', dateKey) : rcSetMark(fullName, 'suspended', dateKey);
     });
 
     const notHeldBtn = document.createElement('button');
@@ -19685,7 +19822,7 @@ if(existing){
     notHeldBtn.textContent = 'Not held';
     notHeldBtn.title = 'The class did not take place \u2014 your streak stays as it is';
     notHeldBtn.addEventListener('click', () => {
-      isPractical ? rcSetPracticalMark(fullName, 'not_held') : rcSetMark(fullName, 'not_held');
+      isPractical ? rcSetPracticalMark(fullName, 'not_held', dateKey) : rcSetMark(fullName, 'not_held', dateKey);
     });
 
     const undoBtn = document.createElement('button');
@@ -19693,7 +19830,7 @@ if(existing){
     undoBtn.textContent = 'Undo';
     undoBtn.disabled = !activeMark;
     undoBtn.addEventListener('click', () => {
-      isPractical ? rcUndoPracticalMark(fullName) : rcUndoMark(fullName);
+      isPractical ? rcUndoPracticalMark(fullName, dateKey) : rcUndoMark(fullName, dateKey);
     });
 
     actions.appendChild(presentBtn);
@@ -19718,7 +19855,7 @@ if(existing){
   // practical, with no separate toggle to forget. When the same subject has
   // both a theory AND a practical session today, a small badge tells the
   // two cards apart.
-    function buildAutoRollcallCard(code, type, mark, practicalMark, dual){
+    function buildAutoRollcallCard(code, type, mark, practicalMark, dual, dateKey){
     // Optional subjects are shown as combined cards but recorded under the
     // exact option the student chose.
     let displayName = RC_SUBJECT_NAMES[code] || code;
@@ -19753,7 +19890,7 @@ if(existing){
     top.appendChild(rcCardStatusEl(activeMark, isPractical));
 
     card.appendChild(top);
-    card.appendChild(rcBuildActions(fullName, isPractical, activeMark));
+    card.appendChild(rcBuildActions(fullName, isPractical, activeMark, dateKey));
     return card;
   }
 
@@ -19762,7 +19899,7 @@ if(existing){
   // vice versa). The subject and type are chosen once, in the "Add a
   // subject for today" form; removing the card also undoes any mark made
   // on it, unless that same subject+type is also genuinely scheduled today.
-  function buildExtraRollcallCard(entry, mark, practicalMark){
+  function buildExtraRollcallCard(entry, mark, practicalMark, dateKey){
     const fullName = entry.fullName;
     const isPractical = entry.type === 'practical';
     const activeMark = isPractical ? practicalMark : mark;
@@ -19783,8 +19920,9 @@ if(existing){
     top.appendChild(rcCardStatusEl(activeMark, isPractical));
 
     card.appendChild(top);
-    card.appendChild(rcBuildActions(fullName, isPractical, activeMark));
+    card.appendChild(rcBuildActions(fullName, isPractical, activeMark, dateKey));
 
+    if(dateKey && dateKey !== localDateKey()) return card;
     const extraRow = document.createElement('div');
     extraRow.className = 'rc-card-extra-row';
     const note = document.createElement('span');
@@ -19801,11 +19939,370 @@ if(existing){
     return card;
   }
 
+
+  // ============================================================
+  // YESTERDAY'S ATTENDANCE
+  // Same cards, same buttons and the same storage as Today's Roll Call,
+  // pointed at yesterday's date. Every change goes through
+  // adjustOwnAttendance() + saveRollcall() + syncOwnHistoryRecord(), so the
+  // Attendance Register, History, Recent Attendance recap, streaks and
+  // every other place that reads Roll Call data stay in sync automatically.
+  // Edits to a past day never overwrite streak/XP numbers that later days
+  // have already moved: XP is adjusted additively, and a streak is only
+  // touched while no later day has been marked for that subject.
+  // ============================================================
+  let rcPastQueue = Promise.resolve();
+  const RC_DOW = { 1:'Monday', 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday' };
+
+  function rcYesterdayInfo(){
+    const t = new Date();
+    const d = new Date(t.getFullYear(), t.getMonth(), t.getDate() - 1);
+    return {
+      key: localDateKey(d),
+      dayName: RC_DOW[d.getDay()] || null,
+      weekday: d.toLocaleDateString(undefined, { weekday:'long' }),
+      label: d.toLocaleDateString(undefined, { day:'numeric', month:'short' })
+    };
+  }
+  function rcLaterMarkExists(name, dateKey){
+    return [rollcall.marks, rollcall.practicalMarks].some(bucket => {
+      if(!bucket) return false;
+      return Object.keys(bucket).some(k => k > dateKey && bucket[k] && bucket[k][name]);
+    });
+  }
+  function rcPastEnqueue(fn){
+    const run = rcPastQueue.then(fn);
+    rcPastQueue = run.catch(e => { console.error(e); });
+    return run;
+  }
+  function rcPastRefresh(){
+    try{ rcRenderYesterday(); }catch(e){ console.error(e); }
+    try{ renderRecap(false); }catch(e){}
+    try{ renderStreaks(); }catch(e){}
+  }
+  function rcPastApply(kind, name, status, dateKey){
+    return rcPastEnqueue(async () => {
+      const prac = kind === 'practical';
+      const bucketName = prac ? 'practicalMarks' : 'marks';
+      if(!rollcall[bucketName]) rollcall[bucketName] = {};
+      const bucket = rollcall[bucketName];
+      if(!bucket[dateKey]) bucket[dateKey] = {};
+      const existing = bucket[dateKey][name];
+      if(existing && existing.status === status){ await rcPastUndoNow(kind, name, dateKey); return; }
+      const kindArg = prac ? 'practical' : undefined;
+      const later = rcLaterMarkExists(name, dateKey);
+      if(existing){
+        const rd = rcMarkDelta(existing.status);
+        await adjustOwnAttendance(name, -rd.attended, -rd.total, kindArg,
+          (!later && typeof existing.prevStreak === 'number') ? { type:'restore', value: existing.prevStreak } : null,
+          existing.status === 'present' ? { type:'add', value:-5 } : null);
+      }
+      const delta = rcMarkDelta(status);
+      const streakOp = later ? null : rcStreakOp(status);
+      const result = await adjustOwnAttendance(name, delta.attended, delta.total, kindArg, streakOp,
+        status === 'present' ? { type:'add', value:5 } : null);
+      bucket[dateKey][name] = { status, past:true, prevStreak: streakOp ? result.prevStreak : undefined };
+      if(!rollcall.recapStart || dateKey < rollcall.recapStart) rollcall.recapStart = dateKey;
+      await saveRollcall();
+      await syncOwnHistoryRecord(result.subjects, result.student, result.threshold);
+      try{ updateRcNudge(name, result.prev, result); }catch(e){}
+      rcPastRefresh();
+    });
+  }
+  function rcPastUndo(kind, name, dateKey){
+    return rcPastEnqueue(() => rcPastUndoNow(kind, name, dateKey));
+  }
+  async function rcPastUndoNow(kind, name, dateKey){
+    const prac = kind === 'practical';
+    const bucket = prac ? rollcall.practicalMarks : rollcall.marks;
+    const existing = bucket && bucket[dateKey] && bucket[dateKey][name];
+    if(!existing) return;
+    const d = rcMarkDelta(existing.status);
+    const later = rcLaterMarkExists(name, dateKey);
+    const result = await adjustOwnAttendance(name, -d.attended, -d.total, prac ? 'practical' : undefined,
+      (!later && typeof existing.prevStreak === 'number') ? { type:'restore', value: existing.prevStreak } : null,
+      existing.status === 'present' ? { type:'add', value:-5 } : null);
+    delete bucket[dateKey][name];
+    await saveRollcall();
+    await syncOwnHistoryRecord(result.subjects, result.student, result.threshold);
+    try{ updateRcNudge(name, result.prev, result); }catch(e){}
+    rcPastRefresh();
+  }
+
+  function rcResolveCard(code){
+    let displayName = RC_SUBJECT_NAMES[code] || code, actual = code;
+    if(code === 'OD' || code === 'AE'){ displayName = 'OD/AE'; actual = (rollcall.elective && rollcall.elective.lang) ? rollcall.elective.lang : 'OD'; }
+    if(code === 'IT' || code === 'EL'){ displayName = 'IT/EL'; actual = (rollcall.elective && rollcall.elective.it) ? rollcall.elective.it : 'IT'; }
+    return { displayName, fullName: RC_SUBJECT_NAMES[actual] || actual };
+  }
+  function rcMergeOptional(list){
+    const out = [], seen = new Set();
+    list.forEach(s => {
+      let k = s.code;
+      if(k === 'OD' || k === 'AE') k = 'OPT_LANG';
+      if(k === 'IT' || k === 'EL') k = 'OPT_IT';
+      const u = k + '::' + s.type;
+      if(seen.has(u)) return;
+      seen.add(u); out.push(s);
+    });
+    return out;
+  }
+
+  function rcYdBuildNote(title, text, btnLabel, btnKind, asLink){
+    const n = document.createElement('div');
+    n.className = 'rc-yday-note';
+    const t = document.createElement('div');
+    const b = document.createElement('b'); b.textContent = title;
+    const em = document.createElement('em'); em.textContent = text;
+    t.appendChild(b); t.appendChild(em);
+    n.appendChild(t);
+    if(btnLabel){
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      if(asLink) btn.className = 'rc-yd-link';
+      btn.textContent = btnLabel;
+      btn.addEventListener('click', () => rcYdHolidayAction(btnKind));
+      n.appendChild(btn);
+    }
+    return n;
+  }
+  function rcYdHolidayAction(kind){
+    return rcPastEnqueue(async () => {
+      const y = rcYesterdayInfo();
+      if(kind === 'override'){
+        rollcall.holidayOverrides = rollcall.holidayOverrides || {};
+        rollcall.holidayOverrides[y.key] = true;
+        if(!rollcall.recapStart || y.key < rollcall.recapStart) rollcall.recapStart = y.key;
+      } else if(kind === 'revert'){
+        if(rollcall.holidayOverrides) delete rollcall.holidayOverrides[y.key];
+      } else if(kind === 'undo-custom'){
+        if(rollcall.customHolidays) delete rollcall.customHolidays[y.key];
+        if(!rollcall.recapStart || y.key < rollcall.recapStart) rollcall.recapStart = y.key;
+      }
+      await saveRollcall();
+      rcPastRefresh();
+      if(typeof stUpdateFloatingWidget === 'function'){ try{ stUpdateFloatingWidget(); }catch(e){} }
+    });
+  }
+
+  function rcRenderYesterday(){
+    const wrap = document.getElementById('rc-yday');
+    const tabs = document.getElementById('rc-tabs');
+    if(!wrap || !tabs) return;
+    const groups = (RC_GROUPS && RC_GROUPS[rollcall.section]) || null;
+    if(!rollcall.section || (groups && groups.length > 1 && !rollcall.group)){
+      tabs.style.display = 'none';
+      rcSetDay('today', false);
+      return;
+    }
+    tabs.style.display = 'flex';
+    const y = rcYesterdayInfo();
+    const list = document.getElementById('rc-yday-list');
+    const noteWrap = document.getElementById('rc-yday-note-wrap');
+    const emptyEl = document.getElementById('rc-yday-empty');
+    const badge = document.getElementById('rc-yday-badge');
+    if(list.dataset.date !== y.key){ list.innerHTML = ''; noteWrap.innerHTML = ''; delete noteWrap.dataset.sig; list.dataset.date = y.key; }
+    document.getElementById('rc-yday-sub').textContent = y.weekday + ', ' + y.label;
+    const tdy = new Date();
+    const tSub = document.getElementById('rc-tab-today-sub'), ySub = document.getElementById('rc-tab-yday-sub');
+    if(tSub) tSub.textContent = tdy.toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' });
+    if(ySub) ySub.textContent = new Date(tdy.getFullYear(), tdy.getMonth(), tdy.getDate() - 1).toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' });
+
+    // Holiday state for yesterday (same rules as Today's Roll Call)
+    const custom = (rollcall.customHolidays && rollcall.customHolidays[y.key]) || null;
+    const info = holidayInfoFor(y.key);
+    const overridden = !!(rollcall.holidayOverrides && rollcall.holidayOverrides[y.key]);
+    const isHoliday = !!custom || (!!info && !overridden);
+    let noteSig = '', noteBuild = null;
+    if(isHoliday){
+      if(custom){
+        noteSig = 'c|' + (custom.reason || '');
+        noteBuild = () => rcYdBuildNote('Yesterday was marked as a holiday', custom.reason || 'Marked as a holiday by you', 'Undo holiday', 'undo-custom');
+      } else if(y.dayName){
+        noteSig = 'h|' + info.reason;
+        noteBuild = () => rcYdBuildNote('Yesterday was a holiday', info.reason, 'Classes were held', 'override');
+      } else {
+        noteSig = 's|' + info.reason;
+        noteBuild = () => rcYdBuildNote('No classes yesterday', info.reason, null, null);
+      }
+    } else if(info && overridden){
+      noteSig = 'o|' + info.reason;
+      noteBuild = () => rcYdBuildNote('Classes were held', 'Despite ' + info.reason + '.', 'Mark as holiday instead', 'revert', true);
+    }
+    if(noteWrap.dataset.sig !== noteSig){
+      noteWrap.dataset.sig = noteSig;
+      noteWrap.innerHTML = '';
+      if(noteBuild){ const n = noteBuild(); n.classList.add('rc-yd-fade'); noteWrap.appendChild(n); }
+    }
+
+    // Cards
+    const items = [];
+    let hiddenPractical = false;
+    if(!isHoliday && y.dayName){
+      const sched = rcScheduleForToday(rollcall.section, y.dayName);
+      hiddenPractical = !!sched.hiddenPractical;
+      const visible = rcVisibleCodesFor(rollcall.section, rollcall.group);
+      const sessions = rcMergeOptional(visible ? sched.sessions.filter(s => visible.has(s.code)) : sched.sessions);
+      const dayMarks = (rollcall.marks && rollcall.marks[y.key]) || {};
+      const dayPrac = (rollcall.practicalMarks && rollcall.practicalMarks[y.key]) || {};
+      const counts = {};
+      sessions.forEach(s => { counts[s.code] = (counts[s.code] || 0) + 1; });
+      sessions.forEach(s => {
+        const r = rcResolveCard(s.code);
+        const prac = s.type === 'practical';
+        const mark = (prac ? dayPrac : dayMarks)[r.fullName];
+        const dual = counts[s.code] > 1;
+        items.push({
+          key: s.type + '::' + r.displayName,
+          struct: r.fullName + '|' + s.type + '|' + dual,
+          status: mark ? mark.status : '',
+          scheduled: true,
+          build: () => buildAutoRollcallCard(s.code, s.type, dayMarks[r.fullName], dayPrac[r.fullName], dual, y.key)
+        });
+      });
+      ((rollcall.extraCards && rollcall.extraCards[y.key]) || []).forEach(e => {
+        const prac = e.type === 'practical';
+        const mark = (prac ? dayPrac : dayMarks)[e.fullName];
+        items.push({
+          key: 'x::' + e.id,
+          struct: e.fullName + '|' + e.type + '|x',
+          status: mark ? mark.status : '',
+          scheduled: false,
+          build: () => buildExtraRollcallCard(e, dayMarks[e.fullName], dayPrac[e.fullName], y.key)
+        });
+      });
+    }
+
+    const existing = new Map();
+    Array.from(list.children).forEach(c => existing.set(c.dataset.key, c));
+    const wanted = new Set(items.map(i => i.key));
+    existing.forEach((el, k) => { if(!wanted.has(k)) el.remove(); });
+    let prev = null, idx = 0;
+    items.forEach(it => {
+      const fresh = it.build();
+      fresh.dataset.key = it.key; fresh.dataset.struct = it.struct; fresh.dataset.mark = it.status;
+      let el = existing.get(it.key);
+      if(!el){
+        fresh.classList.add('rc-yd-new'); fresh.style.setProperty('--i', idx);
+        el = fresh;
+      } else if(el.dataset.struct !== it.struct){
+        el.replaceWith(fresh); el = fresh;
+      } else if(el.dataset.mark !== it.status){
+        const oldSt = el.querySelector('.rc-status'), newSt = fresh.querySelector('.rc-status');
+        if(oldSt && newSt){ newSt.classList.add('rc-status-pop'); oldSt.replaceWith(newSt); }
+        const oldUndo = el.querySelector('.btn-undo'), newUndo = fresh.querySelector('.btn-undo');
+        if(oldUndo && newUndo) oldUndo.disabled = newUndo.disabled;
+        el.dataset.mark = it.status;
+      }
+      const expectedPrev = prev ? prev.nextSibling : list.firstChild;
+      if(expectedPrev !== el) list.insertBefore(el, expectedPrev);
+      prev = el; idx++;
+    });
+
+    // Empty message
+    let emptyText = '';
+    if(!isHoliday && items.length === 0){
+      if(!y.dayName) emptyText = 'No classes yesterday.';
+      else emptyText = (hiddenPractical && !rollcall.pracGroup)
+        ? 'There were practical classes yesterday. Choose your practical group above to see yours.'
+        : 'No periods were scheduled for Section ' + rollcall.section + ' yesterday.';
+    }
+    if(emptyText){
+      if(emptyEl.textContent !== emptyText || emptyEl.style.display === 'none'){
+        emptyEl.style.display = 'block';
+        emptyEl.style.animation = 'none'; void emptyEl.offsetWidth; emptyEl.style.animation = '';
+        emptyEl.textContent = emptyText;
+      }
+    } else emptyEl.style.display = 'none';
+
+    // Badge on the Yesterday tab
+    const unmarked = items.filter(i => i.scheduled && !i.status).length;
+    let btxt = '', blabel = '', bcls = 'rc-yday-badge';
+    if(isHoliday){ btxt = 'Off'; blabel = 'Holiday'; bcls += ' is-off'; }
+    else if(items.some(i => i.scheduled)){
+      if(unmarked > 0){ btxt = String(unmarked); blabel = unmarked + ' unmarked'; bcls += ' is-warn'; }
+      else { btxt = '\u2713'; blabel = 'All marked'; bcls += ' is-done'; }
+    }
+    if(badge.textContent !== btxt || badge.dataset.cls !== bcls){
+      const had = badge.dataset.cls !== undefined;
+      badge.textContent = btxt; badge.className = bcls; badge.dataset.cls = bcls;
+      if(btxt){ badge.title = blabel; badge.setAttribute('aria-label', blabel); } else { badge.removeAttribute('title'); badge.removeAttribute('aria-label'); }
+      if(had && btxt && !bcls.includes('is-warn')){ badge.classList.add('rc-yd-badge-pop'); setTimeout(() => badge.classList.remove('rc-yd-badge-pop'), 560); }
+    }
+  }
+  // ---- Today / Yesterday switcher ----
+  let rcDay = 'today', rcDayT1 = null, rcDayT2 = null;
+  function rcSyncTabs(){
+    const tabs = document.getElementById('rc-tabs');
+    if(!tabs) return;
+    tabs.dataset.day = rcDay;
+    tabs.querySelectorAll('.rc-tab').forEach(b => {
+      const on = b.dataset.day === rcDay;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;
+    });
+  }
+  function rcSetDay(day, animate){
+    const panes = document.getElementById('rc-panes');
+    const P = { today: document.getElementById('rc-pane-today'), yday: document.getElementById('rc-yday') };
+    if(!panes || !P.today || !P.yday) return;
+    const tabs = document.getElementById('rc-tabs');
+    if(tabs && tabs.style.display === 'none') day = 'today';
+    const to = P[day], other = P[day === 'today' ? 'yday' : 'today'];
+    const wasDay = rcDay;
+    rcDay = day;
+    rcSyncTabs();
+    clearTimeout(rcDayT1); clearTimeout(rcDayT2);
+    [P.today, P.yday].forEach(p => p.classList.remove('is-leaving', 'is-entering'));
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const toVisible = !to.classList.contains('rc-pane-hidden');
+    const otherVisible = !other.classList.contains('rc-pane-hidden');
+    if(!animate || reduced || (toVisible && !otherVisible) || wasDay === day && !otherVisible){
+      other.classList.add('rc-pane-hidden'); to.classList.remove('rc-pane-hidden');
+      panes.classList.remove('is-resizing'); panes.style.height = '';
+      return;
+    }
+    const dir = day === 'yday' ? 1 : -1;
+    panes.style.setProperty('--rc-dir', dir);
+    P.today.style.setProperty('--rc-dir', dir); P.yday.style.setProperty('--rc-dir', dir);
+    panes.style.height = panes.offsetHeight + 'px';
+    panes.classList.add('is-resizing');
+    if(otherVisible) other.classList.add('is-leaving');
+    rcDayT1 = setTimeout(() => {
+      other.classList.remove('is-leaving'); other.classList.add('rc-pane-hidden');
+      to.classList.remove('rc-pane-hidden'); to.classList.add('is-entering');
+      panes.style.height = to.offsetHeight + 'px';
+      rcDayT2 = setTimeout(() => {
+        to.classList.remove('is-entering');
+        panes.classList.remove('is-resizing'); panes.style.height = '';
+      }, 270);
+    }, otherVisible ? 100 : 0);
+  }
+  (function(){
+    const tabs = document.getElementById('rc-tabs');
+    if(!tabs) return;
+    tabs.addEventListener('click', e => {
+      const b = e.target.closest ? e.target.closest('.rc-tab') : null;
+      if(!b) return;
+      rcSetDay(b.dataset.day, true);
+    });
+    tabs.addEventListener('keydown', e => {
+      if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      const next = e.key === 'ArrowRight' ? 'yday' : 'today';
+      rcSetDay(next, true);
+      const nb = document.getElementById(next === 'yday' ? 'rc-tab-yday' : 'rc-tab-today');
+      if(nb) nb.focus();
+    });
+  })();
+
   function rcShow(){
     hideAllPages();
     const nudgeEl = document.getElementById('rc-nudge');
     if(nudgeEl) nudgeEl.style.display = 'none';
     document.getElementById('rollcall-view').style.display = 'block';
+    try{ rcSetDay('today', false); }catch(e){}
     renderRollcall();
     window.scrollTo(0,0);
   }
@@ -31477,6 +31974,88 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
 })();
 </script>
 
+<style id="ckfs-style">
+  .st-clock-actions{ flex:none; display:flex; align-items:center; gap:8px; }
+  .st-clock-fs{
+    flex:none; display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; padding:0; border-radius:50%; cursor:pointer;
+    color:#E6B95C; background: rgba(230,185,92,0.10); border:1px solid rgba(230,185,92,0.42); -webkit-tap-highlight-color:transparent;
+    transition: background .25s ease, color .25s ease, transform .25s cubic-bezier(0.22,1,0.36,1), box-shadow .25s ease;
+  }
+  .st-clock-fs svg{ width:16px; height:16px; transition: transform .35s cubic-bezier(0.22,1,0.36,1); }
+  .st-clock-fs:hover svg{ transform: scale(1.14); }
+  .st-clock-fs:active{ transform: scale(0.92); background: rgba(230,185,92,0.22); }
+  .st-clock-face{ cursor:pointer; -webkit-tap-highlight-color:transparent; }
+
+  .ckfs{
+    position:fixed; inset:0; z-index:100000; display:none; overflow:hidden; background:#0a0907;
+    opacity:0; transition: opacity .45s cubic-bezier(0.22,1,0.36,1);
+    user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; touch-action:none; cursor:default;
+  }
+  .ckfs.show{ opacity:1; }
+  .ckfs.idle{ cursor:none; }
+  .ckfs-stage{
+    position:absolute; left:50%; top:50%; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between;
+    padding:clamp(14px, 3.4vmin, 34px) clamp(18px, 4vmin, 44px);
+    background: radial-gradient(120% 140% at 100% 0%, rgba(230,185,92,0.20) 0%, rgba(230,185,92,0) 55%), linear-gradient(160deg, #1d1911 0%, #0a0907 100%);
+  }
+  .ckfs-glow{
+    position:absolute; left:50%; top:50%; width:72%; height:62%; transform:translate(-50%,-50%); border-radius:50%; pointer-events:none;
+    background: radial-gradient(closest-side, rgba(230,185,92,0.16), rgba(230,185,92,0)); animation: ckfsBreath 7s ease-in-out infinite;
+  }
+  @keyframes ckfsBreath{ 0%,100%{ opacity:.55; transform:translate(-50%,-50%) scale(.96); } 50%{ opacity:1; transform:translate(-50%,-50%) scale(1.04); } }
+  .ckfs-top, .ckfs-bottom{ position:relative; display:flex; align-items:center; justify-content:space-between; transition: opacity .5s ease, transform .6s cubic-bezier(0.22,1,0.36,1); }
+  .ckfs-top{ transform: translateY(-12px); opacity:0; }
+  .ckfs-bottom{ transform: translateY(12px); opacity:0; }
+  .ckfs.show .ckfs-top, .ckfs.show .ckfs-bottom{ transform:none; opacity:1; transition-delay:.15s; }
+  .ckfs.show.idle .ckfs-top{ opacity:0; transform: translateY(-8px); pointer-events:none; transition-delay:0s; }
+  .ckfs-eyebrow{ font-family:'Lora', serif; font-weight:700; font-size:clamp(11px, 2.4vmin, 16px); letter-spacing:.26em; text-transform:uppercase; color:#E6B95C; }
+  .ckfs-x{
+    flex:none; width:clamp(38px, 8vmin, 52px); height:clamp(38px, 8vmin, 52px); padding:0; border-radius:50%; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    color:#E6B95C; background: rgba(230,185,92,0.10); border:1px solid rgba(230,185,92,0.42); -webkit-tap-highlight-color:transparent;
+    transition: background .25s ease, transform .25s cubic-bezier(0.22,1,0.36,1);
+  }
+  .ckfs-x svg{ width:46%; height:46%; }
+  .ckfs-x:active{ transform:scale(.9); background: rgba(230,185,92,0.24); }
+  .ckfs-center{
+    position:relative; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:0;
+    gap: calc(var(--ckfs-fs, 60px) * .16); opacity:0; transform: scale(.9);
+    transition: opacity .6s ease .1s, transform .8s cubic-bezier(0.22,1,0.36,1) .1s;
+  }
+  .ckfs.show .ckfs-center{ opacity:1; transform:none; }
+  .ckfs-face{ display:flex; justify-content:center; --ck-fs: var(--ckfs-fs, 60px); }
+  .ckfs .ck-face{ text-shadow: 0 0 .32em rgba(230,185,92,.38), 0 0 1.1em rgba(230,185,92,.18); }
+  .ckfs-date{ font-family:'Lora', serif; font-size: max(14px, calc(var(--ckfs-fs, 60px) * .2)); letter-spacing:.05em; color: rgba(243,239,227,.72); white-space:nowrap; }
+  .ckfs-bar{ position:relative; width:100%; height:3px; border-radius:3px; background: rgba(255,255,255,0.08); overflow:hidden; }
+  .ckfs-bar i{ display:block; height:100%; width:100%; transform-origin:left center; transform:scaleX(0); background: linear-gradient(90deg, rgba(230,185,92,0.35), #E6B95C); animation: ckBar 60s linear infinite; }
+  /* ---- zoom layer + zoom bar ---- */
+  .ckfs-zoom{ display:flex; flex-direction:column; align-items:center; gap: calc(var(--ckfs-fs, 60px) * .16); transform-origin:50% 50%; backface-visibility:hidden; }
+  .ckfs-bottom{ flex-direction:column; align-items:stretch; justify-content:flex-end; gap:clamp(8px, 2vmin, 16px); }
+  .ckfs-zoombar{
+    align-self:center; display:flex; align-items:center; gap:clamp(8px, 2vmin, 14px);
+    padding:clamp(5px, 1.2vmin, 8px) clamp(10px, 2.4vmin, 16px); border-radius:999px;
+    background: rgba(230,185,92,0.08); border:1px solid rgba(230,185,92,0.28);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    opacity:0; transform: translateY(10px);
+    transition: opacity .5s ease, transform .6s cubic-bezier(0.22,1,0.36,1);
+  }
+  .ckfs.show .ckfs-zoombar{ opacity:1; transform:none; transition-delay:.25s; }
+  .ckfs.show.idle .ckfs-zoombar{ opacity:0; transform: translateY(8px); pointer-events:none; transition-delay:0s; }
+  .ckfs-zb{
+    flex:none; width:clamp(30px, 6.4vmin, 40px); height:clamp(30px, 6.4vmin, 40px); padding:0; border-radius:50%; cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; color:#E6B95C;
+    background: rgba(230,185,92,0.10); border:1px solid rgba(230,185,92,0.42); -webkit-tap-highlight-color:transparent;
+    transition: background .25s ease, transform .25s cubic-bezier(0.22,1,0.36,1), opacity .25s ease;
+  }
+  .ckfs-zb svg{ width:48%; height:48%; }
+  .ckfs-zb:active{ transform:scale(.86); background: rgba(230,185,92,0.26); }
+  .ckfs-zb:disabled{ opacity:.32; cursor:default; transform:none; }
+  .ckfs-zp{ min-width:3.6em; text-align:center; font-family:'Lora', serif; font-weight:700; font-variant-numeric: tabular-nums; font-size:clamp(11px, 2.5vmin, 15px); color: rgba(243,239,227,.85); }
+  .ckfs-zr{ -webkit-appearance:none; appearance:none; width:clamp(110px, 30vmin, 280px); height:4px; border-radius:4px; background: rgba(255,255,255,.16); outline:none; margin:0; cursor:pointer; touch-action:none; }
+  .ckfs-zr::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%; background:#E6B95C; border:0; box-shadow:0 0 0 4px rgba(230,185,92,.22), 0 2px 8px rgba(0,0,0,.5); transition: transform .2s ease; }
+  .ckfs-zr:active::-webkit-slider-thumb{ transform:scale(1.18); }
+  .ckfs-zr::-moz-range-thumb{ width:18px; height:18px; border-radius:50%; background:#E6B95C; border:0; box-shadow:0 0 0 4px rgba(230,185,92,.22), 0 2px 8px rgba(0,0,0,.5); }
+  @media (prefers-reduced-motion: reduce){ .ckfs, .ckfs *{ animation:none !important; transition:none !important; } }
+</style>
 <script id="st-clock-script">
 (function stClock(){
   var card = document.getElementById('st-clock');
@@ -31543,7 +32122,7 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     f.started = true;
   }
 
-  var dateEl = document.getElementById('st-clock-date'), lastDate = '';
+  var dateEl = document.getElementById('st-clock-date'), lastDate = '', fsDateEl = null;
   function render(){
     var t = nowParts();
     for(var i = faces.length - 1; i >= 0; i--){
@@ -31552,7 +32131,7 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     }
     var ds = '';
     try{ ds = t.d.toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long' }); }catch(e){ ds = t.d.toDateString(); }
-    if(ds !== lastDate){ lastDate = ds; if(dateEl) dateEl.textContent = ds; }
+    if(ds !== lastDate){ lastDate = ds; if(dateEl) dateEl.textContent = ds; if(fsDateEl) fsDateEl.textContent = ds; }
   }
   var barEl = document.getElementById('st-clock-bar');
   function syncBar(){ if(!barEl) return; var d = new Date(); barEl.style.animationDelay = (-(d.getSeconds() + d.getMilliseconds() / 1000)).toFixed(3) + 's'; }
@@ -31713,6 +32292,259 @@ body.dark #smart-study-view .ss-seg button.active{ color:#1B1912; }
     setFloat(true);
     note('Floating inside TrackLec \u2014 drag it anywhere. This browser can\u2019t show it over other apps.');
   });
+
+
+  /* ---------- full-screen landscape clock ---------- */
+  var fsOpen = false, fsMode = null, fsFull = false, fsHist = false, fsPendingPop = 0, fsPendingT = null, fsIdleT = null, fsWake = null, fsClosing = null;
+  var fsSnap = null, fsGuardT = null, FS_HOST_IDS = ['study-tracker-view', 'st-tabbar', 'app-view', 'app-footer'];
+  var ov = document.createElement('div');
+  ov.className = 'ckfs'; ov.id = 'ckfs'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Full screen clock');
+  ov.innerHTML = '<div class="ckfs-stage" id="ckfs-stage"><span class="ckfs-glow" aria-hidden="true"></span>'
+    + '<div class="ckfs-top"><span class="ckfs-eyebrow">Local time</span>'
+    + '<button type="button" class="ckfs-x" id="ckfs-x" aria-label="Exit full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg></button></div>'
+    + '<div class="ckfs-center"><div class="ckfs-zoom" id="ckfs-zoom"><div class="ckfs-face" id="ckfs-face" aria-hidden="true"></div><div class="ckfs-date" id="ckfs-date"></div></div></div>'
+    + '<div class="ckfs-bottom"><div class="ckfs-zoombar" id="ckfs-zoombar" role="group" aria-label="Clock size">'
+    +   '<button type="button" class="ckfs-zb" id="ckfs-zout" aria-label="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>'
+    +   '<input type="range" class="ckfs-zr" id="ckfs-zr" min="0" max="1000" step="1" value="500" aria-label="Clock size">'
+    +   '<button type="button" class="ckfs-zb" id="ckfs-zin" aria-label="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button>'
+    +   '<span class="ckfs-zp" id="ckfs-zp" aria-live="off">100%</span>'
+    +   '<button type="button" class="ckfs-zb" id="ckfs-zrst" aria-label="Reset size"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg></button>'
+    + '</div></div></div>';
+  document.body.appendChild(ov);
+  var fsStage = ov.querySelector('#ckfs-stage'), fsBar = ov.querySelector('#ckfs-bar');
+  fsDateEl = ov.querySelector('#ckfs-date');
+  createFace(ov.querySelector('#ckfs-face'), document);
+
+  function fsLayout(){
+    var W = window.innerWidth, H = window.innerHeight, rot = H > W;
+    var sw = rot ? H : W, sh = rot ? W : H;
+    fsStage.style.width = sw + 'px'; fsStage.style.height = sh + 'px';
+    fsStage.style.transform = 'translate(-50%,-50%)' + (rot ? ' rotate(90deg)' : '');
+    var fs = Math.max(24, Math.min(sw * 0.9 / 5.1, sh * 0.5));
+    ov.style.setProperty('--ckfs-fs', fs.toFixed(1) + 'px');
+    if(fsMode !== null && fsMode !== rot && fsOpen && !REDUCED && fsStage.animate){
+      fsStage.animate([{ opacity:0.0 }, { opacity:1 }], { duration:420, easing:EASE });
+    }
+    fsMode = rot;
+    try{ zRelayout(); }catch(e){}
+  }
+  function fsSyncBar(){ if(!fsBar) return; var d = new Date(); fsBar.style.animationDelay = (-(d.getSeconds() + d.getMilliseconds() / 1000)).toFixed(3) + 's'; }
+  function fsWakeOn(){
+    try{ if(navigator.wakeLock && fsOpen && !fsWake){ navigator.wakeLock.request('screen').then(function(l){ fsWake = l; l.addEventListener('release', function(){ fsWake = null; }); }).catch(function(){}); } }catch(e){}
+  }
+  function fsWakeOff(){ try{ if(fsWake){ fsWake.release(); fsWake = null; } }catch(e){} }
+  function fsShowControls(){
+    ov.classList.remove('idle'); clearTimeout(fsIdleT);
+    fsIdleT = setTimeout(function(){ if(fsOpen) ov.classList.add('idle'); }, 3500);
+  }
+  function fsIsFull(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+
+  async function openFS(){
+    if(fsOpen) return;
+    fsOpen = true; clearTimeout(fsClosing); fsGuardStop(); fsSnapHost();
+    ov.style.display = 'block'; zLoad();
+    if(fsDateEl) fsDateEl.textContent = lastDate;
+    fsLayout(); fsSyncBar(); render();
+    void ov.offsetWidth;
+    ov.classList.add('show'); fsShowControls(); fsWakeOn();
+    try{ history.pushState({ ckfs:1 }, '', location.href); fsHist = true; }catch(e){ fsHist = false; }
+    // real full screen + landscape lock where the browser allows it (otherwise the overlay rotates itself)
+    try{
+      var el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if(req){ await req.call(el, { navigationUI:'hide' }); fsFull = true; }
+    }catch(e){}
+    try{ if(fsOpen && screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape'); }catch(e){}
+    setTimeout(fsLayout, 120); setTimeout(fsLayout, 450);
+  }
+
+  /* Remember which page the clock was opened from (Track My Studies) so closing always lands back on it. */
+  function fsSnapHost(){
+    fsSnap = { y: window.pageYOffset || 0, d: {} };
+    FS_HOST_IDS.forEach(function(id){ var el = document.getElementById(id); if(el) fsSnap.d[id] = getComputedStyle(el).display; });
+  }
+  function fsGuardStop(){ if(fsGuardT){ clearInterval(fsGuardT); fsGuardT = null; } }
+  function fsGuardStart(){
+    fsGuardStop();
+    if(!fsSnap || !fsSnap.d['study-tracker-view'] || fsSnap.d['study-tracker-view'] === 'none') return;
+    var n = 0;
+    fsGuardT = setInterval(function(){
+      n++;
+      var v = document.getElementById('study-tracker-view');
+      if(v && getComputedStyle(v).display === 'none'){
+        // something navigated away while the clock was closing \u2014 put Track My Studies back exactly as it was
+        FS_HOST_IDS.forEach(function(id){ var el = document.getElementById(id); if(el && fsSnap.d[id] !== undefined) el.style.display = fsSnap.d[id]; });
+        try{ window.scrollTo(0, fsSnap.y); }catch(e){}
+        fsGuardStop(); return;
+      }
+      if(n >= 12) fsGuardStop();
+    }, 200);
+  }
+  // any real tap / key after closing means the person is navigating on purpose \u2014 stop guarding
+  document.addEventListener('pointerdown', fsGuardStop, true);
+  document.addEventListener('keydown', fsGuardStop, true);
+
+  function closeFS(fromPop){
+    if(!fsOpen) return;
+    fsOpen = false; clearTimeout(fsIdleT);
+    ov.classList.remove('show'); ov.classList.remove('idle');
+    try{ zPtr.clear(); zPinch = null; }catch(e){}
+    fsWakeOff();
+    try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
+    if(fsIsFull()){ fsFull = false; try{ (document.exitFullscreen || document.webkitExitFullscreen).call(document); }catch(e){} }
+    fsFull = false;
+    if(fsHist){
+      fsHist = false;
+      // Remove the history entry we added when opening. Counted (not timed), so a late popstate can never leak through
+      // to the app's own Back handler and kick the person out to the Attendance page.
+      if(!fromPop && history.state && history.state.ckfs){
+        fsPendingPop++; clearTimeout(fsPendingT);
+        fsPendingT = setTimeout(function(){ fsPendingPop = 0; }, 8000);
+        try{ history.back(); }catch(e){ fsPendingPop = 0; }
+      }
+    }
+    fsGuardStart();
+    fsClosing = setTimeout(function(){ if(!fsOpen){ ov.style.display = 'none'; fsMode = null; } }, 520);
+  }
+
+  // phone/system Back closes the clock first (capture phase, so the app's own Back handlers don't also run)
+  window.addEventListener('popstate', function(e){
+    if(fsPendingPop > 0){ fsPendingPop--; if(!fsPendingPop) clearTimeout(fsPendingT); e.stopImmediatePropagation(); return; }
+    if(fsOpen){ fsHist = false; e.stopImmediatePropagation(); closeFS(true); }
+  }, true);
+  document.addEventListener('fullscreenchange', function(){ if(fsOpen && fsFull && !fsIsFull()) closeFS(false); });
+  document.addEventListener('webkitfullscreenchange', function(){ if(fsOpen && fsFull && !fsIsFull()) closeFS(false); });
+  window.addEventListener('resize', function(){ if(fsOpen) fsLayout(); });
+  window.addEventListener('orientationchange', function(){ if(fsOpen){ setTimeout(fsLayout, 60); setTimeout(fsLayout, 350); } });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden && fsOpen){ fsWakeOn(); fsSyncBar(); } });
+  document.addEventListener('keydown', function(e){ if(fsOpen && e.key === 'Escape') closeFS(false); });
+  ov.addEventListener('pointerdown', fsShowControls);
+  ov.addEventListener('pointermove', function(e){ if(e.pointerType === 'mouse') fsShowControls(); });
+  ov.querySelector('#ckfs-x').addEventListener('click', function(e){ e.stopPropagation(); closeFS(false); });
+
+  /* ---------- smooth zoom: pinch / scroll wheel / + \u2212 buttons / slider / double-tap ---------- */
+  var ZMIN = 0.3, ZMAX = 3, ZKEY = 'ckfs_zoom_v1';
+  var zEl = ov.querySelector('#ckfs-zoom'), zCenter = ov.querySelector('.ckfs-center');
+  var zR = ov.querySelector('#ckfs-zr'), zP = ov.querySelector('#ckfs-zp');
+  var zIn = ov.querySelector('#ckfs-zin'), zOut = ov.querySelector('#ckfs-zout'), zRst = ov.querySelector('#ckfs-zrst');
+  var Z = { tz:1, cz:1, tx:0, ty:0, cx:0, cy:0, raf:0, last:0, fast:false }, zSaveT = null, zSlide = false;
+  var zPtr = new Map(), zPinch = null, zWasPinch = false, zTap = { t:0, x:0, y:0 };
+
+  function zClamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+  function zS2P(v){ return Math.round(Math.log(v / ZMIN) / Math.log(ZMAX / ZMIN) * 1000); }
+  function zP2S(v){ return ZMIN * Math.pow(ZMAX / ZMIN, v / 1000); }
+  // the stage is rotated 90\u00b0 on portrait phones, so screen-space deltas have to be mapped into stage space
+  function toStage(dx, dy){ return fsMode ? { x: dy, y: -dx } : { x: dx, y: dy }; }
+  function toScreen(sx, sy){ return fsMode ? { x: -sy, y: sx } : { x: sx, y: sy }; }
+  function clampPan(){
+    var w = zEl.offsetWidth * Z.tz, h = zEl.offsetHeight * Z.tz;
+    var lx = Math.max(0, (w - zCenter.clientWidth) / 2), ly = Math.max(0, (h - zCenter.clientHeight) / 2);
+    Z.tx = zClamp(Z.tx, -lx, lx); Z.ty = zClamp(Z.ty, -ly, ly);
+  }
+  function zApply(){ zEl.style.transform = 'translate3d(' + Z.cx.toFixed(2) + 'px,' + Z.cy.toFixed(2) + 'px,0) scale(' + Z.cz.toFixed(4) + ')'; }
+  function zUI(){
+    zP.textContent = Math.round(Z.tz * 100) + '%';
+    if(!zSlide) zR.value = zS2P(Z.tz);
+    zIn.disabled = Z.tz >= ZMAX - 0.001; zOut.disabled = Z.tz <= ZMIN + 0.001;
+    zRst.disabled = Math.abs(Z.tz - 1) < 0.004 && Math.abs(Z.tx) < 0.5 && Math.abs(Z.ty) < 0.5;
+  }
+  // frame-rate independent easing toward the target: this is what makes every zoom input glide instead of jump
+  function zTick(t){
+    var dt = Z.last ? Math.min(50, t - Z.last) : 16; Z.last = t;
+    var k = 1 - Math.exp(-dt / (Z.fast ? 40 : 110));
+    Z.cz += (Z.tz - Z.cz) * k; Z.cx += (Z.tx - Z.cx) * k; Z.cy += (Z.ty - Z.cy) * k;
+    var done = Math.abs(Z.tz - Z.cz) < 0.0006 && Math.abs(Z.tx - Z.cx) < 0.1 && Math.abs(Z.ty - Z.cy) < 0.1;
+    if(done){ Z.cz = Z.tz; Z.cx = Z.tx; Z.cy = Z.ty; Z.raf = 0; Z.last = 0; }
+    zApply();
+    if(!done) Z.raf = requestAnimationFrame(zTick);
+  }
+  function zKick(){
+    zUI();
+    if(REDUCED){ Z.cz = Z.tz; Z.cx = Z.tx; Z.cy = Z.ty; zApply(); return; }
+    if(!Z.raf){ Z.last = 0; Z.raf = requestAnimationFrame(zTick); }
+  }
+  function zSave(){ clearTimeout(zSaveT); zSaveT = setTimeout(function(){ try{ localStorage.setItem(ZKEY, Z.tz.toFixed(3)); }catch(e){} }, 350); }
+  function zLoad(){
+    var v = 1;
+    try{ var sv = parseFloat(localStorage.getItem(ZKEY)); if(sv >= ZMIN && sv <= ZMAX) v = sv; }catch(e){}
+    Z.tz = Z.cz = v; Z.tx = Z.ty = Z.cx = Z.cy = 0; zApply(); zUI();
+  }
+  function zRelayout(){ clampPan(); Z.fast = false; zKick(); }
+  // zoom to nz; F (screen point) keeps the spot under your fingers / cursor in place
+  function zSet(nz, F, fast){
+    nz = zClamp(nz, ZMIN, ZMAX);
+    var r = nz / Z.tz;
+    if(F){
+      var rc = zEl.getBoundingClientRect(), cs = toScreen(Z.cx, Z.cy), ts = toScreen(Z.tx, Z.ty);
+      var bx = rc.left + rc.width / 2 - cs.x, by = rc.top + rc.height / 2 - cs.y;
+      var d = toStage((F.x - (bx + ts.x)) * (1 - r), (F.y - (by + ts.y)) * (1 - r));
+      Z.tx += d.x; Z.ty += d.y;
+    } else { Z.tx *= r; Z.ty *= r; }
+    Z.tz = nz; Z.fast = !!fast; clampPan(); zKick(); zSave();
+  }
+  function zReset(){ Z.tz = 1; Z.tx = 0; Z.ty = 0; Z.fast = false; zKick(); zSave(); }
+
+  function zUiHit(e){ return !!(e.target.closest && e.target.closest('.ckfs-x, .ckfs-zoombar')); }
+  function zDist(a, b){ return Math.hypot(a.x - b.x, a.y - b.y) || 1; }
+  ov.addEventListener('pointerdown', function(e){
+    if(!fsOpen || zUiHit(e)) return;
+    try{ ov.setPointerCapture(e.pointerId); }catch(_){}
+    zPtr.set(e.pointerId, { x:e.clientX, y:e.clientY, x0:e.clientX, y0:e.clientY, t:performance.now() });
+    if(zPtr.size === 2){ var a = Array.from(zPtr.values()); zPinch = { d: zDist(a[0], a[1]), z: Z.tz }; zWasPinch = true; }
+  });
+  ov.addEventListener('pointermove', function(e){
+    var p = zPtr.get(e.pointerId); if(!p) return;
+    var dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+    if(zPtr.size >= 2 && zPinch){
+      var a = Array.from(zPtr.values());
+      zSet(zPinch.z * zDist(a[0], a[1]) / zPinch.d, { x:(a[0].x + a[1].x) / 2, y:(a[0].y + a[1].y) / 2 }, true);
+    } else if(zPtr.size === 1){
+      if(Math.hypot(e.clientX - p.x0, e.clientY - p.y0) < 6) return;
+      var s2 = toStage(dx, dy); Z.tx += s2.x; Z.ty += s2.y; Z.fast = true; clampPan(); zKick();
+    }
+  });
+  function zUp(e){
+    var p = zPtr.get(e.pointerId); if(!p) return;
+    zPtr.delete(e.pointerId);
+    try{ ov.releasePointerCapture(e.pointerId); }catch(_){}
+    if(zPinch && zPtr.size < 2) zPinch = null;
+    if(zPtr.size === 0){
+      var wasPinch = zWasPinch; zWasPinch = false;
+      if(wasPinch || e.type !== 'pointerup') return;
+      var now = performance.now();
+      if(Math.hypot(e.clientX - p.x0, e.clientY - p.y0) < 10 && now - p.t < 350){
+        if(now - zTap.t < 340 && Math.hypot(e.clientX - zTap.x, e.clientY - zTap.y) < 40){
+          zTap.t = 0;
+          if(Math.abs(Z.tz - 1) > 0.03 || Math.abs(Z.tx) + Math.abs(Z.ty) > 1) zReset();   // double-tap: back to normal size
+          else zSet(1.8, { x:e.clientX, y:e.clientY }, false);                              // \u2026or zoom in where you tapped
+        } else zTap = { t: now, x: e.clientX, y: e.clientY };
+      }
+    }
+  }
+  ov.addEventListener('pointerup', zUp); ov.addEventListener('pointercancel', zUp);
+  ov.addEventListener('wheel', function(e){
+    if(!fsOpen) return;
+    e.preventDefault(); fsShowControls();
+    var dy = e.deltaMode === 1 ? e.deltaY * 16 : (e.deltaMode === 2 ? e.deltaY * 100 : e.deltaY);
+    zSet(Z.tz * Math.exp(-dy * (e.ctrlKey ? 0.012 : 0.0018)), { x:e.clientX, y:e.clientY }, false);
+  }, { passive:false });
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(function(n){ ov.addEventListener(n, function(e){ e.preventDefault(); }); });
+
+  zIn.addEventListener('click', function(e){ e.stopPropagation(); zSet(Z.tz * 1.25, null, false); });
+  zOut.addEventListener('click', function(e){ e.stopPropagation(); zSet(Z.tz / 1.25, null, false); });
+  zRst.addEventListener('click', function(e){ e.stopPropagation(); zReset(); });
+  zR.addEventListener('input', function(){ zSet(zP2S(+zR.value), null, true); });
+  zR.addEventListener('pointerdown', function(){ zSlide = true; });
+  ['pointerup', 'pointercancel', 'change'].forEach(function(n){ zR.addEventListener(n, function(){ zSlide = false; zUI(); }); });
+  document.addEventListener('keydown', function(e){
+    if(!fsOpen) return;
+    if(e.key === '+' || e.key === '='){ e.preventDefault(); zSet(Z.tz * 1.25, null, false); }
+    else if(e.key === '-' || e.key === '_'){ e.preventDefault(); zSet(Z.tz / 1.25, null, false); }
+    else if(e.key === '0'){ e.preventDefault(); zReset(); }
+  });
+
+  var fsBtn = document.getElementById('st-clock-fs'), fsFaceHost = document.getElementById('st-clock-face');
+  if(fsBtn) fsBtn.addEventListener('click', openFS);
+  if(fsFaceHost) fsFaceHost.addEventListener('click', openFS);
 
   try{ if(localStorage.getItem(FLOAT_KEY) === '1') setFloat(true); }catch(e){}
 })();
