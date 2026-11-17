@@ -4677,7 +4677,7 @@
   .rc-yday-note button:active{ transform: scale(.95); }
   .rc-yday-note button.rc-yd-link{ border:none; padding:0; text-decoration:underline; }
   .rc-yday-empty{ font-family:'Lora', serif; font-size:13.5px; line-height:1.5; padding:10px 14px; border-radius:6px; background: rgba(var(--ink-rgb),0.06); color: var(--ink-soft); animation: rcYdCardIn .45s cubic-bezier(.22,1,.36,1) both; }
-  .rc-yday-list .rc-card{ animation:none; border-left:3px solid rgba(var(--gold-rgb),0.5); }
+  .rc-yday-list .rc-card{ animation:none; }
   .rc-yday-list .rc-card.rc-yd-new{ animation: rcYdCardIn .3s cubic-bezier(.3,.9,.3,1) both; animation-delay: calc(var(--i, 0) * 25ms); }
   .rc-yday-list .rc-status{ display:inline-block; }
   .rc-yday-list .rc-status.rc-status-pop{ animation: rcStatusPop .45s cubic-bezier(.22,1,.36,1); }
@@ -8551,9 +8551,23 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
     <div class="empty-state" id="rc-empty" style="display:none;"></div>
     </div>
     <div class="rc-pane rc-yday rc-pane-hidden" id="rc-yday" role="tabpanel" aria-labelledby="rc-tab-yday">
-      <div class="rc-yday-head">
-        <span class="rc-yday-ico"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7.5V12l3 2"/></svg></span>
-        <span class="rc-yday-text"><span class="rc-yday-title">Yesterday&rsquo;s Attendance</span><span class="rc-yday-sub" id="rc-yday-sub"></span></span>
+      <span id="rc-yday-sub" style="display:none;"></span>
+      <div class="rc-add-card-row" id="rc-yd-add-card-row" style="display:none;">
+        <button type="button" class="rc-add-card-btn" id="rc-yd-add-card-btn">
+          <span class="rc-add-card-icon">&#10133;</span>
+          <span>Add A Subject For Yesterday</span>
+        </button>
+        <div class="rc-add-card-form" id="rc-yd-add-card-form" style="display:none;">
+          <input type="text" id="rc-yd-add-card-input" class="rc-add-card-input" list="rc-add-card-suggestions" placeholder="Subject name — e.g. Physics" maxlength="40">
+          <div class="rc-add-card-type">
+            <button type="button" class="rc-add-card-type-btn active" id="rc-yd-add-card-type-theory" data-type="theory">Theory</button>
+            <button type="button" class="rc-add-card-type-btn" id="rc-yd-add-card-type-practical" data-type="practical">Practical</button>
+          </div>
+          <div class="rc-add-card-actions">
+            <button type="button" class="rc-add-card-cancel" id="rc-yd-add-card-cancel">Cancel</button>
+            <button type="button" class="rc-add-card-confirm" id="rc-yd-add-card-confirm">Add Card</button>
+          </div>
+        </div>
       </div>
       <div id="rc-yday-note-wrap"></div>
       <div class="rc-yday-list" id="rc-yday-list"></div>
@@ -18927,13 +18941,13 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
     return (rollcall.extraCards && rollcall.extraCards[dateKey]) || [];
   }
 
-  async function rcAddExtraCard(fullName, type){
+  async function rcAddExtraCard(fullName, type, forDateKey, forDayName){
     if(!rollcall.section || !fullName) return null;
-    const dateKey = localDateKey();
+    const dateKey = forDateKey || localDateKey();
     if(!rollcall.extraCards) rollcall.extraCards = {};
     if(!rollcall.extraCards[dateKey]) rollcall.extraCards[dateKey] = [];
     const list = rollcall.extraCards[dateKey];
-    const { sessions } = rcScheduleForToday(rollcall.section);
+    const { sessions } = (forDateKey ? rcScheduleForToday(rollcall.section, forDayName) : rcScheduleForToday(rollcall.section));
     const alreadyScheduled = sessions.some(s => (RC_SUBJECT_NAMES[s.code] || s.code) === fullName && s.type === type);
     if(alreadyScheduled) return null; // already an auto card for this exact subject+type today
     if(list.some(e => e.fullName === fullName && e.type === type)) return null; // no duplicate extra cards
@@ -18941,11 +18955,12 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
     list.push(entry);
     await saveRollcall();
     renderRollcall();
+    try{ rcRenderYesterday(); }catch(e){}
     return entry;
   }
 
-  async function rcRemoveExtraCard(id){
-    const dateKey = localDateKey();
+  async function rcRemoveExtraCard(id, forDateKey){
+    const dateKey = forDateKey || localDateKey();
     const list = (rollcall.extraCards && rollcall.extraCards[dateKey]) || [];
     const idx = list.findIndex(e => e.id === id);
     if(idx === -1) return;
@@ -18953,15 +18968,20 @@ overlay.querySelector('#hg-greet-view').addEventListener('click', () => {
     // Only auto-undo a live mark if this subject+type isn't ALSO on today's
     // real schedule — otherwise removing the extra card would wipe a
     // legitimate scheduled mark that happens to share the same subject+type.
-    const { sessions } = rollcall.section ? rcScheduleForToday(rollcall.section) : { sessions: [] };
+    let sessions = [];
+    if(rollcall.section){
+      if(forDateKey){ const yi = rcYesterdayInfo(); sessions = rcScheduleForToday(rollcall.section, yi.dayName).sessions; }
+      else sessions = rcScheduleForToday(rollcall.section).sessions;
+    }
     const alsoScheduled = sessions.some(s => (RC_SUBJECT_NAMES[s.code] || s.code) === entry.fullName && s.type === entry.type);
     if(!alsoScheduled){
-      if(entry.type === 'practical') await rcUndoPracticalMark(entry.fullName);
-      else await rcUndoMark(entry.fullName);
+      if(entry.type === 'practical') await rcUndoPracticalMark(entry.fullName, forDateKey);
+      else await rcUndoMark(entry.fullName, forDateKey);
     }
     list.splice(idx, 1);
     await saveRollcall();
     renderRollcall();
+    try{ rcRenderYesterday(); }catch(e){}
   }
 
   function findOrCreateSubject(subjects, fullName){
@@ -19922,17 +19942,17 @@ if(existing){
     card.appendChild(top);
     card.appendChild(rcBuildActions(fullName, isPractical, activeMark, dateKey));
 
-    if(dateKey && dateKey !== localDateKey()) return card;
+    const isPast = !!(dateKey && dateKey !== localDateKey());
     const extraRow = document.createElement('div');
     extraRow.className = 'rc-card-extra-row';
     const note = document.createElement('span');
     note.className = 'rc-card-extra-note';
-    note.textContent = 'Added by you for today';
+    note.textContent = isPast ? 'Added by you for yesterday' : 'Added by you for today';
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
     removeBtn.className = 'rc-card-remove';
     removeBtn.textContent = 'Remove this card';
-    removeBtn.addEventListener('click', () => { rcRemoveExtraCard(entry.id); });
+    removeBtn.addEventListener('click', () => { rcRemoveExtraCard(entry.id, isPast ? dateKey : undefined); });
     extraRow.appendChild(note);
     extraRow.appendChild(removeBtn);
     card.appendChild(extraRow);
@@ -19971,8 +19991,8 @@ if(existing){
     });
   }
   function rcPastEnqueue(fn){
-    const run = rcPastQueue.then(fn);
-    rcPastQueue = run.catch(e => { console.error(e); });
+    const run = rcPastQueue.then(fn).catch(e => { console.error(e); try{ rcRenderYesterday(); }catch(_){} });
+    rcPastQueue = run;
     return run;
   }
   function rcPastRefresh(){
@@ -20135,6 +20155,9 @@ if(existing){
       if(noteBuild){ const n = noteBuild(); n.classList.add('rc-yd-fade'); noteWrap.appendChild(n); }
     }
 
+    const ydAddRow = document.getElementById('rc-yd-add-card-row');
+    if(ydAddRow){ const showAdd = !isHoliday && !!y.dayName; ydAddRow.style.display = showAdd ? 'flex' : 'none'; if(!showAdd){ const f = document.getElementById('rc-yd-add-card-form'); if(f) f.style.display = 'none'; } }
+
     // Cards
     const items = [];
     let hiddenPractical = false;
@@ -20188,11 +20211,9 @@ if(existing){
       } else if(el.dataset.struct !== it.struct){
         el.replaceWith(fresh); el = fresh;
       } else if(el.dataset.mark !== it.status){
-        const oldSt = el.querySelector('.rc-status'), newSt = fresh.querySelector('.rc-status');
-        if(oldSt && newSt){ newSt.classList.add('rc-status-pop'); oldSt.replaceWith(newSt); }
-        const oldUndo = el.querySelector('.btn-undo'), newUndo = fresh.querySelector('.btn-undo');
-        if(oldUndo && newUndo) oldUndo.disabled = newUndo.disabled;
-        el.dataset.mark = it.status;
+        // Rebuild the whole card exactly like Today's Roll Call does, so the
+        // buttons reset cleanly (no stuck hover/pressed look) after a tap.
+        el.replaceWith(fresh); el = fresh;
       }
       const expectedPrev = prev ? prev.nextSibling : list.firstChild;
       if(expectedPrev !== el) list.insertBefore(el, expectedPrev);
@@ -20485,6 +20506,33 @@ if(existing){
       await rcAddExtraCard(name, rcAddCardType);
     });
   }
+
+  // "Add a subject for yesterday" — same form and behaviour as Today's.
+  (function(){
+    let ydType = 'theory';
+    const btn = document.getElementById('rc-yd-add-card-btn');
+    const form = document.getElementById('rc-yd-add-card-form');
+    const input = document.getElementById('rc-yd-add-card-input');
+    const tBtn = document.getElementById('rc-yd-add-card-type-theory');
+    const pBtn = document.getElementById('rc-yd-add-card-type-practical');
+    if(!btn || !form) return;
+    function setType(t){ ydType = t; tBtn.classList.toggle('active', t === 'theory'); pBtn.classList.toggle('active', t === 'practical'); }
+    btn.addEventListener('click', () => {
+      const open = form.style.display === 'flex';
+      form.style.display = open ? 'none' : 'flex';
+      if(!open){ input.value = ''; setType('theory'); input.focus(); }
+    });
+    tBtn.addEventListener('click', () => setType('theory'));
+    pBtn.addEventListener('click', () => setType('practical'));
+    document.getElementById('rc-yd-add-card-cancel').addEventListener('click', () => { form.style.display = 'none'; });
+    document.getElementById('rc-yd-add-card-confirm').addEventListener('click', async () => {
+      const name = input.value.trim();
+      if(!name) return;
+      form.style.display = 'none';
+      const y = rcYesterdayInfo();
+      await rcPastEnqueue(() => rcAddExtraCard(name, ydType, y.key, y.dayName));
+    });
+  })();
 
   // ---- Projection to Exam ----
   // Section is picked first (and saved). Each subject in that section then
