@@ -7827,6 +7827,31 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
 }
 </style>
 
+<style id="nv-stop-style">
+.nv-mini.mute{ border-color: rgba(var(--ink-rgb),0.28); background: rgba(var(--ink-rgb),0.06); color: var(--ink-soft); }
+.nv-chip .nv-chip-n{ display:inline-block; margin-left:6px; min-width:18px; padding:0 5px; height:18px; line-height:18px; border-radius:9px; font-size:11px; font-weight:700; text-align:center; background: rgba(var(--ink-rgb),0.12); color: var(--ink-soft); }
+.nv-chip.active .nv-chip-n{ background: rgba(255,255,255,0.28); color:#fff; }
+.nv-actions.nv-hide{ display:none; }
+.nv-stop-intro{ font-family:'Lora', serif; font-size:13px; line-height:1.5; color: var(--ink-soft); margin:2px 4px 12px; }
+.nv-stop-card{
+  display:flex; align-items:center; gap:14px; padding:14px 16px; margin-bottom:10px; border-radius:20px;
+  background: rgba(var(--ink-rgb),0.04); border:1px solid rgba(var(--ink-rgb),0.1);
+  transition: opacity .28s ease, transform .28s ease;
+}
+.nv-stop-card.nv-gone{ opacity:0; transform: translateX(26px); }
+.nv-stop-card .nv-ico{ flex:none; }
+.nv-stop-main{ flex:1 1 auto; min-width:0; }
+.nv-stop-name{ font-family:'Playfair Display', serif; font-weight:700; font-size:16px; color: var(--ink); margin:0 0 2px; }
+.nv-stop-desc{ font-family:'Lora', serif; font-size:12.5px; color: var(--ink-soft); margin:0; line-height:1.4; }
+.nv-stop-start{
+  flex:none; font-family:'Lora', serif; font-weight:700; font-size:13px; padding:9px 16px; border-radius:999px; cursor:pointer;
+  border:1px solid transparent; color:#fff; -webkit-tap-highlight-color:transparent;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--gold) 82%, #fff), var(--gold) 60%, color-mix(in srgb, var(--gold) 70%, #3a2400));
+  box-shadow: 0 8px 16px -10px rgba(var(--gold-rgb),1);
+}
+.nv-stop-start:active{ transform: scale(0.95); }
+</style>
+
 <style id="rvw-style">
 /* ================= Revision page (menu) ================= */
 #revision-view{ padding-bottom:48px; }
@@ -7844,15 +7869,16 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
   background: rgba(var(--paper-rgb),0.94);
   border:1px solid rgba(var(--gold-rgb),0.3);
   box-shadow: 0 14px 28px -20px rgba(var(--ink-rgb),0.7), inset 0 1px 0 rgba(255,255,255,0.04);
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  contain: layout paint;
 }
 .rvw-thumb{
   position:absolute; z-index:-1; top:5px; bottom:5px; left:5px; width:calc(50% - 5px); border-radius:999px;
   background: linear-gradient(135deg, #E9BE62 0%, #C9922F 100%);
   box-shadow: 0 8px 18px -8px rgba(var(--gold-rgb),0.75);
-  transition: transform .42s cubic-bezier(0.22,1,0.36,1);
+  transition: transform .34s cubic-bezier(0.22,1,0.36,1);
+  will-change: transform; transform: translate3d(0,0,0);
 }
-.rvw-switch[data-mode="revise"] .rvw-thumb{ transform: translateX(100%); }
+.rvw-switch[data-mode="revise"] .rvw-thumb{ transform: translate3d(100%,0,0); }
 .rvw-opt{
   display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 8px;
   background:transparent; border:none; border-radius:999px; cursor:pointer;
@@ -7863,7 +7889,14 @@ body{ -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; }
 .rvw-opt.active{ color:#1c1608; }
 .rvw-opt.active svg{ transform: scale(1.1) rotate(-6deg); }
 .rvw-opt:active{ transform:scale(0.96); }
-@media (prefers-reduced-motion: reduce){ .rvw-thumb, .rvw-opt, .rvw-opt svg, .rvw-sub{ transition:none !important; } }
+/* Smooth tab swap: panels only fade (no slide/scale), and the heavy entrance
+   animations inside them are not replayed every time the tab is switched. */
+#revision-view .st-panel{ animation: rvwPanelIn .26s ease-out both; }
+@keyframes rvwPanelIn{ from{ opacity:0; } to{ opacity:1; } }
+#revision-view.rvw-calm .rv-stag, #revision-view.rvw-calm .rv-view,
+#revision-view.rvw-calm .rv-card.rv-enter, #revision-view.rvw-calm .rv-hero-glow{ animation:none !important; }
+#revision-view.rvw-calm .fc-select-card, #revision-view.rvw-calm .fc-step{ animation-duration:.01s !important; animation-delay:0s !important; }
+@media (prefers-reduced-motion: reduce){ .rvw-thumb, .rvw-opt, .rvw-opt svg, .rvw-sub{ transition:none !important; } #revision-view .st-panel{ animation:none; } }
 </style>
 
 <style id="sch-style">
@@ -12427,7 +12460,7 @@ window.contactChoiceModal = function(opts){
     const STORE_KEY = 'app-notifications-v1';
     const MAX_ITEMS = 80;
     const CATS = [
-      { id:'all', label:'All' }, { id:'hw', label:'Homework' }, { id:'exam', label:'Exams' },
+      { id:'all', label:'All' }, { id:'stopped', label:'Stopped' }, { id:'hw', label:'Homework' }, { id:'exam', label:'Exams' },
       { id:'att', label:'Attendance' }, { id:'tt', label:'Timetable' }, { id:'holiday', label:'Holidays' }
     ];
     const OPEN_BTN = { hw:'open-homework-btn', exam:'open-exams-btn', att:'open-rollcall-btn', tt:'open-timetable-btn', holiday:'open-holidays-btn' };
@@ -12466,6 +12499,32 @@ window.contactChoiceModal = function(opts){
       if(/^tt-/.test(t)) return 'tt';
       return 'gen';
     }
+    // ---------- stopped (muted) features ----------
+    const MUTE_KEY = 'app-notifications-muted-v1';
+    const FEATURE = {
+      hw:      { name:'Homework',          desc:'Deadlines and pending homework reminders' },
+      exam:    { name:'Exams',             desc:'Exam countdowns and exam-day alerts' },
+      att:     { name:'Attendance',        desc:'Roll call reminders and attendance warnings' },
+      tt:      { name:'Timetable',         desc:'Tomorrow\u2019s timetable and class alerts' },
+      holiday: { name:'Holidays',          desc:'Holiday announcements' },
+      gen:     { name:'General & tasks',   desc:'Daily task reminders and other updates' }
+    };
+    function loadMuted(){
+      try{ const v = JSON.parse(localStorage.getItem(MUTE_KEY) || '[]'); return Array.isArray(v) ? v.filter(k => FEATURE[k]) : []; }
+      catch(e){ return []; }
+    }
+    function saveMuted(arr){ try{ localStorage.setItem(MUTE_KEY, JSON.stringify(arr)); }catch(e){} }
+    function isMuted(cat){ return loadMuted().indexOf(cat) >= 0; }
+    function setMuted(cat, on){
+      const s = loadMuted().filter(k => k !== cat);
+      if(on) s.push(cat);
+      saveMuted(s);
+    }
+    // Used by the phone-notification sender so stopped features stay silent everywhere.
+    window.ntfIsMuted = function(tag, extra){
+      extra = extra || {};
+      return isMuted(catOf({ tag: tag || '', cat: extra.cat, id: tag || '' }));
+    };
     function dayStart(ts){ const d = new Date(ts); return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
     function dayDiff(ts){ return Math.round((dayStart(Date.now()) - dayStart(ts)) / 86400000); }
     function relDay(ts){
@@ -12504,8 +12563,9 @@ window.contactChoiceModal = function(opts){
     // Public hook: any part of the app can call this when something
     // notifiable happens. extra = { cat, icon, label, tone }.
     window.ntfAdd = function(title, body, tag, extra){
-      const items = load();
       extra = extra || {};
+      if(isMuted(catOf({ tag: tag || '', cat: extra.cat, id: tag || '' }))) return; // feature stopped by the user
+      const items = load();
       const now = Date.now();
       // Ignore an identical alert fired again within two minutes (e.g. a
       // mark toggled back and forth).
@@ -12696,11 +12756,18 @@ window.contactChoiceModal = function(opts){
       clearAllBtn.disabled = items.length === 0;
       try{ renderCards(items); }catch(e){}
     }
+    function setStoppedBadge(b){
+      const n = loadMuted().length;
+      let s = b.querySelector('.nv-chip-n');
+      if(n){ if(!s){ s = document.createElement('span'); s.className = 'nv-chip-n'; b.appendChild(s); } s.textContent = n; }
+      else if(s){ s.remove(); }
+    }
     function buildChips(items){
       if(chipsEl.children.length === CATS.length){
         Array.prototype.forEach.call(chipsEl.children, (b, i) => {
           const c = CATS[i], on = c.id === filter;
           b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
+          if(c.id === 'stopped'){ setStoppedBadge(b); return; }
           const n = items.filter(x => !x.read && (c.id === 'all' || catOf(x) === c.id)).length;
           let d = b.querySelector('.nv-chip-dot');
           if(n && c.id !== 'all'){
@@ -12721,6 +12788,7 @@ window.contactChoiceModal = function(opts){
         b.setAttribute('aria-selected', c.id === filter ? 'true' : 'false');
         b.dataset.cat = c.id;
         b.textContent = c.label;
+        if(c.id === 'stopped'){ setStoppedBadge(b); chipsEl.appendChild(b); return; }
         const n = items.filter(x => !x.read && (c.id === 'all' || catOf(x) === c.id)).length;
         if(n && c.id !== 'all'){ const d = document.createElement('span'); d.className = 'nv-chip-dot'; d.textContent = n > 9 ? '9+' : n; b.appendChild(d); }
         chipsEl.appendChild(b);
@@ -12789,14 +12857,14 @@ window.contactChoiceModal = function(opts){
       render(false);
       listEl.querySelectorAll('.nv-row').forEach(r => { if(ids.has(r.dataset.id)) growIn(r); });
     }
-    function queueUndo(list, label){
+    function queueUndo(list, label, opts){
       while(undoQueue.length >= UNDO_MAX) dropUndo(undoQueue[0]);
       const entry = { list: list };
       const el = document.createElement('div'); el.className = 'nv-undo';
       const msg = document.createElement('div'); msg.className = 'nv-undo-msg';
-      msg.textContent = list.length > 1 ? list.length + ' notifications cleared' : 'Notification removed';
+      msg.textContent = opts ? opts.msg : (list.length > 1 ? list.length + ' notifications cleared' : 'Notification removed');
       const sm = document.createElement('small');
-      sm.textContent = list.length > 1 ? 'Undo within 10 seconds' : (label || '');
+      sm.textContent = opts ? (opts.sub || '') : (list.length > 1 ? 'Undo within 10 seconds' : (label || ''));
       msg.appendChild(sm);
       const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'nv-undo-btn';
       const bt = document.createElement('span'); bt.textContent = 'Undo';
@@ -12813,7 +12881,7 @@ window.contactChoiceModal = function(opts){
         cnt.textContent = left + 's';
       }, 250);
       entry.timer = setTimeout(() => dropUndo(entry), UNDO_MS);
-      btn.addEventListener('click', () => { restoreItems(list); dropUndo(entry); });
+      btn.addEventListener('click', () => { if(opts && opts.onUndo) opts.onUndo(); else restoreItems(list); dropUndo(entry); });
       undoQueue.push(entry);
       attachSwipe(entry);
     }
@@ -12937,6 +13005,19 @@ window.contactChoiceModal = function(opts){
       const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'nv-mini rm'; rm.textContent = 'Remove';
       rm.addEventListener('click', (e) => { e.stopPropagation(); removeRow(n.id, row); });
       more.appendChild(rm);
+      if(FEATURE[cat]){
+        const mu = document.createElement('button'); mu.type = 'button'; mu.className = 'nv-mini mute';
+        mu.textContent = 'Stop ' + FEATURE[cat].name + ' alerts';
+        mu.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setMuted(cat, true);
+          refreshMeta();
+          queueUndo([], '', { msg: FEATURE[cat].name + ' alerts stopped', sub: 'Restart anytime from the Stopped tab',
+            onUndo: () => { setMuted(cat, false); refreshMeta(); if(filter === 'stopped') render(false); } });
+          mu.disabled = true; mu.textContent = 'Stopped \u2713';
+        });
+        more.appendChild(mu);
+      }
       main.appendChild(moreOuter);
 
       const side = document.createElement('div'); side.className = 'nv-side';
@@ -13011,7 +13092,51 @@ window.contactChoiceModal = function(opts){
       wrap.appendChild(ic); wrap.appendChild(h); wrap.appendChild(p);
       return wrap;
     }
+    function renderStopped(animate){
+      const muted = loadMuted();
+      listEl.innerHTML = '';
+      if(animate){ listEl.classList.remove('nv-swap'); void listEl.offsetWidth; listEl.classList.add('nv-swap'); }
+      if(!muted.length){
+        const wrap = document.createElement('div'); wrap.className = 'nv-empty';
+        const ic = document.createElement('div'); ic.className = 'nv-empty-ico'; ic.innerHTML = ICONS.bell;
+        const h = document.createElement('h3'); h.textContent = 'Nothing stopped';
+        const p = document.createElement('p'); p.textContent = 'Tap any notification and choose \u201cStop \u2026 alerts\u201d to silence that feature. It will show up here so you can start it again.';
+        wrap.appendChild(ic); wrap.appendChild(h); wrap.appendChild(p); listEl.appendChild(wrap);
+        return;
+      }
+      const intro = document.createElement('p'); intro.className = 'nv-stop-intro';
+      intro.textContent = 'You won\u2019t get new alerts from these features. Tap Start to turn them back on.';
+      listEl.appendChild(intro);
+      muted.forEach(cat => {
+        const f = FEATURE[cat];
+        const card = document.createElement('div'); card.className = 'nv-stop-card';
+        const ico = document.createElement('div'); ico.className = 'nv-ico t-' + cat; ico.innerHTML = ICONS[CAT_ICON[cat]] || ICONS.bell;
+        const main = document.createElement('div'); main.className = 'nv-stop-main';
+        const nm = document.createElement('p'); nm.className = 'nv-stop-name'; nm.textContent = f.name;
+        const ds = document.createElement('p'); ds.className = 'nv-stop-desc'; ds.textContent = f.desc;
+        main.appendChild(nm); main.appendChild(ds);
+        const go = document.createElement('button'); go.type = 'button'; go.className = 'nv-stop-start'; go.textContent = 'Start';
+        go.setAttribute('aria-label', 'Start ' + f.name + ' notifications again');
+        go.addEventListener('click', () => {
+          go.disabled = true;
+          setMuted(cat, false); refreshMeta();
+          card.classList.add('nv-gone');
+          setTimeout(() => { if(filter === 'stopped') renderStopped(false); }, 280);
+        });
+        card.appendChild(ico); card.appendChild(main); card.appendChild(go);
+        listEl.appendChild(card);
+      });
+    }
     function render(animate){
+      const actionsEl = view.querySelector('.nv-actions');
+      if(actionsEl) actionsEl.classList.toggle('nv-hide', filter === 'stopped');
+      if(filter === 'stopped'){
+        const all0 = load();
+        updateBadge(all0); updateHeader(all0);
+        const keep0 = chipsEl.scrollLeft; buildChips(all0); chipsEl.scrollLeft = keep0;
+        renderStopped(animate);
+        return;
+      }
       const openIds = new Set();
       listEl.querySelectorAll('.nv-item.open').forEach(e => { const r = e.parentNode; if(r && r.dataset && r.dataset.id) openIds.add(r.dataset.id); });
       keepOpen = animate ? new Set() : openIds;
@@ -15579,6 +15704,8 @@ function initPracticalGroupFinder(){
   }
 
   async function hwSendNotification(title, body, tag, kind, banner, extra){
+    // Feature stopped from the Notifications page: stay silent (true = handled, so callers don't retry).
+    try{ if(typeof window.ntfIsMuted === 'function' && window.ntfIsMuted(tag, extra)) return true; }catch(e){}
     if(typeof window.ntfAdd === 'function') window.ntfAdd(title, body, tag, extra);
     const opts = Object.assign({ body, tag }, notifOptions(kind));
     if(banner){
@@ -24286,25 +24413,46 @@ if(existing){
       };
       let mode = 'flash';
       try{ const m = localStorage.getItem('rvw-mode'); if(m === 'flash' || m === 'revise') mode = m; }catch(e){}
+      let swapTok = 0;
+      function showPanels(){
+        ['flash','revise'].forEach(t => {
+          const p = document.getElementById('st-panel-' + t);
+          if(p) p.style.display = (t === mode) ? 'block' : 'none';
+        });
+      }
+      function initPanel(){
+        if(mode === 'flash' && typeof fcInit === 'function') fcInit();
+        if(mode === 'revise' && typeof window.rvInit === 'function') window.rvInit();
+      }
       function setMode(next, instant){
         mode = next;
         try{ localStorage.setItem('rvw-mode', mode); }catch(e){}
+        // 1) cheap, instant: move the pill + labels (compositor-only animation)
         sw.dataset.mode = mode;
         sw.querySelectorAll('.rvw-opt').forEach(b => {
           const on = b.dataset.rvw === mode;
           b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
         });
-        ['flash','revise'].forEach(t => {
-          const p = document.getElementById('st-panel-' + t);
-          if(p) p.style.display = (t === mode) ? 'block' : 'none';
-        });
-        if(instant){ sub.textContent = COPY[mode]; }
-        else { sub.classList.add('swap'); setTimeout(() => { sub.textContent = COPY[mode]; sub.classList.remove('swap'); }, 180); }
-        if(mode === 'flash' && typeof fcInit === 'function') fcInit();
-        if(mode === 'revise' && typeof window.rvInit === 'function') window.rvInit();
+        const tok = ++swapTok;
+        if(instant){
+          view.classList.remove('rvw-calm');
+          sub.textContent = COPY[mode];
+          showPanels(); initPanel();
+          return;
+        }
+        view.classList.add('rvw-calm');
+        sub.classList.add('swap');
+        // 2) heavy work: wait for the pill to get going, then swap panels and init in separate frames
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          if(tok !== swapTok) return;
+          window.scrollTo(0, 0);           // instant: a smooth scroll fights the layout change
+          showPanels();
+          sub.textContent = COPY[mode]; sub.classList.remove('swap');
+          requestAnimationFrame(() => { if(tok === swapTok) initPanel(); });
+        }));
       }
       sw.querySelectorAll('.rvw-opt').forEach(b => b.addEventListener('click', () => {
-        if(b.dataset.rvw !== mode){ setMode(b.dataset.rvw, false); window.scrollTo({top:0, behavior:'smooth'}); }
+        if(b.dataset.rvw !== mode) setMode(b.dataset.rvw, false);
       }));
       const openBtn = document.getElementById('open-revision-btn');
       if(openBtn) openBtn.addEventListener('click', () => {
